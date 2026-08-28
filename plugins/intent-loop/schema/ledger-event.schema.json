@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-loop.local/schema/ledger-event-v1.json",
+  "title": "Intent Loop append event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "project_id",
+    "task_id",
+    "occurred_at",
+    "actor",
+    "request_id",
+    "payload",
+    "prev_hash",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "format": "uuid" },
+    "event_type": {
+      "enum": [
+        "task_started",
+        "mode_set",
+        "source_observed",
+        "candidate_added",
+        "claim_added",
+        "claim_replaced",
+        "claim_invalidated",
+        "graph_imported",
+        "compaction_observed",
+        "result_signal_observed"
+      ]
+    },
+    "project_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "task_id": { "type": "string", "format": "uuid" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "actor": { "enum": ["user", "agent", "evidence", "system"] },
+    "request_id": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "payload": { "type": "object" },
+    "prev_hash": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      ]
+    },
+    "event_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

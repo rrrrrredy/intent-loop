@@ -1,0 +1,42 @@
+{
+  "name": "@intent-loop/codex-plugin",
+  "version": "0.1.0-beta.1",
+  "description": "Local, traceable intent state for Codex tasks.",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "rrrrrredy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rrrrrredy/intent-loop.git",
+    "directory": "plugins/intent-loop"
+  },
+  "homepage": "https://github.com/rrrrrredy/intent-loop",
+  "bugs": {
+    "url": "https://github.com/rrrrrredy/intent-loop/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build:test": "tsc -p tsconfig.json",
+    "build:runtime": "node scripts/build-runtime.mjs",
+    "build": "npm run typecheck && npm run build:test && npm run build:runtime",
+    "test": "npm run build && npm run test:compiled && npm run test:distribution",
+    "test:compiled": "node --test --test-concurrency=1 dist/tests/redaction.test.js dist/tests/migration.test.js dist/tests/storage.test.js dist/tests/service.test.js dist/tests/security-regressions.test.js dist/tests/hook.test.js dist/tests/mcp.test.js dist/tests/eval-corpus.test.js",
+    "test:distribution": "node scripts/verify-distribution.mjs",
+    "test:unit": "node --test --test-concurrency=1 dist/tests/redaction.test.js dist/tests/migration.test.js dist/tests/storage.test.js dist/tests/service.test.js",
+    "test:contract": "node --test --test-concurrency=1 dist/tests/hook.test.js dist/tests/mcp.test.js dist/tests/eval-corpus.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "@types/node": "20.19.24",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

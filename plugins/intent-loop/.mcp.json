@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "intent_loop": {
+      "command": "node",
+      "args": ["runtime/server.mjs"],
+      "cwd": "."
+    }
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.intent-loop-test-data/
+artifacts/
+*.tgz
+evals/results/*.json
+evals/results/*.jsonl
+!evals/results/README.md

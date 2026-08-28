@@ -1,0 +1,43 @@
+{
+  "name": "intent-loop",
+  "version": "0.1.0-beta.1",
+  "description": "Maintain compact, traceable, disagreement-preserving intent inside the current Codex task.",
+  "author": {
+    "name": "rrrrrredy",
+    "url": "https://github.com/rrrrrredy"
+  },
+  "homepage": "https://github.com/rrrrrredy/intent-loop",
+  "repository": "https://github.com/rrrrrredy/intent-loop",
+  "license": "Apache-2.0",
+  "keywords": [
+    "codex",
+    "intent",
+    "mcp",
+    "workflow",
+    "privacy"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Intent Loop",
+    "shortDescription": "Clarify only when divergence makes it worthwhile.",
+    "longDescription": "Intent Loop keeps a local, versioned current-intent graph and gives Codex a low-burden intervention policy without taking over planning or execution.",
+    "developerName": "rrrrrredy",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/rrrrrredy/intent-loop",
+    "privacyPolicyURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/privacy-policy.md",
+    "termsOfServiceURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/terms-of-use.md",
+    "defaultPrompt": [
+      "Use $intent start for this task.",
+      "Use $intent show to display current intent.",
+      "Use $intent correct to record my correction."
+    ],
+    "brandColor": "#6657D9",
+    "composerIcon": "./assets/intent-loop.svg",
+    "logo": "./assets/intent-loop.svg"
+  },
+  "mcpServers": "./.mcp.json"
+}

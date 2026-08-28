@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intent-loop.local/schema/eval-result-v1.json",
+  "title": "Intent Loop paired task result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "condition",
+    "run_id",
+    "final_match",
+    "avoidable_rework_minutes",
+    "avoidable_rework_units",
+    "elapsed_seconds",
+    "plugin_interruptions",
+    "corrections",
+    "interventions",
+    "accepted"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "task_id": { "type": "string", "pattern": "^(KU|UF|GC|RF|CC)[0-9]{2}$" },
+    "condition": { "enum": ["baseline", "plugin"] },
+    "run_id": { "type": "string", "minLength": 1 },
+    "participant_id_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "final_match": { "type": "number", "minimum": 0, "maximum": 100 },
+    "avoidable_rework_minutes": { "type": "number", "minimum": 0 },
+    "avoidable_rework_units": { "type": "integer", "minimum": 0 },
+    "elapsed_seconds": { "type": "number", "minimum": 0 },
+    "plugin_interruptions": { "type": "integer", "minimum": 0 },
+    "accepted": { "type": "boolean" },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["primary_cause", "avoidable", "active_rework_minutes", "rationale"],
+        "properties": {
+          "primary_cause": { "enum": ["execution_error", "tool_error", "intent_misunderstanding", "intent_change", "no_material_error"] },
+          "secondary_causes": { "type": "array", "items": { "type": "string" } },
+          "avoidable": { "type": "boolean" },
+          "active_rework_minutes": { "type": "number", "minimum": 0 },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "interventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rating", "reason"],
+        "properties": {
+          "rating": { "enum": ["helpful", "neutral", "unhelpful", "wrong_harmful"] },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "inferences_exposed_for_correction": { "type": "integer", "minimum": 0 },
+    "inferences_denied": { "type": "integer", "minimum": 0 },
+    "notes": { "type": "string" }
+  }
+}

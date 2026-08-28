@@ -1,0 +1,62 @@
+# Gate 3: privacy, deletion, and threat model
+
+Status: frozen before any real user data is persisted on 2026-08-28.
+
+This design follows least privilege, explicit consent for destructive actions, defense in depth against prompt injection, server-side validation, retention clarity, credential-pattern redaction, and avoidance of raw prompt logging described in [OpenAI's plugin security and privacy guidance](https://developers.openai.com/plugins/guides/security-privacy). It does not claim comprehensive PII detection.
+
+## Default data handling
+
+- Default persistence stores atomic claims and minimal source references, not complete prompts, transcripts, conversations, tool results, or workspace files.
+- Hook-observed user prompts are represented by a validated event ID and its SHA-256 when available. Without a trusted event ID, the prompt is redacted first and only the redacted text's SHA-256 is retained. Raw prompt and recognized-secret digests are not persisted. Optional excerpts are redacted and capped at 160 characters.
+- Statements and feedback are redacted before validation and before any append. Long or transcript-shaped inputs are rejected rather than truncated into misleading claims.
+- Seeded credential patterns, bearer tokens, private keys, password assignments, common cloud keys, and high-entropy token-like strings become `[REDACTED:<type>]`. Credential markers deliberately contain no secret-derived digest. JSON-looking statements are parsed and sensitive-key values are replaced recursively before serialization; plain-text quoted assignments support escaped quotes and spaces.
+- Runtime has no outbound network code. Logs go to stderr, contain correlation IDs and error classes, and never contain statements, excerpts, prompts, export bodies, or secrets.
+- Durable task data is retained until explicit deletion. Stale long-term inferences are excluded from automatic use after 90 days; staleness is not deletion.
+
+## Modes and user control
+
+| Mode | Persistence | Hooks | MCP reads/writes |
+| --- | --- | --- | --- |
+| `on` | Structured records only | Optional, fail-open | Enabled |
+| `private` | Semantic state stays in MCP process memory; a hashed session-control file contains no claim text | Independent Hooks inject and record no semantics | Enabled in-memory; restart loses semantics; the control remains a recovery/delete handle |
+| `off` | A new off start rejects labels/claims; switching an existing task off retains earlier durable records but writes no new semantics | Emits no context and no candidates | Status and re-enable only |
+
+Mode is task-scoped. Private mode requires the host session token supplied by the host integration; only its hash is written to the control file. Control ownership is one-to-one for task and session, is changed only under the project lock, and is cleared only after an expected-task comparison. Hook recording checks both the current session association and any task-level control. After restart the user can resume an empty private task, explicitly create an empty durable on/off task, or delete the control/task. The user can inspect `hooks/hooks.json`, decline trust, disable the plugin or MCP server, or disable Hooks without losing ordinary Codex functionality.
+
+## View, export, invalidate, and delete
+
+- **View** returns the current projection or audit history for exactly one project/task and reports the resolved data directory.
+- **Export** returns a versioned portable JSON graph containing claims, provenance, disputes, invalidations, and supersession relations. It excludes host paths, raw prompts, transcripts, secrets, lock metadata, and unrelated tasks. Export never writes outside an explicit user-selected path; the default is structured tool output.
+- **Invalidate** appends an invalidation event. The claim leaves the current snapshot but remains auditable.
+- **Delete record** is a privacy exception to append-only history: under the project lock, all events containing the claim and all derived references are removed, dangling supersession edges are repaired, a new verified ledger is written and fsynced, then atomically replaces the old ledger.
+- **Delete task** rewrites the ledger without the task, removes its references from other candidate/import events, removes its private controls and quarantine/orphan temporaries, and does not retain a target-identifying tombstone. Exact-confirmation retries are idempotent even if a crash already removed the ledger events but left cleanup work.
+- Deletion succeeds only after rereading the new ledger and byte-scanning every file below the project scope for the target identifiers and any seeded unique marker. Identical text in a different claim is not treated as a failed deletion. A partial result is an error, never success.
+
+Deletion cannot erase independent operating-system backups, volume snapshots, user-made exports, or copies outside the resolved Intent Loop data root. The tool states that boundary before confirmation. Export and destructive delete require explicit user intent; delete also requires an exact task/claim confirmation token in the call.
+
+## Threats and controls
+
+| Threat | Boundary and control | Verification |
+| --- | --- | --- |
+| Prompt injection in persisted state | A Hook may record only a source hash/candidate and cannot promote semantic content. Compact Hook context includes only direct user-event and user-explicit claims; evidence, inferences, imports, unknowns, and disputes are omitted as content. | Persisted evidence containing hostile instructions is absent from Hook output. |
+| Malicious tool or external result | It can enter only as `evidence`, never `explicit`; evidence cannot supersede an explicit claim without a user-confirmed replacement. | Tool-result promotion regression. |
+| Model misuses explicit tool | Server validates source kind and confirmation reason; Skill requires direct user wording or confirmation. This is not cryptographic speaker authentication, so it remains a host-boundary risk reported in E2E. | Adversarial MCP calls and trace review. |
+| Cross-project disclosure | On Codex, the server advertises `codex/sandbox-state-meta` and treats host-provided `sandboxCwd` as authoritative for every tool; a conflicting explicit path is rejected. Other hosts require an explicit root or exactly one advertised local root. Storage paths use canonical-root hashes; task/project mismatch is rejected; Hooks derive scope from their own `cwd`; no global search tool exists; compact injection is same-project only. | MCP metadata binding/mismatch contract plus two-project isolation tests with guessed IDs. |
+| Path traversal, junction, or hardlink escape | User IDs never become paths. Root/projects/project and every internal mutable directory are realpath-contained; junctions/symlinks are rejected. Ledger and scanned data files must be regular and singly linked, and append uses atomic replacement instead of writing through an existing link. | Projects/private-sessions junction tests and an outside-ledger hardlink non-mutation test. |
+| Credential persistence | Parse JSON-looking values and recursively replace sensitive keys; redact seeded plain-text secret formats before append without secret-derived digests; reject transcript-shaped records; logs omit content. Ordinary personal information is not generically detected and remains a documented residual risk. | Escaped JSON password, spaced password, API-key, bearer-token, private-key, high-entropy, persisted-ledger, and log regressions. |
+| Corrupt, partial, or crash-orphaned ledger | Reads validate without mutation. The next locked mutation stores only a length/digest quarantine summary, repairs a trailing partial through temp-file fsync and atomic replace, removes strictly named orphan ledger/control temporary files, and never skips a malformed middle record. | Read-only corruption, orphan temporary, deletion retry, and repair fixtures. |
+| Concurrent writers or reused idempotency key | Exclusive atomic directory lock records PID and owner token, refreshes a heartbeat, checks process liveness before stale recovery, and verifies ownership on release. Reclaim/release marker races are transient, post-commit cleanup cannot turn a durable success into a reported mutation failure, and waiting is bounded by both no-progress and absolute deadlines. Strictly named release/reclaim remnants are removed by the next lock. Request deduplication and normalized-parameter fingerprint comparison occur under the same lock. | Live stale-looking lock, dead-owner recovery, 32-real-process pressure loops with residue scans, orphan-marker cleanup, post-commit cleanup failure, two-service exact retry, and different-parameter request-ID tests. |
+| Hook or MCP failure blocks Codex | Every Hook returns `continue: true`, suppresses failure output, and has a short timeout. State errors produce no context. MCP is advisory; Codex can continue without it. | Killed-process and malformed-state E2E. |
+| Stop Hook becomes completion judge | Stop and SessionEnd only add hashed candidate metadata, never `block`, never assert satisfaction, and never force another turn. | Stop fixture asserts `continue: true`. |
+| Old preference silently dominates | Long-term promotion requires direct declaration or three tasks plus confirmation; inferred records stale after 90 days and are omitted until review. | Clock-controlled long-term tests. |
+| Deletion leaves indexes or bytes | Projection is ledger-derived; privacy delete rewrites all files and byte-scans the scope before reporting success. | UUID/marker scan after record and task deletion. |
+
+## Trust and residual risk
+
+The server can validate structure and provenance class, but a plugin cannot cryptographically prove that the model interpreted a user's sentence correctly. That is why no Hook auto-promotes intent, explicit claims remain correctable, disagreements remain first-class, and real user corrections are an efficacy metric.
+
+The installed plugin cache, host-provided sandbox working directory, and `CODEX_HOME`/`PLUGIN_DATA` locations are controlled by Codex. Intent Loop validates the metadata shape and explicit-root consistency but cannot authenticate a compromised host. The application reports the resolved data path at runtime. Credential-pattern redaction does not remove arbitrary personal data. A user or privileged local process can read local data, and backups or copied exports are outside the deletion boundary. Naturally triggered compaction recovery remains a controlled-pilot check.
+
+## Gate decision
+
+Gate 3 result: **PASS FOR THE BOUNDED PUBLIC BETA; NO EFFICACY CLAIM**. Storage, privacy, modes, fail-closed Codex metadata binding, local-root enforcement, cross-project isolation, import remapping, deletion recovery, and link-containment contracts pass in the current 62-test source suite and the repaired installed-host lifecycle. This does not authorize broad data collection or imply efficacy. Hooks remain untrusted by default, and the paired study must repeat privacy/export/delete checks on its own data.

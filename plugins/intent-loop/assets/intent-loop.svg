@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Intent Loop</title>
+  <desc id="desc">Two connected loops with a central intent point.</desc>
+  <rect width="512" height="512" rx="112" fill="#6657D9"/>
+  <path d="M157 164c-62 0-99 43-99 92s37 92 99 92c43 0 72-22 99-58 27 36 56 58 99 58 62 0 99-43 99-92s-37-92-99-92c-43 0-72 22-99 58-27-36-56-58-99-58Zm0 56c19 0 36 12 63 36-27 24-44 36-63 36-26 0-43-15-43-36s17-36 43-36Zm198 0c26 0 43 15 43 36s-17 36-43 36c-19 0-36-12-63-36 27-24 44-36 63-36Z" fill="#fff"/>
+  <circle cx="256" cy="256" r="20" fill="#F6C95C"/>
+</svg>
