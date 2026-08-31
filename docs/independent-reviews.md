@@ -48,6 +48,16 @@ The final reviewer froze `storage.ts` at SHA-256 `78AAE758AF28B300931BEFAED1AC79
 
 Final beta.3 source verdict: **RELEASE**, P0/P1 zero. Documented P2 hardening opportunities are a direct fault-injection seam for stable `EACCES`/`EPERM`/`ELOOP`, applying the bounded helper to the invalid-marker-only `observeLockMarkerFile` path, and replacing the final check-to-unlink marker cleanup window with unique-name quarantine. Current behavior remains fail-closed and no P2 authorizes lock takeover or deletion.
 
+### V0.2 DeepSeek adversarial release recheck
+
+The first v0.2 documentation candidate passed its 18-job public matrix, but the required adversarial review then reproduced a release-blocking same-session concurrency failure. Two calls shared one MCP client; when either call failed, the pool immediately closed the holder and caused an otherwise healthy active sibling to fail. The candidate was held and no tag was created.
+
+The accepted repair marks the holder as draining, rejects new acquisitions for that holder, waits for already-active siblings to settle, retains the holder in the capacity map while closing, and uses one close promise for idempotence. The repository now retains a deterministic regression in which the failing call returns while the sibling remains live, new same-session acquisition is rejected, the sibling finishes, and close occurs exactly once.
+
+The reviewer independently reran the original two-call failure, a slow-close capacity probe, and a double-failure probe. During a failed call the sibling remained live and `closeCount` stayed zero; no new same-session or over-capacity session was admitted; after drain the holder count became zero and close count became one. Slow close retained the holder and capacity until completion, and double failure plus dispose did not close twice. On Node 22.19.0, the reviewer also passed the full **6/6** DeepSeek suite, package verification, generated 15-tool catalog, 24-component SBOM and 15 additional notices, plus the Codex **72/72** suite and self-contained distribution check.
+
+V0.2 repaired-source verdict: **RELEASE**, P0/P1 zero, conditional only on the repaired exact commit passing the same 18-job public matrix before tagging. Non-blocking P2 items are a bounded fallback for a permanently hanging SDK `client.close()`, adding root DeepSeek tests and dual-version checks inside the tag-triggered Release workflow itself, and changing package composition verification from required/forbidden checks to a complete path allowlist.
+
 ## Practical first-use review
 
 The first-use review installed the beta on Windows and exercised start, show, correct, feedback, export, off, and forget from a fresh task.
@@ -88,4 +98,4 @@ Final beta.3 practical verdict: **RELEASE**, P0/P1 zero. P2 observations are vis
 
 ## Evidence boundary
 
-These reviews found defects, shaped controls, and approved the public beta.3 tag; they are not an efficacy study. The beta.2 installed-host review remains historical because beta.2 is superseded. Beta.3 public-repository CI, release-asset verification, GitHub-only install proof, practical-user review, and clean uninstall were all rerun against the public tag. The frozen paired 80-task comparison remains unrun and is reported as `NO RESULT`.
+These reviews found defects and shaped controls; they are not an efficacy study. The beta.2 installed-host review remains historical because beta.2 is superseded. Beta.3 public-repository CI, release-asset verification, GitHub-only install proof, practical-user review, and clean uninstall were all rerun against its public tag. The v0.2 adversarial review found and closed a release-blocking concurrency defect before tagging; its public-tag practical review is still required. The frozen paired 80-task comparison remains unrun and is reported as `NO RESULT`.

@@ -215,13 +215,17 @@ export class IntentLoopSessionPool {
       const client = await holder.promise;
       return await operation(client);
     } catch (error) {
-      await this.closeHolder(holder);
+      holder.draining = true;
       throw error;
     } finally {
       holder.active = Math.max(0, holder.active - 1);
       holder.lastUsed = Date.now();
       if (!this.disposed && this.holders.get(sessionId) === holder && holder.active === 0) {
-        this.armIdleClose(holder);
+        if (holder.draining) {
+          await this.closeHolder(holder);
+        } else {
+          this.armIdleClose(holder);
+        }
       }
     }
   }
@@ -247,6 +251,9 @@ export class IntentLoopSessionPool {
       if (holder !== undefined && holder.cwd !== cwd) {
         throw new Error("Intent Loop rejected a changed workspace for the same DeepSeek Harness session");
       }
+      if (holder?.draining) {
+        throw new Error("Intent Loop session is draining after a failed call; retry after active calls settle");
+      }
       if (holder === undefined) {
         await this.ensureCapacity();
         if (this.disposed) throw new Error("Intent Loop adapter is unloaded");
@@ -257,7 +264,9 @@ export class IntentLoopSessionPool {
           lastUsed: Date.now(),
           idleTimer: undefined,
           client: undefined,
-          promise: undefined
+          promise: undefined,
+          draining: false,
+          closePromise: undefined
         };
         holder.promise = this.createClient(this.config, signal)
           .then((client) => {
@@ -300,17 +309,26 @@ export class IntentLoopSessionPool {
   }
 
   async closeHolder(holder) {
+    if (holder.closePromise !== undefined) {
+      await holder.closePromise;
+      return;
+    }
     if (holder.idleTimer !== undefined) {
       clearTimeout(holder.idleTimer);
       holder.idleTimer = undefined;
     }
-    if (this.holders.get(holder.sessionId) === holder) this.holders.delete(holder.sessionId);
-    try {
-      const client = holder.client ?? await holder.promise;
-      await client.close();
-    } catch {
-      // A failed connection is already closed or never became live.
-    }
+    holder.draining = true;
+    holder.closePromise = (async () => {
+      try {
+        const client = holder.client ?? await holder.promise;
+        await client.close();
+      } catch {
+        // A failed connection is already closed or never became live.
+      } finally {
+        if (this.holders.get(holder.sessionId) === holder) this.holders.delete(holder.sessionId);
+      }
+    })();
+    await holder.closePromise;
   }
 
   async dispose() {

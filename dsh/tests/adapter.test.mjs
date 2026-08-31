@@ -169,6 +169,57 @@ test("session pool serializes concurrent creation and enforces its hard capacity
   await pool.dispose();
 });
 
+test("session pool drains a failed shared client without closing an active sibling", async () => {
+  let closeCount = 0;
+  let siblingStarted;
+  let releaseSibling;
+  const siblingIsActive = new Promise((resolve) => {
+    siblingStarted = resolve;
+  });
+  const siblingCanFinish = new Promise((resolve) => {
+    releaseSibling = resolve;
+  });
+  const client = {
+    closed: false,
+    close: async () => {
+      closeCount += 1;
+      client.closed = true;
+    }
+  };
+  const pool = new IntentLoopSessionPool({
+    maxSessions: 1,
+    idleTimeoutMs: 60_000,
+    connectTimeoutMs: 1_000,
+    toolCallTimeoutMs: 1_000,
+    dataDir: path.join(os.tmpdir(), "intent-loop-pool-drain-test")
+  }, async () => client);
+
+  const sibling = pool.run("one", os.tmpdir(), AbortSignal.timeout(1_000), async (shared) => {
+    siblingStarted();
+    await siblingCanFinish;
+    if (shared.closed) throw new Error("sibling-client-was-closed");
+    return "sibling-finished";
+  });
+  await siblingIsActive;
+
+  const failing = pool.run("one", os.tmpdir(), AbortSignal.timeout(1_000), async () => {
+    throw new Error("first-call-transport-failure");
+  });
+  await assert.rejects(failing, /first-call-transport-failure/u);
+  assert.equal(closeCount, 0);
+  await assert.rejects(
+    pool.run("one", os.tmpdir(), AbortSignal.timeout(1_000), async () => "too-early"),
+    /session is draining/u
+  );
+
+  releaseSibling();
+  assert.equal(await sibling, "sibling-finished");
+  assert.equal(closeCount, 1);
+  assert.equal(pool.holders.size, 0);
+  await pool.dispose();
+  assert.equal(closeCount, 1);
+});
+
 test("real adapter binds workspaces, isolates private sessions, and deletes cleanly", { timeout: 120_000 }, async () => {
   const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-loop-dsh-adapter-"));
   const dataDir = path.join(scratch, "data");

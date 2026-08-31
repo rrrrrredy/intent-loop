@@ -17,11 +17,12 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 - Resolve Hook and MCP entry paths through the filesystem before main-module comparison, so macOS `/var` to `/private/var` aliases do not make a packaged process exit silently.
 - Discover lowercase dependency license filenames on case-sensitive Linux filesystems while retaining deterministic notice normalization.
+- Drain a failed per-session MCP holder until already-active sibling calls settle, reject new acquisitions while draining, and close the shared client idempotently so one call error cannot terminate another in-flight call.
 
 ### Evidence boundary
 
-- Local Windows checks passed the 72-test Codex suite, five DeepSeek adapter groups using real MCP children, deterministic catalog/legal checks, package dry-run, dependency audit, and temporary DeepSeek Harness lifecycle cleanup.
-- Implementation commit `0e134d8efebf1ff385d2b87da8f13397f5424026` passed all 18 public Windows/Ubuntu/macOS CI and real temporary host-lifecycle jobs. Exact-tag publication evidence is recorded separately in `docs/verification-report.md`.
+- Local Windows checks passed the 72-test Codex suite, six DeepSeek adapter groups using real MCP children, deterministic catalog/legal checks, package dry-run, dependency audit, and temporary DeepSeek Harness lifecycle cleanup.
+- Earlier implementation commit `c78ebfb74cde2d7aca31cd3026e9b9bab812b272` passed all 18 public Windows/Ubuntu/macOS CI and real temporary host-lifecycle jobs, but was not tagged after adversarial review found the shared-client concurrency issue above. The repaired exact candidate must pass the same matrix before publication; evidence is recorded in `docs/verification-report.md`.
 - This release is a user-authorized transport and packaging experiment. The paired 80-task efficacy study remains `NO RESULT`; no reduced-rework or improved-outcome claim is made.
 
 ## 0.1.0-beta.3 - 2026-08-31

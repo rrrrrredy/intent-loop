@@ -25,7 +25,7 @@ Ask in ordinary language. For example:
 
 The adapter reads the immutable workspace and session identity from the active Harness agent. `project_root` and `host_session_id` are removed from model-visible schemas and injected by the adapter. A model cannot redirect an Intent Loop call to another workspace or select a different private-session owner.
 
-One local MCP process is opened lazily per active Harness session. This preserves private-mode memory within that session. The pool is bounded, closes idle processes, forwards cancellation and timeouts, and closes every process when the plugin unloads. A private task's in-memory semantic state is lost if its MCP process or the Harness process exits; the durable recovery control remains available for exact deletion.
+One local MCP process is opened lazily per active Harness session. This preserves private-mode memory within that session. The pool is bounded, closes idle processes, forwards cancellation and timeouts, and closes every process when the plugin unloads. If one concurrent call fails, that session stops accepting new calls, lets already-active sibling calls settle, and then closes the shared client once. A private task's in-memory semantic state is lost if its MCP process or the Harness process exits; the durable recovery control remains available for exact deletion.
 
 By default, durable data is stored under `${DSH_HOME}/plugin-data/intent-loop/v1`, or `~/.dsh/plugin-data/intent-loop/v1` when `DSH_HOME` is unset. The MCP runtime has no outbound network client. The child process receives a small allowlist of OS environment variables and no model API keys.
 
