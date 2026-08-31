@@ -22,7 +22,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 ### Evidence boundary
 
 - Local Windows checks passed the 72-test Codex suite, six DeepSeek adapter groups using real MCP children, deterministic catalog/legal checks, package dry-run, dependency audit, and temporary DeepSeek Harness lifecycle cleanup.
-- Earlier implementation commit `c78ebfb74cde2d7aca31cd3026e9b9bab812b272` passed all 18 public Windows/Ubuntu/macOS CI and real temporary host-lifecycle jobs, but was not tagged after adversarial review found the shared-client concurrency issue above. The repaired exact candidate must pass the same matrix before publication; evidence is recorded in `docs/verification-report.md`.
+- Earlier candidate `c78ebfb74cde2d7aca31cd3026e9b9bab812b272` passed all 18 public jobs but was not tagged after adversarial review found the shared-client concurrency issue above. Repaired code commit `d0fba7103c7999ce4f47b3ee6602380b7ead7932` then passed all 18 Windows/Ubuntu/macOS CI and real temporary host-lifecycle jobs in public run `33377049544`. Exact-tag publication evidence is recorded separately in `docs/verification-report.md`.
 - This release is a user-authorized transport and packaging experiment. The paired 80-task efficacy study remains `NO RESULT`; no reduced-rework or improved-outcome claim is made.
 
 ## 0.1.0-beta.3 - 2026-08-31
