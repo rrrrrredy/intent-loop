@@ -2,6 +2,21 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.1.0-beta.2 - 2026-08-31
+
+### Fixed
+
+- Bound stale-lock decisions to a stable filesystem generation before and after reclaim and rename, closing a Linux/Node 24 ABA race exposed by public tag CI.
+- Removed recursive cleanup of an unverified canonical lock after owner publication races; transient owner writes now retry without deleting a newer live generation.
+- Gave every lock operation an independent reclaim token so concurrent calls in one process cannot adopt each other's authority.
+- Distinguished present, missing, invalid, and raced lock markers and added crash recovery for stable markerless locks plus truncated reclaim/release markers.
+
+### Verification
+
+- Added deterministic regressions for generation replacement, owner-publication failure, markerless recovery, same-process token isolation, and truncated markers.
+- Expanded the source suite to 70 tests while retaining the self-contained distribution, privacy, deletion, and frozen evaluation-instrument gates.
+- This release supersedes 0.1.0-beta.1, whose tag CI exposed the stale-lock generation race. No efficacy claim is made.
+
 ## 0.1.0-beta.1 - 2026-08-28
 
 ### Added

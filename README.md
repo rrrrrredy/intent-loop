@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.1.0--beta.1-6657D9.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-0.1.0--beta.2-6657D9.svg)](CHANGELOG.md)
 
 Intent Loop is a Codex-first plugin that keeps an updateable, traceable, disagreement-preserving view of current intent inside the task where work is already happening. It stays quiet for clear, reversible work and surfaces one low-burden question, comparison, or sample only when different interpretations would change a costly next step.
 
-Version 0.1.0-beta.1 is the current self-contained public-beta release candidate for opt-in use. It is technically installable and tested, but it is not an efficacy claim: the frozen paired 80-task human study has not been run.
+Version 0.1.0-beta.2 is the current self-contained public beta for opt-in use. It is technically installable and tested, but it is not an efficacy claim: the frozen paired 80-task human study has not been run.
 
 ## What it does
 
@@ -40,7 +40,7 @@ Review the plugin manifest, Skill, MCP definition, and optional Hooks first:
 Add the public repository marketplace and install the plugin:
 
 ~~~powershell
-codex plugin marketplace add https://github.com/rrrrrredy/intent-loop.git
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.1.0-beta.2
 codex plugin add intent-loop@intent-loop
 ~~~
 

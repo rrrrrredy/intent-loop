@@ -1,4 +1,4 @@
-/*! Intent Loop 0.1.0-beta.1 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.1.0-beta.2 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
 import { pathToFileURL } from "node:url";
@@ -478,6 +478,22 @@ function isWithin(parent, child) {
 function errorCode(error) {
   return error instanceof Error && "code" in error ? String(error.code) : "";
 }
+function lockDirectorySnapshot(info) {
+  return {
+    dev: info.dev,
+    ino: info.ino,
+    birthtime_ns: info.birthtimeNs,
+    ctime_ns: info.ctimeNs,
+    mtime_ns: info.mtimeNs,
+    size: info.size
+  };
+}
+function sameLockMarkerFile(left, right) {
+  return sameLockGeneration(left, right) && left.ctime_ns === right.ctime_ns && left.mtime_ns === right.mtime_ns && left.size === right.size;
+}
+function sameLockGeneration(left, right) {
+  return left.dev === right.dev && left.ino === right.ino && left.birthtime_ns === right.birthtime_ns;
+}
 async function syncFile(filePath) {
   const handle = await open(filePath, "r+");
   try {
@@ -723,18 +739,96 @@ var LedgerStore = class {
       }
     }
   }
+  async observeLockDirectory(lockDirectory) {
+    const info = await lstat(lockDirectory, { bigint: true }).catch((error) => {
+      if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
+      throw error;
+    });
+    if (info === null) return null;
+    if (info.isSymbolicLink() || !info.isDirectory()) {
+      throw new IntentLoopError("PATH_ESCAPE", "ledger.lock must be a real directory");
+    }
+    return lockDirectorySnapshot(info);
+  }
+  async observeLockMarkerFile(markerPath) {
+    const info = await lstat(markerPath, { bigint: true }).catch((error) => {
+      if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
+      throw error;
+    });
+    if (info === null) return null;
+    if (info.isSymbolicLink()) {
+      throw new IntentLoopError("PATH_ESCAPE", `${path2.basename(markerPath)} must not be a symbolic link`);
+    }
+    if (!info.isFile() || info.nlink !== 1n) {
+      throw new IntentLoopError(
+        "UNSAFE_DATA_FILE",
+        `${path2.basename(markerPath)} must be a regular file with exactly one filesystem link`
+      );
+    }
+    return lockDirectorySnapshot(info);
+  }
   async observeLockMarker(projectDirectory, filePath) {
+    let handle;
     try {
-      return {
-        owner: parseLockOwner(await this.readSafeFile(projectDirectory, filePath, true)),
-        raced: false
-      };
+      const initial = await lstat(filePath).catch((error) => {
+        if (errorCode(error) === "ENOENT") return null;
+        throw error;
+      });
+      if (initial === null) return { owner: null, state: "missing" };
+      if (initial.isSymbolicLink()) {
+        throw new IntentLoopError("PATH_ESCAPE", `${path2.basename(filePath)} must not be a symbolic link`);
+      }
+      if (!initial.isFile() || initial.nlink !== 1) {
+        throw new IntentLoopError(
+          "UNSAFE_DATA_FILE",
+          `${path2.basename(filePath)} must be a regular file with exactly one filesystem link`
+        );
+      }
+      const actual = await realpath(filePath);
+      if (!isWithin(projectDirectory, actual)) {
+        throw new IntentLoopError("PATH_ESCAPE", `${path2.basename(filePath)} resolves outside project storage`);
+      }
+      const noFollow = typeof constants.O_NOFOLLOW === "number" ? constants.O_NOFOLLOW : 0;
+      handle = await open(filePath, constants.O_RDONLY | noFollow);
+      const opened = await handle.stat();
+      if (!opened.isFile() || opened.nlink !== 1) {
+        return { owner: null, state: "raced" };
+      }
+      const owner = parseLockOwner(await handle.readFile({ encoding: "utf8" }));
+      return { owner, state: owner === null ? "invalid" : "present" };
     } catch (error) {
-      if (error instanceof IntentLoopError && error.code === "TRANSIENT_FILE_RACE") {
-        return { owner: null, raced: true };
+      if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error)) || error instanceof IntentLoopError && error.code === "TRANSIENT_FILE_RACE") {
+        return { owner: null, state: "raced" };
       }
       throw error;
+    } finally {
+      if (handle !== void 0) {
+        await handle.close().catch((error) => {
+          if (!TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) throw error;
+        });
+      }
     }
+  }
+  async removeOwnedLockMarker(projectDirectory, markerPath, token) {
+    const observation = await this.observeLockMarker(projectDirectory, markerPath);
+    if (observation.state === "present" && observation.owner?.token === token) {
+      await rm(markerPath, { force: true }).catch(() => void 0);
+    }
+  }
+  async removeInvalidLockMarker(projectDirectory, lockDirectory, expectedGeneration, markerPath, requireStale) {
+    const initialMarker = await this.observeLockMarkerFile(markerPath);
+    if (initialMarker === null) return false;
+    if (requireStale && Date.now() - Number(initialMarker.mtime_ns / 1000000n) <= this.lockStaleMs) {
+      return false;
+    }
+    const observation = await this.observeLockMarker(projectDirectory, markerPath);
+    const generation = await this.observeLockDirectory(lockDirectory);
+    const confirmedMarker = await this.observeLockMarkerFile(markerPath);
+    if (observation.state !== "invalid" || generation === null || !sameLockGeneration(expectedGeneration, generation) || confirmedMarker === null || !sameLockMarkerFile(initialMarker, confirmedMarker)) {
+      return false;
+    }
+    await rm(markerPath, { force: true });
+    return true;
   }
   async pauseForLockTransition() {
     await delay(40 + process.pid % 60);
@@ -822,12 +916,14 @@ var LedgerStore = class {
     }
     if (changed) await syncDirectory(projectDirectory);
   }
-  async tryReclaimStaleLock(projectDirectory, lockDirectory) {
+  async tryReclaimStaleLock(projectDirectory, lockDirectory, reclaimToken) {
     if (await this.internalDirectory(projectDirectory, "ledger.lock", false) === null) return false;
+    const initialGeneration = await this.observeLockDirectory(lockDirectory);
+    if (initialGeneration === null) return false;
     const ownerPath = path2.join(lockDirectory, "owner.json");
     const releasePath = path2.join(lockDirectory, "release.json");
     const releaseObservation = await this.observeLockMarker(projectDirectory, releasePath);
-    if (releaseObservation.raced) {
+    if (releaseObservation.state === "raced") {
       await this.pauseForLockTransition();
       return false;
     }
@@ -838,37 +934,37 @@ var LedgerStore = class {
     }
     const reclaimPath = path2.join(lockDirectory, "reclaim.json");
     const reclaimerObservation = await this.observeLockMarker(projectDirectory, reclaimPath);
-    if (reclaimerObservation.raced) {
+    if (reclaimerObservation.state === "raced") {
       await this.pauseForLockTransition();
       return false;
     }
     const knownReclaimer = reclaimerObservation.owner;
-    if (knownReclaimer !== null && knownReclaimer.pid !== process.pid && processIsAlive(knownReclaimer.pid)) {
+    if (knownReclaimer !== null && (knownReclaimer.pid !== process.pid || knownReclaimer.token !== reclaimToken) && processIsAlive(knownReclaimer.pid)) {
       await this.pauseForLockTransition();
       return false;
     }
-    const lockStat = await stat(lockDirectory).catch((error) => {
-      if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
-      throw error;
-    });
     const ownerStat = await stat(ownerPath).catch((error) => {
       if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
       throw error;
     });
-    const observedAt = ownerStat?.mtimeMs ?? lockStat?.mtimeMs;
-    if (observedAt === void 0 || Date.now() - observedAt <= this.lockStaleMs) return false;
     const ownerObservation = await this.observeLockMarker(projectDirectory, ownerPath);
-    if (ownerObservation.raced) {
+    if (ownerObservation.state === "raced") {
       await this.pauseForLockTransition();
       return false;
     }
+    const observedGeneration = await this.observeLockDirectory(lockDirectory);
+    if (observedGeneration === null || !sameLockGeneration(initialGeneration, observedGeneration)) {
+      await this.pauseForLockTransition();
+      return false;
+    }
+    const observedAt = ownerStat?.mtimeMs ?? Number(observedGeneration.mtime_ns / 1000000n);
+    if (Date.now() - observedAt <= this.lockStaleMs) return false;
     const observed = ownerObservation.owner;
     if (observed !== null && processIsAlive(observed.pid)) return false;
-    const reclaimOwner = { pid: process.pid, token: newId(), acquired_at: nowIso() };
+    const reclaimOwner = { pid: process.pid, token: reclaimToken, acquired_at: nowIso() };
     let ownsReclaim = false;
-    if (knownReclaimer?.pid === process.pid) {
+    if (knownReclaimer?.pid === process.pid && knownReclaimer.token === reclaimToken) {
       ownsReclaim = true;
-      reclaimOwner.token = knownReclaimer.token;
     } else {
       try {
         await writeFile(reclaimPath, `${JSON.stringify(reclaimOwner)}
@@ -882,13 +978,27 @@ var LedgerStore = class {
         if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return false;
         if (errorCode(error) !== "EEXIST") throw error;
         const existingObservation = await this.observeLockMarker(projectDirectory, reclaimPath);
-        if (existingObservation.raced) {
+        if (existingObservation.state === "raced") {
           await this.pauseForLockTransition();
           return false;
         }
         const existingReclaimer = existingObservation.owner;
-        if (existingReclaimer === null) return false;
-        if (existingReclaimer.pid !== process.pid) {
+        if (existingReclaimer === null) {
+          if (existingObservation.state === "invalid") {
+            const removed = await this.removeInvalidLockMarker(
+              projectDirectory,
+              lockDirectory,
+              initialGeneration,
+              reclaimPath,
+              true
+            );
+            if (removed) await this.pauseForLockTransition();
+          }
+          return false;
+        }
+        if (existingReclaimer.pid === process.pid && existingReclaimer.token === reclaimToken) {
+          ownsReclaim = true;
+        } else {
           if (processIsAlive(existingReclaimer.pid)) {
             await this.pauseForLockTransition();
             return false;
@@ -898,23 +1008,46 @@ var LedgerStore = class {
             throw statError;
           });
           if (reclaimStat === null || Date.now() - reclaimStat.mtimeMs <= this.lockStaleMs) return false;
-        } else {
-          ownsReclaim = true;
+          const cleanupGeneration = await this.observeLockDirectory(lockDirectory);
+          if (cleanupGeneration !== null && sameLockGeneration(initialGeneration, cleanupGeneration)) {
+            await this.removeOwnedLockMarker(projectDirectory, reclaimPath, existingReclaimer.token);
+          }
+          await this.pauseForLockTransition();
+          return false;
         }
-        reclaimOwner.token = existingReclaimer.token;
       }
+    }
+    const claimedGeneration = await this.observeLockDirectory(lockDirectory);
+    if (claimedGeneration === null || !sameLockGeneration(initialGeneration, claimedGeneration)) {
+      if (ownsReclaim) {
+        await this.removeOwnedLockMarker(projectDirectory, reclaimPath, reclaimToken);
+      }
+      await this.pauseForLockTransition();
+      return false;
     }
     const confirmedOwnerObservation = await this.observeLockMarker(projectDirectory, ownerPath);
     const confirmedReclaimerObservation = await this.observeLockMarker(projectDirectory, reclaimPath);
-    if (confirmedOwnerObservation.raced || confirmedReclaimerObservation.raced) {
-      if (ownsReclaim) await rm(reclaimPath, { force: true }).catch(() => void 0);
+    if (confirmedOwnerObservation.state === "raced" || confirmedReclaimerObservation.state === "raced") {
+      if (ownsReclaim) {
+        await this.removeOwnedLockMarker(projectDirectory, reclaimPath, reclaimToken);
+      }
       await this.pauseForLockTransition();
       return false;
     }
     const confirmedOwner = confirmedOwnerObservation.owner;
     const confirmedReclaimer = confirmedReclaimerObservation.owner;
-    if ((observed?.token ?? null) !== (confirmedOwner?.token ?? null) || confirmedReclaimer?.token !== reclaimOwner.token || confirmedOwner !== null && processIsAlive(confirmedOwner.pid)) {
-      if (ownsReclaim) await rm(reclaimPath, { force: true }).catch(() => void 0);
+    if ((observed?.token ?? null) !== (confirmedOwner?.token ?? null) || confirmedReclaimer?.pid !== process.pid || confirmedReclaimer.token !== reclaimToken || confirmedOwner !== null && processIsAlive(confirmedOwner.pid)) {
+      if (ownsReclaim) {
+        await this.removeOwnedLockMarker(projectDirectory, reclaimPath, reclaimToken);
+      }
+      return false;
+    }
+    const renameGeneration = await this.observeLockDirectory(lockDirectory);
+    if (renameGeneration === null || !sameLockGeneration(initialGeneration, renameGeneration)) {
+      if (ownsReclaim) {
+        await this.removeOwnedLockMarker(projectDirectory, reclaimPath, reclaimToken);
+      }
+      await this.pauseForLockTransition();
       return false;
     }
     const reclaimed = `${lockDirectory}.stale-${newId()}`;
@@ -924,6 +1057,7 @@ var LedgerStore = class {
       if ((/* @__PURE__ */ new Set(["ENOENT", "EEXIST", "EPERM", "EACCES"])).has(errorCode(error))) return false;
       throw error;
     }
+    const movedGeneration = await this.observeLockDirectory(reclaimed);
     const movedOwnerObservation = await this.observeLockMarker(
       projectDirectory,
       path2.join(reclaimed, "owner.json")
@@ -934,14 +1068,14 @@ var LedgerStore = class {
     );
     const movedOwner = movedOwnerObservation.owner;
     const movedReclaimer = movedReclaimerObservation.owner;
-    const movedIdentityUnavailable = movedOwnerObservation.raced || movedReclaimerObservation.raced || observed !== null && movedOwner === null || movedReclaimer === null;
+    const movedIdentityUnavailable = movedGeneration === null || !sameLockGeneration(initialGeneration, movedGeneration) || movedOwnerObservation.state === "raced" || movedReclaimerObservation.state === "raced" || observed !== null && movedOwner === null || movedReclaimer === null;
     if (movedIdentityUnavailable && await this.reclaimedLockDirectoryDisappeared(reclaimed)) {
       return true;
     }
-    if (movedOwnerObservation.raced || movedReclaimerObservation.raced) {
+    if (movedGeneration === null || !sameLockGeneration(initialGeneration, movedGeneration) || movedOwnerObservation.state === "raced" || movedReclaimerObservation.state === "raced") {
       throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity raced during reclamation", true);
     }
-    if ((observed?.token ?? null) !== (movedOwner?.token ?? null) || movedReclaimer?.token !== reclaimOwner.token) {
+    if ((observed?.token ?? null) !== (movedOwner?.token ?? null) || movedReclaimer?.pid !== process.pid || movedReclaimer.token !== reclaimToken) {
       throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity changed during reclamation", true);
     }
     await rm(reclaimed, { recursive: true, force: true, maxRetries: 200, retryDelay: 25 });
@@ -950,6 +1084,8 @@ var LedgerStore = class {
   async releaseOwnedLock(projectDirectory, lockDirectory, token) {
     const existing = await this.internalDirectory(projectDirectory, "ledger.lock", false);
     if (existing === null) return;
+    const initialGeneration = await this.observeLockDirectory(lockDirectory);
+    if (initialGeneration === null) return;
     const ownerPath = path2.join(lockDirectory, "owner.json");
     const releasePath = path2.join(lockDirectory, "release.json");
     const releaseOwner = { pid: process.pid, token, acquired_at: nowIso() };
@@ -957,7 +1093,7 @@ var LedgerStore = class {
     const started = Date.now();
     while (true) {
       const currentObservation = await this.observeLockMarker(projectDirectory, ownerPath);
-      if (currentObservation.raced) {
+      if (currentObservation.state === "raced") {
         if (Date.now() - started > this.lockWaitMs) {
           throw new IntentLoopError("LOCK_RELEASE_TIMEOUT", "timed out observing the project ledger lock owner", true);
         }
@@ -977,14 +1113,30 @@ var LedgerStore = class {
         if (errorCode(error) !== "EEXIST") throw error;
       }
       const releaseObservation = await this.observeLockMarker(projectDirectory, releasePath);
-      if (releaseObservation.raced) {
+      if (releaseObservation.state === "raced") {
         if (Date.now() - started > this.lockWaitMs) {
           throw new IntentLoopError("LOCK_RELEASE_TIMEOUT", "timed out observing the project ledger release marker", true);
         }
         await delay(25);
         continue;
       }
+      if (releaseObservation.state === "invalid") {
+        if (await this.removeInvalidLockMarker(
+          projectDirectory,
+          lockDirectory,
+          initialGeneration,
+          releasePath,
+          false
+        )) {
+          continue;
+        }
+        return;
+      }
       if (releaseObservation.owner?.token !== token) return;
+      const releaseGeneration = await this.observeLockDirectory(lockDirectory);
+      if (releaseGeneration === null || !sameLockGeneration(initialGeneration, releaseGeneration)) {
+        return;
+      }
       try {
         await rename(lockDirectory, released);
         break;
@@ -1004,38 +1156,34 @@ var LedgerStore = class {
     const lockDirectory = path2.join(projectDirectory, "ledger.lock");
     const ownerPath = path2.join(lockDirectory, "owner.json");
     const token = newId();
+    const reclaimToken = newId();
     const absoluteStarted = Date.now();
     let lastProgressAt = absoluteStarted;
     let lastOwnerToken = null;
     const absoluteWaitMs = Math.max(this.lockWaitMs * 6, 3e4);
     while (true) {
-      let created = false;
+      if (Date.now() - absoluteStarted > absoluteWaitMs) {
+        throw new IntentLoopError("LOCK_TIMEOUT", "timed out waiting for the project ledger lock", true);
+      }
       try {
         await mkdir(lockDirectory, { mode: 448 });
-        created = true;
-        await writeFile(
-          ownerPath,
-          `${JSON.stringify({ pid: process.pid, token, acquired_at: nowIso() })}
-`,
-          { encoding: "utf8", flag: "wx", mode: 384 }
-        );
-        break;
       } catch (error) {
-        if (created) {
-          await rm(lockDirectory, { recursive: true, force: true });
-          throw error;
-        }
         if (errorCode(error) !== "EEXIST") throw error;
         try {
+          const ownerGeneration = await this.observeLockDirectory(lockDirectory);
           const ownerObservation = await this.observeLockMarker(projectDirectory, ownerPath);
-          if (ownerObservation.raced) {
+          const confirmedOwnerGeneration = await this.observeLockDirectory(lockDirectory);
+          if (ownerGeneration !== null && confirmedOwnerGeneration !== null && sameLockGeneration(ownerGeneration, confirmedOwnerGeneration) && ownerObservation.state === "present" && ownerObservation.owner?.pid === process.pid && ownerObservation.owner.token === token) {
+            break;
+          }
+          if (ownerObservation.state === "raced") {
             lastProgressAt = Date.now();
           } else if (ownerObservation.owner !== null && ownerObservation.owner.token !== lastOwnerToken) {
             lastOwnerToken = ownerObservation.owner.token;
             lastProgressAt = Date.now();
           }
           await this.internalDirectory(projectDirectory, "ledger.lock", false);
-          if (await this.tryReclaimStaleLock(projectDirectory, lockDirectory)) {
+          if (await this.tryReclaimStaleLock(projectDirectory, lockDirectory, reclaimToken)) {
             lastOwnerToken = null;
             lastProgressAt = Date.now();
             continue;
@@ -1051,7 +1199,36 @@ var LedgerStore = class {
           throw new IntentLoopError("LOCK_TIMEOUT", "timed out waiting for the project ledger lock", true);
         }
         await this.pauseForLockRetry();
+        continue;
       }
+      const createdGeneration = await this.observeLockDirectory(lockDirectory);
+      if (createdGeneration === null) {
+        lastProgressAt = Date.now();
+        await this.pauseForLockRetry();
+        continue;
+      }
+      try {
+        await writeFile(
+          ownerPath,
+          `${JSON.stringify({ pid: process.pid, token, acquired_at: nowIso() })}
+`,
+          { encoding: "utf8", flag: "wx", mode: 384 }
+        );
+      } catch (error) {
+        if ((/* @__PURE__ */ new Set(["ENOENT", "ENOTDIR", "EEXIST"])).has(errorCode(error))) {
+          lastProgressAt = Date.now();
+          await this.pauseForLockRetry();
+          continue;
+        }
+        throw error;
+      }
+      const publishedGeneration = await this.observeLockDirectory(lockDirectory);
+      const publishedOwner = await this.observeLockMarker(projectDirectory, ownerPath);
+      if (publishedGeneration !== null && sameLockGeneration(createdGeneration, publishedGeneration) && publishedOwner.state === "present" && publishedOwner.owner?.pid === process.pid && publishedOwner.owner.token === token) {
+        break;
+      }
+      lastProgressAt = Date.now();
+      await this.pauseForLockRetry();
     }
     const heartbeat = setInterval(() => {
       const now = /* @__PURE__ */ new Date();

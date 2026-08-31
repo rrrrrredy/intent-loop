@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { appendFile, mkdir, readFile, readdir, rm, utimes, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, readdir, rename, rm, utimes, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -231,6 +231,241 @@ test("all real processes recover one dead stale lock without surfacing filesyste
   assert.equal(new Set(events.map((item) => item.request_id)).size, 33);
 });
 
+test("does not apply a stale snapshot to a replacement markerless lock generation", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, {
+    lock_stale_ms: 10,
+    lock_wait_ms: 1_000,
+    lock_heartbeat_ms: 5
+  });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, "{}\n", "utf8");
+  const old = new Date(Date.now() - 120_000);
+  await utimes(ownerPath, old, old);
+  await utimes(lockDirectory, old, old);
+
+  type LockObservation = {
+    owner: { pid: number; token: string; acquired_at: string } | null;
+    state: "present" | "missing" | "invalid" | "raced";
+  };
+  const internals = store as unknown as {
+    observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;
+  };
+  const observeLockMarker = internals.observeLockMarker.bind(store);
+  const peerToken = newId();
+  let ownerReads = 0;
+  let peerLifecycle: Promise<void> | null = null;
+  internals.observeLockMarker = async (directory, filePath) => {
+    const observation = await observeLockMarker(directory, filePath);
+    if (filePath === ownerPath) {
+      ownerReads += 1;
+      if (ownerReads === 2) {
+        const displaced = `${lockDirectory}.stale-${newId()}`;
+        await rename(lockDirectory, displaced);
+        await rm(displaced, { recursive: true, force: true });
+        await mkdir(lockDirectory);
+        peerLifecycle = (async () => {
+          await new Promise((resolve) => setTimeout(resolve, 30));
+          await writeFile(ownerPath, `${JSON.stringify({
+            pid: process.pid,
+            token: peerToken,
+            acquired_at: new Date().toISOString()
+          })}\n`, { encoding: "utf8", flag: "wx", mode: 0o600 });
+          await new Promise((resolve) => setTimeout(resolve, 80));
+          const current = JSON.parse(await readFile(ownerPath, "utf8")) as { token?: string };
+          if (current.token === peerToken) {
+            await rm(lockDirectory, { recursive: true, force: true });
+          }
+        })();
+      }
+    }
+    return observation;
+  };
+
+  await store.appendEvent(projectId, event(taskId, 2));
+  const lifecycle = peerLifecycle;
+  assert.ok(lifecycle !== null);
+  await lifecycle;
+  const events = await store.readEvents(projectId);
+  assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2"]);
+  assert.deepEqual((await readdir(projectDirectory)).filter((entry) => entry.startsWith("ledger.lock")), []);
+});
+
+test("owner publication failure never deletes a newer live lock generation", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, {
+    lock_stale_ms: 10,
+    lock_wait_ms: 1_000,
+    lock_heartbeat_ms: 5
+  });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+
+  type LockSnapshot = {
+    dev: bigint;
+    ino: bigint;
+    birthtime_ns: bigint;
+    mtime_ns: bigint;
+  };
+  const internals = store as unknown as {
+    observeLockDirectory: (lockDirectory: string) => Promise<LockSnapshot | null>;
+  };
+  const observeLockDirectory = internals.observeLockDirectory.bind(store);
+  const peerToken = newId();
+  let replaced = false;
+  let peerLifecycle: Promise<void> | null = null;
+  internals.observeLockDirectory = async (directory) => {
+    const snapshot = await observeLockDirectory(directory);
+    if (!replaced && directory === lockDirectory && snapshot !== null) {
+      replaced = true;
+      const displaced = `${lockDirectory}.stale-${newId()}`;
+      await rename(lockDirectory, displaced);
+      await rm(displaced, { recursive: true, force: true });
+      await mkdir(lockDirectory);
+      await writeFile(ownerPath, `${JSON.stringify({
+        pid: process.pid,
+        token: peerToken,
+        acquired_at: new Date().toISOString()
+      })}\n`, { encoding: "utf8", flag: "wx", mode: 0o600 });
+      peerLifecycle = (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const current = JSON.parse(await readFile(ownerPath, "utf8")) as { token?: string };
+        assert.equal(current.token, peerToken);
+        await rm(lockDirectory, { recursive: true, force: true });
+      })();
+    }
+    return snapshot;
+  };
+
+  await store.appendEvent(projectId, event(taskId, 2));
+  const lifecycle = peerLifecycle;
+  assert.ok(lifecycle !== null);
+  await lifecycle;
+  assert.equal(replaced, true);
+  const events = await store.readEvents(projectId);
+  assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2"]);
+});
+
+test("recovers a stable markerless lock only after its stale threshold", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, { lock_stale_ms: 10, lock_wait_ms: 1_000 });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  await mkdir(lockDirectory);
+  const old = new Date(Date.now() - 120_000);
+  await utimes(lockDirectory, old, old);
+
+  await store.appendEvent(projectId, event(taskId, 2));
+
+  const events = await store.readEvents(projectId);
+  assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2"]);
+  assert.deepEqual((await readdir(projectDirectory)).filter((entry) => entry.startsWith("ledger.lock")), []);
+});
+
+test("same-process reclaimers cannot adopt another operation token", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, { lock_stale_ms: 10, lock_wait_ms: 1_000 });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  const reclaimPath = path.join(lockDirectory, "reclaim.json");
+  const existingToken = newId();
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, "{}\n", "utf8");
+  await writeFile(reclaimPath, `${JSON.stringify({
+    pid: process.pid,
+    token: existingToken,
+    acquired_at: new Date(0).toISOString()
+  })}\n`, "utf8");
+  const old = new Date(Date.now() - 120_000);
+  await utimes(ownerPath, old, old);
+  await utimes(reclaimPath, old, old);
+  await utimes(lockDirectory, old, old);
+
+  const internals = store as unknown as {
+    tryReclaimStaleLock: (
+      projectDirectory: string,
+      lockDirectory: string,
+      reclaimToken: string
+    ) => Promise<boolean>;
+  };
+  assert.equal(await internals.tryReclaimStaleLock(projectDirectory, lockDirectory, newId()), false);
+  const remaining = JSON.parse(await readFile(reclaimPath, "utf8")) as { token?: string };
+  assert.equal(remaining.token, existingToken);
+  await rm(lockDirectory, { recursive: true, force: true });
+});
+
+test("recovers a stale lock whose reclaimer marker was truncated by a crash", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, { lock_stale_ms: 10, lock_wait_ms: 1_000 });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  const reclaimPath = path.join(lockDirectory, "reclaim.json");
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, "{}\n", "utf8");
+  await writeFile(reclaimPath, "{", "utf8");
+  const old = new Date(Date.now() - 120_000);
+  await utimes(ownerPath, old, old);
+  await utimes(reclaimPath, old, old);
+  await utimes(lockDirectory, old, old);
+
+  await store.appendEvent(projectId, event(taskId, 2));
+
+  const events = await store.readEvents(projectId);
+  assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2"]);
+  assert.deepEqual((await readdir(projectDirectory)).filter((entry) => entry.startsWith("ledger.lock")), []);
+});
+
+test("repairs an invalid release marker while retaining exact lock ownership", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data);
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  const releasePath = path.join(lockDirectory, "release.json");
+  const token = newId();
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, `${JSON.stringify({
+    pid: process.pid,
+    token,
+    acquired_at: new Date().toISOString()
+  })}\n`, "utf8");
+  await writeFile(releasePath, "{", "utf8");
+
+  const internals = store as unknown as {
+    releaseOwnedLock: (
+      projectDirectory: string,
+      lockDirectory: string,
+      token: string
+    ) => Promise<void>;
+  };
+  await internals.releaseOwnedLock(projectDirectory, lockDirectory, token);
+  assert.deepEqual((await readdir(projectDirectory)).filter((entry) => entry.startsWith("ledger.lock")), []);
+});
+
 test("accepts a raced marker read after peer cleanup of its renamed stale lock", async (t) => {
   const workspace = await testWorkspace(t);
   const store = new LedgerStore(workspace.data);
@@ -249,7 +484,7 @@ test("accepts a raced marker read after peer cleanup of its renamed stale lock",
 
   type LockObservation = {
     owner: { pid: number; token: string; acquired_at: string } | null;
-    raced: boolean;
+    state: "present" | "missing" | "invalid" | "raced";
   };
   const internals = store as unknown as {
     observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;
@@ -261,7 +496,7 @@ test("accepts a raced marker read after peer cleanup of its renamed stale lock",
     if (!peerCleaned && path.basename(containingDirectory).startsWith("ledger.lock.stale-")) {
       peerCleaned = true;
       await peerStore.appendEvent(projectId, event(taskId, 2));
-      return { owner: null, raced: true };
+      return { owner: null, state: "raced" };
     }
     return observeLockMarker(directory, filePath);
   };
@@ -292,7 +527,7 @@ test("rejects a stable stale-lock quarantine whose reclaimer identity changes", 
 
   type LockObservation = {
     owner: { pid: number; token: string; acquired_at: string } | null;
-    raced: boolean;
+    state: "present" | "missing" | "invalid" | "raced";
   };
   const internals = store as unknown as {
     observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;

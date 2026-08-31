@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Intent Loop 0.1.0-beta.1 is currently a public-beta release candidate. After the first tag is published, security fixes target the latest tagged beta release and the main branch.
+Intent Loop 0.1.0-beta.2 and the main branch are supported. Earlier beta builds are superseded and do not receive backported fixes.
 
 ## Reporting a vulnerability
 
