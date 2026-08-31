@@ -6,8 +6,9 @@ Verified on 2026-08-31 from `D:\Codex\intent-loop` with local Node.js `20.19.1` 
 
 - Public repository: `https://github.com/rrrrrredy/intent-loop`
 - Visibility/default branch/license: public, `main`, Apache-2.0
-- Release candidate: `v0.1.0-beta.3`
-- Candidate commit/tag/release: pending public push and GitHub Actions
+- Recommended prerelease: `v0.1.0-beta.3`
+- Release commit: `9432dde72ac8c6b5c4bd1bc7936f8b14ef37246c`; local and remote peeled tag identities matched this commit.
+- Public release: `https://github.com/rrrrrredy/intent-loop/releases/tag/v0.1.0-beta.3`
 - Superseded releases: `v0.1.0-beta.1` and `v0.1.0-beta.2`; both public release bodies warn users not to install them.
 
 The first beta tag exposed a stale-lock generation race on Ubuntu/Node 24. Beta.2 repaired that family, but final Windows pressure rechecks found parent/marker `realpath` access races and related lock timeouts. Neither failure was hidden or treated as flaky: both builds were marked superseded, and beta.3 adds parent-plus-marker generation binding with bounded fail-closed transition rechecks.
@@ -33,7 +34,23 @@ The storage regressions cover a stale snapshot facing a replacement markerless g
 
 ## Public CI and release evidence
 
-Beta.3 public CI, release assets, attestations, exact-tag installation, real lifecycles, practical-user review, and final cleanup are pending at this source-candidate checkpoint. The remainder of this section and the historical sections below record beta.2 evidence only; beta.2 is superseded and this evidence is not used to clear beta.3.
+The beta.3 main CI run `33361723160` and tag CI run `33361813075` each passed all six jobs: Windows and Ubuntu on Node 20, 22, and 24. The release run `33361813109` passed tests, deterministic distribution checks, tag/package version matching, archive construction, SLSA provenance attestation, CycloneDX SBOM attestation, and prerelease publication:
+
+- `https://github.com/rrrrrredy/intent-loop/actions/runs/33361723160`
+- `https://github.com/rrrrrredy/intent-loop/actions/runs/33361813075`
+- `https://github.com/rrrrrredy/intent-loop/actions/runs/33361813109`
+
+Downloaded beta.3 assets were independently checked:
+
+| Asset | GitHub/computed SHA-256 |
+| --- | --- |
+| `intent-loop-plugin-v0.1.0-beta.3.tar.gz` | `7E56808F02926E5C5C4DFF74DE8B52616D17EC42D35ED7BB841317D0754B1D7A` |
+| `SBOM.cdx.json` | `D6C4C920B72EE6EE99FE87ACE37344C1A52D4F9868DA5FD08AA100B180FD32D3` |
+| `SHA256SUMS` | `5399246C8A82A99A10E6CDE6C669A1DBB2191B06128773F76CF2CCB488696556` |
+
+The checksum file matched the archive and SBOM. The archive contained exactly 11 intended distributable files, no source, tests, or `node_modules`, and every extracted file matched the tag's Git blob. The SBOM parsed as CycloneDX 1.6 with serial `urn:uuid:0ce9895f-7378-5d3d-af1d-31658694f16e`, root version `0.1.0-beta.3`, and nine components. Strict `gh attestation verify` checks passed for both SLSA provenance and the CycloneDX predicate while requiring repository `rrrrrredy/intent-loop`, release workflow `release.yml`, exact source commit and tag ref, and GitHub-hosted runners.
+
+### Historical beta.2 publication evidence
 
 The beta.2 tag CI run `33357641225` passed all six matrix jobs: Windows and Ubuntu on Node 20, 22, and 24. Every job ran install, the full test suite, audit, and generated-distribution diff verification:
 
@@ -54,6 +71,31 @@ Downloaded release assets were independently checked:
 The checksum file matched the downloaded archive and SBOM. The archive contained exactly 11 distributable files: plugin manifest, MCP manifest, Hook manifest, two runtime bundles, Skill, icon, LICENSE, NOTICE, third-party notices, and SBOM. It contained no source, tests, or `node_modules`. All 11 extracted files matched the corresponding beta.2 Git blobs; the one initial byte comparison difference was only the local checkout's Windows line ending and disappeared when compared against tag blobs.
 
 The SBOM parsed as CycloneDX 1.6 with serial `urn:uuid:5897606e-ec60-5274-9474-fdc97424fec5`, root version `0.1.0-beta.2`, and nine components. Strict `gh attestation verify` checks passed for both provenance and CycloneDX attestations while requiring the exact release workflow, source commit `c5e5874f7ac323a3f144b4c81618aa6cfa03b85e`, tag ref, and GitHub-hosted runners.
+
+## Beta.3 GitHub-only install identity
+
+The final install used only the public pinned path:
+
+```text
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.1.0-beta.3 --json
+codex plugin add intent-loop@intent-loop --json
+```
+
+The CLI reported installed/enabled version `0.1.0-beta.3`, marketplace source `https://github.com/rrrrrredy/intent-loop.git`, and marketplace `HEAD` `9432dde72ac8c6b5c4bd1bc7936f8b14ef37246c`. Critical installed files matched the tag's Git blobs. Generated SHA-256 identities included `runtime/server.mjs` `FB6FE258941BD22CC1FEE9DD7AC801D5C9107C4C6020147FE69D1794AAA5FAD0`, `runtime/hook.mjs` `C7B71E19D796D364585BF8CE9D8E9F046C195CF86E75E76D37E29BD57F72D960`, and `SBOM.cdx.json` `D6C4C920B72EE6EE99FE87ACE37344C1A52D4F9868DA5FD08AA100B180FD32D3`.
+
+## Beta.3 root-operated real lifecycle
+
+Root personally launched a fresh ephemeral Codex session from an empty test project. Task `3c784b5f-5d16-5b16-8e2f-a23dda2f39a8`, bound to project `336d20699c6a352a13dffd29cf41c2db762305dace4f1441d983f40cb031c1a8`, completed one-call start, snapshot, first-attempt direct-claim replacement, evidence classification, a four-active-record compact summary, off, and an expected post-off `MODE_OFF`, `retryable=false` rejection. The first evidence call was structurally rejected before mutation because its provenance reference had an excerpt but no event ID or hash; the model used the snapshot's real event ID and the retry succeeded. This is recorded as P2 provenance usability. The lifecycle used only the installed Skill/MCP and made no user-project writes or Memory calls.
+
+## Beta.3 installed-host reviews
+
+The independent adversarial reviewer gave **RELEASE**, P0/P1 zero after 72/72 tests, 480 focused generation/cleanup/tamper executions, and 320 real child-process executions with exact source-hash freeze. Its three P2 hardening opportunities remain fail-closed and cannot authorize takeover or deletion.
+
+The independent practical reviewer gave **RELEASE**, P0/P1 zero after a separate public-tag install. Task `3170ad52-ba58-5259-b427-8d739ea260d8`, project `2b3dab0d7c5e8e16a6fe9405511e7c6054ffeaf312f888b05dbc2ca992d15098`, completed privacy disclosure, start, snapshot, replacement, evidence, summary, off, and off-mode rejection with every business call succeeding first try. The final summary contained seven active records and no candidates, unknowns, or disagreements. The roughly 121-second flow and visible technical terms are P2 usability observations. Codex/Windows icon, shell-snapshot, and marketplace-lock warnings did not affect Intent Loop calls.
+
+## Beta.3 uninstall and cleanup
+
+After both public-tag lifecycles and both independent reviews, the supported CLI removed `intent-loop@intent-loop` and its `intent-loop` marketplace. Final lists contained zero matching plugin or marketplace entries; exact process checks found no Intent Loop MCP server. The plugin cache, plugin data, marketplace checkout, release-verification directory, and both lifecycle test directories were absent. The canonical source repository and public GitHub release were intentionally retained.
 
 ## Historical beta.2 GitHub-only install identity
 
@@ -114,13 +156,13 @@ The source repository and public GitHub release are intentionally retained; only
 ### Verified
 
 - Beta.3 reviewed source, generated runtime/SBOM, 72-test suite, clean distribution, official validators, dependency audit, focused generation regressions, and root plus independent 32-process pressure agree and pass.
-- The beta.3 adversarial source review is RELEASE with no P0/P1; its documented P2 items remain fail-closed.
+- The beta.3 public commit/tag/release identity, six-job main and tag CI, release workflow, assets/checksums/SBOM/attestations, two exact-tag Windows lifecycles, independent reviews, and final uninstall/cleanup all agree and pass.
+- Both beta.3 independent reviews are RELEASE with no P0/P1; documented P2 items remain fail-closed or usability-only.
 - Start, projection, correction, evidence classification, summary, off mode, off-mode rejection, redaction, export, physical deletion, corruption recovery, project isolation, and concurrency have executable local evidence.
-- Beta.2 Windows/Ubuntu CI, public assets, real Windows install/use/uninstall, and practical-user review remain historical evidence only; beta.2 is superseded.
+- Beta.1 and beta.2 publication evidence remains historical only; both are superseded.
 
 ### Not verified and not claimed
 
-- Beta.3 public tag/commit identity, GitHub Actions, release assets/checksums/attestations, public-GitHub installed cache, practical-user lifecycle, and final local cleanup at this source-candidate checkpoint.
 - Lower avoidable rework, better final match, acceptable interruption cost, or helpful timing across the frozen paired 160 deliveries.
 - A naturally triggered, trusted long-running `PostCompact` plus resume sequence.
 - A real Linux or macOS end-user install lifecycle; Linux currently has CI evidence, while macOS is not yet tested.

@@ -46,7 +46,7 @@ codex plugin add intent-loop@intent-loop
 
 Start a new Codex task after installation so the Skill and MCP tools are loaded.
 
-Compatibility evidence is intentionally narrow. The candidate passes real Windows source pressure and the release line has passed Windows/Ubuntu CI on Node 20, 22, and 24; a fresh beta.3 public install/use/uninstall run is required before the final public-beta decision. Linux has not received a complete end-user install smoke test, and macOS support is not claimed until macOS CI plus a real install/use/uninstall run pass.
+Compatibility evidence is intentionally narrow. Two fresh Windows installations from the public beta.3 tag completed real use and clean uninstall, while Windows and Ubuntu CI pass on Node 20, 22, and 24. Linux has not received a complete end-user install smoke test, and macOS support is not claimed until macOS CI plus a real install/use/uninstall run pass.
 
 Hooks are not trusted automatically. Manual Skill and MCP use work without Hook trust; automatic session association and compact-context restoration require the user to review and explicitly trust the current Hook definition.
 
