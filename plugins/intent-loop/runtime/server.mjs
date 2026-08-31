@@ -6,6 +6,7 @@ var __export = (target, all) => {
 };
 
 // src/server.ts
+import { realpathSync as realpathSync2 } from "node:fs";
 import { readFile as readFile2 } from "node:fs/promises";
 import path3 from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -32935,7 +32936,12 @@ function confirmationTimestampForServer() {
 }
 function isMainModule() {
   const entry = process.argv[1];
-  return entry !== void 0 && import.meta.url === pathToFileURL(entry).href;
+  if (entry === void 0) return false;
+  try {
+    return realpathSync2(entry) === realpathSync2(fileURLToPath(import.meta.url));
+  } catch {
+    return import.meta.url === pathToFileURL(entry).href;
+  }
 }
 if (isMainModule()) {
   serveStdio(() => createIntentMcpServer(), {

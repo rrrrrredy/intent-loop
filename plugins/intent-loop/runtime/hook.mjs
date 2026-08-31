@@ -1,7 +1,8 @@
 /*! Intent Loop 0.2.0-beta.1 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
-import { pathToFileURL } from "node:url";
+import { realpathSync as realpathSync2 } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 // src/errors.ts
 var IntentLoopError = class extends Error {
@@ -3218,7 +3219,12 @@ async function readStandardInput(maxBytes = 1048576) {
 }
 function isMainModule() {
   const entry = process.argv[1];
-  return entry !== void 0 && import.meta.url === pathToFileURL(entry).href;
+  if (entry === void 0) return false;
+  try {
+    return realpathSync2(entry) === realpathSync2(fileURLToPath(import.meta.url));
+  } catch {
+    return import.meta.url === pathToFileURL(entry).href;
+  }
 }
 if (isMainModule()) {
   const output = await readStandardInput().then((body) => handleHook(JSON.parse(body))).catch(() => ({ ...FAIL_OPEN }));

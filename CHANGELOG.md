@@ -13,6 +13,11 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Expanded GitHub Actions to Codex and DeepSeek adapter matrices on Windows, Ubuntu, and macOS, plus real DeepSeek package/add/compose/boot-help/remove smoke jobs on all three systems.
 - Added dual-host install, uninstall, privacy, contributor, and plain-language documentation.
 
+### Fixed
+
+- Resolve Hook and MCP entry paths through the filesystem before main-module comparison, so macOS `/var` to `/private/var` aliases do not make a packaged process exit silently.
+- Discover lowercase dependency license filenames on case-sensitive Linux filesystems while retaining deterministic notice normalization.
+
 ### Evidence boundary
 
 - Local Windows checks passed the 72-test Codex suite, five DeepSeek adapter groups using real MCP children, deterministic catalog/legal checks, package dry-run, dependency audit, and temporary DeepSeek Harness lifecycle cleanup.

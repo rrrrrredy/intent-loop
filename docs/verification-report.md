@@ -18,7 +18,9 @@ The `v0.2.0-beta.1` candidate adds a DeepSeek Harness `0.1.2-alpha.2` developer-
 
 The DeepSeek adapter launches one MCP child lazily per active Harness session and injects the host's canonical workspace and session binding. The child receives a limited OS environment instead of the parent process's model-provider credentials. Pool capacity, idle eviction, tool timeout, cancellation, and plugin-unload cleanup are bounded and tested.
 
-The final local Codex runtime was rebuilt twice with identical SHA-256 `FA1F08BA53E1B65D1BD6B03C075841C40445B91313B377D85D457B872A5036E6`. The DeepSeek catalog was regenerated from that exact runtime and then passed its stale-file check. The final temporary Harness lifecycle returned `pack-add-compose-boot-help-remove`, `api_key_used=false`, and `dsh_home=temporary-and-removed`.
+The final local Codex runtime after cross-platform fixes has SHA-256 `F19127B4B0E2AFD02C56C4968C8FF55847B5C848E19E04B8C4CE3C79D5B0794F`. The DeepSeek catalog was regenerated from that exact runtime and then passed its stale-file check. The final temporary Harness lifecycle returned `pack-add-compose-boot-help-remove`, `api_key_used=false`, and `dsh_home=temporary-and-removed`.
+
+The first expanded public matrix run, `33369885952`, was correctly treated as a failed candidate. It exposed two platform assumptions hidden by Windows: macOS resolves the temporary `/var` path through `/private/var`, which broke string-only Hook/MCP main-module detection, and Ubuntu's case-sensitive filesystem exposed a lowercase dependency `license` filename that the legal generator did not scan. The same run's temporary DeepSeek Harness lifecycle passed on Windows, Ubuntu, and macOS. Both failures were repaired in source and retained as publication history; a later all-green run is required before release.
 
 These checks establish transport, state, isolation, deletion, package, and lifecycle behavior. They do not establish reduced rework, improved final-match scores, interruption quality, or product-value efficacy. The paired evaluation remains `NO RESULT`.
 

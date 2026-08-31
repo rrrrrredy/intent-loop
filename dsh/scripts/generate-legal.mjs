@@ -102,7 +102,10 @@ const sbom = {
 };
 
 function findLicenseText(pkg) {
-  for (const filename of ["LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "COPYING"]) {
+  for (const filename of [
+    "LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "COPYING",
+    "license", "license.md", "license.txt", "licence", "copying"
+  ]) {
     const target = path.join(pkg.directory, filename);
     if (existsSync(target)) return normalizeNoticeText(readFileSync(target, "utf8"));
   }

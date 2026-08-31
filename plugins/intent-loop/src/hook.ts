@@ -1,4 +1,5 @@
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { IntentService } from "./service.js";
 import { dataRootFromEnvironment, LedgerStore } from "./storage.js";
@@ -108,7 +109,12 @@ async function readStandardInput(maxBytes = 1_048_576): Promise<string> {
 
 function isMainModule(): boolean {
   const entry = process.argv[1];
-  return entry !== undefined && import.meta.url === pathToFileURL(entry).href;
+  if (entry === undefined) return false;
+  try {
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return import.meta.url === pathToFileURL(entry).href;
+  }
 }
 
 if (isMainModule()) {
