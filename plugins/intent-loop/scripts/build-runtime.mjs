@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -114,6 +115,15 @@ function npmPurl(name, version) {
   return `pkg:npm/${name}@${version}`;
 }
 
+function uuidV5Url(name) {
+  const urlNamespace = Buffer.from("6ba7b8119dad11d180b400c04fd430c8", "hex");
+  const bytes = createHash("sha1").update(urlNamespace).update(name, "utf8").digest().subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x50;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = bytes.toString("hex");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 const bundledInputs = [...Object.keys(server.metafile.inputs), ...Object.keys(hook.metafile.inputs)];
 const packageNames = [...new Set(bundledInputs.map(packageNameForInput).filter(Boolean))].sort();
 if (!packageNames.includes("@modelcontextprotocol/server") || !packageNames.includes("zod")) {
@@ -179,6 +189,7 @@ const rootPurl = npmPurl(packageMetadata.name, packageMetadata.version);
 const sbom = {
   bomFormat: "CycloneDX",
   specVersion: "1.6",
+  serialNumber: `urn:uuid:${uuidV5Url(rootPurl)}`,
   version: 1,
   metadata: {
     component: {

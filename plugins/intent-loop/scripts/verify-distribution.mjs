@@ -93,6 +93,7 @@ assert.equal(await readdir(packagedPlugin).then((entries) => entries.includes("n
 const sbom = JSON.parse(await readFile(path.join(packagedPlugin, "SBOM.cdx.json"), "utf8"));
 assert.equal(sbom.bomFormat, "CycloneDX");
 assert.equal(sbom.specVersion, "1.6");
+assert.match(sbom.serialNumber, /^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
 const expectedComponents = [
   "@modelcontextprotocol/core@2.0.0",
   "@modelcontextprotocol/server@2.0.0",
