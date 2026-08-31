@@ -1,4 +1,4 @@
-/*! Intent Loop 0.1.0-beta.2 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.1.0-beta.3 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
 import { pathToFileURL } from "node:url";
@@ -451,7 +451,10 @@ var UUID_RE2 = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f
 var DEFAULT_LOCK_STALE_MS = 3e4;
 var DEFAULT_LOCK_WAIT_MS = 5e3;
 var DEFAULT_LOCK_HEARTBEAT_MS = 1e4;
+var MAX_LOCK_TRANSITION_RECHECK_MS = 1e3;
 var TRANSIENT_LOCK_RACE_CODES = /* @__PURE__ */ new Set(["EBADF", "ENOENT", "ENOTDIR"]);
+var LOCK_TRANSITION_ACCESS_CODES = /* @__PURE__ */ new Set(["EACCES", "EPERM"]);
+var LOCK_PATH_RECHECK_CODES = /* @__PURE__ */ new Set(["EACCES", "ELOOP", "EPERM"]);
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -490,6 +493,9 @@ function lockDirectorySnapshot(info) {
 }
 function sameLockMarkerFile(left, right) {
   return sameLockGeneration(left, right) && left.ctime_ns === right.ctime_ns && left.mtime_ns === right.mtime_ns && left.size === right.size;
+}
+function sameLockMarkerGeneration(left, right) {
+  return sameLockGeneration(left, right) && left.size === right.size;
 }
 function sameLockGeneration(left, right) {
   return left.dev === right.dev && left.ino === right.ino && left.birthtime_ns === right.birthtime_ns;
@@ -660,7 +666,7 @@ var LedgerStore = class {
   }
   async internalDirectory(projectDirectory, name, create) {
     const candidate = path2.join(projectDirectory, name);
-    let info = await lstat(candidate).catch((error) => {
+    let info = await lstat(candidate, { bigint: true }).catch((error) => {
       if (errorCode(error) === "ENOENT") return null;
       throw error;
     });
@@ -669,7 +675,7 @@ var LedgerStore = class {
       await mkdir(candidate, { mode: 448 }).catch((error) => {
         if (errorCode(error) !== "EEXIST") throw error;
       });
-      info = await lstat(candidate);
+      info = await lstat(candidate, { bigint: true });
     }
     if (info.isSymbolicLink()) {
       throw new IntentLoopError("PATH_ESCAPE", `${name} must not be a symbolic link or junction`);
@@ -677,16 +683,80 @@ var LedgerStore = class {
     if (!info.isDirectory()) {
       throw new IntentLoopError("INVALID_DATA_DIR", `${name} must be a directory`);
     }
-    const actual = await realpath(candidate).catch((error) => {
+    const initialGeneration = name === "ledger.lock" ? lockDirectorySnapshot(info) : null;
+    const actual = await realpath(candidate).catch(async (error) => {
       if (!create && TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
+      if (!create && initialGeneration !== null && LOCK_PATH_RECHECK_CODES.has(errorCode(error))) {
+        await this.pauseForLockTransition();
+        const state = await this.lockDirectoryValidationState(candidate, initialGeneration);
+        if (state === "raced") return null;
+        if (state === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", `${name} changed to an unsafe path during validation`);
+        }
+      }
       throw error;
     });
     if (actual === null) return null;
     if (!isWithin(projectDirectory, actual)) {
+      if (!create && initialGeneration !== null) {
+        await this.pauseForLockTransition();
+        const state = await this.lockDirectoryValidationState(candidate, initialGeneration);
+        if (state === "raced") return null;
+        if (state === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", `${name} changed to an unsafe path during validation`);
+        }
+      }
       throw new IntentLoopError("PATH_ESCAPE", `${name} resolves outside project storage`);
+    }
+    if (!create && initialGeneration !== null) {
+      const state = await this.lockDirectoryValidationState(candidate, initialGeneration);
+      if (state === "raced") return null;
+      if (state === "unsafe") {
+        throw new IntentLoopError("PATH_ESCAPE", `${name} changed to an unsafe path during validation`);
+      }
     }
     if (create) await restrictDirectory(actual);
     return actual;
+  }
+  async lockDirectoryValidationState(lockDirectory, initialGeneration) {
+    const deadline = Date.now() + Math.min(this.lockWaitMs, MAX_LOCK_TRANSITION_RECHECK_MS);
+    while (true) {
+      try {
+        const current = await lstat(lockDirectory, { bigint: true });
+        if (current.isSymbolicLink() || !current.isDirectory()) return "unsafe";
+        return sameLockGeneration(initialGeneration, lockDirectorySnapshot(current)) ? "stable" : "raced";
+      } catch (error) {
+        if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return "raced";
+        if (!LOCK_TRANSITION_ACCESS_CODES.has(errorCode(error))) throw error;
+        if (Date.now() >= deadline) return "raced";
+        await this.pauseForLockTransition();
+      }
+    }
+  }
+  async lstatLockTransition(target) {
+    const deadline = Date.now() + Math.min(this.lockWaitMs, MAX_LOCK_TRANSITION_RECHECK_MS);
+    while (true) {
+      try {
+        return await lstat(target, { bigint: true });
+      } catch (error) {
+        if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
+        if (!LOCK_TRANSITION_ACCESS_CODES.has(errorCode(error))) throw error;
+        if (Date.now() >= deadline) return null;
+        await this.pauseForLockTransition();
+      }
+    }
+  }
+  async lockMarkerValidationState(lockDirectory, markerPath, initialLockGeneration, initialMarkerGeneration) {
+    const currentLock = await this.lstatLockTransition(lockDirectory);
+    if (currentLock === null) return "raced";
+    if (currentLock.isSymbolicLink() || !currentLock.isDirectory()) return "unsafe";
+    if (!sameLockGeneration(initialLockGeneration, lockDirectorySnapshot(currentLock))) return "raced";
+    const currentMarker = await this.lstatLockTransition(markerPath);
+    if (currentMarker === null) return "raced";
+    if (currentMarker.isSymbolicLink() || !currentMarker.isFile() || currentMarker.nlink !== 1n) {
+      return "unsafe";
+    }
+    return sameLockMarkerGeneration(initialMarkerGeneration, lockDirectorySnapshot(currentMarker)) ? "stable" : "raced";
   }
   async safeRegularFile(projectDirectory, filePath, allowMissing) {
     const info = await lstat(filePath).catch((error) => {
@@ -740,10 +810,7 @@ var LedgerStore = class {
     }
   }
   async observeLockDirectory(lockDirectory) {
-    const info = await lstat(lockDirectory, { bigint: true }).catch((error) => {
-      if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
-      throw error;
-    });
+    const info = await this.lstatLockTransition(lockDirectory);
     if (info === null) return null;
     if (info.isSymbolicLink() || !info.isDirectory()) {
       throw new IntentLoopError("PATH_ESCAPE", "ledger.lock must be a real directory");
@@ -768,43 +835,141 @@ var LedgerStore = class {
     return lockDirectorySnapshot(info);
   }
   async observeLockMarker(projectDirectory, filePath) {
+    const lockDirectory = path2.dirname(filePath);
     let handle;
+    let initialLockGeneration = null;
+    let initialMarkerGeneration = null;
     try {
-      const initial = await lstat(filePath).catch((error) => {
-        if (errorCode(error) === "ENOENT") return null;
-        throw error;
-      });
-      if (initial === null) return { owner: null, state: "missing" };
-      if (initial.isSymbolicLink()) {
+      const initialLock = await this.lstatLockTransition(lockDirectory);
+      if (initialLock === null) return { owner: null, state: "raced" };
+      if (initialLock.isSymbolicLink() || !initialLock.isDirectory()) {
+        throw new IntentLoopError("PATH_ESCAPE", "lock marker parent must be a real directory");
+      }
+      const observedLockGeneration = lockDirectorySnapshot(initialLock);
+      initialLockGeneration = observedLockGeneration;
+      const initialMarker = await this.lstatLockTransition(filePath);
+      if (initialMarker === null) {
+        const parentState = await this.lockDirectoryValidationState(lockDirectory, observedLockGeneration);
+        if (parentState === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", "lock marker parent changed to an unsafe path");
+        }
+        return { owner: null, state: parentState === "stable" ? "missing" : "raced" };
+      }
+      if (initialMarker.isSymbolicLink()) {
         throw new IntentLoopError("PATH_ESCAPE", `${path2.basename(filePath)} must not be a symbolic link`);
       }
-      if (!initial.isFile() || initial.nlink !== 1) {
+      if (!initialMarker.isFile() || initialMarker.nlink !== 1n) {
         throw new IntentLoopError(
           "UNSAFE_DATA_FILE",
           `${path2.basename(filePath)} must be a regular file with exactly one filesystem link`
         );
       }
-      const actual = await realpath(filePath);
+      const observedMarkerGeneration = lockDirectorySnapshot(initialMarker);
+      initialMarkerGeneration = observedMarkerGeneration;
+      const actual = await realpath(filePath).catch(async (error) => {
+        if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
+        if (LOCK_PATH_RECHECK_CODES.has(errorCode(error))) {
+          await this.pauseForLockTransition();
+          const state = await this.lockMarkerValidationState(
+            lockDirectory,
+            filePath,
+            observedLockGeneration,
+            observedMarkerGeneration
+          );
+          if (state === "raced") return null;
+          if (state === "unsafe") {
+            throw new IntentLoopError("PATH_ESCAPE", "lock marker changed to an unsafe path");
+          }
+        }
+        throw error;
+      });
+      if (actual === null) return { owner: null, state: "raced" };
       if (!isWithin(projectDirectory, actual)) {
+        await this.pauseForLockTransition();
+        const state = await this.lockMarkerValidationState(
+          lockDirectory,
+          filePath,
+          observedLockGeneration,
+          observedMarkerGeneration
+        );
+        if (state === "raced") return { owner: null, state: "raced" };
+        if (state === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", "lock marker changed to an unsafe path");
+        }
         throw new IntentLoopError("PATH_ESCAPE", `${path2.basename(filePath)} resolves outside project storage`);
       }
       const noFollow = typeof constants.O_NOFOLLOW === "number" ? constants.O_NOFOLLOW : 0;
       handle = await open(filePath, constants.O_RDONLY | noFollow);
-      const opened = await handle.stat();
-      if (!opened.isFile() || opened.nlink !== 1) {
+      const opened = await handle.stat({ bigint: true });
+      if (!opened.isFile() || opened.nlink !== 1n) {
+        const state = await this.lockMarkerValidationState(
+          lockDirectory,
+          filePath,
+          observedLockGeneration,
+          observedMarkerGeneration
+        );
+        if (state === "raced") return { owner: null, state: "raced" };
+        throw new IntentLoopError(
+          "UNSAFE_DATA_FILE",
+          `${path2.basename(filePath)} changed to an unsafe file while it was being opened`
+        );
+      }
+      if (!sameLockMarkerGeneration(observedMarkerGeneration, lockDirectorySnapshot(opened))) {
         return { owner: null, state: "raced" };
       }
-      const owner = parseLockOwner(await handle.readFile({ encoding: "utf8" }));
+      const body = await handle.readFile({ encoding: "utf8" });
+      const afterRead = await handle.stat({ bigint: true });
+      if (!sameLockMarkerGeneration(observedMarkerGeneration, lockDirectorySnapshot(afterRead))) {
+        return { owner: null, state: "raced" };
+      }
+      const finalState = await this.lockMarkerValidationState(
+        lockDirectory,
+        filePath,
+        observedLockGeneration,
+        observedMarkerGeneration
+      );
+      if (finalState === "raced") return { owner: null, state: "raced" };
+      if (finalState === "unsafe") {
+        throw new IntentLoopError("PATH_ESCAPE", "lock marker changed to an unsafe path while being read");
+      }
+      const owner = parseLockOwner(body);
       return { owner, state: owner === null ? "invalid" : "present" };
     } catch (error) {
       if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error)) || error instanceof IntentLoopError && error.code === "TRANSIENT_FILE_RACE") {
         return { owner: null, state: "raced" };
       }
+      if (initialLockGeneration !== null && initialMarkerGeneration !== null && LOCK_PATH_RECHECK_CODES.has(errorCode(error))) {
+        await this.pauseForLockTransition();
+        const state = await this.lockMarkerValidationState(
+          lockDirectory,
+          filePath,
+          initialLockGeneration,
+          initialMarkerGeneration
+        );
+        if (state === "raced") return { owner: null, state: "raced" };
+        if (state === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", "lock marker changed to an unsafe path");
+        }
+      }
       throw error;
     } finally {
       if (handle !== void 0) {
-        await handle.close().catch((error) => {
-          if (!TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) throw error;
+        await handle.close().catch(async (error) => {
+          if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return;
+          if (initialLockGeneration !== null && initialMarkerGeneration !== null && LOCK_TRANSITION_ACCESS_CODES.has(errorCode(error))) {
+            await this.pauseForLockTransition();
+            const state = await this.lockMarkerValidationState(
+              lockDirectory,
+              filePath,
+              initialLockGeneration,
+              initialMarkerGeneration
+            );
+            if (state === "raced") return;
+            if (state === "unsafe") {
+              throw new IntentLoopError("PATH_ESCAPE", "lock marker changed to an unsafe path while closing");
+            }
+          }
+          throw error;
         });
       }
     }

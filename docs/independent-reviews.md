@@ -1,8 +1,8 @@
 # Independent pre-release reviews
 
-Review date: 2026-08-28
+Review period: 2026-08-28 through 2026-08-31
 
-Two independent reviews were required before public beta publication: one adversarial security/reliability review and one practical first-use review. Both reviewed an installed build rather than only reading design documents.
+Two independent reviews were required before final delivery: one adversarial security/reliability review and one practical first-use review. Together they reviewed frozen source, the self-contained distribution, and a public-GitHub installed build rather than relying on design documents or green status alone.
 
 ## Adversarial review
 
@@ -30,7 +30,23 @@ Release-blocking findings and dispositions:
 | Malformed Codex sandbox metadata could fall back to a caller path; caller paths could be relative, regular files, or Windows UNC/device namespaces. | Accepted. Present-but-malformed metadata fails closed, roots must be absolute existing local directories, and Windows UNC/device namespaces are rejected before filesystem resolution. |
 | The distribution deletion scanner swallowed every directory-read error. | Accepted. It now ignores only `ENOENT`; permission and I/O failures block the gate. |
 
-Final verdict: **APPROVE** for the frozen source and local distribution candidate, with no remaining P0, P1, or P2 code finding. The reviewer independently passed all 62 tests, type checking, self-contained distribution verification, and dependency audit.
+Initial-candidate verdict: **APPROVE** for the then-frozen source and local distribution candidate, with no remaining finding at that checkpoint. The reviewer independently passed all 62 tests, type checking, self-contained distribution verification, and dependency audit.
+
+### Beta.2 adversarial release recheck
+
+The beta.1 tag CI subsequently exposed a genuine stale-lock generation race on Ubuntu/Node 24. The finding and adjacent destructive-error/token/invalid-marker branches were accepted. The repair binds reclaim/release decisions to a directory generation, distinguishes present/missing/invalid/raced marker states, uses one stable per-operation reclaim token, prevents owner-publication failure from recursively deleting an unverified newer lock, and recovers crash-truncated reclaim/release markers with bounded checks.
+
+The reviewer froze `storage.ts` at SHA-256 `0EB6F05484B74F68AD1345AFEEA5F904722E23D9AFB1F60DBE8B2E974483FEF9` and `storage.test.ts` at `AFD6E317CDEFDC00F9BC8C4731A8BCCB7F64C5651FCEEE39E794E3445441CC41`, then independently passed all **70 tests**, distribution verification, dependency audit, and **10/10** repetitions of the 32-real-process stale-lock case. Across 320 child processes, every iteration had 33 events, 33 unique request IDs, and no lock residue; hashes were unchanged afterward.
+
+Beta.2 checkpoint verdict: **RELEASE**, P0/P1 zero. A later root finalization run nevertheless reproduced intermittent Windows lock-path `EPERM` and false `PATH_ESCAPE` failures, and the adversarial reviewer independently reproduced marker `realpath EPERM` plus related `LOCK_TIMEOUT`. Beta.2 was therefore marked superseded rather than shipped as the recommended build.
+
+### Beta.3 adversarial release recheck
+
+The accepted repair binds every marker read to both the containing lock-directory generation and the marker-file generation before open, after read, and at final path validation. Windows `EACCES`/`EPERM` transition errors receive at most one second of bounded rechecks; if the path cannot be confirmed, the observation becomes `raced` and can only make the caller wait. Stable readable symlinks, junctions, non-directories, non-regular files, hard links, and containment failures remain fail-closed.
+
+The final reviewer froze `storage.ts` at SHA-256 `78AAE758AF28B300931BEFAED1AC798D93F61236390D4F7ED7BB3C868D7E10D2` and `storage.test.ts` at `208DF4884D52A8097742AF02D17A0F8B6CD04F6B17914DF8A8816EA07C4C64D0`. It independently passed all **72 tests**, self-contained distribution verification, **60/60** rounds of four generation-safety regressions, **60/60** rounds of release/reclaimer cleanup and stable-identity tamper regressions, and **10/10** repetitions of the 32-real-process stale-lock case. The pressure run covered 320 child processes; every round produced 33 events, 33 unique request IDs, and zero lock residue. Root then regenerated the version-specific bundles and SBOM from the unchanged reviewed source and reran the full suite after the beta.3 metadata bump.
+
+Final beta.3 source verdict: **RELEASE**, P0/P1 zero. Documented P2 hardening opportunities are a direct fault-injection seam for stable `EACCES`/`EPERM`/`ELOOP`, applying the bounded helper to the invalid-marker-only `observeLockMarkerFile` path, and replacing the final check-to-unlink marker cleanup window with unique-name quarantine. Current behavior remains fail-closed and no P2 authorizes lock takeover or deletion.
 
 ## Practical first-use review
 
@@ -49,10 +65,21 @@ Friction findings and dispositions:
 | Initial disclosure could be skipped when start failed. | Accepted. Disclosure is required before the start call, including failure paths. |
 | Isolated uninstall could leave empty cache parent directories. | Accepted within plugin scope. Final verification removes the plugin, marketplace entry, version cache, and test data; shared empty Codex cache parents are not recursively deleted. |
 
-The practical reviewer exercised natural-language start, show, correct, feedback, summary export, off, and the forget confirmation boundary. Every business MCP call succeeded on its first attempt. A final cache check against `0.1.0-beta.1+codex.final.20260828215901` reused the off task without supplying a project root or schema: one `intent_status` call returned `mode=off`, seven active records, and zero candidates, with no Memory, other MCP, task creation, mode change, deletion, or workspace write.
+The initial practical reviewer exercised natural-language start, show, correct, feedback, summary export, off, and the forget confirmation boundary. Every business MCP call succeeded on its first attempt. A cache check against the local beta.1 candidate reused the off task without supplying a project root or schema: one `intent_status` call returned `mode=off`, seven active records, and zero candidates, with no Memory, other MCP, task creation, mode change, deletion, or workspace write.
 
-Final verdict: **APPROVE** for public beta. Remaining P2 user friction is latency of roughly 24-52 seconds per short Codex turn, repeated Skill reads, an English disclosure in the observed Chinese first-use turn, and visible technical identifiers. These do not change the state or privacy boundary and remain beta usability work.
+Initial verdict: **APPROVE** for public beta. Remaining P2 user friction was latency of roughly 24-52 seconds per short Codex turn, repeated Skill reads, an English disclosure in the observed Chinese first-use turn, and visible technical identifiers.
+
+### Public beta.2 practical release recheck
+
+The final reviewer verified installed/enabled version `0.1.0-beta.2`, GitHub marketplace source `https://github.com/rrrrrredy/intent-loop.git`, tag `v0.1.0-beta.2`, and unchanged checkout commit `c5e5874f7ac323a3f144b4c81618aa6cfa03b85e`. A single natural Chinese request in a new `codex exec --ephemeral` session created task `f875fa3c-fb59-5eb2-9712-b5e59deb0184` and completed:
+
+- one first-attempt start whose only argument was five direct `initial_explicit` statements;
+- first-attempt snapshot, claim replacement, evidence classification, compact summary, and off calls;
+- a first-attempt `MODE_OFF`, `retryable=false` rejection for a post-off evidence write;
+- six final active records, zero candidates/unknowns/disputes, and `history_complete=false`.
+
+There were no business retries, no Memory or other MCP use, and no user-project write. Final verdict: **RELEASE**, P0/P1 zero. P2 observations are the roughly 90-second end-to-end model flow, technical narration/identifiers, and one transient model phrase that reduced off to write-only before the server correctly reported semantic reads and writes disabled. Marketplace-refresh file locks, unsupported PowerShell shell snapshots, and icon warnings came from the Codex/Windows host; the Intent Loop manifest and checkout did not drift.
 
 ## Evidence boundary
 
-These reviews found defects, shaped controls, and approved the frozen local candidate; they are not an efficacy study. Public-repository CI, release-asset verification, GitHub-only install proof, and clean uninstall remain separate external gates. The frozen paired 80-task comparison remains unrun and is reported as `NO RESULT`.
+These reviews found defects, shaped controls, and approved the beta.3 source candidate; they are not an efficacy study. The beta.2 installed-host review remains historical because beta.2 is superseded. Beta.3 public-repository CI, release-asset verification, GitHub-only install proof, practical-user review, and clean uninstall are recorded only after they are rerun against the public tag. The frozen paired 80-task comparison remains unrun and is reported as `NO RESULT`.

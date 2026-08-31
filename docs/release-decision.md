@@ -1,57 +1,49 @@
 # Release decision
 
-Decision date: 2026-08-28
+Decision date: 2026-08-31
 
-Decision: **READY TO PUBLISH; PUBLICATION PROOF STILL REQUIRED**
+Decision: **BETA.3 SOURCE CANDIDATE GO; PUBLIC ARTIFACT VALIDATION PENDING; EFFICACY ITERATE**
 
-The source-level release blockers found by the adversarial and practical first-use reviews have implementations and regression tests. Both independent reviewers approved the frozen local candidate, and the matching installed build completed its host lifecycle, including one-call start with no model-supplied project path. Public GitHub CI/Release checks, remote-install proof, and clean uninstall are still pending. This document must not be read as a product-efficacy Go, an OpenAI universal-directory approval, or authorization for any other-agent adaptation.
+Intent Loop `v0.1.0-beta.3` has passed its local source, self-contained distribution, dependency, schema, and independent adversarial gates. The public tag, six-job GitHub Actions matrix, release assets and attestations, fresh GitHub-only install, independent practical-use review, and final uninstall must still be rerun before the public-beta decision becomes final. This is not a stable-product or efficacy Go, an OpenAI universal-directory approval, or authorization for another-agent port.
+
+`v0.1.0-beta.1` and `v0.1.0-beta.2` are superseded. Beta.1 tag CI exposed a real stale-lock generation race on Ubuntu/Node 24. Beta.2 fixed that family, but final Windows pressure rechecks then exposed marker/parent `realpath` transition failures and related lock timeouts. Beta.3 binds both generations and treats an unconfirmed Windows access transition only as a bounded, fail-closed race.
 
 ## Gate summary
 
 | Gate | Result | Reason |
 | --- | --- | --- |
-| Gate 0: repository and scope | **Pass** | Canonical D: repo, no pre-existing implementation or user assets, Codex-only boundary preserved. |
-| Gate 1: Codex capability | **Pass for bounded technical MVP** | Plugin packages Skill/MCP/Hooks; a clean workspace loads the Skill through the read-only MCP fallback and calls the installed server; SessionStart Hook delivery works without App Server, private transcript parsing, Codex changes, rich UI, or a new client. |
-| Gate 2: evaluability | **Pass for instrument; no efficacy result** | Outcome-level definitions, frozen corpus, pairing, grading, failure attribution, and thresholds exist. The paired 160 deliveries have not been run. |
-| Gate 3: privacy and threat contracts | **Pass for frozen local candidate** | 62 tests cover private ownership/restart/deletion recovery, internal junction/hardlink rejection, orphan cleanup, credential escaping, import bounds/remapping, fail-closed host project binding, local-root enforcement, exact confirmation, and byte scans. The adversarial reviewer independently passed the suite and approved the candidate; isolated package deletion also passed. |
-| Gate 4: public distribution | **Local pass; remote proof pending** | The self-contained runtime passes clean-copy execution and an installed Codex lifecycle locally; remote GitHub installation has not yet been run on the reviewed commit. |
-| Gate 5: open-source operations | **Pending external proof** | Apache-2.0, NOTICE, third-party notices, SBOM, policy documents, CI, and release workflows are present. Default branch, public CI, prerelease assets, checksums, and attestations must be verified after publication. |
+| Gate 0: repository and scope | **Pass** | Canonical `D:\Codex\intent-loop` repository, Codex-only boundary, no user assets or unrelated workspace changes. |
+| Gate 1: Codex capability | **Pass for bounded technical MVP** | One Plugin packages one Skill, one local stdio MCP service, and optional Hooks. Real Codex calls bind to host sandbox metadata without model-generated paths or IDs. |
+| Gate 2: evaluability | **Pass for instrument; no efficacy result** | The frozen 80-task paired protocol, grading, failure attribution, and thresholds exist. The required 80 baseline plus 80 plugin deliveries have not been run. |
+| Gate 3: privacy and threat contracts | **Pass for public beta** | The current 72-test suite covers persistence, project isolation, modes, redaction, import, deletion, link containment, crash recovery, and parent-plus-marker generation-bound locking. Root and adversarial reviewers each passed ten 32-process stale-lock pressure runs; the reviewer also passed two independent 60-round safety groups. |
+| Gate 4: public distribution | **Pending for beta.3** | Beta.2 installed lifecycles are historical only because beta.2 is superseded. A fresh public GitHub install pinned to `v0.1.0-beta.3` must complete root and independent practical-user lifecycles before this gate passes. |
+| Gate 5: open-source operations | **Partial; publication pending** | Apache-2.0, NOTICE, embedded notices, generated CycloneDX SBOM, source validation, and local cleanup are ready. Beta.3 GitHub Actions, release checksums/attestations, exact-tag asset verification, and final plugin/marketplace/data/cache removal remain pending. |
 
-## Conditions for public beta Go
+## Public-beta promise
 
-The bounded public-beta promise is: install from the public GitHub marketplace, run locally, preserve structured intent state, expose user controls, and fail open. A Go requires all current tests and validators, final approval from both independent reviewers, public CI and prerelease evidence, a clean remote install, and verified local uninstall. Until those checks complete, publication is blocked.
+The supported beta promise is deliberately bounded: a Codex user can install from the public GitHub marketplace, keep structured intent state locally, inspect and correct it, classify evidence separately from explicit intent, export a compact summary, switch semantic reads and writes off, and uninstall cleanly. The plugin remains advisory and optional; Hooks are not trusted automatically.
+
+The beta.3 adversarial reviewer gave **RELEASE** with no P0/P1 after 72/72 tests, two 60-round safety groups, and 10-by-32 real-process pressure. Its P2 items are a future fault-injection seam for stable access errors, applying bounded rechecks to an invalid-marker-only helper, and further shrinking the final marker check-to-unlink window. All remain fail-closed. The beta.2 practical review is historical; beta.3 still needs a fresh independent practical-user review before the public decision is final.
 
 ## Why efficacy remains Iterate
 
-Every product-value threshold is still unmeasured. Passing implementation tests and a successful installed lifecycle can prove implementation behavior, not lower rework, better final match, acceptable interruption cost, or useful intervention timing across independent tasks. `docs/paired-evaluation-result.md` therefore records `NO RESULT`, and all efficacy metrics block a stable-product or effectiveness Go.
+Every product-value threshold is still unmeasured. Passing implementation tests and successful installed lifecycles prove defined behavior; they do not prove lower avoidable rework, better final-match scores, acceptable interruption cost, or helpful intervention timing across independent work. `paired-evaluation-result.md` therefore remains `NO RESULT`.
 
-## Why Iterate, not Stop
+## Cross-platform decision
 
-No architectural exit condition has been demonstrated:
+Cross-platform has two different meanings:
 
-- the core does not depend on a private transcript, Codex modification, App Server client, or independent chat surface;
-- it does not need to take over planning or execution;
-- explicit/evidence/inference and implementation-error/intent-change boundaries are represented and tested;
-- storage, permissions, Hook trust, and physical deletion remain inspectable and optional;
-- the core is a host-neutral MCP state model, although portability value is not yet proven.
+- **The same Codex plugin on more desktop operating systems: worth doing, narrowly.** Windows has a real install/use/uninstall proof, and Windows plus Ubuntu CI pass on Node 20/22/24. The next proportional step is to add macOS CI and one real macOS install/use/uninstall smoke test. Until that passes, the project must not claim macOS support; Linux remains CI-proven rather than a full end-user install claim.
+- **Ports for Claude Code, Cursor, Gemini CLI, WorkBuddy, or other agent hosts: not yet worth building.** A port would multiply sandbox metadata, Hook, trust, namespace, data-path, packaging, and support boundaries before the Codex version has demonstrated outcome value. The frozen paired study and real demand must clear first; then one narrow host adapter can be evaluated rather than starting a multi-host rewrite.
 
-The remaining uncertainty is principally product value and intervention timing, not a requirement to become a Harness.
+## Allowed next steps
 
-## Allowed next step
+1. Collect beta issue and usability evidence without changing the frozen efficacy thresholds.
+2. Run the 80 baseline and 80 matched plugin deliveries, blind final artifacts, adjudicate corrections, and publish every frozen metric and exclusion.
+3. Capture one naturally triggered trusted `PostCompact` plus resume sequence before a stable release.
+4. Add macOS CI and one real macOS install/use/uninstall smoke test before claiming three-OS Codex support.
+5. Consider one other host only after paired efficacy passes and real user demand identifies it.
 
-Run the frozen paired study without changing thresholds:
+## Prohibited next steps
 
-1. produce 80 baseline and 80 matched plugin deliveries on cloned fixtures;
-2. blind final artifacts and preserve complete exclusions/timeouts;
-3. independently annotate corrections and adjudicate disputes;
-4. compute every frozen metric, confidence interval, and intent stratum;
-5. scan paired-run persistence, and rerun export/deletion contracts;
-6. issue a new Go/Iterate/Stop decision from those results.
-
-Before a stable release, also capture one naturally triggered PostCompact plus resume sequence with the optional Hooks explicitly trusted for that controlled run.
-
-## Prohibited next step
-
-Do not add more mandatory questions, forms, a PRD workflow, user-profile expansion, a custom client, an Agent Harness, or any other-agent adapter to compensate for missing evidence. If the paired thresholds fail, diagnose intervention timing, data semantics, host limitations, or product value using the frozen attribution rules.
-
-There is intentionally no cross-agent adaptation plan or new single-point person-day estimate until the frozen efficacy thresholds pass.
+Do not compensate for missing efficacy evidence with mandatory questions, intake forms, a PRD workflow, a custom client, an Agent Harness, broad user profiling, or speculative multi-agent ports. Do not describe green tests or tool-call traces as proof of product value.

@@ -1,103 +1,128 @@
 # Verification report
 
-Verified on 2026-08-28 from `D:\Codex\intent-loop` with Codex CLI `0.150.0-alpha.8` and Node.js `20.19.1`. This report separates executed implementation evidence, public-release evidence that is still pending, and product hypotheses that have not been tested.
+Verified on 2026-08-31 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
+
+## Release identity
+
+- Public repository: `https://github.com/rrrrrredy/intent-loop`
+- Visibility/default branch/license: public, `main`, Apache-2.0
+- Release candidate: `v0.1.0-beta.3`
+- Candidate commit/tag/release: pending public push and GitHub Actions
+- Superseded releases: `v0.1.0-beta.1` and `v0.1.0-beta.2`; both public release bodies warn users not to install them.
+
+The first beta tag exposed a stale-lock generation race on Ubuntu/Node 24. Beta.2 repaired that family, but final Windows pressure rechecks found parent/marker `realpath` access races and related lock timeouts. Neither failure was hidden or treated as flaky: both builds were marked superseded, and beta.3 adds parent-plus-marker generation binding with bounded fail-closed transition rechecks.
 
 ## Executed implementation evidence
 
 | Surface | Executed check | Result |
 | --- | --- | --- |
-| Build and automated tests | `npm test` in `plugins/intent-loop` | **62/62 pass**, 0 skipped. The suite covers storage integrity and recovery, real-process locking, privacy and deletion, provenance transitions, private/off modes, import bounds/remapping, Hooks, official MCP client behavior, Codex project metadata binding, local-directory path enforcement, and corpus invariants. |
-| Failure regressions | Test reads `evals/policy-regressions.jsonl` | **15/15 required failure classes present**. State/security classes have executable regressions; intervention-timing classes remain frozen paired-study cases. |
-| Clean distribution | `npm run test:distribution` | Self-contained copy with no `node_modules` launched Hook and MCP runtime, exposed **15 tools** and **1 Skill resource**, completed start-add-read-delete, redacted a seeded secret, and found no task ID or marker bytes after deletion. |
-| Embedded dependency inventory | Runtime build plus `SBOM.cdx.json` and notices | **9 bundled components** matched the locked inventory and complete embedded license texts. |
-| Plugin structure | Official plugin-creator validator | **Pass**. |
-| Skill structure | Official skill-creator validator under Python UTF-8 mode | **Pass**. The first Windows run failed only because Python defaulted to GBK while reading UTF-8 punctuation. |
-| Dependencies | `npm audit --json` | **0** known info/low/moderate/high/critical vulnerabilities across 64 resolved dependencies at check time. |
-| Frozen corpus | Test recomputes counts, IDs, strata, and file hash | **80 unique tasks** in the frozen 15/15/15/15/20 strata; SHA-256 `6796B9E40A5C0D6259CEF454A69AFFC767A0BD34C0E88153EF109FA2D2DB4F52`. |
+| Source suite | Root ran `npm test` after the beta.3 metadata update | **72/72 pass**, 0 skipped, followed by the clean-distribution gate. |
+| Independent source suite | Adversarial reviewer independently ran `npm test` before the metadata-only version bump | **72/72 pass** plus self-contained distribution verification. Root regenerated the version-specific bundles/SBOM from unchanged source and reran the full suite. |
+| Clean distribution | `npm run test:distribution` | No `node_modules`; **15 tools**, **1 Skill resource**, start/add/read/delete lifecycle, redaction, physical-delete scan, and **9 SBOM components** passed. |
+| Root generation regressions | Twenty rounds of four replacement and validation cases | **20/20 rounds pass**, 80 focused executions. |
+| Independent generation regressions | Reviewer ran four generation cases plus cleanup/tamper groups | Two independent **60/60** round groups passed, 480 focused executions total. |
+| Root stale-lock pressure | Ten repetitions of the real 32-process stale-recovery case | **10/10 pass**, 320 child processes; each iteration produced 33 events, 33 unique request IDs, and zero `ledger.lock*` residue. |
+| Independent stale-lock pressure | Reviewer repeated the same real-process case ten times | **10/10 pass**, another 320 child processes with the same event, ID, exit, and residue assertions. |
+| Source identity around review | SHA-256 before and after independent execution | `storage.ts` `78AAE758AF28B300931BEFAED1AC798D93F61236390D4F7ED7BB3C868D7E10D2`; `storage.test.ts` `208DF4884D52A8097742AF02D17A0F8B6CD04F6B17914DF8A8816EA07C4C64D0`. |
+| Beta.3 generated identity | Rebuilt version-specific outputs and compared SHA-256 before/after | `runtime/server.mjs` `FB6FE258941BD22CC1FEE9DD7AC801D5C9107C4C6020147FE69D1794AAA5FAD0`; `runtime/hook.mjs` `C7B71E19D796D364585BF8CE9D8E9F046C195CF86E75E76D37E29BD57F72D960`; `SBOM.cdx.json` `D6C4C920B72EE6EE99FE87ACE37344C1A52D4F9868DA5FD08AA100B180FD32D3`; zero output drift. |
+| Plugin/Skill validation | Official plugin validator and Skill validator | **Pass**. The Skill validator requires Python UTF-8 mode on this Chinese Windows locale; the initial GBK decode failure was environmental, not a schema failure. |
+| Dependencies | `npm audit --audit-level=moderate` | **0** known vulnerabilities at the check time. |
+| Frozen evaluation corpus | Suite recomputes counts, IDs, strata, and hash | **80 unique tasks**, frozen hash `6796B9E40A5C0D6259CEF454A69AFFC767A0BD34C0E88153EF109FA2D2DB4F52`; no outcome result was manufactured. |
 
-## Installed build identity
+The storage regressions cover a stale snapshot facing a replacement markerless generation, owner-publication failure without deleting a newer live generation, parent/marker generation replacement and unsafe replacement, bounded markerless recovery, same-PID/different-token isolation, truncated reclaim-marker crash recovery, invalid release-marker repair, and retention of the stable-token compromise check.
 
-The final locally installed verification build was `0.1.0-beta.1+codex.final.20260828215901`. The cache suffix exists only to defeat local plugin caching; the source manifest was restored to `0.1.0-beta.1` immediately after installation.
+## Public CI and release evidence
 
-- Installed `runtime/server.mjs` SHA-256 `BFBDB0D5691CD9EDF7D94B21D0BA5AC250C49EBA34A58C60E1910E7D29AEE09B` matched the just-tested source runtime.
-- Installed `runtime/hook.mjs` SHA-256 `A6D7B0FED82A4358B99AF62794AAD81031E54DCE4A80EED8CB5E9B1738EE5464` matched the just-tested source Hook.
-- Installed `skills/intent/SKILL.md` SHA-256 `575C9624F04243BC988A22CD80FABB60FA8A5818A41780900DB0DA56C4AFD350` matched the just-tested source Skill.
-- The official MCP client loaded the installed runtime, read the bundled Skill resource, and saw 15 tools plus one resource.
-- The initialization response advertised experimental capability `codex/sandbox-state-meta`.
+Beta.3 public CI, release assets, attestations, exact-tag installation, real lifecycles, practical-user review, and final cleanup are pending at this source-candidate checkpoint. The remainder of this section and the historical sections below record beta.2 evidence only; beta.2 is superseded and this evidence is not used to clear beta.3.
 
-## Real Codex first-use evidence
+The beta.2 tag CI run `33357641225` passed all six matrix jobs: Windows and Ubuntu on Node 20, 22, and 24. Every job ran install, the full test suite, audit, and generated-distribution diff verification:
 
-A fresh ephemeral Codex task ran in the empty project `D:\Codex\_tmp\intent-loop-host-e2e-20260828-2230`. The natural-language request asked for `$intent start`, seven direct constraints, and `19 + 23`.
+`https://github.com/rrrrrredy/intent-loop/actions/runs/33357641225`
 
-Observed trace:
+The beta.2 release run `33357641300` passed tests, distribution diff, tag/package version matching, archive construction, provenance attestation, CycloneDX SBOM attestation, and prerelease publication:
 
-1. Direct shell access to the installed Skill was unavailable, so Codex used the documented `intent-loop://skill/intent` fallback exactly once.
-2. Codex made exactly one `intent_start_task` call with only `initial_explicit`; it supplied no `project_root`, `request_id`, task ID, claim IDs, source IDs, or hashes.
-3. The call succeeded on its first attempt. Host `sandboxCwd` resolved project ID `ae3b4053ed7a1323bf6b2b2ad817371ce0e314ff329228cc152bba8c51e12a7c` and task `d2b1f371-ac7c-519b-8384-ba16d3e9d3bf`.
-4. All seven directly stated constraints were created transactionally as user-explicit task claims.
-5. No Shell, file, Memory, planning, or non-Intent-Loop tool ran. The final answer was `42`.
+`https://github.com/rrrrrredy/intent-loop/actions/runs/33357641300`
 
-This closes the earlier first-use failure in which the model omitted `project_root`. The server now advertises Codex's sandbox metadata capability and treats the host working directory as authoritative. The contract suite separately proves that a conflicting explicit path returns `PROJECT_ROOT_MISMATCH`, while another MCP host can use an explicit root or exactly one advertised local file root.
+Downloaded release assets were independently checked:
 
-## Real Codex continuation lifecycle
-
-A second fresh Codex process used the same project and task ID. Every project-scoped call again omitted `project_root` and resolved the same project ID.
-
-| Operation | Executed result |
+| Asset | GitHub/computed SHA-256 |
 | --- | --- |
-| `intent_get_snapshot` | Recovered the seven original explicit claims in `on` mode. |
-| `intent_replace_claim` | Replaced `Output only the integer.` with the user's direct correction while retaining the superseded claim in history. |
-| `intent_add_evidence` | Stored `The one-call start worked; keep this behavior` as `role=evidence`, `epistemic_status=evidence`, `feedback_class=keep`; it was not promoted to explicit intent. |
-| `intent_export` with `detail=summary` | Returned `history_complete=false`, 8 active claims, and zero candidates, unknowns, or disagreements without a full graph dump. |
-| `intent_set_mode` | Switched the task to `off`; semantic reads/writes are disabled until re-enabled. |
+| `intent-loop-plugin-v0.1.0-beta.2.tar.gz` | `aedcab1b4c5d695bba82c5ad00d82221b6e01f88922937c820adc9706b2d82d3` |
+| `SBOM.cdx.json` | `08820c60bb736d5a2ae3ab3eed542f50d0516aa11bdbc3685c159a53a42b07e8` |
+| `SHA256SUMS` | `9d183370d7c0e26256ed5c1f98447ea673c7e4dd23b1ba5dfe2505e6cbab1f1f` |
 
-The destructive task-delete step was not executed against this local installed record because the product requires an exact user confirmation and the test agent cannot manufacture that authorization. Physical deletion remains executed on the same frozen runtime in the isolated clean-distribution lifecycle, including post-delete byte scans.
+The checksum file matched the downloaded archive and SBOM. The archive contained exactly 11 distributable files: plugin manifest, MCP manifest, Hook manifest, two runtime bundles, Skill, icon, LICENSE, NOTICE, third-party notices, and SBOM. It contained no source, tests, or `node_modules`. All 11 extracted files matched the corresponding beta.2 Git blobs; the one initial byte comparison difference was only the local checkout's Windows line ending and disappeared when compared against tag blobs.
 
-## Independent final rechecks
+The SBOM parsed as CycloneDX 1.6 with serial `urn:uuid:5897606e-ec60-5274-9474-fdc97424fec5`, root version `0.1.0-beta.2`, and nine components. Strict `gh attestation verify` checks passed for both provenance and CycloneDX attestations while requiring the exact release workflow, source commit `c5e5874f7ac323a3f144b4c81618aa6cfa03b85e`, tag ref, and GitHub-hosted runners.
 
-- The adversarial reviewer independently ran the frozen 62-test suite, type checking, distribution lifecycle, dependency audit, and six total executions of the 32-process stale-lock recovery case. It approved the source and local distribution candidate with no remaining P0, P1, or P2 code finding.
-- The practical reviewer approved the full natural-language lifecycle. It then checked the final hash-matched cache `0.1.0-beta.1+codex.final.20260828215901` against the existing off task: one Skill read and one first-attempt `intent_status` call, with no project root, schema, Memory, other MCP, task creation, mode change, deletion, or workspace write. The response correctly distinguished off mode from deletion.
-- Practical P2 observations remain: short Codex turns took roughly 24-52 seconds, each turn reread the Skill, the observed Chinese first-use disclosure stayed in English, and technical identifiers were visible. These are public-beta usability limits, not hidden correctness or efficacy claims.
+## Historical beta.2 GitHub-only install identity
 
-## Hook evidence and trust state
+The final install used only the public, pinned command path:
 
-Hooks are optional and are not trusted automatically. Earlier installed-host testing delivered the reviewed `SessionStart` context under a one-invocation trust bypass without persisting an Intent Loop Hook trust entry. Fixture tests cover `SessionStart`, `UserPromptSubmit`, `PostCompact`, `Stop`, and `SessionEnd`, including fail-open behavior and absence of raw prompt/secret-derived digests.
+```text
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.1.0-beta.2
+codex plugin add intent-loop@intent-loop
+```
 
-A naturally triggered long-running `PostCompact` plus resume sequence has not been retained as trusted host evidence. It remains a stable-release pilot item, not a public-beta implementation blocker or a hidden claim.
+`codex plugin list --json` reported installed/enabled version `0.1.0-beta.2`, marketplace source `https://github.com/rrrrrredy/intent-loop.git`, and marketplace `HEAD` `c5e5874f7ac323a3f144b4c81618aa6cfa03b85e`. Critical file hashes matched between the GitHub marketplace checkout and installed cache:
 
-## Defects found and fixed during real use
+| File | SHA-256 |
+| --- | --- |
+| `.codex-plugin/plugin.json` | `C3E3B8A56996CED1E0E2C0786097DF27AF61675475CAE392A315FFF43CE54969` |
+| `.mcp.json` | `9CD50C15DE4CB1BBDF85F2DB821A748ADA8573989A2305EC97B9F7ED95AA0E98` |
+| `runtime/server.mjs` | `97A2D27F67A5EEFEDD2C1467864FB9DC74B2775B6B0861CB4038048A06FF6A75` |
+| `skills/intent/SKILL.md` | `575C9624F04243BC988A22CD80FABB60FA8A5818A41780900DB0DA56C4AFD350` |
 
-| Defect | Executed evidence | Resolution |
-| --- | --- | --- |
-| `${PLUGIN_ROOT}` was not expanded in MCP arguments | Installed launch attempted a literal path. | MCP uses installed `cwd: "."` plus `runtime/server.mjs`; `${PLUGIN_ROOT}` remains only where Hook packaging provides it. |
-| Hyphenated server namespace was not exposed reliably | Initial host probe lacked the expected tool namespace. | MCP server key is `intent_loop`; plugin identity remains `intent-loop`. |
-| Windows sandbox denied installed Skill file reads | Fresh Codex tasks could discover the Skill but not shell-read the cache. | One static read-only MCP resource serves the actual bundled Skill; real tasks recovered through it without Shell retries. |
-| Model omitted required IDs and made multi-call starts | Initial practical review saw failed starts, shell hashing, and follow-up claim loops. | New start accepts string claims, creates opaque IDs/provenance server-side, and records all claims in one mutation. |
-| Codex did not advertise MCP roots and the model omitted `project_root` | A repaired intermediate build still failed with `PROJECT_ROOT_REQUIRED`. | Server advertises `codex/sandbox-state-meta`; all tools resolve host `sandboxCwd`, reject conflicts, and keep explicit/single-root fallback for other hosts. |
+## Historical beta.2 root-operated real lifecycle
 
-The project-root solution is based on executed host behavior and current public Codex source: the Codex MCP client injects sandbox state only when the server advertises that experimental capability. It does not assume the MCP process's own working directory is the user's project.
+Root personally launched a fresh `codex exec --ephemeral` from an empty `D:\Codex\_tmp` project. The server created task `c87ee02f-27be-5493-8178-32c65a6e46af` without caller-supplied project root, task ID, request ID, claim IDs, or hashes.
+
+1. One `intent_start_task` transaction created both direct requirements.
+2. `intent_get_snapshot` returned the generated claim and source identities.
+3. The first correction probe was correctly rejected because its provenance reference lacked an event ID or hash; no state was written. Retrying with the snapshot's real event ID succeeded and superseded the intended claim.
+4. `intent_add_evidence` stored result feedback as evidence, not user-explicit intent.
+5. `intent_export(detail=summary)` returned three active records with no candidates, unknowns, or disagreements.
+6. `intent_set_mode` switched the task to `off`.
+7. A structurally valid inference write was rejected with `MODE_OFF`, `retryable=false`, and produced no claim.
+
+This lifecycle used the installed MCP and no project-file writes or mirrored Memory. The validation-first correction failure is recorded as a P2 provenance-usability observation, not concealed as a first-attempt business success.
+
+## Historical beta.2 installed-host reviews
+
+The adversarial reviewer gave **RELEASE**, P0/P1 zero. It inspected the repaired generation/marker protocol, independently reran 70 tests, distribution verification, dependency audit, ten 32-process pressure iterations, and a source-hash freeze. Its two P2 residual risks are rare filesystems whose birth time is unreliable while inodes are rapidly reused, and path-based heartbeat `utimes` not separately rebound to generation/token under same-user external tampering.
+
+The practical-user reviewer independently installed the public beta.2 checkout and ran one natural Chinese request in a new ephemeral Codex session. Task `f875fa3c-fb59-5eb2-9712-b5e59deb0184` completed one-call start with five explicit statements, snapshot, claim replacement, evidence, summary export, off, and an off-after-write rejection. Every business call succeeded on its first attempt; the final summary had six active records and zero candidates, unknowns, or disputes. The marketplace `HEAD` remained unchanged before and after. Verdict: **RELEASE**, P0/P1 zero.
+
+Practical P2 observations are the roughly 90-second complete model-mediated flow, technical narration and identifiers, one transient model statement that simplified off as write-only before the tool correctly stated that semantic reads and writes are disabled, and Codex/Windows host warnings for marketplace refresh, PowerShell shell snapshots, and unrelated icon metadata. These did not alter Intent Loop state or the release checkout.
+
+## Historical beta.2 uninstall and cleanup
+
+After all tests and both reviews:
+
+- `codex plugin remove intent-loop@intent-loop --json` succeeded.
+- `codex plugin marketplace remove intent-loop --json` succeeded.
+- The final plugin list contained zero `intent-loop@intent-loop` entries.
+- Exact checks found no Intent Loop MCP process.
+- `D:\Codex\_home\plugins\cache\intent-loop`, `D:\Codex\_home\plugin-data\intent-loop`, and `D:\Codex\_home\.tmp\marketplaces\intent-loop` were absent.
+- `D:\Codex\_tmp` contained zero direct children whose names began with `intent-loop`.
+- The canonical source repository remained present and clean.
+
+The source repository and public GitHub release are intentionally retained; only the local installation, task data, marketplace checkout, cache, processes, and test scratch were removed.
 
 ## Evidence boundary
 
 ### Verified
 
-- Source, clean distribution, and the matching installed build execute successfully.
-- Codex first use now succeeds with one start mutation and no caller-generated project path or IDs.
-- Snapshot, correction, feedback classification, summary export, and off mode work across fresh Codex processes.
-- Isolated physical deletion removes task identifiers and seeded marker bytes from live plugin storage.
-- Project mismatch, path/link escape, import-size, credential, concurrency, stale-lock, crash-residue, and request-reuse controls have executable regressions.
-
-### Pending before public release completion
-
-- Public GitHub default-branch and CI proof.
-- GitHub-only marketplace installation of the reviewed commit.
-- Prerelease archive, checksum, SBOM, and artifact-attestation verification.
-- Final independent adversarial and practical-user rechecks.
-- Verified local plugin and marketplace removal after all tests.
+- Beta.3 reviewed source, generated runtime/SBOM, 72-test suite, clean distribution, official validators, dependency audit, focused generation regressions, and root plus independent 32-process pressure agree and pass.
+- The beta.3 adversarial source review is RELEASE with no P0/P1; its documented P2 items remain fail-closed.
+- Start, projection, correction, evidence classification, summary, off mode, off-mode rejection, redaction, export, physical deletion, corruption recovery, project isolation, and concurrency have executable local evidence.
+- Beta.2 Windows/Ubuntu CI, public assets, real Windows install/use/uninstall, and practical-user review remain historical evidence only; beta.2 is superseded.
 
 ### Not verified and not claimed
 
-- Lower avoidable rework, better final-match scores, acceptable interruption cost, or helpful intervention timing across independent tasks.
-- The frozen paired 160-delivery study; `docs/paired-evaluation-result.md` remains `NO RESULT`.
-- Naturally triggered compaction/resume under sustained trusted-Hook use.
-- Value or safety of adapters for other agents.
+- Beta.3 public tag/commit identity, GitHub Actions, release assets/checksums/attestations, public-GitHub installed cache, practical-user lifecycle, and final local cleanup at this source-candidate checkpoint.
+- Lower avoidable rework, better final match, acceptable interruption cost, or helpful timing across the frozen paired 160 deliveries.
+- A naturally triggered, trusted long-running `PostCompact` plus resume sequence.
+- A real Linux or macOS end-user install lifecycle; Linux currently has CI evidence, while macOS is not yet tested.
+- Value, compatibility, or safety of ports for other agent hosts.
+- OpenAI universal-directory listing or approval.

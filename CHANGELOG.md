@@ -2,6 +2,21 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.1.0-beta.3 - 2026-08-31
+
+### Fixed
+
+- Bound every lock-marker read to both its containing lock-directory generation and marker-file generation before open, after read, and at final path validation.
+- Treated Windows `EACCES`/`EPERM` during a verified lock transition as an unreadable race for at most one second; an unconfirmed path can only retry and never authorizes deletion, reclaim, or release.
+- Reclassified unsafe marker or parent replacements as `PATH_ESCAPE`/`UNSAFE_DATA_FILE` while retaining fail-closed behavior for stable access and `ELOOP` errors.
+- Replaced unsafe recursive test-peer cleanup with the same generation- and token-checked release path used by the product.
+
+### Verification
+
+- Expanded the source suite to 72 tests and retained the self-contained distribution, privacy, deletion, and frozen evaluation-instrument gates.
+- Root verification passed 20 rounds of four generation regressions and 10 rounds of 32 real processes. Independent adversarial verification passed two 60-round safety groups plus its own 10-by-32-process pressure run with no event loss, timeout, access-error leak, or lock residue.
+- This release supersedes 0.1.0-beta.2. A final Windows pressure recheck found a lock-transition `realpath` race after beta.2 publication; beta.2 was marked superseded rather than treating the failure as flaky. No efficacy claim is made.
+
 ## 0.1.0-beta.2 - 2026-08-31
 
 ### Fixed

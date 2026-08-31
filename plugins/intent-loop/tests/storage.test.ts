@@ -256,6 +256,7 @@ test("does not apply a stale snapshot to a replacement markerless lock generatio
   };
   const internals = store as unknown as {
     observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;
+    releaseOwnedLock: (projectDirectory: string, lockDirectory: string, token: string) => Promise<void>;
   };
   const observeLockMarker = internals.observeLockMarker.bind(store);
   const peerToken = newId();
@@ -278,10 +279,7 @@ test("does not apply a stale snapshot to a replacement markerless lock generatio
             acquired_at: new Date().toISOString()
           })}\n`, { encoding: "utf8", flag: "wx", mode: 0o600 });
           await new Promise((resolve) => setTimeout(resolve, 80));
-          const current = JSON.parse(await readFile(ownerPath, "utf8")) as { token?: string };
-          if (current.token === peerToken) {
-            await rm(lockDirectory, { recursive: true, force: true });
-          }
+          await internals.releaseOwnedLock(projectDirectory, lockDirectory, peerToken);
         })();
       }
     }
@@ -319,6 +317,7 @@ test("owner publication failure never deletes a newer live lock generation", asy
   };
   const internals = store as unknown as {
     observeLockDirectory: (lockDirectory: string) => Promise<LockSnapshot | null>;
+    releaseOwnedLock: (projectDirectory: string, lockDirectory: string, token: string) => Promise<void>;
   };
   const observeLockDirectory = internals.observeLockDirectory.bind(store);
   const peerToken = newId();
@@ -341,7 +340,7 @@ test("owner publication failure never deletes a newer live lock generation", asy
         await new Promise((resolve) => setTimeout(resolve, 100));
         const current = JSON.parse(await readFile(ownerPath, "utf8")) as { token?: string };
         assert.equal(current.token, peerToken);
-        await rm(lockDirectory, { recursive: true, force: true });
+        await internals.releaseOwnedLock(projectDirectory, lockDirectory, peerToken);
       })();
     }
     return snapshot;
@@ -354,6 +353,105 @@ test("owner publication failure never deletes a newer live lock generation", asy
   assert.equal(replaced, true);
   const events = await store.readEvents(projectId);
   assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2"]);
+});
+
+test("lock-directory validation retries generation races but rejects an unsafe replacement", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data);
+  const projectId = projectIdForRoot(workspace.project);
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  await mkdir(lockDirectory);
+
+  type LockSnapshot = {
+    dev: bigint;
+    ino: bigint;
+    birthtime_ns: bigint;
+    mtime_ns: bigint;
+  };
+  type ValidationState = "stable" | "raced" | "unsafe";
+  const internals = store as unknown as {
+    observeLockDirectory: (directory: string) => Promise<LockSnapshot | null>;
+    lockDirectoryValidationState: (
+      directory: string,
+      initialGeneration: LockSnapshot
+    ) => Promise<ValidationState>;
+  };
+
+  const initial = await internals.observeLockDirectory(lockDirectory);
+  assert.ok(initial !== null);
+  assert.equal(await internals.lockDirectoryValidationState(lockDirectory, initial), "stable");
+
+  const displaced = `${lockDirectory}.stale-${newId()}`;
+  await rename(lockDirectory, displaced);
+  await mkdir(lockDirectory);
+  assert.equal(await internals.lockDirectoryValidationState(lockDirectory, initial), "raced");
+
+  const replacement = await internals.observeLockDirectory(lockDirectory);
+  assert.ok(replacement !== null);
+  await rm(lockDirectory, { recursive: true, force: true });
+  await writeFile(lockDirectory, "not a directory", "utf8");
+  assert.equal(await internals.lockDirectoryValidationState(lockDirectory, replacement), "unsafe");
+});
+
+test("lock-marker validation binds both parent and file generations and rejects unsafe replacement", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data);
+  const projectId = projectIdForRoot(workspace.project);
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const markerPath = path.join(lockDirectory, "reclaim.json");
+  await mkdir(lockDirectory);
+  await writeFile(markerPath, `${JSON.stringify({
+    pid: process.pid,
+    token: newId(),
+    acquired_at: new Date().toISOString()
+  })}\n`, { encoding: "utf8", flag: "wx", mode: 0o600 });
+
+  type LockSnapshot = {
+    dev: bigint;
+    ino: bigint;
+    birthtime_ns: bigint;
+    ctime_ns: bigint;
+    mtime_ns: bigint;
+    size: bigint;
+  };
+  type ValidationState = "stable" | "raced" | "unsafe";
+  const internals = store as unknown as {
+    observeLockDirectory: (directory: string) => Promise<LockSnapshot | null>;
+    observeLockMarkerFile: (marker: string) => Promise<LockSnapshot | null>;
+    lockMarkerValidationState: (
+      directory: string,
+      marker: string,
+      initialLockGeneration: LockSnapshot,
+      initialMarkerGeneration: LockSnapshot
+    ) => Promise<ValidationState>;
+  };
+
+  const initialLock = await internals.observeLockDirectory(lockDirectory);
+  const initialMarker = await internals.observeLockMarkerFile(markerPath);
+  assert.ok(initialLock !== null && initialMarker !== null);
+  assert.equal(
+    await internals.lockMarkerValidationState(lockDirectory, markerPath, initialLock, initialMarker),
+    "stable"
+  );
+
+  const displacedMarker = `${markerPath}.${newId()}`;
+  await rename(markerPath, displacedMarker);
+  await writeFile(markerPath, await readFile(displacedMarker, "utf8"), { encoding: "utf8", flag: "wx", mode: 0o600 });
+  assert.equal(
+    await internals.lockMarkerValidationState(lockDirectory, markerPath, initialLock, initialMarker),
+    "raced"
+  );
+
+  const replacementMarker = await internals.observeLockMarkerFile(markerPath);
+  assert.ok(replacementMarker !== null);
+  await rm(markerPath, { force: true });
+  await mkdir(markerPath);
+  assert.equal(
+    await internals.lockMarkerValidationState(lockDirectory, markerPath, initialLock, replacementMarker),
+    "unsafe"
+  );
 });
 
 test("recovers a stable markerless lock only after its stale threshold", async (t) => {

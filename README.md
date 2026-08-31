@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.1.0--beta.2-6657D9.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-0.1.0--beta.3-6657D9.svg)](CHANGELOG.md)
 
 Intent Loop is a Codex-first plugin that keeps an updateable, traceable, disagreement-preserving view of current intent inside the task where work is already happening. It stays quiet for clear, reversible work and surfaces one low-burden question, comparison, or sample only when different interpretations would change a costly next step.
 
-Version 0.1.0-beta.2 is the current self-contained public beta for opt-in use. It is technically installable and tested, but it is not an efficacy claim: the frozen paired 80-task human study has not been run.
+Version 0.1.0-beta.3 is the current self-contained public beta for opt-in use. It is technically installable and tested, but it is not an efficacy claim: the frozen paired 80-task human study has not been run.
 
 ## What it does
 
@@ -40,11 +40,13 @@ Review the plugin manifest, Skill, MCP definition, and optional Hooks first:
 Add the public repository marketplace and install the plugin:
 
 ~~~powershell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.1.0-beta.2
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.1.0-beta.3
 codex plugin add intent-loop@intent-loop
 ~~~
 
 Start a new Codex task after installation so the Skill and MCP tools are loaded.
+
+Compatibility evidence is intentionally narrow. The candidate passes real Windows source pressure and the release line has passed Windows/Ubuntu CI on Node 20, 22, and 24; a fresh beta.3 public install/use/uninstall run is required before the final public-beta decision. Linux has not received a complete end-user install smoke test, and macOS support is not claimed until macOS CI plus a real install/use/uninstall run pass.
 
 Hooks are not trusted automatically. Manual Skill and MCP use work without Hook trust; automatic session association and compact-context restoration require the user to review and explicitly trust the current Hook definition.
 
