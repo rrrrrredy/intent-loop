@@ -1,10 +1,12 @@
 # Accepted, deferred, and rejected items
 
-This list records product and implementation issues discovered while reconciling the frozen brief, current Codex capabilities, source implementation, and real-host verification.
+This list records product and implementation issues discovered while reconciling the frozen brief, current host capabilities, source implementation, and real-host verification.
 
 ## Accepted and implemented
 
 - One Codex Plugin containing one focused intervention Skill, one local stdio MCP state service, and optional lifecycle Hooks.
+- One user-authorized DeepSeek Harness developer-preview adapter over that same MCP core. It registers the same fifteen state tools, contributes no planner/client/executor, and is pinned to Harness `0.1.2-alpha.2`.
+- DeepSeek host binding removes workspace and session fields from model-visible schemas, injects canonical active-agent values, uses one bounded MCP child per active session, omits model credentials from child environments, and closes all children on idle eviction or unload.
 - Codex retains reasoning, planning, execution, permissions, safety, verification, and delivery ownership.
 - Atomic append-only, hash-chained events; ledger-derived current state; explicit supersession/invalidation; corruption recovery and serialized writes.
 - First-class `explicit`, `inferred`, `evidence`, `unknown`, and `disputed` states with provenance, scope, confidence rules, timestamps, and retained history.
@@ -36,11 +38,11 @@ This list records product and implementation issues discovered while reconciling
 
 - A controlled opt-in user study and the complete 160-run paired dataset.
 - Natural host `PostCompact` plus resume observation under real long-running use; fixture and state-recovery contracts pass, but a naturally triggered compaction cycle was not retained as trusted Hook state during this build.
-- Full operating-system support beyond the current evidence: Windows has a real install/use/uninstall proof; Ubuntu has CI proof; macOS still needs CI plus one real install/use/uninstall smoke test before it is claimed.
+- Stable operating-system support beyond the exact-release evidence. Windows has local real-host proof; Ubuntu and macOS require their exact release CI and temporary host lifecycle jobs to pass. Native GUI-specific behavior remains outside this headless adapter claim.
 - MCP App or any rich interface. `enable_mcp_apps` is disabled on the tested surface, and the headless path is complete without it.
 - SQLite or remote storage. The local JSONL design is sufficient for the bounded MVP and has concurrency/corruption tests.
 - Explicit import of older history beyond portable Intent Loop graphs. No claim of complete pre-install understanding is allowed.
-- Claude Code, Cursor, Gemini CLI, and WorkBuddy adapters. They are gated on passing the Codex paired evaluation, so no adaptation plan or person-day estimate is issued yet.
+- Claude Code, Cursor, Gemini CLI, WorkBuddy, and additional host adapters. The DeepSeek adapter is a one-time, user-authorized transport experiment and does not clear the efficacy gate for further host expansion.
 - OpenAI universal-directory submission. The current local stdio architecture does not meet the hosted public HTTPS MCP and domain-verification boundary, and changing that would require a separately authorized product/privacy decision.
 
 ## Rejected
@@ -62,3 +64,4 @@ This list records product and implementation issues discovered while reconciling
 - Independent adversarial review found private-mode cross-process leakage and ownership/recovery gaps, explicit-claim transition gaps, persistent prompt-injection risk, unsafe stale-lock and link handling, escaped secret-field gaps, import/deletion identity collisions, crash residue, and incomplete bundled-license evidence. Each release-blocking item was accepted and implemented as a regression-tested control; later findings on filesystem error propagation, relation bounds, lock-marker cleanup races, malformed host metadata, and unsafe project-root forms were also implemented. The reviewer approved the frozen source and local distribution candidate with no remaining P0/P1/P2 code finding.
 - Independent first-use review found cache-read recovery friction, an unreliable multi-call start that attempted shell/global-Memory preparation, unnecessarily long manual command paths, missing aggregate candidate counts, and an oversized default export. The repaired build reads the MCP Skill fallback once when needed, starts with one `intent_start_task` call that omits paths and IDs, and completes snapshot/correction/feedback/summary/off without mirrored Memory. A separate reviewer then installed public beta.2 from GitHub and gave RELEASE after every business lifecycle call succeeded on its first attempt and off rejected the next write.
 - Beta.1 tag CI exposed a real stale-lock generation race rather than noise. Beta.2 repaired that generation/error/token/invalid-marker family, but a final Windows recheck then reproduced a marker/parent `realpath` transition race. Beta.2 was also marked superseded. Beta.3 binds both generations, uses bounded fail-closed Windows transition rechecks, expands the suite to 72 tests, and passed root plus independent 10-by-32-process pressure with P0/P1 zero.
+- The frozen baseline originally prohibited another-host port before the paired study. On 2026-08-31 the user explicitly authorized a DeepSeek Harness version plus Linux/macOS delivery. The accepted exception is limited to a thin transport/package adapter, shared semantics, developer-preview labeling, and no efficacy claim. It creates no precedent for an independent Harness, new planner, extra data collection, or more host ports.

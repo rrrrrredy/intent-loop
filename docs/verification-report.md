@@ -2,6 +2,28 @@
 
 Verified on 2026-08-31 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
 
+## V0.2.0-beta.1 candidate evidence
+
+The `v0.2.0-beta.1` candidate adds a DeepSeek Harness `0.1.2-alpha.2` developer-preview adapter and expands compatibility validation to Windows, Ubuntu, and macOS. At this checkpoint, public Actions and exact-tag evidence are deliberately pending; only executed local results are marked pass.
+
+| Surface | Executed check | Result |
+| --- | --- | --- |
+| Shared Codex core | `plugins/intent-loop` full `npm test` after the version bump | **72/72 pass**, frozen corpus and clean distribution unchanged. |
+| DeepSeek generated contract | Live MCP catalog generation/check | **15 tools**, hidden project/session selectors removed, source-runtime SHA-256 recorded. |
+| DeepSeek adapter | Node `22.19.0` test suite with real MCP child processes | **5/5 groups pass**: exact registration/guidance, credential omission, serialized creation and hard-cap enforcement, pool eviction/unload, workspace forgery rejection, cross-project rejection, private-session isolation, and physical deletion. |
+| DeepSeek legal/package | Deterministic legal generation plus packed-file verification | **24 SBOM components**, **15 additional notices**, **15 packed files**; package composition verifier passes. |
+| Dependencies | Root `npm audit --omit=dev --audit-level=high` | **0 known vulnerabilities** at check time. |
+| Windows real Harness lifecycle | Temporary `DSH_HOME`; pack, add to `headless`, compose/dump, boot help path, remove, absence check, cleanup | **Pass** on Harness `0.1.2-alpha.2`; no model API key used or left in the child environment; temporary home removed. |
+| Three-OS public matrix | Codex Node 20/22/24, DeepSeek adapter Node 22.19/24, and DeepSeek host lifecycle on Windows/Ubuntu/macOS | **Pending** until the exact candidate commit is pushed and every public job passes. |
+
+The DeepSeek adapter launches one MCP child lazily per active Harness session and injects the host's canonical workspace and session binding. The child receives a limited OS environment instead of the parent process's model-provider credentials. Pool capacity, idle eviction, tool timeout, cancellation, and plugin-unload cleanup are bounded and tested.
+
+The final local Codex runtime was rebuilt twice with identical SHA-256 `FA1F08BA53E1B65D1BD6B03C075841C40445B91313B377D85D457B872A5036E6`. The DeepSeek catalog was regenerated from that exact runtime and then passed its stale-file check. The final temporary Harness lifecycle returned `pack-add-compose-boot-help-remove`, `api_key_used=false`, and `dsh_home=temporary-and-removed`.
+
+These checks establish transport, state, isolation, deletion, package, and lifecycle behavior. They do not establish reduced rework, improved final-match scores, interruption quality, or product-value efficacy. The paired evaluation remains `NO RESULT`.
+
+## V0.1.0-beta.3 evidence
+
 ## Release identity
 
 - Public repository: `https://github.com/rrrrrredy/intent-loop`

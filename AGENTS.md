@@ -6,5 +6,5 @@
 - Do not parse private or unstable transcript formats. Pre-install history is explicit-import only.
 - Hooks are optional, inspectable, non-blocking, and fail open. They never decide completion or user satisfaction.
 - Default persistence must exclude complete raw prompts and secrets. Keep project scopes isolated.
-- Do not adapt to another agent until the frozen 80-task paired evaluation clears every release threshold.
+- Do not adapt to another agent until the frozen 80-task paired evaluation clears every release threshold. The user explicitly authorized one bounded DeepSeek Harness developer-preview adapter on 2026-08-31; treat it as transport research with no efficacy claim and no precedent for further host ports.
 - Keep claims separated as verified fact, result-derived judgment, or unverified product hypothesis.

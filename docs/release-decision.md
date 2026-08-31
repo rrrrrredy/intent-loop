@@ -2,6 +2,33 @@
 
 Decision date: 2026-08-31
 
+Decision: **V0.2 PUBLIC BETA CANDIDATE; THREE-OS PUBLIC VALIDATION REQUIRED; EFFICACY ITERATE**
+
+Intent Loop `v0.2.0-beta.1` adds a bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. Local Windows source, adapter, package, dependency, and real Harness lifecycle checks pass. Publication remains gated on the exact candidate commit passing the expanded Windows/Ubuntu/macOS GitHub Actions matrix, followed by exact-tag package and uninstall verification.
+
+This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
+
+## V0.2 candidate gates
+
+| Gate | Current result | Reason |
+| --- | --- | --- |
+| Shared product boundary | **Pass locally** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. |
+| DeepSeek host binding | **Pass locally** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access. |
+| Session and credential isolation | **Pass locally** | One bounded MCP child per active Harness session; API-key variables are omitted; idle, unload, timeout, and cancellation cleanup are tested. |
+| Codex regression | **Pass locally** | The unchanged core behavior passes 72/72 tests and clean-distribution verification after the version bump. |
+| DeepSeek package | **Pass locally** | Generated catalog/legal checks, five adapter test groups, npm package inspection, zero-vulnerability audit, and a temporary Windows Harness add/compose/boot-help/remove lifecycle pass. |
+| Linux/macOS | **Pending public evidence** | CI and real temporary Harness lifecycle jobs are configured for Ubuntu and macOS; support is claimed only after the public jobs pass. |
+| Efficacy | **No result** | The frozen paired 80-task study has not been run. |
+
+## V0.2 cross-platform decision
+
+- **The same headless packages on Windows, Linux, and macOS are worth supporting.** The state core is Node-based, the host adapters depend on filesystem and process primitives, and a three-OS matrix directly tests the largest portability risks at modest maintenance cost.
+- **Further agent-host ports are not justified yet.** DeepSeek is the one user-authorized experiment. More hosts would multiply trust, session, packaging, and support boundaries before outcome value is measured.
+
+The remainder of this document retains the completed `v0.1.0-beta.3` decision as historical evidence.
+
+## V0.1.0-beta.3 decision
+
 Decision: **PUBLIC BETA GO; EFFICACY ITERATE**
 
 Intent Loop `v0.1.0-beta.3` is published as the recommended Apache-2.0 prerelease at commit `9432dde72ac8c6b5c4bd1bc7936f8b14ef37246c`. Local source and distribution checks, the six-job Windows/Ubuntu GitHub Actions matrix, release assets and attestations, two fresh GitHub-only Windows lifecycles, independent adversarial and practical reviews, and final uninstall all passed. This is not a stable-product or efficacy Go, an OpenAI universal-directory approval, or authorization for another-agent port.

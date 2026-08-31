@@ -1,8 +1,8 @@
 # Intent Loop privacy policy
 
-Effective date: 2026-08-28
+Effective date: 2026-08-31
 
-Intent Loop is open-source software that runs locally in Codex. The project maintainer does not operate a hosted Intent Loop service and does not receive plugin data through the runtime.
+Intent Loop is open-source software that runs locally in Codex or DeepSeek Harness. The project maintainer does not operate a hosted Intent Loop service and does not receive plugin data through the runtime.
 
 ## Data processed locally
 
@@ -18,9 +18,11 @@ By default it does not persist complete prompts, transcripts, workspace files, o
 
 ## Storage and network behavior
 
-The runtime contains no outbound network client. Durable data stays below the Codex plugin data root reported by the status tool. Codex supplies the current sandbox working directory to the MCP server; Intent Loop canonicalizes and hashes it for project isolation and does not persist the raw project path in ledger events. Private mode keeps semantic state only in the MCP process. It writes a small control file containing hashed session metadata and a task ID so independent Hook processes stay silent and a restarted MCP fails closed instead of writing private semantics. Re-enabling durable mode or deleting the task removes that control. Off mode stores no semantic records.
+The runtime contains no outbound network client. Durable data stays below the active host's plugin data root reported by the status tool. Codex supplies its sandbox working directory through MCP metadata. The DeepSeek adapter supplies the immutable workspace and session identity from the active Harness agent and removes those fields from model-visible schemas. Intent Loop canonicalizes and hashes the workspace for project isolation and does not persist the raw path in ledger events.
 
-Codex, the operating system, GitHub, and any tools a user separately invokes have their own data practices and are not controlled by Intent Loop.
+The DeepSeek adapter starts one local MCP child lazily per active Harness session. Its child environment contains a small allowlist of operating-system variables and intentionally omits model API keys and similar credentials. Private mode keeps semantic state only in the session's MCP process. It writes a small control file containing hashed session metadata and a task ID so independent processes fail closed and a restarted MCP does not write private semantics. Re-enabling durable mode or deleting the task removes that control. Off mode stores no semantic records.
+
+Codex, DeepSeek Harness, the operating system, GitHub, and any tools a user separately invokes have their own data practices and are not controlled by Intent Loop.
 
 ## Retention, access, export, and deletion
 
@@ -34,7 +36,7 @@ The runtime does not transmit or sell local plugin data. Users decide whether to
 
 ## Security
 
-The project uses host-bound project isolation, explicit-path mismatch rejection, schema validation, a hash-chained ledger, live-owner locks with heartbeats, credential-pattern redaction, bounded Hook input, fail-open Hooks, and post-delete identifier scans. Hook-injected compact context contains only direct user-event and user-explicit claims; persisted evidence, inferences, imports, unknowns, and disputes are not re-injected as instructions. No software can eliminate all risk; review SECURITY.md before reporting a vulnerability.
+The project uses host-bound project isolation, explicit-path mismatch rejection, schema validation, a hash-chained ledger, live-owner locks with heartbeats, credential-pattern redaction, bounded Codex Hook input, fail-open Hooks, a credential-minimized DeepSeek child environment, and post-delete identifier scans. Hook-injected compact context contains only direct user-event and user-explicit claims; persisted evidence, inferences, imports, unknowns, and disputes are not re-injected as instructions. No software can eliminate all risk; review SECURITY.md before reporting a vulnerability.
 
 ## Changes and contact
 

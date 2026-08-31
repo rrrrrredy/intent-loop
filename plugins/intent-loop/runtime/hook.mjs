@@ -1,4 +1,4 @@
-/*! Intent Loop 0.1.0-beta.3 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.2.0-beta.1 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
 import { pathToFileURL } from "node:url";

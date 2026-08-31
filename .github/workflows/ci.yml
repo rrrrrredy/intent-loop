@@ -8,13 +8,13 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+  codex:
+    name: Codex / Node ${{ matrix.node }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node: [20.x, 22.x, 24.x]
     defaults:
       run:
@@ -33,3 +33,45 @@ jobs:
       - run: npm audit --omit=dev --audit-level=high
       - name: Verify generated distribution is committed
         run: git diff --exit-code -- runtime LICENSE NOTICE THIRD_PARTY_NOTICES.md SBOM.cdx.json
+
+  deepseek-adapter:
+    name: DeepSeek adapter / Node ${{ matrix.node }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [22.19.0, 24.x]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm audit --omit=dev --audit-level=high
+      - name: Verify generated DeepSeek distribution is committed
+        run: git diff --exit-code -- dsh/tool-catalog.json dsh/SBOM.cdx.json dsh/THIRD_PARTY_NOTICES.md
+
+  deepseek-host-smoke:
+    name: DeepSeek host lifecycle / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.19.0
+          cache: npm
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.7.0 --activate
+      - run: npm ci
+      - run: npm run test:dsh-host

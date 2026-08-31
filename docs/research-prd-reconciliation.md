@@ -23,7 +23,7 @@ The supplied research/PRD text was treated as the controlling brief. The product
 | Failure-oriented regressions | 15-case frozen policy suite plus tests | Present; implementation/security cases run automatically, while outcome/intervention cases belong in the paired study. |
 | Real Codex E2E | Installed create/write/read-restart/delete and Hook probe | Completed for core state lifecycle and SessionStart delivery. |
 | 80-task evaluation and fixed thresholds | Corpus, schema, annotation guide, protocol | Instrument complete and frozen; paired human task execution has not occurred. |
-| Other-agent adaptations only after success | Decision log and release decision | Enforced. No adapter, plan, or estimate is produced at **Iterate**. |
+| Other-agent adaptations only after success | Decision log and release decision | Preserved as the default product gate. A later direct user instruction authorized one bounded DeepSeek Harness transport exception; it does not change the unrun efficacy result or authorize more host ports. |
 
 ## Reconciled deviations forced by current host behavior
 
@@ -32,4 +32,12 @@ Two implementation details changed without changing the product:
 1. Bundled MCP launch uses `cwd: "."` and a relative script path. The tested Codex build expands `${PLUGIN_ROOT}` for Hook commands as documented, but not in MCP arguments.
 2. The MCP server key is `intent_loop` rather than `intent-loop` because the underscore namespace is exposed reliably by the tested host. The plugin/product name remains Intent Loop.
 
-Both changes are transport/packaging fixes. They do not add a client, Harness, transcript dependency, UI, or execution ownership.
+Both changes are transport/packaging fixes. They do not add a client, transcript dependency, UI, or execution ownership.
+
+## User-authorized DeepSeek transport exception
+
+On 2026-08-31, after the Codex beta had been published and reviewed, the user directly requested a DeepSeek Harness version and Windows/Linux/macOS delivery. That instruction overrides the earlier no-port timing rule only for this bounded adapter.
+
+The implementation reuses the frozen data model, shared local MCP runtime, fifteen tool contracts, privacy controls, and `NO RESULT` efficacy boundary. The adapter contributes only host tool registration, immutable workspace/session binding, a bounded per-session MCP child pool, cancellation/timeouts, unload cleanup, and package metadata. It adds no agent, planner, executor, chat client, transcript reader, user profile, remote service, or outcome claim.
+
+Further host adaptations remain deferred until the paired study and real demand justify them. The exception tests transport feasibility; it does not rewrite the original research conclusion.

@@ -1,0 +1,4 @@
+# DeepSeek Harness profile layer for the Intent Loop adapter.
+- insert:
+    - id: intent-loop
+      name: dsh-intent-loop

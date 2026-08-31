@@ -2,6 +2,23 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.2.0-beta.1 - 2026-08-31
+
+### Added
+
+- Added a bounded DeepSeek Harness developer-preview bundle over the existing local MCP core, pinned to `@deepseek-ai/dsh` `0.1.2-alpha.2`.
+- Registered the same fifteen intent-state tools with host-supplied workspace and session binding; model-visible schemas cannot select another project or private-session owner.
+- Added a bounded per-session MCP process pool with idle eviction, timeout and cancellation forwarding, full unload cleanup, and a credential-free child environment.
+- Added deterministic DeepSeek tool-catalog, CycloneDX SBOM, third-party notices, package-composition verification, and a no-model-key host lifecycle smoke test.
+- Expanded GitHub Actions to Codex and DeepSeek adapter matrices on Windows, Ubuntu, and macOS, plus real DeepSeek package/add/compose/boot-help/remove smoke jobs on all three systems.
+- Added dual-host install, uninstall, privacy, contributor, and plain-language documentation.
+
+### Evidence boundary
+
+- Local Windows checks passed the 72-test Codex suite, five DeepSeek adapter groups using real MCP children, deterministic catalog/legal checks, package dry-run, dependency audit, and temporary DeepSeek Harness lifecycle cleanup.
+- Linux and macOS support requires the exact release commit's public CI and host-smoke jobs to pass. Publication evidence is recorded in `docs/verification-report.md`.
+- This release is a user-authorized transport and packaging experiment. The paired 80-task efficacy study remains `NO RESULT`; no reduced-rework or improved-outcome claim is made.
+
 ## 0.1.0-beta.3 - 2026-08-31
 
 ### Fixed

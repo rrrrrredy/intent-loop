@@ -48,6 +48,22 @@ goals                         stable              true
 
 Gate 1 result: **PASS FOR THE BOUNDED TECHNICAL MVP**. The installed headless path works and does not depend on a forbidden surface. Real installed MCP calls, approval behavior, restart persistence, deletion, and one-invocation `SessionStart` Hook delivery were verified. A naturally triggered `PostCompact` plus resume cycle remains a controlled-pilot check; it is not required to justify a new client or transcript parser.
 
+## Gate 1b: DeepSeek Harness developer-preview adapter
+
+Checked on 2026-08-31 against the official DeepSeek Harness repository and documentation plus local package `0.1.2-alpha.2`.
+
+| Required capability | Status | Direct evidence and boundary |
+| --- | --- | --- |
+| Plugin tool registration | Confirmed | The Harness plugin API registers raw tool definitions through `ctx.tools.register`; the adapter contributes all fifteen generated Intent Loop tools and one compact guidance section. |
+| Active workspace/session identity | Confirmed | Harness exposes the active agent session's `cwd` and session ID. The adapter removes caller-facing selectors, canonicalizes the host cwd, and privately hashes/injects session ownership. |
+| Git package installation | Confirmed locally | Official plugin management accepts package or Git specs. A packed repository bundle was added to a temporary `headless` profile, composed, booted through the help path, removed, and confirmed absent. |
+| Prebuilt package requirement | Confirmed | The root package ships prebuilt adapter JavaScript, the shared MCP runtime, generated tool catalog, Skill, notices, and SBOM; no install-time build is required. |
+| Session-private MCP memory | Confirmed locally | A bounded pool creates one MCP child per active Harness session, preserves in-session private semantics, isolates another session, and closes every child on eviction or unload. |
+| Credential boundary | Confirmed locally | Child environment tests show model-provider API keys/tokens are omitted. The state runtime contains no outbound network client. |
+| Windows/Linux/macOS | Candidate | Windows local lifecycle passes. Exact-commit public adapter and lifecycle jobs are required on Windows, Ubuntu, and macOS before the release claims all three. |
+
+Gate 1b result: **PASS LOCALLY FOR A BOUNDED DEVELOPER-PREVIEW ADAPTER; PUBLIC THREE-OS EVIDENCE PENDING**. This is transport evidence and does not change the frozen `NO RESULT` efficacy status or authorize more host ports.
+
 ## Primary sources
 
 - [Package your plugin](https://developers.openai.com/plugins/build/plugins)
@@ -57,3 +73,7 @@ Gate 1 result: **PASS FOR THE BOUNDED TECHNICAL MVP**. The installed headless pa
 - [Codex MCP](https://learn.chatgpt.com/docs/extend/mcp)
 - [Codex App Server](https://learn.chatgpt.com/docs/app-server)
 - [Slash commands](https://learn.chatgpt.com/docs/reference/slash-commands)
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
+- [Develop a Harness plugin](https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/)
+- [Harness plugin tool API](https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/tool)
+- [Publish and install Harness plugins](https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/publish)
