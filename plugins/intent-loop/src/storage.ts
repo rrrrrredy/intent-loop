@@ -428,6 +428,20 @@ export class LedgerStore {
     await delay(10 + (process.pid % 41));
   }
 
+  private async reclaimedLockDirectoryDisappeared(reclaimed: string): Promise<boolean> {
+    const started = Date.now();
+    while (true) {
+      const info = await lstat(reclaimed).catch((error: unknown) => {
+        if (new Set(["ENOENT", "ENOTDIR"]).has(errorCode(error))) return null;
+        throw error;
+      });
+      if (info === null) return true;
+      if (info.isSymbolicLink() || !info.isDirectory()) return false;
+      if (Date.now() - started >= this.lockWaitMs) return false;
+      await this.pauseForLockTransition();
+    }
+  }
+
   private async removeInternalDirectory(
     projectDirectory: string,
     name: "private-sessions" | "quarantine"
@@ -624,6 +638,21 @@ export class LedgerStore {
     }
     const movedOwner = movedOwnerObservation.owner;
     const movedReclaimer = movedReclaimerObservation.owner;
+    const movedIdentityUnavailable =
+      movedOwnerObservation.raced ||
+      movedReclaimerObservation.raced ||
+      (observed !== null && movedOwner === null) ||
+      movedReclaimer === null;
+    if (
+      movedIdentityUnavailable &&
+      await this.reclaimedLockDirectoryDisappeared(reclaimed)
+    ) {
+      // Another writer can acquire the newly vacant canonical lock and remove
+      // this uniquely named quarantine before these post-rename reads finish.
+      // Its disappearance completes the reclaim; a stable identity mismatch
+      // below remains a compromise signal.
+      return true;
+    }
     if (
       (observed?.token ?? null) !== (movedOwner?.token ?? null) ||
       movedReclaimer?.token !== reclaimOwner.token

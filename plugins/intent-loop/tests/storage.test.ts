@@ -181,6 +181,7 @@ test("all real processes recover one dead stale lock without surfacing filesyste
   `;
   const resultsPromise = Promise.all(Array.from({ length: 32 }, (_, index) => new Promise<{
     code: number | null;
+    index: number;
     stderr: string;
   }>((resolve, reject) => {
     const child = spawn(process.execPath, [
@@ -196,27 +197,126 @@ test("all real processes recover one dead stale lock without surfacing filesyste
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk: string) => { stderr += chunk; });
     child.once("error", reject);
-    child.once("close", (code) => resolve({ code, stderr }));
+    child.once("close", (code) => resolve({ code, index, stderr }));
   })));
   exitingOwner.stdin.end();
   await ownerExit;
   const results = await resultsPromise;
   const projectEntries = await readdir(projectDirectory);
   const residualLockEntries = projectEntries.filter((entry) => entry.startsWith("ledger.lock"));
-  const lockEntries = await readdir(lockDirectory).catch(() => []);
+  const lockEntries = await readdir(lockDirectory).catch((error: unknown) => {
+    if (error instanceof Error && "code" in error && String(error.code) === "ENOENT") return [];
+    throw error;
+  });
   const remainingOwner = await readFile(ownerPath, "utf8").catch(() => "");
   const remainingReclaimer = await readFile(path.join(lockDirectory, "reclaim.json"), "utf8").catch(() => "");
   const failures = results.filter((result) => result.code !== 0);
+  const events = await store.readEvents(projectId);
   assert.equal(
     failures.length,
     0,
-    JSON.stringify({ residualLockEntries, lockEntries, remainingOwner, remainingReclaimer }) + "\n" +
+    JSON.stringify({
+      residualLockEntries,
+      lockEntries,
+      remainingOwner,
+      remainingReclaimer,
+      eventCount: events.length,
+      uniqueRequestIds: new Set(events.map((item) => item.request_id)).size,
+      firstFailureIndex: failures[0]?.index ?? null
+    }) + "\n" +
       (failures[0]?.stderr ?? "")
   );
   assert.deepEqual(residualLockEntries, []);
-  const events = await store.readEvents(projectId);
   assert.equal(events.length, 33);
   assert.equal(new Set(events.map((item) => item.request_id)).size, 33);
+});
+
+test("accepts peer cleanup of its uniquely renamed stale lock as completed reclamation", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data);
+  const peerStore = new LedgerStore(workspace.data);
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, "{}\n", "utf8");
+  const old = new Date(Date.now() - 120_000);
+  await utimes(ownerPath, old, old);
+  await utimes(lockDirectory, old, old);
+
+  type LockObservation = {
+    owner: { pid: number; token: string; acquired_at: string } | null;
+    raced: boolean;
+  };
+  const internals = store as unknown as {
+    observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;
+  };
+  const observeLockMarker = internals.observeLockMarker.bind(store);
+  let peerCleaned = false;
+  internals.observeLockMarker = async (directory, filePath) => {
+    const containingDirectory = path.dirname(filePath);
+    if (!peerCleaned && path.basename(containingDirectory).startsWith("ledger.lock.stale-")) {
+      peerCleaned = true;
+      await peerStore.appendEvent(projectId, event(taskId, 2));
+    }
+    return observeLockMarker(directory, filePath);
+  };
+
+  await store.appendEvent(projectId, event(taskId, 3));
+
+  assert.equal(peerCleaned, true);
+  const events = await store.readEvents(projectId);
+  assert.equal(events.length, 3);
+  assert.deepEqual(events.map((item) => item.request_id), ["storage-1", "storage-2", "storage-3"]);
+  assert.deepEqual((await readdir(projectDirectory)).filter((entry) => entry.startsWith("ledger.lock")), []);
+});
+
+test("rejects a stable stale-lock quarantine whose reclaimer identity changes", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data);
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  await store.appendEvent(projectId, event(taskId, 1));
+  const projectDirectory = await store.projectDirectory(projectId);
+  const lockDirectory = path.join(projectDirectory, "ledger.lock");
+  const ownerPath = path.join(lockDirectory, "owner.json");
+  await mkdir(lockDirectory);
+  await writeFile(ownerPath, "{}\n", "utf8");
+  const old = new Date(Date.now() - 120_000);
+  await utimes(ownerPath, old, old);
+  await utimes(lockDirectory, old, old);
+
+  type LockObservation = {
+    owner: { pid: number; token: string; acquired_at: string } | null;
+    raced: boolean;
+  };
+  const internals = store as unknown as {
+    observeLockMarker: (projectDirectory: string, filePath: string) => Promise<LockObservation>;
+  };
+  const observeLockMarker = internals.observeLockMarker.bind(store);
+  let identityChanged = false;
+  internals.observeLockMarker = async (directory, filePath) => {
+    const containingDirectory = path.dirname(filePath);
+    if (!identityChanged && path.basename(containingDirectory).startsWith("ledger.lock.stale-")) {
+      identityChanged = true;
+      await writeFile(path.join(containingDirectory, "reclaim.json"), `${JSON.stringify({
+        pid: process.pid,
+        token: newId(),
+        acquired_at: new Date().toISOString()
+      })}\n`, "utf8");
+    }
+    return observeLockMarker(directory, filePath);
+  };
+
+  await assert.rejects(
+    store.appendEvent(projectId, event(taskId, 2)),
+    (error: unknown) => error instanceof IntentLoopError && error.code === "LOCK_COMPROMISED"
+  );
+  assert.equal(identityChanged, true);
+  assert.equal((await store.readEvents(projectId)).length, 1);
 });
 
 test("the next locked mutation removes strictly named orphan release and stale lock directories", async (t) => {

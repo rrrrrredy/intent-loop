@@ -30120,6 +30120,19 @@ var LedgerStore = class {
   async pauseForLockRetry() {
     await delay(10 + process.pid % 41);
   }
+  async reclaimedLockDirectoryDisappeared(reclaimed) {
+    const started = Date.now();
+    while (true) {
+      const info = await lstat(reclaimed).catch((error51) => {
+        if ((/* @__PURE__ */ new Set(["ENOENT", "ENOTDIR"])).has(errorCode(error51))) return null;
+        throw error51;
+      });
+      if (info === null) return true;
+      if (info.isSymbolicLink() || !info.isDirectory()) return false;
+      if (Date.now() - started >= this.lockWaitMs) return false;
+      await this.pauseForLockTransition();
+    }
+  }
   async removeInternalDirectory(projectDirectory, name) {
     const directory = await this.internalDirectory(projectDirectory, name, false);
     if (directory !== null) await rm(directory, { recursive: true, force: true });
@@ -30302,6 +30315,10 @@ var LedgerStore = class {
     }
     const movedOwner = movedOwnerObservation.owner;
     const movedReclaimer = movedReclaimerObservation.owner;
+    const movedIdentityUnavailable = movedOwnerObservation.raced || movedReclaimerObservation.raced || observed !== null && movedOwner === null || movedReclaimer === null;
+    if (movedIdentityUnavailable && await this.reclaimedLockDirectoryDisappeared(reclaimed)) {
+      return true;
+    }
     if ((observed?.token ?? null) !== (movedOwner?.token ?? null) || movedReclaimer?.token !== reclaimOwner.token) {
       throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity changed during reclamation", true);
     }
