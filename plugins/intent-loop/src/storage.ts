@@ -633,9 +633,6 @@ export class LedgerStore {
       projectDirectory,
       path.join(reclaimed, "reclaim.json")
     );
-    if (movedOwnerObservation.raced || movedReclaimerObservation.raced) {
-      throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity raced during reclamation", true);
-    }
     const movedOwner = movedOwnerObservation.owner;
     const movedReclaimer = movedReclaimerObservation.owner;
     const movedIdentityUnavailable =
@@ -652,6 +649,9 @@ export class LedgerStore {
       // Its disappearance completes the reclaim; a stable identity mismatch
       // below remains a compromise signal.
       return true;
+    }
+    if (movedOwnerObservation.raced || movedReclaimerObservation.raced) {
+      throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity raced during reclamation", true);
     }
     if (
       (observed?.token ?? null) !== (movedOwner?.token ?? null) ||

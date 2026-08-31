@@ -30310,14 +30310,14 @@ var LedgerStore = class {
       projectDirectory,
       path2.join(reclaimed, "reclaim.json")
     );
-    if (movedOwnerObservation.raced || movedReclaimerObservation.raced) {
-      throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity raced during reclamation", true);
-    }
     const movedOwner = movedOwnerObservation.owner;
     const movedReclaimer = movedReclaimerObservation.owner;
     const movedIdentityUnavailable = movedOwnerObservation.raced || movedReclaimerObservation.raced || observed !== null && movedOwner === null || movedReclaimer === null;
     if (movedIdentityUnavailable && await this.reclaimedLockDirectoryDisappeared(reclaimed)) {
       return true;
+    }
+    if (movedOwnerObservation.raced || movedReclaimerObservation.raced) {
+      throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity raced during reclamation", true);
     }
     if ((observed?.token ?? null) !== (movedOwner?.token ?? null) || movedReclaimer?.token !== reclaimOwner.token) {
       throw new IntentLoopError("LOCK_COMPROMISED", "stale-lock identity changed during reclamation", true);

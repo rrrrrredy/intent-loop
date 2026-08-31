@@ -231,7 +231,7 @@ test("all real processes recover one dead stale lock without surfacing filesyste
   assert.equal(new Set(events.map((item) => item.request_id)).size, 33);
 });
 
-test("accepts peer cleanup of its uniquely renamed stale lock as completed reclamation", async (t) => {
+test("accepts a raced marker read after peer cleanup of its renamed stale lock", async (t) => {
   const workspace = await testWorkspace(t);
   const store = new LedgerStore(workspace.data);
   const peerStore = new LedgerStore(workspace.data);
@@ -261,6 +261,7 @@ test("accepts peer cleanup of its uniquely renamed stale lock as completed recla
     if (!peerCleaned && path.basename(containingDirectory).startsWith("ledger.lock.stale-")) {
       peerCleaned = true;
       await peerStore.appendEvent(projectId, event(taskId, 2));
+      return { owner: null, raced: true };
     }
     return observeLockMarker(directory, filePath);
   };
