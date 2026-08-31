@@ -246,16 +246,18 @@ test("rejects user-controlled storage path identifiers", async (t) => {
 });
 
 test("uses the shared Codex-home runtime root when MCP lacks Hook-only PLUGIN_DATA", () => {
+  const codexHome = path.resolve("test-codex-home");
   const resolved = dataRootFromEnvironment({
-    CODEX_HOME: path.join("D:\\", "Codex", "_home"),
-    PLUGIN_DATA: path.join("D:\\", "different-hook-root")
+    CODEX_HOME: codexHome,
+    PLUGIN_DATA: path.resolve("different-hook-root")
   });
-  assert.equal(resolved, path.resolve("D:\\Codex\\_home", "plugin-data", "intent-loop", "v1"));
+  assert.equal(resolved, path.join(codexHome, "plugin-data", "intent-loop", "v1"));
 });
 
 test("infers the same Codex-home data root from an installed cache entry when child env is sanitized", () => {
+  const codexHome = path.resolve("test-codex-home");
   const entry = path.resolve(
-    "D:\\Codex\\_home",
+    codexHome,
     "plugins",
     "cache",
     "intent-loop",
@@ -266,6 +268,6 @@ test("infers the same Codex-home data root from an installed cache entry when ch
   );
   assert.equal(
     dataRootFromEnvironment({}, entry),
-    path.resolve("D:\\Codex\\_home", "plugin-data", "intent-loop", "v1")
+    path.join(codexHome, "plugin-data", "intent-loop", "v1")
   );
 });
