@@ -2,9 +2,9 @@
 
 Decision date: 2026-08-31
 
-Decision: **V0.2 PUBLIC BETA CANDIDATE; THREE-OS PUBLIC VALIDATION REQUIRED; EFFICACY ITERATE**
+Decision: **V0.2 PUBLIC BETA GO; EFFICACY ITERATE**
 
-Intent Loop `v0.2.0-beta.1` adds a bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. Local Windows source, adapter, package, dependency, and real Harness lifecycle checks pass. Publication remains gated on the exact candidate commit passing the expanded Windows/Ubuntu/macOS GitHub Actions matrix, followed by exact-tag package and uninstall verification.
+Intent Loop `v0.2.0-beta.1` adds a bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. Local Windows checks pass, and implementation commit `0e134d8efebf1ff385d2b87da8f13397f5424026` passed all 18 jobs in the public Windows/Ubuntu/macOS [GitHub Actions matrix](https://github.com/rrrrrredy/intent-loop/actions/runs/33370869114). Publication remains operationally gated on the final documentation-only candidate passing that same workflow, followed by exact-tag package, install, use, uninstall, and cleanup verification.
 
 This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
 
@@ -12,12 +12,12 @@ This adapter was directly authorized by the user after the original Codex-only b
 
 | Gate | Current result | Reason |
 | --- | --- | --- |
-| Shared product boundary | **Pass locally** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. |
-| DeepSeek host binding | **Pass locally** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access. |
-| Session and credential isolation | **Pass locally** | One bounded MCP child per active Harness session; API-key variables are omitted; idle, unload, timeout, and cancellation cleanup are tested. |
-| Codex regression | **Pass locally** | The unchanged core behavior passes 72/72 tests and clean-distribution verification after the version bump. |
-| DeepSeek package | **Pass locally** | Generated catalog/legal checks, five adapter test groups, npm package inspection, zero-vulnerability audit, and a temporary Windows Harness add/compose/boot-help/remove lifecycle pass. |
-| Linux/macOS | **Pending public evidence** | CI and real temporary Harness lifecycle jobs are configured for Ubuntu and macOS; support is claimed only after the public jobs pass. |
+| Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local checks and the public three-OS matrix agree. |
+| DeepSeek host binding | **Pass** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access in the adapter suite on all three systems. |
+| Session and credential isolation | **Pass** | One bounded MCP child per active Harness session; API-key variables are omitted; serialized creation, hard capacity, idle, unload, timeout, and cancellation cleanup are tested on all three systems. |
+| Codex regression | **Pass** | The unchanged core behavior passes 72/72 tests and clean-distribution verification in nine public jobs: Node 20, 22, and 24 on Windows, Ubuntu, and macOS. |
+| DeepSeek package | **Pass** | Generated catalog/legal checks, five adapter test groups, npm package inspection, zero-vulnerability local audit, and temporary Harness add/compose/boot-help/remove lifecycles pass. |
+| Linux/macOS | **Pass for the headless candidate** | Ubuntu and macOS adapter jobs pass on Node 22.19 and 24, and each system completes the real temporary Harness package lifecycle. Native GUI-specific behavior is outside this claim. |
 | Efficacy | **No result** | The frozen paired 80-task study has not been run. |
 
 ## V0.2 cross-platform decision

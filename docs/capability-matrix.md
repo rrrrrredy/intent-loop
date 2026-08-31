@@ -58,11 +58,11 @@ Checked on 2026-08-31 against the official DeepSeek Harness repository and docum
 | Active workspace/session identity | Confirmed | Harness exposes the active agent session's `cwd` and session ID. The adapter removes caller-facing selectors, canonicalizes the host cwd, and privately hashes/injects session ownership. |
 | Git package installation | Confirmed locally | Official plugin management accepts package or Git specs. A packed repository bundle was added to a temporary `headless` profile, composed, booted through the help path, removed, and confirmed absent. |
 | Prebuilt package requirement | Confirmed | The root package ships prebuilt adapter JavaScript, the shared MCP runtime, generated tool catalog, Skill, notices, and SBOM; no install-time build is required. |
-| Session-private MCP memory | Confirmed locally | A bounded pool creates one MCP child per active Harness session, preserves in-session private semantics, isolates another session, and closes every child on eviction or unload. |
-| Credential boundary | Confirmed locally | Child environment tests show model-provider API keys/tokens are omitted. The state runtime contains no outbound network client. |
-| Windows/Linux/macOS | Candidate | Windows local lifecycle passes. Exact-commit public adapter and lifecycle jobs are required on Windows, Ubuntu, and macOS before the release claims all three. |
+| Session-private MCP memory | Confirmed | A bounded pool creates one MCP child per active Harness session, preserves in-session private semantics, isolates another session, serializes concurrent creation, enforces a hard capacity, and closes every child on eviction or unload. The suite passes on all three public runner systems. |
+| Credential boundary | Confirmed | Child environment tests show model-provider API keys/tokens are omitted. The state runtime contains no outbound network client. The adapter suite passes on all three public runner systems. |
+| Windows/Linux/macOS | Confirmed for the headless candidate | Public run [`33370869114`](https://github.com/rrrrrredy/intent-loop/actions/runs/33370869114) passes all 18 jobs, including adapter tests and a real temporary Harness package/add/compose/boot-help/remove lifecycle on each system. Native GUI-specific behavior is outside this claim. |
 
-Gate 1b result: **PASS LOCALLY FOR A BOUNDED DEVELOPER-PREVIEW ADAPTER; PUBLIC THREE-OS EVIDENCE PENDING**. This is transport evidence and does not change the frozen `NO RESULT` efficacy status or authorize more host ports.
+Gate 1b result: **PASS FOR A BOUNDED DEVELOPER-PREVIEW ADAPTER ON THE THREE HEADLESS RUNNER SYSTEMS**. This is transport evidence and does not change the frozen `NO RESULT` efficacy status or authorize more host ports. Exact-tag public installation remains a separate release check.
 
 ## Primary sources
 

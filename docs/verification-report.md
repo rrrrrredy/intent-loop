@@ -4,7 +4,7 @@ Verified on 2026-08-31 from `D:\Codex\intent-loop` with local Node.js `20.19.1` 
 
 ## V0.2.0-beta.1 candidate evidence
 
-The `v0.2.0-beta.1` candidate adds a DeepSeek Harness `0.1.2-alpha.2` developer-preview adapter and expands compatibility validation to Windows, Ubuntu, and macOS. At this checkpoint, public Actions and exact-tag evidence are deliberately pending; only executed local results are marked pass.
+The `v0.2.0-beta.1` candidate adds a DeepSeek Harness `0.1.2-alpha.2` developer-preview adapter and expands compatibility validation to Windows, Ubuntu, and macOS. Local checks and the public code-candidate matrix pass. Exact-tag release assets and fresh public-install evidence remain separate publication checks.
 
 | Surface | Executed check | Result |
 | --- | --- | --- |
@@ -14,13 +14,15 @@ The `v0.2.0-beta.1` candidate adds a DeepSeek Harness `0.1.2-alpha.2` developer-
 | DeepSeek legal/package | Deterministic legal generation plus packed-file verification | **24 SBOM components**, **15 additional notices**, **15 packed files**; package composition verifier passes. |
 | Dependencies | Root `npm audit --omit=dev --audit-level=high` | **0 known vulnerabilities** at check time. |
 | Windows real Harness lifecycle | Temporary `DSH_HOME`; pack, add to `headless`, compose/dump, boot help path, remove, absence check, cleanup | **Pass** on Harness `0.1.2-alpha.2`; no model API key used or left in the child environment; temporary home removed. |
-| Three-OS public matrix | Codex Node 20/22/24, DeepSeek adapter Node 22.19/24, and DeepSeek host lifecycle on Windows/Ubuntu/macOS | **Pending** until the exact candidate commit is pushed and every public job passes. |
+| Three-OS public matrix | Codex Node 20/22/24, DeepSeek adapter Node 22.19/24, and DeepSeek host lifecycle on Windows/Ubuntu/macOS | **18/18 pass** on implementation commit `0e134d8efebf1ff385d2b87da8f13397f5424026`; public run [`33370869114`](https://github.com/rrrrrredy/intent-loop/actions/runs/33370869114). |
 
 The DeepSeek adapter launches one MCP child lazily per active Harness session and injects the host's canonical workspace and session binding. The child receives a limited OS environment instead of the parent process's model-provider credentials. Pool capacity, idle eviction, tool timeout, cancellation, and plugin-unload cleanup are bounded and tested.
 
 The final local Codex runtime after cross-platform fixes has SHA-256 `F19127B4B0E2AFD02C56C4968C8FF55847B5C848E19E04B8C4CE3C79D5B0794F`. The DeepSeek catalog was regenerated from that exact runtime and then passed its stale-file check. The final temporary Harness lifecycle returned `pack-add-compose-boot-help-remove`, `api_key_used=false`, and `dsh_home=temporary-and-removed`.
 
-The first expanded public matrix run, `33369885952`, was correctly treated as a failed candidate. It exposed two platform assumptions hidden by Windows: macOS resolves the temporary `/var` path through `/private/var`, which broke string-only Hook/MCP main-module detection, and Ubuntu's case-sensitive filesystem exposed a lowercase dependency `license` filename that the legal generator did not scan. The same run's temporary DeepSeek Harness lifecycle passed on Windows, Ubuntu, and macOS. Both failures were repaired in source and retained as publication history; a later all-green run is required before release.
+The first expanded public matrix run, [`33369885952`](https://github.com/rrrrrredy/intent-loop/actions/runs/33369885952), was correctly treated as a failed candidate. It exposed two platform assumptions hidden by Windows: macOS resolves the temporary `/var` path through `/private/var`, which broke string-only Hook/MCP main-module detection, and Ubuntu's case-sensitive filesystem exposed a lowercase dependency `license` filename that the legal generator did not scan. The same run's temporary DeepSeek Harness lifecycle passed on Windows, Ubuntu, and macOS. Both failures were repaired in source and retained as publication history.
+
+The repair commit then passed all 18 jobs in public run [`33370869114`](https://github.com/rrrrrredy/intent-loop/actions/runs/33370869114): nine Codex jobs, six DeepSeek adapter jobs, and three real temporary DeepSeek Harness lifecycle jobs. This clears the three-OS code-candidate gate without turning CI success into an efficacy claim.
 
 These checks establish transport, state, isolation, deletion, package, and lifecycle behavior. They do not establish reduced rework, improved final-match scores, interruption quality, or product-value efficacy. The paired evaluation remains `NO RESULT`.
 
