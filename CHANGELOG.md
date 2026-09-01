@@ -2,6 +2,18 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.2.0-beta.4 - 2026-09-01
+
+### Fixed
+
+- Looks up the exact draft Release through the authenticated release collection before comparing the five uploaded asset digests. GitHub's release-by-tag endpoint returns 404 for drafts.
+- Advances every Codex, DeepSeek, runtime, SBOM, lockfile, and installation identity after the failed beta.3 publication candidate.
+
+### Evidence boundary
+
+- The `v0.2.0-beta.3` tag passed exact-tag CI **18/18** and its Release job built, attested, and uploaded all five draft assets from one workflow. Draft verification then failed safely on the unsupported by-tag lookup; publication never ran. The draft was deleted, while the tag and Actions evidence remain for audit.
+- Beta.4 must repeat main and tag CI, immutable publication, public installed-host lifecycles, independent reviews, and cleanup. The paired efficacy study remains `NO RESULT`.
+
 ## 0.2.0-beta.3 - 2026-09-01
 
 ### Fixed

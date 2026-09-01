@@ -1,4 +1,4 @@
-/*! Intent Loop 0.2.0-beta.3 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.2.0-beta.4 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
 import { realpathSync as realpathSync2 } from "node:fs";

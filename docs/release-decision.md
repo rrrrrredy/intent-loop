@@ -2,11 +2,13 @@
 
 Decision date: 2026-09-01
 
-Decision: **V0.2.0-BETA.3 RELEASE CANDIDATE GO; IMMUTABLE RELEASE AND PUBLIC INSTALL VALIDATION REQUIRED; EFFICACY ITERATE**
+Decision: **V0.2.0-BETA.4 RELEASE CANDIDATE GO; IMMUTABLE RELEASE AND PUBLIC INSTALL VALIDATION REQUIRED; EFFICACY ITERATE**
 
 Intent Loop `v0.2.0-beta.2` passed its exact-tag 18-job matrix and both public Windows installed-host lifecycles, but the final adversarial review found a release-integrity P1: GitHub release immutability was disabled, and the DeepSeek package, its SBOM, and the expanded checksum manifest were added after the Release workflow had already published. The five public bytes and hashes are correct; their future non-replaceability and one-workflow provenance were not established. Beta.2 therefore remains superseded history.
 
-The beta.3 candidate keeps the same reviewed product code and adds one exact-tag publication path. It waits for all 18 tag CI jobs, tests both hosts again, builds all five assets in one job, attests both packages and both SBOM relationships, verifies draft asset digests, and publishes only after those checks. Local beta.3 source, distribution, package, and audit checks pass. Publication remains gated on enabling repository immutable releases, exact-tag CI, `immutable:true`, GitHub release-attestation verification, fresh public Codex and DeepSeek lifecycles, repeated independent reviews, and final cleanup.
+The beta.3 tag kept the same reviewed product code and passed exact-tag CI 18/18. Its Release job tested both hosts, built and attested all five assets, and uploaded them to one draft. The safety gate then stopped before publication because GitHub's release-by-tag endpoint does not return drafts. The unpublished draft was deleted; the tag and Actions run remain as audit evidence.
+
+The beta.4 candidate changes that lookup to the authenticated release collection, selects the exact tag's draft ID, then fetches and compares all remote asset digests before publication. No product-state semantics changed. Publication remains gated on repeated main and tag CI, `immutable:true`, GitHub release-attestation verification, fresh public Codex and DeepSeek lifecycles, repeated independent reviews, and final cleanup.
 
 This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
 
@@ -17,10 +19,10 @@ This adapter was directly authorized by the user after the original Codex-only b
 | Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local beta.3 checks and the beta.2 public three-OS matrix agree. |
 | DeepSeek host binding | **Pass** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access in the adapter suite on all three systems. |
 | Session and credential isolation | **Pass** | One bounded MCP child per active Harness session; API-key variables are omitted; serialized creation, hard capacity, failure draining, one-close cleanup, idle, unload, timeout, and cancellation behavior pass locally and in the public three-OS matrix. |
-| Codex regression | **Local pass; public beta.3 pending** | The beta.3 candidate passes 73/73 tests, the live version handshake, and clean-distribution verification locally. Exact-tag Node 20/22/24 Windows, Ubuntu, and macOS results remain a publication gate. |
-| DeepSeek package | **Local pass; public beta.3 pending** | Generated catalog/legal checks, six adapter test groups, the exact 16-file package, live version handshake, and zero-vulnerability audit pass locally. Exact-tag package and host-lifecycle evidence remains a publication gate. |
-| Linux/macOS | **Beta.2 pass for headless packages; beta.3 pending** | Beta.2 passed Codex, DeepSeek adapter, and temporary Harness lifecycles on hosted Ubuntu and macOS. The same exact-tag checks must pass again for beta.3; native GUI-specific and physical end-user machine behavior remain outside this claim. |
-| Release integrity | **Pending** | The beta.3 workflow enforces exact-tag CI, one-job five-asset construction, draft digest checks, package/SBOM attestations, immutable publication, and release/asset attestation verification. The public run has not yet occurred. |
+| Codex regression | **Beta.3 tag pass; beta.4 pending** | Beta.3 passed 73/73 locally and all nine exact-tag Node 20/22/24 Windows, Ubuntu, and macOS jobs. The beta.4 identity must repeat the same checks. |
+| DeepSeek package | **Local pass; public beta.4 pending** | Generated catalog/legal checks, six adapter test groups, the exact 16-file package, live version handshake, and zero-vulnerability audit pass locally. Exact-tag package and host-lifecycle evidence remains a publication gate. |
+| Linux/macOS | **Beta.3 pass for headless packages; beta.4 pending** | Beta.3 passed Codex, DeepSeek adapter, and temporary Harness lifecycles on hosted Ubuntu and macOS. The same exact-tag checks must pass again for beta.4; native GUI-specific and physical end-user machine behavior remain outside this claim. |
+| Release integrity | **Pending** | Beta.3 proved exact-tag CI ordering and one-job five-asset construction/attestation but stopped safely on the draft lookup. Beta.4 fixes that lookup and must still prove draft digest checks, immutable publication, and release/asset attestation verification. |
 | Efficacy | **No result** | The frozen paired 80-task study has not been run. |
 
 ## V0.2 cross-platform decision

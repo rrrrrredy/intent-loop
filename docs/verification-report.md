@@ -2,21 +2,23 @@
 
 Verified through 2026-09-01 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
 
-## V0.2.0-beta.3 candidate evidence
+## V0.2.0-beta.4 candidate evidence
 
 The final beta.2 adversarial review returned **HOLD** despite correct current asset bytes. GitHub reported `immutable:false`, repository release immutability was disabled, and three DeepSeek-related assets were uploaded after the Release workflow had published. Enabling immutability is prospective, so beta.2 cannot be retroactively upgraded into an immutable release.
 
-The beta.3 candidate changes no product-state semantics. It advances every installed and generated identity, fixes the stale 72-test README count, and replaces the release path with an exact-tag gate that waits for 18/18 CI, builds both packages and both SBOM assets in one job, generates one four-payload checksum manifest, creates a draft, verifies all five remote digests, and only then publishes and verifies the immutable release attestation.
+The beta.3 tag changed no product-state semantics. It passed exact-tag CI run [`33466884550`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884550) **18/18**. Release run [`33466884600`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884600) retested both packages, built all five assets, generated both package provenance attestations, both package-to-SBOM attestations, and checksum-manifest provenance, then uploaded every draft asset as `github-actions[bot]`. The next step failed safely because `GET /releases/tags/{tag}` returns 404 for an unpublished draft. The publish step was skipped, the draft was deleted, and the beta.3 tag remains audit-only.
 
-| Beta.3 candidate surface | Executed local check | Result |
+Beta.4 selects the exact draft from the authenticated release collection and fetches it by release ID before comparing all five remote digests. Every installed and generated identity advances again; product-state semantics remain unchanged.
+
+| Beta.4 candidate surface | Executed local check | Result |
 | --- | --- | --- |
-| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.3`. |
-| DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.3`, 24 SBOM components, and 15 additional notices. |
-| DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260475` bytes, with no tests, scripts, or `node_modules`. |
+| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.4`. |
+| DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.4`, 24 SBOM components, and 15 additional notices. |
+| DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260480` bytes, with no tests, scripts, or `node_modules`. |
 | Dependencies | Both production dependency audits at high severity | **Pass**; zero known vulnerabilities at check time. |
-| Release workflow structure | YAML parse, exact-tag CI gate, draft byte comparison, dual package/SBOM attestations, immutable-release and per-asset verification review | **Pass as source; public execution pending**. |
+| Release workflow structure | Exact-tag gate and one-job build/attestation/upload passed in beta.3; collection-based exact-draft lookup added | Source fix present; beta.4 public execution pending. |
 
-Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.3 becomes recommended.
+Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.4 becomes recommended.
 
 ## V0.2.0-beta.2 publication and supersession evidence
 

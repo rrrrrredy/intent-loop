@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_from": "plugins/intent-loop/runtime/server.mjs",
-  "source_runtime_sha256": "396c4655637d9c20ef7e3730ddee068a452557607eee89fe90503ed76950fa59",
+  "source_runtime_sha256": "5fbd71ba6ebe220410da90b2eb3c370cc68464d347abda502168a4259050f351",
   "tools": [
     {
       "name": "intent_add_evidence",

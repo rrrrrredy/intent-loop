@@ -74,6 +74,8 @@ The reviewer nevertheless returned **HOLD**, P1. GitHub reported `immutable:fals
 
 The accepted repair is a new beta.3 tag after enabling immutable releases. Its workflow waits for exact-tag 18/18 CI, builds and attests both packages in one job, verifies all five draft asset digests, publishes once, and verifies GitHub's release attestation. Beta.2 remains superseded evidence and its tag is not moved or reused.
 
+Beta.3 then passed exact-tag CI 18/18 and its Release job built, attested, and uploaded all five assets to an unpublished draft as `github-actions[bot]`. The digest gate used GitHub's release-by-tag endpoint, which returns 404 for drafts, so the workflow failed before publication. The draft was deleted and the tag was retained without movement. Beta.4 changes only the draft lookup to select the exact tag from the authenticated release collection and fetch by release ID; the full public review must repeat.
+
 ## Practical first-use review
 
 The first-use review installed the beta on Windows and exercised start, show, correct, feedback, export, off, and forget from a fresh task.

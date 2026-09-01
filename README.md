@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.2.0--beta.3-6657D9.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-0.2.0--beta.4-6657D9.svg)](CHANGELOG.md)
 
 Intent Loop gives Codex or DeepSeek Harness a small, local, traceable memory of what you currently want. It keeps requirements, guesses, evidence, unknowns, and disagreements separate, and updates the current view without erasing earlier corrections.
 
@@ -50,7 +50,7 @@ Review the plugin manifest, Skill, MCP definition, and optional Hooks before ins
 - `plugins/intent-loop/hooks/hooks.json`
 
 ~~~powershell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.3
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.4
 codex plugin add intent-loop@intent-loop
 ~~~
 
@@ -61,7 +61,7 @@ Start a new Codex task after installation. Manual Skill and MCP use works withou
 DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.3
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.4
 ~~~
 
 Use `web` instead of `headless` for the Web profile. See the [DeepSeek adapter guide](dsh/README.md) for its session, storage, and uninstall boundaries.

@@ -1,4 +1,4 @@
-/*! Intent Loop 0.2.0-beta.3 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.2.0-beta.4 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 var __defProp = Object.defineProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -29801,7 +29801,7 @@ import path2 from "node:path";
 
 // src/types.ts
 var SCHEMA_VERSION = 1;
-var SERVER_VERSION = "0.2.0-beta.3";
+var SERVER_VERSION = "0.2.0-beta.4";
 
 // src/migrations.ts
 function migrateEventRecord(input) {

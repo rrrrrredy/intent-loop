@@ -134,7 +134,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" > "$RUNNER_TEMP/draft-release.json"
+          RELEASE_ID=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq ".[] | select(.tag_name == \"$GITHUB_REF_NAME\" and .draft == true) | .id")
+          test -n "$RELEASE_ID"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > "$RUNNER_TEMP/draft-release.json"
           node --input-type=module <<'NODE'
           import { createHash } from "node:crypto";
           import { readFileSync, readdirSync } from "node:fs";

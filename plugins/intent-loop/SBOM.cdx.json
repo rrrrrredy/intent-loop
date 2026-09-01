@@ -1,15 +1,15 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:39a13d20-a428-5c89-86ab-52c769e36a28",
+  "serialNumber": "urn:uuid:32fd063e-52fc-5280-ab8c-16e7dd0c819a",
   "version": 1,
   "metadata": {
     "component": {
       "type": "application",
-      "bom-ref": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.3",
+      "bom-ref": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.4",
       "name": "@intent-loop/codex-plugin",
-      "version": "0.2.0-beta.3",
-      "purl": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.3",
+      "version": "0.2.0-beta.4",
+      "purl": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.4",
       "licenses": [
         {
           "license": {
@@ -248,7 +248,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.3",
+      "ref": "pkg:npm/%40intent-loop/codex-plugin@0.2.0-beta.4",
       "dependsOn": [
         "pkg:npm/%40modelcontextprotocol/core@2.0.0",
         "pkg:npm/%40modelcontextprotocol/server@2.0.0",
