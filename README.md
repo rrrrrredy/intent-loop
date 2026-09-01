@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.2.0--beta.2-6657D9.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-0.2.0--beta.3-6657D9.svg)](CHANGELOG.md)
 
 Intent Loop gives Codex or DeepSeek Harness a small, local, traceable memory of what you currently want. It keeps requirements, guesses, evidence, unknowns, and disagreements separate, and updates the current view without erasing earlier corrections.
 
@@ -36,7 +36,7 @@ See the [simple Chinese guide](docs/simple-guide.zh-CN.md) for a two-minute intr
 | Codex | Repository marketplace plugin | Node.js 20+ | Self-contained Skill, MCP server, and optional fail-open Hooks |
 | DeepSeek Harness | `dsh-intent-loop` bundle | Node.js `^22.19.0` or `>=24.0.0` | Thin adapter pinned to Harness `0.1.2-alpha.2`, which is a developer preview |
 
-The source suite has 72 Codex tests. The DeepSeek adapter additionally tests tool registration, credential isolation, bounded session cleanup, real MCP calls, workspace forgery rejection, session isolation, deletion, and package composition. A temporary Windows DeepSeek Harness lifecycle completed package, add, compose, boot-help, remove, and cleanup without a model API key.
+The source suite has 73 Codex tests. The DeepSeek adapter additionally tests tool registration, credential isolation, bounded session cleanup, real MCP calls, workspace forgery rejection, session isolation, deletion, and package composition. A temporary Windows DeepSeek Harness lifecycle completed package, add, compose, boot-help, remove, and cleanup without a model API key.
 
 GitHub Actions runs the Codex and DeepSeek suites on Windows, Ubuntu, and macOS. Exact release results are recorded in the [verification report](docs/verification-report.md). These checks establish implementation and packaging behavior. The frozen paired 80-task human study has not been run, so this beta makes no claim that it reduces rework or improves final results.
 
@@ -50,7 +50,7 @@ Review the plugin manifest, Skill, MCP definition, and optional Hooks before ins
 - `plugins/intent-loop/hooks/hooks.json`
 
 ~~~powershell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.2
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.3
 codex plugin add intent-loop@intent-loop
 ~~~
 
@@ -61,7 +61,7 @@ Start a new Codex task after installation. Manual Skill and MCP use works withou
 DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.2
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.3
 ~~~
 
 Use `web` instead of `headless` for the Web profile. See the [DeepSeek adapter guide](dsh/README.md) for its session, storage, and uninstall boundaries.

@@ -2,9 +2,11 @@
 
 Decision date: 2026-09-01
 
-Decision: **V0.2.0-BETA.2 TAG CANDIDATE GO; PUBLIC INSTALL VALIDATION REQUIRED; EFFICACY ITERATE**
+Decision: **V0.2.0-BETA.3 RELEASE CANDIDATE GO; IMMUTABLE RELEASE AND PUBLIC INSTALL VALIDATION REQUIRED; EFFICACY ITERATE**
 
-Intent Loop `v0.2.0-beta.2` carries the bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. `v0.2.0-beta.1` passed source and tag CI, but fresh public-tag Codex installation reported installed version `0.1.0-beta.3`: the hidden plugin manifest had not advanced with the two package manifests. Beta.1 was immediately marked superseded without moving its tag. Beta.2 aligns every installed/package identity and adds regressions for the hidden manifest, both packages, the Codex SBOM, and the live MCP handshake. A later freeze run also exposed and repaired a Windows delete-pending orphan-lock race; the final code passed 73 tests and 10 rounds over 320 real child processes. Independent adversarial recheck returned `RELEASE`, P0/P1 zero. Corrected code commit `4f51d82bfe718e2e5f4f35a2dd8f422d29c0c54b` passed all **18/18** public Windows, Ubuntu, and macOS jobs in run [`33462684659`](https://github.com/rrrrrredy/intent-loop/actions/runs/33462684659). Publication remains gated on an exact-tag release plus fresh Codex and DeepSeek public installed-host lifecycles.
+Intent Loop `v0.2.0-beta.2` passed its exact-tag 18-job matrix and both public Windows installed-host lifecycles, but the final adversarial review found a release-integrity P1: GitHub release immutability was disabled, and the DeepSeek package, its SBOM, and the expanded checksum manifest were added after the Release workflow had already published. The five public bytes and hashes are correct; their future non-replaceability and one-workflow provenance were not established. Beta.2 therefore remains superseded history.
+
+The beta.3 candidate keeps the same reviewed product code and adds one exact-tag publication path. It waits for all 18 tag CI jobs, tests both hosts again, builds all five assets in one job, attests both packages and both SBOM relationships, verifies draft asset digests, and publishes only after those checks. Local beta.3 source, distribution, package, and audit checks pass. Publication remains gated on enabling repository immutable releases, exact-tag CI, `immutable:true`, GitHub release-attestation verification, fresh public Codex and DeepSeek lifecycles, repeated independent reviews, and final cleanup.
 
 This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
 
@@ -12,12 +14,13 @@ This adapter was directly authorized by the user after the original Codex-only b
 
 | Gate | Current result | Reason |
 | --- | --- | --- |
-| Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local checks and the public three-OS matrix agree. |
+| Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local beta.3 checks and the beta.2 public three-OS matrix agree. |
 | DeepSeek host binding | **Pass** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access in the adapter suite on all three systems. |
 | Session and credential isolation | **Pass** | One bounded MCP child per active Harness session; API-key variables are omitted; serialized creation, hard capacity, failure draining, one-close cleanup, idle, unload, timeout, and cancellation behavior pass locally and in the public three-OS matrix. |
-| Codex regression | **Pass** | The corrected candidate passes 73/73 tests plus clean-distribution verification locally, and its exact code commit passed all nine Node 20/22/24 Windows, Ubuntu, and macOS jobs in public run `33462684659`. |
-| DeepSeek package | **Pass** | Generated catalog/legal checks, six adapter test groups, npm package inspection, zero-vulnerability audit, and temporary Harness add/compose/boot-help/remove lifecycles pass. |
-| Linux/macOS | **Pass for headless packages** | The corrected beta.2 code commit passed Codex on Node 20/22/24, the DeepSeek adapter on Node 22.19/24, and a temporary Harness add/compose/boot-help/remove lifecycle on both Ubuntu and macOS. Native GUI-specific behavior is outside this claim. |
+| Codex regression | **Local pass; public beta.3 pending** | The beta.3 candidate passes 73/73 tests, the live version handshake, and clean-distribution verification locally. Exact-tag Node 20/22/24 Windows, Ubuntu, and macOS results remain a publication gate. |
+| DeepSeek package | **Local pass; public beta.3 pending** | Generated catalog/legal checks, six adapter test groups, the exact 16-file package, live version handshake, and zero-vulnerability audit pass locally. Exact-tag package and host-lifecycle evidence remains a publication gate. |
+| Linux/macOS | **Beta.2 pass for headless packages; beta.3 pending** | Beta.2 passed Codex, DeepSeek adapter, and temporary Harness lifecycles on hosted Ubuntu and macOS. The same exact-tag checks must pass again for beta.3; native GUI-specific and physical end-user machine behavior remain outside this claim. |
+| Release integrity | **Pending** | The beta.3 workflow enforces exact-tag CI, one-job five-asset construction, draft digest checks, package/SBOM attestations, immutable publication, and release/asset attestation verification. The public run has not yet occurred. |
 | Efficacy | **No result** | The frozen paired 80-task study has not been run. |
 
 ## V0.2 cross-platform decision

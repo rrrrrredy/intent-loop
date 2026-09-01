@@ -1,13 +1,13 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:bb3009db-9f55-5d6a-a5c6-8790e8989b04",
+  "serialNumber": "urn:uuid:f9cd41f7-a660-5995-9271-832597e90759",
   "version": 1,
   "metadata": {
     "component": {
       "type": "application",
       "name": "dsh-intent-loop",
-      "version": "0.2.0-beta.2",
+      "version": "0.2.0-beta.3",
       "licenses": [
         {
           "license": {
@@ -15,8 +15,8 @@
           }
         }
       ],
-      "purl": "pkg:npm/dsh-intent-loop@0.2.0-beta.2",
-      "bom-ref": "pkg:npm/dsh-intent-loop@0.2.0-beta.2"
+      "purl": "pkg:npm/dsh-intent-loop@0.2.0-beta.3",
+      "bom-ref": "pkg:npm/dsh-intent-loop@0.2.0-beta.3"
     }
   },
   "components": [

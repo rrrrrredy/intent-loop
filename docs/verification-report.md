@@ -2,11 +2,27 @@
 
 Verified through 2026-09-01 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
 
-## V0.2.0-beta.2 candidate evidence
+## V0.2.0-beta.3 candidate evidence
+
+The final beta.2 adversarial review returned **HOLD** despite correct current asset bytes. GitHub reported `immutable:false`, repository release immutability was disabled, and three DeepSeek-related assets were uploaded after the Release workflow had published. Enabling immutability is prospective, so beta.2 cannot be retroactively upgraded into an immutable release.
+
+The beta.3 candidate changes no product-state semantics. It advances every installed and generated identity, fixes the stale 72-test README count, and replaces the release path with an exact-tag gate that waits for 18/18 CI, builds both packages and both SBOM assets in one job, generates one four-payload checksum manifest, creates a draft, verifies all five remote digests, and only then publishes and verifies the immutable release attestation.
+
+| Beta.3 candidate surface | Executed local check | Result |
+| --- | --- | --- |
+| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.3`. |
+| DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.3`, 24 SBOM components, and 15 additional notices. |
+| DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260475` bytes, with no tests, scripts, or `node_modules`. |
+| Dependencies | Both production dependency audits at high severity | **Pass**; zero known vulnerabilities at check time. |
+| Release workflow structure | YAML parse, exact-tag CI gate, draft byte comparison, dual package/SBOM attestations, immutable-release and per-asset verification review | **Pass as source; public execution pending**. |
+
+Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.3 becomes recommended.
+
+## V0.2.0-beta.2 publication and supersession evidence
 
 Fresh installation from public tag `v0.2.0-beta.1` checked out the correct commit `3aa083d26a8b4624ab9a465f05c65d3c5e1b913e` but Codex reported installed version `0.1.0-beta.3`. The source package and generated runtime were `0.2.0-beta.1`; `.codex-plugin/plugin.json` alone was stale. The plugin and marketplace were removed immediately, beta.1 was marked superseded without rewriting its tag, and no business lifecycle result was credited.
 
-The beta.2 repair aligns the hidden Codex plugin manifest, source server constant, Codex package, DeepSeek package, lockfiles, generated runtimes, SBOMs, and install references. Distribution and catalog verification now connect with the official MCP client and require the live handshake version to match the package; the DeepSeek package check compares both package manifests plus the hidden plugin manifest and enforces the exact 16-file path set, including the notice path referenced by the runtime banner. The root DeepSeek test script also names its test file explicitly so Windows does not depend on shell glob expansion. Corrected code commit `4f51d82bfe718e2e5f4f35a2dd8f422d29c0c54b` passed all **18/18** public jobs in run [`33462684659`](https://github.com/rrrrrredy/intent-loop/actions/runs/33462684659). Exact-tag assets, public installs, practical review, and final cleanup remain required before beta.2 becomes recommended.
+The beta.2 repair aligned the hidden Codex plugin manifest, source server constant, Codex package, DeepSeek package, lockfiles, generated runtimes, SBOMs, and install references. Exact commit `d975191540b94386307ef2ebd1d107d099d13fa6` passed **18/18** on main in run [`33463193008`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463193008), **18/18** on tag in run [`33463578654`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578654), and Release run [`33463578770`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578770). Fresh public-tag Codex and DeepSeek Windows installs, business lifecycles, deletion, uninstall, and cleanup also passed. Beta.2 is still superseded because its published release and tag are mutable and its final five assets were not all produced by the Release workflow.
 
 | Beta.2 surface | Executed local check | Result |
 | --- | --- | --- |

@@ -12,7 +12,7 @@ Status terms: **Confirmed** has direct documentation or an executed probe; **Uns
 | Existing same-name project | Confirmed absent | The target repository was initialized as a new project rather than layered over another implementation. |
 | Existing user assets or uncommitted changes | Confirmed absent | The new project path did not exist. Empty, unrelated experimental directories were not reused. |
 | Repo instructions | Confirmed | Workspace instructions were read before implementation. No prior project contribution or plugin structure existed to preserve. |
-| MVP scope | Confirmed | This release is Codex-only; other agent adapters are prohibited until real paired evaluation passes. |
+| MVP scope | Confirmed | The original MVP was Codex-only. On 2026-08-31 the user explicitly authorized one bounded DeepSeek Harness adapter as transport research; it carries no efficacy claim and does not authorize further host ports. |
 
 Gate 0 result: **PASS**. There was no prior implementation whose direction could conflict with the frozen baseline.
 

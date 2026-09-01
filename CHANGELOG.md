@@ -2,6 +2,21 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.2.0-beta.3 - 2026-09-01
+
+### Fixed
+
+- Enabled one exact-tag release path that waits for all 18 Windows, Ubuntu, and macOS CI jobs before packaging or publication.
+- Builds the Codex archive and DeepSeek Harness package in the same GitHub Actions job, verifies both distributions, and generates one checksum manifest over all four payload and SBOM files.
+- Adds provenance and CycloneDX SBOM attestations for both host packages plus provenance for `SHA256SUMS`.
+- Creates a draft prerelease, uploads all five assets, checks every remote asset digest against the local workflow output, and only then publishes.
+- Requires the published release and every downloaded asset to pass GitHub's immutable release attestation verification.
+
+### Evidence boundary
+
+- `v0.2.0-beta.2` contained correct bytes but was published before repository release immutability was enabled; it is retained as superseded history rather than treated as the recommended supply-chain artifact.
+- The paired 80-task human study remains `NO RESULT`; release integrity and successful installed lifecycles do not establish product efficacy.
+
 ## 0.2.0-beta.2 - 2026-09-01
 
 ### Fixed
