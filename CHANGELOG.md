@@ -12,7 +12,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 ### Evidence boundary
 
 - The `v0.2.0-beta.4` tag passed exact-tag CI **18/18**. Its Release job independently retested both packages, created all five attestations, and uploaded all five draft assets from one workflow. Draft verification then failed safely because local and remote asset lists used different sort semantics; publication never ran. The draft was deleted, while the tag and Actions evidence remain for audit.
-- Beta.5 must repeat main and tag CI, immutable publication, public installed-host lifecycles, independent reviews, and cleanup. The paired efficacy study remains `NO RESULT`.
+- Beta.5 passed main and exact-tag CI at **18/18** each. Its Release workflow retested both packages, created five attestations, verified all five uploaded bytes, and published an immutable prerelease; fresh public Codex and DeepSeek Harness lifecycles also passed. The paired efficacy study remains `NO RESULT`.
 
 ## 0.2.0-beta.4 - 2026-09-01
 
@@ -38,7 +38,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Evidence boundary
 
-- `v0.2.0-beta.2` contained correct bytes but was published before repository release immutability was enabled; it is retained as superseded history rather than treated as the recommended supply-chain artifact.
+- `v0.2.0-beta.2` contained correct bytes but was first published before repository release immutability was enabled, and three assets were added afterward by a different uploader. GitHub later locked its current state, but that does not change the split publication history; it remains superseded rather than the recommended supply-chain artifact.
 - The paired 80-task human study remains `NO RESULT`; release integrity and successful installed lifecycles do not establish product efficacy.
 
 ## 0.2.0-beta.2 - 2026-09-01

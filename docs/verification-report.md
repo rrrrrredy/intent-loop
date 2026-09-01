@@ -2,31 +2,45 @@
 
 Verified through 2026-09-01 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
 
-## V0.2.0-beta.5 candidate evidence
+## V0.2.0-beta.5 public-release evidence
 
-The final beta.2 adversarial review returned **HOLD** despite correct current asset bytes. GitHub reported `immutable:false`, repository release immutability was disabled, and three DeepSeek-related assets were uploaded after the Release workflow had published. Enabling immutability is prospective, so beta.2 cannot be retroactively upgraded into an immutable release.
+The final beta.2 adversarial review returned **HOLD** despite correct current asset bytes. At that checkpoint GitHub reported `immutable:false`, repository release immutability was disabled, and three DeepSeek-related assets had been uploaded after the Release workflow published. GitHub later locked beta.2's current state and release-attestation verification now succeeds. That current lock does not change its split upload history or establish that all five assets came from the original exact-tag Release workflow, so beta.2 remains superseded.
 
 The beta.3 tag changed no product-state semantics. It passed exact-tag CI run [`33466884550`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884550) **18/18**. Release run [`33466884600`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884600) retested both packages, built all five assets, generated both package provenance attestations, both package-to-SBOM attestations, and checksum-manifest provenance, then uploaded every draft asset as `github-actions[bot]`. The next step failed safely because `GET /releases/tags/{tag}` returns 404 for an unpublished draft. The publish step was skipped, the draft was deleted, and the beta.3 tag remains audit-only.
 
 Beta.4 selected the exact draft from the authenticated release collection and fetched it by release ID. Main and exact-tag CI each passed **18/18**. Release run [`33468156467`](https://github.com/rrrrrredy/intent-loop/actions/runs/33468156467) retested both packages, created five attestations, and uploaded all five draft assets, then failed safely because local and remote asset names used different sort semantics. Publication never ran and the draft was deleted.
 
-Beta.5 applies one code-unit comparator to both name lists before digest comparison. Every installed and generated identity advances again; product-state semantics remain unchanged.
+Beta.5 applies one code-unit comparator to both name lists before digest comparison. Every installed and generated identity advances again; product-state semantics remain unchanged. Exact commit `29951cda05c4fc545037a4f058325153599918ab` passed main CI run [`33469255872`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469255872) and exact-tag CI run [`33469669257`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469669257), **18/18** in each matrix.
 
-| Beta.5 candidate surface | Executed local check | Result |
+Release run [`33469669275`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469669275) waited for the exact-tag matrix, retested both packages, rebuilt all assets in one job, issued five GitHub attestations, uploaded one draft, verified every remote byte, published once, and verified the immutable release plus each asset. GitHub currently reports [`v0.2.0-beta.5`](https://github.com/rrrrrredy/intent-loop/releases/tag/v0.2.0-beta.5) as `draft:false`, `prerelease:true`, and `immutable:true`.
+
+| Beta.5 public surface | Executed check | Result |
 | --- | --- | --- |
 | Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.5`. |
 | DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.5`, 24 SBOM components, and 15 additional notices. |
 | DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260477` bytes, with no tests, scripts, or `node_modules`. |
 | Dependencies | Both production dependency audits at high severity | **Pass**; zero known vulnerabilities at check time. |
-| Release workflow structure | Exact-tag gate, collection-based draft lookup, one-job build, five attestations, and five-asset upload executed through beta.4; deterministic name ordering added | Source fix and local five-name regression pass; beta.5 public execution pending. |
+| Three-OS matrices | Main and exact-tag Actions on Windows, Ubuntu, and macOS | **Pass**; each run completed all nine Codex Node 20/22/24 jobs, six DeepSeek adapter Node 22.19/24 jobs, and three temporary DeepSeek Harness lifecycles. |
+| Immutable publication | Exact-tag Release workflow plus public API and attestation verification | **Pass**; one successful release job, five Actions-uploaded assets, five attestations, matching remote digests, and `immutable:true`. |
+| Windows Codex public install | README GitHub-tag install, installed identity, natural Chinese lifecycle, exact deletion, uninstall, and absence checks | **Pass**; version `0.2.0-beta.5`, marketplace commit `29951cda05c4fc545037a4f058325153599918ab`, start/show/replace/evidence/summary/off/`MODE_OFF`/on/delete all behaved as specified, no user-workspace file was created, and the plugin plus marketplace were removed. |
+| Windows DeepSeek public install | README GitHub-tag add under isolated `DSH_HOME`, profile dump, host help, remove, and absence checks | **Pass** on DeepSeek Harness `0.1.2-alpha.2` with isolated Node `22.19.0`; exact beta.5 package identity loaded, no model API key entered the child, and the profile dependency was removed. |
+| Linux/macOS claim boundary | Hosted package, adapter, and real temporary Harness lifecycle | **Pass for headless CI validation**; no physical end-user Linux/macOS machine or native GUI flow was claimed. |
 
-Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.5 becomes recommended.
+Public asset digests:
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `dsh-intent-loop-0.2.0-beta.5.tgz` | 260477 | `d0568d29aa366c93f5e34373dd77c5f146f08b462ef1fe0a941fd46690557b1b` |
+| `dsh-intent-loop-SBOM.cdx.json` | 9871 | `c8274f0298e014b987dcb7ccf614fc5bc36cbf74fc1b65aeb71b8fabca64e48b` |
+| `intent-loop-plugin-v0.2.0-beta.5.tar.gz` | 269701 | `53ffcf727b812b1ef07872beaf8d5d26339f0594dd0f940633872fe19985c684` |
+| `SBOM.cdx.json` | 6820 | `d4d0436d192e1cfdf785ae2d299014ed341a38b7693bfc70766ea33728f6a435` |
+| `SHA256SUMS` | 381 | `a57129aa8a0d9648d71e8904d95eb082423aa48536d92ff15a24f0c2d5a59ec7` |
 
 ## V0.2.0-beta.2 publication and supersession evidence
 
 Fresh installation from public tag `v0.2.0-beta.1` checked out the correct commit `3aa083d26a8b4624ab9a465f05c65d3c5e1b913e` but Codex reported installed version `0.1.0-beta.3`. The source package and generated runtime were `0.2.0-beta.1`; `.codex-plugin/plugin.json` alone was stale. The plugin and marketplace were removed immediately, beta.1 was marked superseded without rewriting its tag, and no business lifecycle result was credited.
 
-The beta.2 repair aligned the hidden Codex plugin manifest, source server constant, Codex package, DeepSeek package, lockfiles, generated runtimes, SBOMs, and install references. Exact commit `d975191540b94386307ef2ebd1d107d099d13fa6` passed **18/18** on main in run [`33463193008`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463193008), **18/18** on tag in run [`33463578654`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578654), and Release run [`33463578770`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578770). Fresh public-tag Codex and DeepSeek Windows installs, business lifecycles, deletion, uninstall, and cleanup also passed. Beta.2 is still superseded because its published release and tag are mutable and its final five assets were not all produced by the Release workflow.
+The beta.2 repair aligned the hidden Codex plugin manifest, source server constant, Codex package, DeepSeek package, lockfiles, generated runtimes, SBOMs, and install references. Exact commit `d975191540b94386307ef2ebd1d107d099d13fa6` passed **18/18** on main in run [`33463193008`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463193008), **18/18** on tag in run [`33463578654`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578654), and Release run [`33463578770`](https://github.com/rrrrrredy/intent-loop/actions/runs/33463578770). Fresh public-tag Codex and DeepSeek Windows installs, business lifecycles, deletion, uninstall, and cleanup also passed. Beta.2 is still superseded because the DeepSeek package, DeepSeek SBOM, and expanded checksum manifest were added after publication by a different uploader rather than produced with all five assets by the original Release workflow. GitHub's later immutable lock protects the current bytes but does not rewrite that provenance history.
 
 | Beta.2 surface | Executed local check | Result |
 | --- | --- | --- |
@@ -221,16 +235,16 @@ The source repository and public GitHub release are intentionally retained; only
 
 ### Verified
 
-- Beta.3 reviewed source, generated runtime/SBOM, 72-test suite, clean distribution, official validators, dependency audit, focused generation regressions, and root plus independent 32-process pressure agree and pass.
-- The beta.3 public commit/tag/release identity, six-job main and tag CI, release workflow, assets/checksums/SBOM/attestations, two exact-tag Windows lifecycles, independent reviews, and final uninstall/cleanup all agree and pass.
-- Both beta.3 independent reviews are RELEASE with no P0/P1; documented P2 items remain fail-closed or usability-only.
-- Start, projection, correction, evidence classification, summary, off mode, off-mode rejection, redaction, export, physical deletion, corruption recovery, project isolation, and concurrency have executable local evidence.
-- Beta.1 and beta.2 publication evidence remains historical only; both are superseded.
+- Beta.5 reviewed source, generated runtimes and SBOMs, the **73/73** Codex suite, **6/6** DeepSeek suite, exact distributions, official plugin validator, live version handshakes, and production dependency audits agree and pass.
+- The beta.5 public commit and tag identity, main and exact-tag **18/18** matrices, one-job Release workflow, five assets, checksums, SBOMs, five attestations, and GitHub's immutable-release verification all agree and pass.
+- Windows public-tag Codex and DeepSeek Harness lifecycles cover install or add, identity, normal use, deletion or removal, absence checks, and uninstall. The independent adversarial reviewer also completed an isolated beta.5 Codex installation and cleanup with no P0/P1 product or asset finding; the practical reviewer completed the full natural-language Codex lifecycle plus the DeepSeek developer-preview path and returned RELEASE.
+- Start, projection, correction, evidence classification, summary, off mode, off-mode rejection, redaction, export, physical deletion, corruption recovery, project isolation, and concurrency have executable evidence.
+- Beta.1 and beta.2 are superseded public history. Beta.3 and beta.4 are unpublished, safely failed publication attempts retained only for audit.
 
 ### Not verified and not claimed
 
 - Lower avoidable rework, better final match, acceptable interruption cost, or helpful timing across the frozen paired 160 deliveries.
 - A naturally triggered, trusted long-running `PostCompact` plus resume sequence.
-- A real Linux or macOS end-user install lifecycle; Linux currently has CI evidence, while macOS is not yet tested.
+- A physical Linux or macOS end-user install lifecycle. Both operating systems have beta.5 hosted package, adapter, and temporary DeepSeek Harness lifecycle evidence.
 - Value, compatibility, or safety of ports for other agent hosts.
 - OpenAI universal-directory listing or approval.

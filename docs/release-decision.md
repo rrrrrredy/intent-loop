@@ -2,13 +2,15 @@
 
 Decision date: 2026-09-01
 
-Decision: **V0.2.0-BETA.4 RELEASE CANDIDATE GO; IMMUTABLE RELEASE AND PUBLIC INSTALL VALIDATION REQUIRED; EFFICACY ITERATE**
+Decision: **V0.2.0-BETA.5 PUBLIC BETA GO; EFFICACY ITERATE**
 
-Intent Loop `v0.2.0-beta.2` passed its exact-tag 18-job matrix and both public Windows installed-host lifecycles, but the final adversarial review found a release-integrity P1: GitHub release immutability was disabled, and the DeepSeek package, its SBOM, and the expanded checksum manifest were added after the Release workflow had already published. The five public bytes and hashes are correct; their future non-replaceability and one-workflow provenance were not established. Beta.2 therefore remains superseded history.
+Intent Loop `v0.2.0-beta.2` passed its exact-tag 18-job matrix and both public Windows installed-host lifecycles, but the final adversarial review found a release-integrity P1: GitHub release immutability was disabled when it was published, and the DeepSeek package, its SBOM, and the expanded checksum manifest were added about three minutes later by a different uploader. GitHub later locked the current release and release-attestation verification now succeeds. That protects the present bytes, but it does not turn the three post-publication uploads into outputs of the original exact-tag Release workflow or erase the earlier mutable interval. Beta.2 therefore remains superseded history.
 
 The beta.3 tag kept the same reviewed product code and passed exact-tag CI 18/18. Its Release job tested both hosts, built and attested all five assets, and uploaded them to one draft. The safety gate then stopped before publication because GitHub's release-by-tag endpoint does not return drafts. The unpublished draft was deleted; the tag and Actions run remain as audit evidence.
 
-The beta.4 candidate changes that lookup to the authenticated release collection, selects the exact tag's draft ID, then fetches and compares all remote asset digests before publication. No product-state semantics changed. Publication remains gated on repeated main and tag CI, `immutable:true`, GitHub release-attestation verification, fresh public Codex and DeepSeek lifecycles, repeated independent reviews, and final cleanup.
+The beta.4 tag changed that lookup to the authenticated release collection and selected the exact draft by ID. Main and exact-tag CI both passed 18/18, and its Release job rebuilt, attested, and uploaded all five assets. The workflow again stopped before publication because the local and remote filename lists used different sort semantics. The draft was deleted; the tag remains audit evidence.
+
+Beta.5 applies the same deterministic code-unit comparator to both lists. Commit `29951cda05c4fc545037a4f058325153599918ab` passed main CI and exact-tag CI at **18/18** each. Release run [`33469669275`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469669275) retested both packages, built and attested all five assets, verified every draft byte, then published [`v0.2.0-beta.5`](https://github.com/rrrrrredy/intent-loop/releases/tag/v0.2.0-beta.5) as an immutable prerelease. Fresh public-tag Codex and DeepSeek Harness lifecycles on Windows then completed install, identity checks, normal operations, deletion or removal, and uninstall. The release is suitable for bounded public-beta use; efficacy remains unmeasured.
 
 This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
 
@@ -16,19 +18,26 @@ This adapter was directly authorized by the user after the original Codex-only b
 
 | Gate | Current result | Reason |
 | --- | --- | --- |
-| Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local beta.3 checks and the beta.2 public three-OS matrix agree. |
+| Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local beta.5 checks and both beta.5 public three-OS matrices agree. |
 | DeepSeek host binding | **Pass** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access in the adapter suite on all three systems. |
 | Session and credential isolation | **Pass** | One bounded MCP child per active Harness session; API-key variables are omitted; serialized creation, hard capacity, failure draining, one-close cleanup, idle, unload, timeout, and cancellation behavior pass locally and in the public three-OS matrix. |
-| Codex regression | **Beta.3 tag pass; beta.4 pending** | Beta.3 passed 73/73 locally and all nine exact-tag Node 20/22/24 Windows, Ubuntu, and macOS jobs. The beta.4 identity must repeat the same checks. |
-| DeepSeek package | **Local pass; public beta.4 pending** | Generated catalog/legal checks, six adapter test groups, the exact 16-file package, live version handshake, and zero-vulnerability audit pass locally. Exact-tag package and host-lifecycle evidence remains a publication gate. |
-| Linux/macOS | **Beta.3 pass for headless packages; beta.4 pending** | Beta.3 passed Codex, DeepSeek adapter, and temporary Harness lifecycles on hosted Ubuntu and macOS. The same exact-tag checks must pass again for beta.4; native GUI-specific and physical end-user machine behavior remain outside this claim. |
-| Release integrity | **Pending** | Beta.3 proved exact-tag CI ordering and one-job five-asset construction/attestation but stopped safely on the draft lookup. Beta.4 fixes that lookup and must still prove draft digest checks, immutable publication, and release/asset attestation verification. |
+| Codex regression | **Pass** | The source and packed plugin passed **73/73** tests, type checking, self-contained distribution verification, and a live MCP handshake. Main run [`33469255872`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469255872) and exact-tag run [`33469669257`](https://github.com/rrrrrredy/intent-loop/actions/runs/33469669257) each passed all nine Codex jobs across Node 20/22/24 on Windows, Ubuntu, and macOS. A fresh Windows public-tag install completed the full natural-language lifecycle and was removed. |
+| DeepSeek package | **Pass** | The adapter passed all six test groups, exact 16-file packaging, live version handshake, legal/SBOM generation, and zero-vulnerability production audit. The release package was added to an isolated DeepSeek Harness `0.1.2-alpha.2` profile, dumped, booted through the help path, removed, and verified absent without using a model API key. |
+| Linux/macOS | **Pass for hosted headless validation** | Both beta.5 CI matrices passed the Codex package, DeepSeek adapter, and temporary real Harness lifecycle on GitHub-hosted Ubuntu and macOS. Native GUI-specific behavior and a physical end-user-machine smoke test remain outside this claim. |
+| Release integrity | **Pass** | Release run `33469669275` waited for exact-tag CI, independently retested both packages, built and attested all five assets in one job, verified draft bytes, published once, and verified the release and asset attestations. GitHub reports `draft:false`, `prerelease:true`, and `immutable:true`; all assets were uploaded by `github-actions[bot]`. |
 | Efficacy | **No result** | The frozen paired 80-task study has not been run. |
 
 ## V0.2 cross-platform decision
 
-- **The same headless packages on Windows, Linux, and macOS are worth supporting.** The state core is Node-based, the host adapters depend on filesystem and process primitives, and a three-OS matrix directly tests the largest portability risks at modest maintenance cost.
+- **The same headless packages on Windows, Linux, and macOS are worth maintaining.** They now share one Node-based core, and both beta.5 matrices exercise the package and host-lifecycle boundaries on all three operating systems. This is a useful compatibility surface at modest maintenance cost, although physical Linux/macOS end-user smoke tests should precede a stable-release claim.
 - **Further agent-host ports are not justified yet.** DeepSeek is the one user-authorized experiment. More hosts would multiply trust, session, packaging, and support boundaries before outcome value is measured.
+
+## V0.2 follow-up priorities
+
+1. Add the running server SemVer to `intent_status` so a user or support tool can verify the live process without consulting installed metadata or bundle banners.
+2. Use signed annotated tags for future releases and keep the immutable beta.5 tag's stale README badge documented as a historical snapshot rather than rewriting it.
+3. Run one physical Linux and one physical macOS install/use/remove smoke before a stable three-platform claim.
+4. Run the frozen paired study before claiming reduced rework, improved final match, or better intervention timing.
 
 The remainder of this document retains the completed `v0.1.0-beta.3` decision as historical evidence.
 

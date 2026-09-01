@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.2.0--beta.4-6657D9.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/badge/release-0.2.0--beta.5-6657D9.svg)](CHANGELOG.md)
 
 Intent Loop gives Codex or DeepSeek Harness a small, local, traceable memory of what you currently want. It keeps requirements, guesses, evidence, unknowns, and disagreements separate, and updates the current view without erasing earlier corrections.
 
