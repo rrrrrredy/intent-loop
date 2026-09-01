@@ -1,4 +1,4 @@
-/*! Intent Loop 0.2.0-beta.1 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
+/*! Intent Loop 0.2.0-beta.2 | Apache-2.0 | See ../LICENSE and ../THIRD_PARTY_NOTICES.md */
 
 // src/hook.ts
 import { realpathSync as realpathSync2 } from "node:fs";
@@ -1019,6 +1019,68 @@ var LedgerStore = class {
     const directory = await this.internalDirectory(projectDirectory, name, false);
     if (directory !== null) await rm(directory, { recursive: true, force: true });
   }
+  async resolveOrphanRenamedLock(directory) {
+    return realpath(directory);
+  }
+  async lstatOrphanRenamedLockPath(directory) {
+    return lstat(directory, { bigint: true });
+  }
+  async observeOrphanRenamedLock(target, deadline) {
+    while (true) {
+      try {
+        return await this.lstatOrphanRenamedLockPath(target);
+      } catch (error) {
+        if (errorCode(error) === "ENOENT") return null;
+        if (errorCode(error) === "ENOTDIR") {
+          throw new IntentLoopError("PATH_ESCAPE", "orphan renamed lock parent changed to a non-directory");
+        }
+        if (LOCK_TRANSITION_ACCESS_CODES.has(errorCode(error)) && Date.now() < deadline) {
+          await this.pauseForLockTransition();
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+  async orphanRenamedLockValidationState(projectDirectory, target, initialGeneration) {
+    const deadline = Date.now() + Math.min(this.lockWaitMs, MAX_LOCK_TRANSITION_RECHECK_MS);
+    while (true) {
+      const current = await this.observeOrphanRenamedLock(target, deadline);
+      if (current === null) return "raced";
+      if (current.isSymbolicLink() || !current.isDirectory()) return "unsafe";
+      if (!sameLockGeneration(initialGeneration, lockDirectorySnapshot(current))) return "unsafe";
+      let actual;
+      try {
+        actual = await this.resolveOrphanRenamedLock(target);
+      } catch (error) {
+        if (errorCode(error) === "ENOENT") {
+          const afterMissing = await this.observeOrphanRenamedLock(target, deadline);
+          if (afterMissing === null) return "raced";
+          if (afterMissing.isSymbolicLink() || !afterMissing.isDirectory() || !sameLockGeneration(initialGeneration, lockDirectorySnapshot(afterMissing))) return "unsafe";
+          if (Date.now() >= deadline) return "unsafe";
+          await this.pauseForLockTransition();
+          continue;
+        }
+        if ((TRANSIENT_LOCK_RACE_CODES.has(errorCode(error)) || LOCK_PATH_RECHECK_CODES.has(errorCode(error))) && Date.now() < deadline) {
+          await this.pauseForLockTransition();
+          continue;
+        }
+        throw error;
+      }
+      if (!isWithin(projectDirectory, actual)) {
+        const afterOutside = await this.observeOrphanRenamedLock(target, deadline);
+        if (afterOutside === null) return "raced";
+        if (afterOutside.isSymbolicLink() || !afterOutside.isDirectory() || !sameLockGeneration(initialGeneration, lockDirectorySnapshot(afterOutside))) return "unsafe";
+        if (Date.now() >= deadline) return "unsafe";
+        await this.pauseForLockTransition();
+        continue;
+      }
+      const finalInfo = await this.observeOrphanRenamedLock(target, deadline);
+      if (finalInfo === null) return "raced";
+      if (finalInfo.isSymbolicLink() || !finalInfo.isDirectory()) return "unsafe";
+      return sameLockGeneration(initialGeneration, lockDirectorySnapshot(finalInfo)) ? "stable" : "unsafe";
+    }
+  }
   async cleanupOrphanTempsUnlocked(projectDirectory) {
     const ledgerTemp = /^ledger-(?:append|repair|rewrite)-[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}\.tmp$/iu;
     const renamedLock = /^ledger\.lock\.(?:stale-[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}|release-[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}-[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})$/iu;
@@ -1027,21 +1089,22 @@ var LedgerStore = class {
     for (const entry of projectEntries) {
       if (renamedLock.test(entry.name)) {
         const target2 = path2.join(projectDirectory, entry.name);
-        const info2 = await lstat(target2).catch((error) => {
-          if (errorCode(error) === "ENOENT") return null;
-          throw error;
-        });
+        const info2 = await this.observeOrphanRenamedLock(
+          target2,
+          Date.now() + Math.min(this.lockWaitMs, MAX_LOCK_TRANSITION_RECHECK_MS)
+        );
         if (info2 === null) continue;
         if (info2.isSymbolicLink() || !info2.isDirectory()) {
           throw new IntentLoopError("PATH_ESCAPE", "orphan renamed lock path is not a real directory");
         }
-        const actual = await realpath(target2).catch((error) => {
-          if (TRANSIENT_LOCK_RACE_CODES.has(errorCode(error))) return null;
-          throw error;
-        });
-        if (actual === null) continue;
-        if (!isWithin(projectDirectory, actual)) {
-          throw new IntentLoopError("PATH_ESCAPE", "orphan renamed lock resolves outside project storage");
+        const state = await this.orphanRenamedLockValidationState(
+          projectDirectory,
+          target2,
+          lockDirectorySnapshot(info2)
+        );
+        if (state === "raced") continue;
+        if (state === "unsafe") {
+          throw new IntentLoopError("PATH_ESCAPE", "orphan renamed lock changed or resolves outside project storage");
         }
         await rm(target2, { recursive: true, force: true, maxRetries: 200, retryDelay: 25 });
         changed = true;

@@ -1,5 +1,5 @@
 export const SCHEMA_VERSION = 1 as const;
-export const SERVER_VERSION = "0.1.0-beta.1";
+export const SERVER_VERSION = "0.2.0-beta.2";
 
 export type IntentMode = "on" | "private" | "off";
 export type ClaimRole = "user" | "agent" | "evidence" | "system";

@@ -1,6 +1,6 @@
 # Independent pre-release reviews
 
-Review period: 2026-08-28 through 2026-08-31
+Review period: 2026-08-28 through 2026-09-01
 
 Two independent reviews were required before final delivery: one adversarial security/reliability review and one practical first-use review. Together they reviewed frozen source, the self-contained distribution, and a public-GitHub installed build rather than relying on design documents or green status alone.
 
@@ -57,6 +57,14 @@ The accepted repair marks the holder as draining, rejects new acquisitions for t
 The reviewer independently reran the original two-call failure, a slow-close capacity probe, and a double-failure probe. During a failed call the sibling remained live and `closeCount` stayed zero; no new same-session or over-capacity session was admitted; after drain the holder count became zero and close count became one. Slow close retained the holder and capacity until completion, and double failure plus dispose did not close twice. On Node 22.19.0, the reviewer also passed the full **6/6** DeepSeek suite, package verification, generated 15-tool catalog, 24-component SBOM and 15 additional notices, plus the Codex **72/72** suite and self-contained distribution check.
 
 V0.2 repaired-source verdict: **RELEASE**, P0/P1 zero. Repaired code commit `d0fba7103c7999ce4f47b3ee6602380b7ead7932` then passed the same 18-job public matrix in run `33377049544`, satisfying the review's publication condition. Non-blocking P2 items are a bounded fallback for a permanently hanging SDK `client.close()`, adding root DeepSeek tests and dual-version checks inside the tag-triggered Release workflow itself, and changing package composition verification from required/forbidden checks to a complete path allowlist.
+
+### V0.2.0-beta.2 release-identity recheck
+
+Fresh Codex installation from public tag `v0.2.0-beta.1` checked out the intended commit but reported installed version `0.1.0-beta.3`. The hidden `.codex-plugin/plugin.json` version had not advanced with the two package manifests, and the existing source and release checks did not compare that installed identity. The plugin and marketplace were removed immediately, the immutable beta.1 tag was retained for audit, and its release page was marked superseded.
+
+The first beta.2 recheck found a second release blocker: the TypeScript server constant and therefore the live MCP handshake still reported `0.1.0-beta.1`, even though the generated runtime banner was beta.2. The repaired candidate aligns that source constant and makes both Codex distribution verification and DeepSeek catalog verification connect with the official client and assert that the live server handshake equals the package version. The review also found a non-blocking broken notice reference inside the DeepSeek artifact; the exact allowlist now requires all and only the intended 16 files, including the third-party notice path referenced by the runtime banner. The reviewer independently verified the corrected live handshake, exact package, and resolved notice path and returned **RELEASE**, P0/P1 zero. Publication remains gated on exact-commit public CI, exact-tag installed-host lifecycles, and practical-user review.
+
+A later final freeze run reproduced a separate Windows release blocker in orphan lock cleanup: one legitimate peer deletion was observed as an outside realpath transition after the initial directory check, so one of 32 writers failed before mutation. The repair binds the initial, current, deadline-edge, and pre-delete observations to one bigint filesystem generation. Only confirmed `ENOENT` becomes a raced disappearance; `ENOTDIR`, `EBADF`, replacement generations, symlinks, non-directories, and stable outside resolutions remain fail-closed. Deterministic tests cover two initial `EPERM` transitions, peer disappearance, deadline-late `ENOENT`, deadline-late outside resolution, replacement preservation, and stable escape rejection. The final code passed **73/73**, distribution verification, and **10/10** repetitions of the 32-process case (320 child processes). The adversarial reviewer returned **RELEASE**, P0/P1 zero. A narrow final-lstat-to-path-rm TOCTOU remains documented as non-blocking P2 hardening for a future atomic claim-rename design.
 
 ## Practical first-use review
 

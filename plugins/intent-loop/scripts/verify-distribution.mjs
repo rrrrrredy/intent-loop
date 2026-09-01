@@ -90,9 +90,17 @@ async function runHook(input) {
 
 await copyDistribution();
 assert.equal(await readdir(packagedPlugin).then((entries) => entries.includes("node_modules")), false);
+const packageManifest = JSON.parse(await readFile(path.join(pluginRoot, "package.json"), "utf8"));
+const pluginManifest = JSON.parse(await readFile(path.join(pluginRoot, ".codex-plugin", "plugin.json"), "utf8"));
+assert.equal(
+  pluginManifest.version,
+  packageManifest.version,
+  "Codex plugin manifest version must match package.json so installed identity is truthful"
+);
 const sbom = JSON.parse(await readFile(path.join(packagedPlugin, "SBOM.cdx.json"), "utf8"));
 assert.equal(sbom.bomFormat, "CycloneDX");
 assert.equal(sbom.specVersion, "1.6");
+assert.equal(sbom.metadata?.component?.version, packageManifest.version);
 assert.match(sbom.serialNumber, /^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);
 const expectedComponents = [
   "@modelcontextprotocol/core@2.0.0",
@@ -125,7 +133,7 @@ assert.equal(hookOutput.suppressOutput, true);
 assert.match(String(hookOutput.hookSpecificOutput?.additionalContext ?? ""), /Intent Loop runtime/u);
 
 const serverPath = path.join(packagedPlugin, "runtime", "server.mjs");
-const client = new Client({ name: "intent-loop-distribution-test", version: "0.1.0-beta.1" });
+const client = new Client({ name: "intent-loop-distribution-test", version: packageManifest.version });
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [serverPath],
@@ -137,6 +145,11 @@ const marker = "INTENT_LOOP_DISTRIBUTION_SECRET_7F3A91";
 let taskId = "";
 try {
   await client.connect(transport);
+  assert.equal(
+    client.getServerVersion()?.version,
+    packageManifest.version,
+    "MCP handshake version must match package.json so the running server identity is truthful"
+  );
   const tools = await client.listTools();
   assert.equal(tools.tools.length, 15);
   for (const tool of tools.tools) {

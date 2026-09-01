@@ -1,10 +1,10 @@
 # Release decision
 
-Decision date: 2026-08-31
+Decision date: 2026-09-01
 
-Decision: **V0.2 PUBLIC BETA GO; EFFICACY ITERATE**
+Decision: **V0.2.0-BETA.2 CANDIDATE; INSTALLED IDENTITY REVALIDATION REQUIRED; EFFICACY ITERATE**
 
-Intent Loop `v0.2.0-beta.1` adds a bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. An earlier all-green candidate was not tagged after the required adversarial review reproduced a shared-client concurrency failure. The holder now drains active siblings and closes once; the reviewer returned `RELEASE`, P0/P1 zero. Repaired code commit `d0fba7103c7999ce4f47b3ee6602380b7ead7932` passed all 18 jobs in the public Windows/Ubuntu/macOS [GitHub Actions matrix](https://github.com/rrrrrredy/intent-loop/actions/runs/33377049544), and root repeated the temporary Harness lifecycle locally. Publication can proceed through the exact-tag package, install, use, uninstall, and cleanup checks.
+Intent Loop `v0.2.0-beta.2` carries the bounded DeepSeek Harness developer-preview package over the same local MCP core as the Codex plugin. `v0.2.0-beta.1` passed source and tag CI, but fresh public-tag Codex installation reported installed version `0.1.0-beta.3`: the hidden plugin manifest had not advanced with the two package manifests. Beta.1 was immediately marked superseded without moving its tag. Beta.2 aligns every installed/package identity and adds regressions for the hidden manifest, both packages, the Codex SBOM, and the live MCP handshake. A later freeze run also exposed and repaired a Windows delete-pending orphan-lock race; the final code passed 73 tests and 10 rounds over 320 real child processes. Independent adversarial recheck returned `RELEASE`, P0/P1 zero. Publication is gated on the corrected exact commit passing the full matrix and both public installed-host lifecycles.
 
 This adapter was directly authorized by the user after the original Codex-only beta. The exception is limited to transport and packaging. It does not authorize another planner, client, executor, transcript reader, remote service, broad data collection, or further host ports. The frozen 80-task human study remains unrun, so the efficacy decision stays **Iterate**.
 
@@ -15,9 +15,9 @@ This adapter was directly authorized by the user after the original Codex-only b
 | Shared product boundary | **Pass** | Codex and DeepSeek expose the same fifteen state tools from one local MCP core; the adapter owns no reasoning or execution. Local checks and the public three-OS matrix agree. |
 | DeepSeek host binding | **Pass** | Model-visible schemas omit project/session selectors; the adapter injects canonical active-agent values and rejects cross-project access in the adapter suite on all three systems. |
 | Session and credential isolation | **Pass** | One bounded MCP child per active Harness session; API-key variables are omitted; serialized creation, hard capacity, failure draining, one-close cleanup, idle, unload, timeout, and cancellation behavior pass locally and in the public three-OS matrix. |
-| Codex regression | **Pass** | The unchanged core behavior passes 72/72 tests and clean-distribution verification in nine public jobs: Node 20, 22, and 24 on Windows, Ubuntu, and macOS. |
+| Codex regression | **Pass locally; public rerun pending** | The corrected candidate passes 73/73 tests plus clean-distribution verification locally. Its exact commit must repeat Node 20, 22, and 24 on Windows, Ubuntu, and macOS. |
 | DeepSeek package | **Pass** | Generated catalog/legal checks, six adapter test groups, npm package inspection, zero-vulnerability audit, and temporary Harness add/compose/boot-help/remove lifecycles pass. |
-| Linux/macOS | **Pass for the headless candidate** | The repaired candidate passes Ubuntu and macOS adapter jobs on Node 22.19/24 and a real temporary Harness lifecycle on each system. Native GUI-specific behavior is outside this claim. |
+| Linux/macOS | **Predecessor pass; exact candidate pending** | The predecessor passed Ubuntu and macOS adapter jobs on Node 22.19/24 plus a temporary Harness lifecycle on each system. The corrected beta.2 commit must repeat those jobs before tagging. Native GUI-specific behavior is outside this claim. |
 | Efficacy | **No result** | The frozen paired 80-task study has not been run. |
 
 ## V0.2 cross-platform decision

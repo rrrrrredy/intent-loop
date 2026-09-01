@@ -1,6 +1,6 @@
 {
   "name": "@intent-loop/codex-plugin",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0-beta.2",
   "description": "Local, traceable intent state for Codex tasks.",
   "private": true,
   "type": "module",

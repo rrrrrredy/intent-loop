@@ -394,6 +394,101 @@ test("lock-directory validation retries generation races but rejects an unsafe r
   assert.equal(await internals.lockDirectoryValidationState(lockDirectory, replacement), "unsafe");
 });
 
+test("orphan renamed-lock cleanup accepts peer disappearance but rejects replacement and stable escape", async (t) => {
+  const workspace = await testWorkspace(t);
+  const store = new LedgerStore(workspace.data, { lock_wait_ms: 120 });
+  const projectId = projectIdForRoot(workspace.project);
+  const taskId = newId();
+  const projectDirectory = await store.projectDirectory(projectId);
+  const internals = store as unknown as {
+    lstatOrphanRenamedLockPath: (directory: string) => Promise<unknown>;
+    resolveOrphanRenamedLock: (directory: string) => Promise<string>;
+  };
+  const lstatOrphanRenamedLockPath = internals.lstatOrphanRenamedLockPath.bind(store);
+  const resolveOrphanRenamedLock = internals.resolveOrphanRenamedLock.bind(store);
+  const orphanName = () => path.join(projectDirectory, `ledger.lock.release-${newId()}-${newId()}`);
+
+  const accessTransition = orphanName();
+  await mkdir(accessTransition);
+  let accessAttempts = 0;
+  internals.lstatOrphanRenamedLockPath = async (directory) => {
+    if (directory === accessTransition && accessAttempts < 2) {
+      accessAttempts += 1;
+      throw Object.assign(new Error("simulated Windows delete-pending transition"), { code: "EPERM" });
+    }
+    return lstatOrphanRenamedLockPath(directory);
+  };
+  await store.appendEvent(projectId, event(taskId, 0));
+  assert.equal(accessAttempts, 2);
+  internals.lstatOrphanRenamedLockPath = lstatOrphanRenamedLockPath;
+
+  const disappeared = orphanName();
+  await mkdir(disappeared);
+  let peerDeleted = false;
+  internals.resolveOrphanRenamedLock = async (directory) => {
+    if (directory === disappeared && !peerDeleted) {
+      peerDeleted = true;
+      await rm(directory, { recursive: true, force: true });
+      return path.dirname(projectDirectory);
+    }
+    return resolveOrphanRenamedLock(directory);
+  };
+  await store.appendEvent(projectId, event(taskId, 1));
+  assert.equal(peerDeleted, true);
+
+  const deadlineMissing = orphanName();
+  await mkdir(deadlineMissing);
+  internals.resolveOrphanRenamedLock = async (directory) => {
+    if (directory === deadlineMissing) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await rm(directory, { recursive: true, force: true });
+      throw Object.assign(new Error("simulated ENOENT after the validation deadline"), { code: "ENOENT" });
+    }
+    return resolveOrphanRenamedLock(directory);
+  };
+  await store.appendEvent(projectId, event(taskId, 4));
+
+  const deadlineOutside = orphanName();
+  await mkdir(deadlineOutside);
+  internals.resolveOrphanRenamedLock = async (directory) => {
+    if (directory === deadlineOutside) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await rm(directory, { recursive: true, force: true });
+      return path.dirname(projectDirectory);
+    }
+    return resolveOrphanRenamedLock(directory);
+  };
+  await store.appendEvent(projectId, event(taskId, 5));
+
+  const replaced = orphanName();
+  await mkdir(replaced);
+  let peerReplaced = false;
+  internals.resolveOrphanRenamedLock = async (directory) => {
+    if (directory === replaced && !peerReplaced) {
+      peerReplaced = true;
+      await rm(directory, { recursive: true, force: true });
+      await mkdir(directory);
+    }
+    return resolveOrphanRenamedLock(directory);
+  };
+  await assert.rejects(
+    store.appendEvent(projectId, event(taskId, 2)),
+    (error: unknown) => error instanceof IntentLoopError && error.code === "PATH_ESCAPE"
+  );
+  assert.equal(peerReplaced, true);
+  await rm(replaced, { recursive: true, force: true });
+
+  const escaped = orphanName();
+  await mkdir(escaped);
+  internals.resolveOrphanRenamedLock = async (directory) =>
+    directory === escaped ? path.dirname(projectDirectory) : resolveOrphanRenamedLock(directory);
+  await assert.rejects(
+    store.appendEvent(projectId, event(taskId, 3)),
+    (error: unknown) => error instanceof IntentLoopError && error.code === "PATH_ESCAPE"
+  );
+  await rm(escaped, { recursive: true, force: true });
+});
+
 test("lock-marker validation binds both parent and file generations and rejects unsafe replacement", async (t) => {
   const workspace = await testWorkspace(t);
   const store = new LedgerStore(workspace.data);

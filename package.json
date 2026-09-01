@@ -1,6 +1,6 @@
 {
   "name": "dsh-intent-loop",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.0-beta.2",
   "description": "Session-scoped Intent Loop tools for DeepSeek Harness, backed by the shared local MCP core.",
   "type": "module",
   "main": "dsh/index.js",
@@ -16,6 +16,7 @@
     "dsh/README.md",
     "dsh/SBOM.cdx.json",
     "dsh/THIRD_PARTY_NOTICES.md",
+    "plugins/intent-loop/THIRD_PARTY_NOTICES.md",
     "plugins/intent-loop/runtime/server.mjs",
     "plugins/intent-loop/skills/intent/SKILL.md",
     "LICENSE",
@@ -34,7 +35,7 @@
     "verify:dsh-catalog": "node dsh/scripts/generate-tool-catalog.mjs --check",
     "generate:dsh-legal": "node dsh/scripts/generate-legal.mjs",
     "verify:dsh-legal": "node dsh/scripts/generate-legal.mjs --check",
-    "test:dsh": "node --test --test-concurrency=1 dsh/tests/*.test.mjs",
+    "test:dsh": "node --test --test-concurrency=1 dsh/tests/adapter.test.mjs",
     "test:dsh-pack": "node dsh/scripts/verify-package.mjs",
     "test": "npm run verify:dsh-catalog && npm run verify:dsh-legal && npm run test:dsh && npm run test:dsh-pack",
     "test:dsh-host": "node dsh/scripts/deepseek-host-smoke.mjs"

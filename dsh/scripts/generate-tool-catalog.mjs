@@ -12,6 +12,7 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..", "..");
 const runtimePath = path.join(repositoryRoot, "plugins", "intent-loop", "runtime", "server.mjs");
 const outputPath = path.join(repositoryRoot, "dsh", "tool-catalog.json");
+const packageManifest = JSON.parse(await readFile(path.join(repositoryRoot, "package.json"), "utf8"));
 const checkOnly = process.argv.includes("--check");
 const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-loop-dsh-catalog-"));
 
@@ -28,7 +29,7 @@ function sanitizedInputSchema(schema) {
   return result;
 }
 
-const client = new Client({ name: "intent-loop-dsh-catalog", version: "0.2.0-beta.1" });
+const client = new Client({ name: "intent-loop-dsh-catalog", version: packageManifest.version });
 try {
   const transport = new StdioClientTransport({
     command: process.execPath,
@@ -42,6 +43,11 @@ try {
     }
   });
   await client.connect(transport, { timeout: 15_000 });
+  assert.equal(
+    client.getServerVersion()?.version,
+    packageManifest.version,
+    "shared MCP handshake version must match the DeepSeek package version"
+  );
   const listed = await client.listTools();
   assert.equal(listed.tools.length, 15, "the shared MCP core must expose exactly 15 tools");
   const runtimeBytes = await readFile(runtimePath);

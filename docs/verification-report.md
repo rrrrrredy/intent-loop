@@ -1,6 +1,21 @@
 # Verification report
 
-Verified on 2026-08-31 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
+Verified through 2026-09-01 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
+
+## V0.2.0-beta.2 candidate evidence
+
+Fresh installation from public tag `v0.2.0-beta.1` checked out the correct commit `3aa083d26a8b4624ab9a465f05c65d3c5e1b913e` but Codex reported installed version `0.1.0-beta.3`. The source package and generated runtime were `0.2.0-beta.1`; `.codex-plugin/plugin.json` alone was stale. The plugin and marketplace were removed immediately, beta.1 was marked superseded without rewriting its tag, and no business lifecycle result was credited.
+
+The beta.2 repair aligns the hidden Codex plugin manifest, source server constant, Codex package, DeepSeek package, lockfiles, generated runtimes, SBOMs, and install references. Distribution and catalog verification now connect with the official MCP client and require the live handshake version to match the package; the DeepSeek package check compares both package manifests plus the hidden plugin manifest and enforces the exact 16-file path set, including the notice path referenced by the runtime banner. The root DeepSeek test script also names its test file explicitly so Windows does not depend on shell glob expansion. Public CI, exact-tag assets, public installs, practical review, and final cleanup remain required before beta.2 becomes recommended.
+
+| Beta.2 surface | Executed local check | Result |
+| --- | --- | --- |
+| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, secret redaction, lifecycle deletion, and live MCP handshake `0.2.0-beta.2`. |
+| DeepSeek adapter and contract | Root `npm test` | **6/6** groups, 15-tool generated catalog, live shared-core handshake `0.2.0-beta.2`, 24 SBOM components, and 15 additional notices. |
+| DeepSeek package | Exact-path `npm pack --dry-run` gate | **16/16 intended files**, `260477` bytes, including the notice path referenced by the runtime banner; no tests, scripts, or `node_modules`. |
+| Windows DeepSeek Harness | Temporary `DSH_HOME`; pack, add, compose/dump, boot-help path, remove, absence check, cleanup | **Pass** on Harness `0.1.2-alpha.2`; no model API key used and the temporary home was removed. |
+| Windows lock pressure | Deterministic delete-transition boundaries plus 10 repetitions of the 32-real-process stale-lock recovery case | **Pass**; 320 child processes plus the full-suite run completed without lost events or lock residue. |
+| Independent adversarial recheck | Installed identity, live handshake, package path set, notice references, Windows orphan-lock transition handling, and release workflow boundary | **RELEASE**, P0/P1 zero after the handshake-version and peer-cleanup blockers plus the notice-reference P2 were fixed. Exact-commit public CI remains the publication gate. |
 
 ## V0.2.0-beta.1 candidate evidence
 

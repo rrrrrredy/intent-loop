@@ -1,4 +1,5 @@
-import { access } from "node:fs/promises";
+import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { Client } from "@modelcontextprotocol/client";
@@ -8,7 +9,8 @@ const serverPath = path.resolve(process.argv[2] ?? "");
 await access(serverPath);
 
 const pluginRoot = path.dirname(path.dirname(serverPath));
-const client = new Client({ name: "intent-loop-installed-probe", version: "0.1.0-beta.1" });
+const packageManifest = JSON.parse(await readFile(path.join(pluginRoot, "package.json"), "utf8"));
+const client = new Client({ name: "intent-loop-installed-probe", version: packageManifest.version });
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [serverPath],
@@ -23,12 +25,15 @@ const timeout = new Promise((_, reject) => {
 
 try {
   await Promise.race([client.connect(transport), timeout]);
+  const serverVersion = client.getServerVersion()?.version;
+  assert.equal(serverVersion, packageManifest.version, "installed MCP handshake version must match package.json");
   const tools = await Promise.race([client.listTools(), timeout]);
   const resources = await Promise.race([client.listResources(), timeout]);
   const skill = await Promise.race([client.readResource({ uri: "intent-loop://skill/intent" }), timeout]);
   const skillText = skill.contents[0]?.text;
   process.stdout.write(`${JSON.stringify({
     ok: true,
+    version: serverVersion,
     tool_count: tools.tools.length,
     resource_count: resources.resources.length,
     skill_policy_present: typeof skillText === "string" && skillText.includes("# Intent Loop")

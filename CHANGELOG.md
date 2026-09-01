@@ -2,6 +2,23 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.2.0-beta.2 - 2026-09-01
+
+### Fixed
+
+- Aligned `.codex-plugin/plugin.json`, both package manifests, lockfiles, generated runtimes, SBOMs, install documentation, and release identity at `0.2.0-beta.2`.
+- Added distribution regressions that fail when the installed Codex manifest, Codex package, DeepSeek package, or SBOM version diverges.
+- Added live MCP-handshake assertions so a stale running-server version fails both Codex distribution and DeepSeek catalog verification.
+- Derived the DeepSeek catalog client version from the root package instead of a release-specific string.
+- Changed the DeepSeek package verifier to require the exact 16-file allowlist, including the third-party notice path referenced by the shared runtime banner.
+- Replaced the shell-dependent DeepSeek test glob with an explicit test entry so the root suite runs on Windows as well as Linux and macOS.
+- Bound orphan release/stale-lock cleanup to the originally observed filesystem generation and added bounded Windows delete-transition rechecks, including deadline-edge, replacement, and stable-escape regressions.
+
+### Evidence boundary
+
+- `v0.2.0-beta.1` passed source and tag CI but is superseded. Fresh public-tag Codex installation exposed the stale plugin-manifest version before final delivery; the release page warns users not to install it.
+- The corrected prerelease must repeat source, three-platform, exact-tag asset, public-install, independent practical-use, and cleanup checks. The paired efficacy study remains `NO RESULT`.
+
 ## 0.2.0-beta.1 - 2026-08-31
 
 ### Added

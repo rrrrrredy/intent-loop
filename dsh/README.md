@@ -9,7 +9,7 @@ DeepSeek Harness is currently a developer preview. This adapter is pinned to `@d
 DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.1
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.2
 ~~~
 
 Use `web` instead of `headless` to add the same bundle to the Web profile. The package contributes `dsh/cordis.patch.yml`, which inserts one `dsh-intent-loop` plugin row.
