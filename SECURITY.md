@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Intent Loop 0.2.0-beta.4 and the main branch are supported. Earlier beta builds are superseded and do not receive backported fixes.
+Intent Loop 0.2.0-beta.5 and the main branch are supported. Earlier beta builds are superseded and do not receive backported fixes.
 
 ## Reporting a vulnerability
 

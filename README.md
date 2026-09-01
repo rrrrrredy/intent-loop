@@ -50,7 +50,7 @@ Review the plugin manifest, Skill, MCP definition, and optional Hooks before ins
 - `plugins/intent-loop/hooks/hooks.json`
 
 ~~~powershell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.4
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.5
 codex plugin add intent-loop@intent-loop
 ~~~
 
@@ -61,7 +61,7 @@ Start a new Codex task after installation. Manual Skill and MCP use works withou
 DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.4
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.5
 ~~~
 
 Use `web` instead of `headless` for the Web profile. See the [DeepSeek adapter guide](dsh/README.md) for its session, storage, and uninstall boundaries.

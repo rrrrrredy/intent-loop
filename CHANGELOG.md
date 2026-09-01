@@ -2,6 +2,18 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.2.0-beta.5 - 2026-09-01
+
+### Fixed
+
+- Uses one code-unit comparator for both local artifact names and GitHub draft asset names before byte verification, avoiding locale-sensitive ordering differences between uppercase and lowercase filenames.
+- Advances every Codex, DeepSeek, runtime, SBOM, lockfile, and installation identity after the failed beta.4 publication candidate.
+
+### Evidence boundary
+
+- The `v0.2.0-beta.4` tag passed exact-tag CI **18/18**. Its Release job independently retested both packages, created all five attestations, and uploaded all five draft assets from one workflow. Draft verification then failed safely because local and remote asset lists used different sort semantics; publication never ran. The draft was deleted, while the tag and Actions evidence remain for audit.
+- Beta.5 must repeat main and tag CI, immutable publication, public installed-host lifecycles, independent reviews, and cleanup. The paired efficacy study remains `NO RESULT`.
+
 ## 0.2.0-beta.4 - 2026-09-01
 
 ### Fixed
@@ -12,7 +24,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 ### Evidence boundary
 
 - The `v0.2.0-beta.3` tag passed exact-tag CI **18/18** and its Release job built, attested, and uploaded all five draft assets from one workflow. Draft verification then failed safely on the unsupported by-tag lookup; publication never ran. The draft was deleted, while the tag and Actions evidence remain for audit.
-- Beta.4 must repeat main and tag CI, immutable publication, public installed-host lifecycles, independent reviews, and cleanup. The paired efficacy study remains `NO RESULT`.
+- Beta.4 repeated main and tag CI at **18/18** but failed safely before publication because the draft asset-name check compared two differently sorted lists. No beta.4 Release was published. The paired efficacy study remains `NO RESULT`.
 
 ## 0.2.0-beta.3 - 2026-09-01
 

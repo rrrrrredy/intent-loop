@@ -2,23 +2,25 @@
 
 Verified through 2026-09-01 from `D:\Codex\intent-loop` with local Node.js `20.19.1` and a final real-host run on Codex CLI `0.151.0-alpha.7.2`. This report separates executed implementation and publication evidence from efficacy claims that remain untested.
 
-## V0.2.0-beta.4 candidate evidence
+## V0.2.0-beta.5 candidate evidence
 
 The final beta.2 adversarial review returned **HOLD** despite correct current asset bytes. GitHub reported `immutable:false`, repository release immutability was disabled, and three DeepSeek-related assets were uploaded after the Release workflow had published. Enabling immutability is prospective, so beta.2 cannot be retroactively upgraded into an immutable release.
 
 The beta.3 tag changed no product-state semantics. It passed exact-tag CI run [`33466884550`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884550) **18/18**. Release run [`33466884600`](https://github.com/rrrrrredy/intent-loop/actions/runs/33466884600) retested both packages, built all five assets, generated both package provenance attestations, both package-to-SBOM attestations, and checksum-manifest provenance, then uploaded every draft asset as `github-actions[bot]`. The next step failed safely because `GET /releases/tags/{tag}` returns 404 for an unpublished draft. The publish step was skipped, the draft was deleted, and the beta.3 tag remains audit-only.
 
-Beta.4 selects the exact draft from the authenticated release collection and fetches it by release ID before comparing all five remote digests. Every installed and generated identity advances again; product-state semantics remain unchanged.
+Beta.4 selected the exact draft from the authenticated release collection and fetched it by release ID. Main and exact-tag CI each passed **18/18**. Release run [`33468156467`](https://github.com/rrrrrredy/intent-loop/actions/runs/33468156467) retested both packages, created five attestations, and uploaded all five draft assets, then failed safely because local and remote asset names used different sort semantics. Publication never ran and the draft was deleted.
 
-| Beta.4 candidate surface | Executed local check | Result |
+Beta.5 applies one code-unit comparator to both name lists before digest comparison. Every installed and generated identity advances again; product-state semantics remain unchanged.
+
+| Beta.5 candidate surface | Executed local check | Result |
 | --- | --- | --- |
-| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.4`. |
-| DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.4`, 24 SBOM components, and 15 additional notices. |
-| DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260480` bytes, with no tests, scripts, or `node_modules`. |
+| Codex structure and core | Official plugin validator plus full plugin `npm test` | **Pass**; **73/73** tests, type check, runtime build, self-contained distribution, 15 tools, one Skill resource, and live MCP handshake `0.2.0-beta.5`. |
+| DeepSeek adapter and contract | Catalog/legal regeneration plus root `npm test` | **Pass**; **6/6** groups, 15-tool catalog, live handshake `0.2.0-beta.5`, 24 SBOM components, and 15 additional notices. |
+| DeepSeek package | Exact-path package gate | **Pass**; **16/16 intended files**, `260477` bytes, with no tests, scripts, or `node_modules`. |
 | Dependencies | Both production dependency audits at high severity | **Pass**; zero known vulnerabilities at check time. |
-| Release workflow structure | Exact-tag gate and one-job build/attestation/upload passed in beta.3; collection-based exact-draft lookup added | Source fix present; beta.4 public execution pending. |
+| Release workflow structure | Exact-tag gate, collection-based draft lookup, one-job build, five attestations, and five-asset upload executed through beta.4; deterministic name ordering added | Source fix and local five-name regression pass; beta.5 public execution pending. |
 
-Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.4 becomes recommended.
+Public main CI, tag CI, immutable release publication, exact-tag installed-host lifecycles, repeated independent reviews, and final cleanup remain required before beta.5 becomes recommended.
 
 ## V0.2.0-beta.2 publication and supersession evidence
 

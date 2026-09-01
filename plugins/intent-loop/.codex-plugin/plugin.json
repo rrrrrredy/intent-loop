@@ -1,6 +1,6 @@
 {
   "name": "intent-loop",
-  "version": "0.2.0-beta.4",
+  "version": "0.2.0-beta.5",
   "description": "Maintain compact, traceable, disagreement-preserving intent inside the current Codex task.",
   "author": {
     "name": "rrrrrredy",

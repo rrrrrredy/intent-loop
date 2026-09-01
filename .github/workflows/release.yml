@@ -144,8 +144,9 @@ jobs:
           import { join } from "node:path";
           const release = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/draft-release.json`, "utf8"));
           if (!release.draft || !release.prerelease) throw new Error("release must remain a draft prerelease during byte verification");
-          const files = readdirSync("artifacts").sort();
-          const assets = [...release.assets].sort((a, b) => a.name.localeCompare(b.name));
+          const byCodeUnit = (left, right) => left < right ? -1 : left > right ? 1 : 0;
+          const files = readdirSync("artifacts").sort(byCodeUnit);
+          const assets = [...release.assets].sort((a, b) => byCodeUnit(a.name, b.name));
           if (files.length !== 5 || assets.length !== 5) throw new Error(`expected five assets; local=${files.length} remote=${assets.length}`);
           if (files.join("\n") !== assets.map((asset) => asset.name).join("\n")) throw new Error("draft asset names do not match local artifacts");
           for (const asset of assets) {

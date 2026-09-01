@@ -16,9 +16,9 @@ On Codex, project-scoped tools receive the current sandbox working directory thr
 Pinned install paths:
 
 ~~~shell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.4
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.5
 codex plugin add intent-loop@intent-loop
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.4
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.5
 ~~~
 
 DeepSeek Harness is a developer preview. The adapter is pinned to `0.1.2-alpha.2`, and a Harness API break requires a new Intent Loop prerelease rather than an unbounded compatibility claim.
