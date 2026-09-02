@@ -88,7 +88,8 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policy, /intent gate has priority/i);
   assert.match(policy, /plan and start a professional public website/i);
   assert.match(policy, /never ask for a number\/letter without all option text/i);
-  assert.match(policy, /recommendation\/default\/choice, invented/i);
+  assert.match(policy, /equally neutral label\+effect choices/i);
+  assert.match(policy, /default\/recommended\/best\/preferred choice unless advice was requested/i);
   assert.match(policy, /time\/cost\/quality estimate, or deliverable/i);
 });
 

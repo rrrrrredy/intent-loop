@@ -16,9 +16,10 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /even if audience, artifact, or 'start now' is given/i);
   assert.match(POLICY, /plan and start a professional public website/i);
   assert.match(POLICY, /do not act that turn/i);
-  assert.match(POLICY, /2-3 neutral options with label\+effect plus mix\/none\/free/i);
+  assert.match(POLICY, /2-3 complete, equally neutral label\+effect choices/i);
+  assert.match(POLICY, /explicitly allow mix\/none\/free answer/i);
   assert.match(POLICY, /never ask for a number\/letter without all option text/i);
-  assert.match(POLICY, /give no unasked recommendation\/default\/choice/i);
+  assert.match(POLICY, /never label or imply a default\/recommended\/best\/preferred choice unless advice was requested/i);
   assert.match(POLICY, /invented time\/cost\/quality estimate, or deliverable/i);
   assert.match(POLICY, /once the user states outcome\/priority\/scope\/threshold/i);
   assert.match(POLICY, /act; no second intent question/i);
@@ -30,7 +31,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /show 2-3 tiny samples now/i);
   assert.match(POLICY, /no setup/i);
   assert.match(POLICY, /implementation change, intent change, uncertain/i);
-  assert.ok(POLICY.length < 1200);
+  assert.ok(POLICY.length < 1250);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {
