@@ -69,6 +69,7 @@ await verifyArtifactHashes(finalRoot, manifest);
 
 const currentTree = await treeFingerprint(path.join(repositoryRoot, "plugins", "intent-formation"));
 assert.deepEqual(currentTree, manifest.candidate_plugin_tree);
+assert.deepEqual(manifest.executed_plugin_tree, manifest.candidate_plugin_tree);
 assert.deepEqual(
   gitArchiveFingerprint(repositoryRoot, manifest.candidate_commit, "plugins/intent-formation"),
   manifest.candidate_git_archive

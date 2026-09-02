@@ -163,6 +163,7 @@ assert.equal(study.candidate_commit, grading.candidate_commit);
 assert.equal(sourceAnalysis.candidate_commit, study.candidate_commit);
 assert.equal(study.plugin_tree?.sha256, grading.plugin_tree?.sha256);
 assert.equal(sourceAnalysis.plugin_tree?.sha256, study.plugin_tree?.sha256);
+assert.deepEqual(study.executed_plugin_tree, study.plugin_tree);
 assert.equal(study.results?.length, scenarios.length * 2);
 assert.equal(grading.rubric_version, "intent-formation-blind-v2");
 assert.equal(grading.graded_count, scenarios.length);
@@ -313,6 +314,7 @@ const manifest = {
   product_version: productVersion,
   candidate_commit: study.candidate_commit,
   candidate_plugin_tree: study.plugin_tree,
+  executed_plugin_tree: study.executed_plugin_tree,
   candidate_git_archive: study.candidate_archive,
   corpus: definition.corpus,
   holdout_method: definition.method,
@@ -368,7 +370,7 @@ await writeFile(
 
 const metrics = sanitizedAnalysis.metrics;
 const readme = `# Intent Formation ${productVersion}: sealed holdout evidence\n\n` +
-  `This candidate-bound bundle contains ${runs.length}/${runs.length} usable primary Codex conversations across ${scenarios.length} paired scenarios. The user prompts were sent verbatim in separate empty workspaces under a dedicated Codex Home. The exact candidate commit, generated plugin tree, Git archive, model, reasoning effort, CLI version, and plugin inventory are recorded in \`manifest.json\`.\n\n` +
+  `This candidate-bound bundle contains ${runs.length}/${runs.length} usable primary Codex conversations across ${scenarios.length} paired scenarios. The user prompts were sent verbatim in separate empty workspaces under a dedicated Codex Home. The exact candidate commit, generated plugin tree, installed execution-cache tree, Git archive, model, reasoning effort, CLI version, and plugin inventory are recorded in \`manifest.json\`.\n\n` +
   `Measured gates passed: non-clear avoidable rework changed from ${metrics.baseline_avoidable_rework_sum} to ${metrics.plugin_avoidable_rework_sum}; mean final match changed from ${metrics.baseline_final_match_mean_0_to_4}/4 to ${metrics.plugin_final_match_mean_0_to_4}/4; clear-task extra interruptions were median ${metrics.clear_extra_interruption_median} and p90 ${metrics.clear_extra_interruption_p90}; clear paired median latency overhead was ${metrics.clear_paired_latency_overhead_pct}%; and premature plugin action items on non-clear first turns were ${metrics.nonclear_premature_action_count}.\n\n` +
   `Blind preference was plugin ${preferences.plugin}, baseline ${preferences.baseline}, tie ${preferences.tie}. ${retryBatches.length} grading batch(es) required a second attempt; primary product runs were never replaced.\n\n` +
   `This is synthetic, automated evidence for a bounded Codex beta. It is not a human-user study, a universal efficacy claim, or DeepSeek efficacy evidence. Read the limitations and sanitization record in \`manifest.json\`.\n\n` +

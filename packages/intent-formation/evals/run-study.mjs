@@ -42,6 +42,22 @@ const requestedIds = option("--ids", "")
   .map((id) => id.trim())
   .filter(Boolean);
 
+function cacheSegment(value, name) {
+  if (
+    typeof value !== "string" ||
+    value.length < 1 ||
+    value.length > 200 ||
+    value === "." ||
+    value === ".." ||
+    value.includes("/") ||
+    value.includes("\\") ||
+    value.includes("\0")
+  ) {
+    throw new Error(`${name} is not a safe plugin cache segment`);
+  }
+  return value;
+}
+
 if (!["baseline", "plugin", "both"].includes(requestedArm)) {
   throw new Error("--arm must be baseline, plugin, or both");
 }
@@ -98,8 +114,9 @@ if (trackedChanges !== "") {
   throw new Error("candidate-bound study requires a clean tracked worktree");
 }
 const pluginTree = await treeFingerprint(pluginRoot);
+const codexHome = path.resolve(process.env.CODEX_HOME);
 const isolationMarkerPath = path.join(
-  path.resolve(process.env.CODEX_HOME),
+  codexHome,
   ".intent-formation-eval-home.json"
 );
 const isolationMarkerText = await readFile(isolationMarkerPath, "utf8");
@@ -123,6 +140,22 @@ if (
   path.resolve(installedCandidate.source.path ?? "") !== pluginRoot
 ) {
   throw new Error("the installed core plugin path does not match --plugin-root");
+}
+const installedPluginRoot = path.join(
+  codexHome,
+  "plugins",
+  "cache",
+  cacheSegment(installedCandidate.marketplaceName, "marketplaceName"),
+  cacheSegment(installedCandidate.name, "plugin name"),
+  cacheSegment(installedCandidate.version, "plugin version")
+);
+const executedPluginTree = await treeFingerprint(installedPluginRoot);
+if (
+  executedPluginTree.sha256 !== pluginTree.sha256 ||
+  executedPluginTree.file_count !== pluginTree.file_count ||
+  executedPluginTree.bytes !== pluginTree.bytes
+) {
+  throw new Error("installed plugin cache does not match candidate plugin tree");
 }
 const disabledPluginIds = installedPluginIds.filter((id) => id !== pluginId);
 if (!disabledPluginIds.includes(statePluginId)) disabledPluginIds.push(statePluginId);
@@ -442,10 +475,12 @@ const summary = {
   },
   codex_cli_version: codexCliVersion,
   plugin_tree: pluginTree,
+  executed_plugin_tree: executedPluginTree,
   candidate_archive: candidateArchive,
   plugin_inventory: {
     installed_plugin_ids: installedPluginIds,
     disabled_plugin_ids: disabledPluginIds,
+    runtime_cache_matches_candidate: true,
     active_plugin_id_by_arm: {
       baseline: null,
       plugin: pluginId

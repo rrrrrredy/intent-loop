@@ -416,6 +416,9 @@ test("paired study keeps each pair sequential and alternates AB and BA", async (
   assert.match(source, /user_prompts_verbatim: true/);
   assert.match(source, /candidate_commit/);
   assert.match(source, /plugin_tree/);
+  assert.match(source, /executed_plugin_tree/);
+  assert.match(source, /installed plugin cache does not match candidate plugin tree/);
+  assert.match(source, /runtime_cache_matches_candidate: true/);
   assert.match(source, /candidate_archive/);
   assert.match(source, /sandbox_base: "read-only"/);
   assert.match(source, /workspace_writes: "automatic review via --approve-for-me"/);
