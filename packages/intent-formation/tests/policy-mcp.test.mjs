@@ -8,27 +8,29 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
+  assert.match(POLICY, /intent gate has priority/i);
   assert.match(POLICY, /clear: act; no question/i);
-  assert.match(POLICY, /costly\/public work guided only by subjective terms/i);
+  assert.match(POLICY, /costly\/public work depends on an unstated outcome behind subjective direction/i);
   assert.match(POLICY, /professional\/premium\/clean\/modern/i);
-  assert.match(POLICY, /unless comparison\/sample requested/i);
-  assert.match(POLICY, /before tools\/draft\/write output exactly one outcome\/tradeoff question/i);
-  assert.match(POLICY, /2-3 neutral labels\+effects\+mix\/none\/free/i);
-  assert.match(POLICY, /never omit option text/i);
+  assert.match(POLICY, /before any tool\/draft\/write, ask exactly one outcome\/tradeoff question/i);
+  assert.match(POLICY, /even if audience, artifact, or 'start now' is given/i);
+  assert.match(POLICY, /plan and start a professional public website/i);
+  assert.match(POLICY, /do not act that turn/i);
+  assert.match(POLICY, /2-3 neutral options with label\+effect plus mix\/none\/free/i);
+  assert.match(POLICY, /never ask for a number\/letter without all option text/i);
   assert.match(POLICY, /give no unasked recommendation\/default\/choice/i);
   assert.match(POLICY, /invented time\/cost\/quality estimate, or deliverable/i);
-  assert.match(POLICY, /user states outcome\/priority\/scope\/threshold: act; no second intent question/i);
-  assert.match(POLICY, /lacks options: show 2-3 neutral options as above/i);
+  assert.match(POLICY, /once the user states outcome\/priority\/scope\/threshold/i);
+  assert.match(POLICY, /act; no second intent question/i);
   assert.match(POLICY, /unprioritized conflict/i);
-  assert.match(POLICY, /one tradeoff question/i);
-  assert.match(POLICY, /no tools\/invented compromise/i);
+  assert.match(POLICY, /same one-question\/no-tools gate/i);
   assert.match(POLICY, /must\/fast\/all\/highly\/but\/also set no priority/i);
-  assert.match(POLICY, /high-cost risk, no branches: one free-form question/i);
-  assert.match(POLICY, /invent none/i);
+  assert.match(POLICY, /high-cost risk without known branches: one free-form question/i);
+  assert.match(POLICY, /invent no compromise/i);
   assert.match(POLICY, /show 2-3 tiny samples now/i);
   assert.match(POLICY, /no setup/i);
   assert.match(POLICY, /implementation change, intent change, uncertain/i);
-  assert.ok(POLICY.length < 900);
+  assert.ok(POLICY.length < 1200);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {
