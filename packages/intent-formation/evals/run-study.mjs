@@ -2,6 +2,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { summarizeCodexEvents } from "./codex-event-summary.mjs";
 import { gitArchiveFingerprint, sha256, treeFingerprint } from "./fingerprint.mjs";
 
 function option(name, fallback) {
@@ -168,38 +169,6 @@ function parseEvents(stdout) {
   return events;
 }
 
-function eventSummary(events) {
-  const thread = events.find((event) => event.type === "thread.started");
-  const toolCalls = events
-    .filter(
-      (event) =>
-        event.type === "item.completed" &&
-        event.item?.type === "mcp_tool_call"
-    )
-    .map((event) => ({
-      server: event.item.server,
-      tool: event.item.tool,
-      status: event.item.status,
-      error: event.item.error || null
-    }));
-  const actionItems = events
-    .filter(
-      (event) =>
-        event.type === "item.completed" &&
-        event.item &&
-        !["agent_message", "reasoning", "mcp_tool_call"].includes(event.item.type)
-    )
-    .map((event) => ({
-      type: event.item.type,
-      status: event.item.status ?? null
-    }));
-  return {
-    thread_id: thread?.thread_id || null,
-    mcp_tool_calls: toolCalls,
-    action_items: actionItems
-  };
-}
-
 function runProcess(args, runTimeoutMs = timeoutMs, workingDirectory = workspace, stdinText = null) {
   return new Promise((resolve) => {
     const startedAt = Date.now();
@@ -262,10 +231,13 @@ function commonExecArgs(arm) {
     "-c", pluginOverride(arm),
     "-c", statePluginOverride,
     "-c", `model_reasoning_effort=\"${reasoningEffort}\"`,
-    "-c", "sandbox_mode=\"workspace-write\"",
-    "-c", "approval_policy=\"never\"",
     "-m", model,
-    "exec"
+    "exec",
+    "--approve-for-me",
+    "--dangerously-bypass-hook-trust",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check"
   );
   return args;
 }
@@ -294,12 +266,6 @@ async function runJob(job) {
   const secondPath = path.join(outputDirectory, prefix + "-second.txt");
   const firstArgs = commonExecArgs(arm).concat([
     "--json",
-    "--dangerously-bypass-hook-trust",
-    "--ignore-user-config",
-    "--ignore-rules",
-    "--sandbox",
-    "workspace-write",
-    "--skip-git-repo-check",
     "-C",
     jobWorkspace,
     "-o",
@@ -308,7 +274,7 @@ async function runJob(job) {
   ]);
   const first = await runProcess(firstArgs, timeoutMs, jobWorkspace, scenario.initial_prompt);
   const firstEvents = parseEvents(first.stdout);
-  const firstEventSummary = eventSummary(firstEvents);
+  const firstEventSummary = summarizeCodexEvents(firstEvents);
   const firstResponse = await readResponse(firstPath);
   await writeFile(
     path.join(outputDirectory, prefix + "-first.events.jsonl"),
@@ -323,7 +289,12 @@ async function runJob(job) {
 
   let second = null;
   let secondResponse = "";
-  let secondEventSummary = { thread_id: null, mcp_tool_calls: [], action_items: [] };
+  let secondEventSummary = {
+    thread_id: null,
+    mcp_tool_calls: [],
+    action_items: [],
+    diagnostic_items: []
+  };
   if (
     scenario.follow_up &&
     first.code === 0 &&
@@ -333,10 +304,6 @@ async function runJob(job) {
     const secondArgs = commonExecArgs(arm).concat([
       "resume",
       "--json",
-      "--dangerously-bypass-hook-trust",
-      "--ignore-user-config",
-      "--ignore-rules",
-      "--skip-git-repo-check",
       "-o",
       secondPath,
       firstEventSummary.thread_id,
@@ -344,7 +311,7 @@ async function runJob(job) {
     ]);
     second = await runProcess(secondArgs, timeoutMs, jobWorkspace, scenario.follow_up);
     const secondEvents = parseEvents(second.stdout);
-    secondEventSummary = eventSummary(secondEvents);
+    secondEventSummary = summarizeCodexEvents(secondEvents);
     secondResponse = await readResponse(secondPath);
     await writeFile(
       path.join(outputDirectory, prefix + "-second.events.jsonl"),
@@ -371,7 +338,8 @@ async function runJob(job) {
       response: firstResponse,
       prompt_sha256: sha256(scenario.initial_prompt),
       mcp_tool_calls: firstEventSummary.mcp_tool_calls,
-      action_items: firstEventSummary.action_items
+      action_items: firstEventSummary.action_items,
+      diagnostic_items: firstEventSummary.diagnostic_items
     },
     second:
       second === null
@@ -384,7 +352,8 @@ async function runJob(job) {
             response: secondResponse,
             prompt_sha256: sha256(scenario.follow_up),
             mcp_tool_calls: secondEventSummary.mcp_tool_calls,
-            action_items: secondEventSummary.action_items
+            action_items: secondEventSummary.action_items,
+            diagnostic_items: secondEventSummary.diagnostic_items
           },
     total_duration_ms:
       first.duration_ms + (second === null ? 0 : second.duration_ms),
@@ -453,7 +422,9 @@ const summary = {
     pairing: requestedArm === "both" ? "within-scenario" : "single-arm",
     pair_order: requestedArm === "both" ? "alternating AB/BA" : null,
     arms_within_pair: "sequential",
-    pair_worker_concurrency: concurrency
+    pair_worker_concurrency: concurrency,
+    turn_timeout_ms: timeoutMs,
+    primary_run_retry_policy: "none"
   },
   scenarios_path: scenariosPath,
   workspace,
@@ -486,8 +457,10 @@ const summary = {
     ignore_rules: true,
     workspace_per_arm: true,
     user_prompts_verbatim: true,
-    sandbox: "workspace-write",
-    approval_policy: "never",
+    sandbox_base: "read-only",
+    workspace_writes: "automatic review via --approve-for-me",
+    approval_policy: "automatic-review",
+    dangerous_approval_or_sandbox_bypass: false,
     hook_trust_bypass_after_package_review: true,
     marker_sha256: sha256(isolationMarkerText)
   },

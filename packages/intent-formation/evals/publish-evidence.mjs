@@ -92,7 +92,8 @@ function publicTurn(turn) {
     prompt_sha256: turn.prompt_sha256,
     response: turn.response,
     mcp_tool_calls: turn.mcp_tool_calls ?? [],
-    action_items: turn.action_items ?? []
+    action_items: turn.action_items ?? [],
+    diagnostic_items: turn.diagnostic_items ?? []
   });
 }
 
@@ -171,7 +172,10 @@ assert.equal(sourceAnalysis.primary_run_reliability?.usable_count, scenarios.len
 assert.ok(Object.values(sourceAnalysis.gates).every((gate) => gate.status === "PASS"));
 assert.equal(study.isolation?.user_prompts_verbatim, true);
 assert.equal(study.isolation?.dedicated_codex_home, true);
-assert.equal(study.isolation?.sandbox, "workspace-write");
+assert.equal(study.isolation?.sandbox_base, "read-only");
+assert.equal(study.isolation?.workspace_writes, "automatic review via --approve-for-me");
+assert.equal(study.isolation?.approval_policy, "automatic-review");
+assert.equal(study.isolation?.dangerous_approval_or_sandbox_bypass, false);
 assert.equal(study.plugin_id, "intent-formation@intent-loop");
 assert.equal(study.state_plugin_id, "intent-formation-state@intent-loop");
 assert.ok(study.model && study.reasoning_effort && grading.model && grading.reasoning_effort);

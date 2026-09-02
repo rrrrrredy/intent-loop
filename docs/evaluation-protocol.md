@@ -39,7 +39,7 @@ The runner refuses to start unless all of the following match:
 - a dedicated Codex Home marker and plugin inventory; and
 - an explicit Codex model and reasoning effort.
 
-Each arm gets a separate empty workspace. The initial request and frozen follow-up are sent verbatim, with no evaluation wrapper. User configuration and project rules are ignored. All non-target plugins are disabled. The State companion is disabled in both arms. Model tools run with `workspace-write`, no approval escalation, and no network requirement. The only dangerous automation flag is the Hook-trust bypass, used after the exact package has been inspected and fingerprinted.
+Each arm gets a separate empty workspace. The initial request and frozen follow-up are sent verbatim, with no evaluation wrapper. User configuration and project rules are ignored. All non-target plugins are disabled. The State companion is disabled in both arms. Model tools start read-only and can request workspace writes through Codex's automatic reviewer (`--approve-for-me`); no task requires network access. The evaluator never bypasses the approval or sandbox boundary. The only dangerous automation flag is the Hook-trust bypass, used after the exact package has been inspected and fingerprinted.
 
 The baseline disables the core plugin. The plugin arm enables only `intent-formation@intent-loop`. Pair order alternates AB/BA, and the two arms of one scenario run sequentially.
 

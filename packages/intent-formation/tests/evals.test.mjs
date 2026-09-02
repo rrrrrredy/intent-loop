@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
+import { summarizeCodexEvents } from "../evals/codex-event-summary.mjs";
 import { createEvidenceSanitizer } from "../evals/evidence-sanitizer.mjs";
 import { violationRatePercent } from "../evals/metrics.mjs";
 
@@ -329,6 +330,20 @@ test("public evidence sanitizer removes credentials, local paths, and controls w
   });
 });
 
+test("Codex diagnostics cannot be misclassified as premature user work", () => {
+  const summary = summarizeCodexEvents([
+    { type: "thread.started", thread_id: "thread-test" },
+    { type: "item.completed", item: { type: "error", message: "hook trust bypass warning" } },
+    { type: "item.completed", item: { type: "agent_message", text: "one question" } },
+    { type: "item.completed", item: { type: "mcp_tool_call", server: "policy", tool: "load", status: "completed" } },
+    { type: "item.completed", item: { type: "command_execution", status: "completed" } }
+  ]);
+  assert.equal(summary.thread_id, "thread-test");
+  assert.deepEqual(summary.action_items, [{ type: "command_execution", status: "completed" }]);
+  assert.deepEqual(summary.diagnostic_items, [{ type: "error", message: "hook trust bypass warning" }]);
+  assert.equal(summary.mcp_tool_calls.length, 1);
+});
+
 test("blind grading schema fixes the bounded evidence labels", async () => {
   const schema = JSON.parse(
     await readFile(path.join(repositoryRoot, "evals", "grading-output-v2.schema.json"), "utf8")
@@ -398,7 +413,11 @@ test("paired study keeps each pair sequential and alternates AB and BA", async (
   assert.match(source, /candidate_commit/);
   assert.match(source, /plugin_tree/);
   assert.match(source, /candidate_archive/);
-  assert.match(source, /workspace-write/);
+  assert.match(source, /sandbox_base: "read-only"/);
+  assert.match(source, /workspace_writes: "automatic review via --approve-for-me"/);
+  assert.match(source, /--approve-for-me/);
+  assert.match(source, /dangerous_approval_or_sandbox_bypass: false/);
+  assert.doesNotMatch(source, /approval_policy=\\\"never\\\"/);
   assert.match(source, /--ignore-user-config/);
   assert.match(source, /--ignore-rules/);
   assert.doesNotMatch(source, /Respond to the user's task in ordinary conversation/);
