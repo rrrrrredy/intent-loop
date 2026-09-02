@@ -8,15 +8,14 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
-  assert.match(POLICY, /resolved choice\/continue/i);
-  assert.match(POLICY, /concrete scope\/threshold/i);
-  assert.match(POLICY, /act; no question/i);
+  assert.match(POLICY, /after asking, user-stated outcome\/priority\/scope\/threshold ends questions/i);
+  assert.match(POLICY, /act; no second intent question/i);
   assert.match(POLICY, /costly\/public work/i);
   assert.match(POLICY, /professional\/premium\/clean\/modern/i);
-  assert.match(POLICY, /unresolved despite named audience\/artifact/i);
-  assert.match(POLICY, /before inspection\/tools\/draft\/write/i);
-  assert.match(POLICY, /ask exactly one outcome\/tradeoff question/i);
-  assert.match(POLICY, /2-3 neutral labels \+ consequences/i);
+  assert.match(POLICY, /unresolved despite audience\/artifact/i);
+  assert.match(POLICY, /before tools\/draft\/write/i);
+  assert.match(POLICY, /ask one outcome\/tradeoff question/i);
+  assert.match(POLICY, /2-3 neutral labels \+ effects/i);
   assert.match(POLICY, /no deliverable, recommendation\/default, or invented estimate/i);
   assert.match(POLICY, /unless comparison\/sample requested/i);
   assert.match(POLICY, /unprioritized conflicts/i);

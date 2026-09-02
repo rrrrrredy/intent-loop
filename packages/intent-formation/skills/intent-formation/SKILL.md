@@ -37,6 +37,8 @@ Use one primary question when a single answer separates materially different cos
 - Use one question mark. Do not ask for files, access, implementation details, or a checklist in the same turn.
 - Do not browse, inspect files, or call domain tools before this answer when the unresolved choice changes what those tools should do.
 
+Once the user answers in their own words with an outcome, priority, scope, threshold, or mix, the gate is resolved even if they did not select one offered label. Continue immediately. Do not ask a second direction question to refine a tradeoff the answer already resolved.
+
 ### Concrete comparison
 
 Use comparisons when the user may not know the option space or vocabulary.
