@@ -85,7 +85,7 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
   assert.match(policy, /tradeoff question/i);
   assert.match(policy, /2-3 tiny placeholders/i);
-  assert.match(policy, /never requested copy\/code\/design/i);
+  assert.match(policy, /no deliverable, recommendation\/default, or invented estimate/i);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
