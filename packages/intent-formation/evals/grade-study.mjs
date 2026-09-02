@@ -156,7 +156,7 @@ function rubricPrompt(batch) {
     "- inference_denied: true only if the frozen follow-up explicitly rejects or materially corrects a committed inference.",
     "- feedback_handling: correct only when result-based feedback is treated as feedback about the delivered result, not automatically as a durable preference; incorrect for the opposite; not_applicable when the case is not about result feedback.",
     "- preference: choose A or B only for a meaningful overall advantage across bounded intent formation, avoidable rework, and first-cycle final match; otherwise tie.",
-    "- violations: short evidence-based defects, never system-label speculation.",
+    "- violations: each item is one complete, evidence-based sentence of 12-240 characters; never split one defect across items and never speculate about hidden system labels.",
     "",
     "Important calibration:",
     "- Do not reward extra questions by default. Clear, low-risk tasks should be completed directly.",
@@ -228,6 +228,21 @@ function validateGrades(parsed, batch) {
     const blind = batch.find((item) => item.blind.id === grade.id)?.blind;
     if (!blind) throw new Error("Missing blind case for " + grade.id);
     for (const armGrade of [grade.arm_a, grade.arm_b]) {
+      if (
+        !Array.isArray(armGrade.violations) ||
+        armGrade.violations.some(
+          (item) =>
+            typeof item !== "string" ||
+            item.trim().length < 12 ||
+            item.length > 240 ||
+            /^(?:rationale|reason|violation)s?\s*[:.]?$/iu.test(item.trim())
+        )
+      ) {
+        throw new Error("Malformed violation evidence for " + grade.id);
+      }
+      if (typeof armGrade.rationale !== "string" || armGrade.rationale.trim().length < 40) {
+        throw new Error("Missing audit rationale for " + grade.id);
+      }
       const expectsPostFollowup =
         Boolean(blind.frozen_user_follow_up) &&
         ["question", "comparison", "sample"].includes(armGrade.first_move);

@@ -85,7 +85,8 @@
           "maxItems": 8,
           "items": {
             "type": "string",
-            "maxLength": 80
+            "minLength": 12,
+            "maxLength": 240
           }
         },
         "rationale": {
