@@ -2,6 +2,39 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
+## 0.3.0-beta.1 - 2026-09-03
+
+### Changed
+
+- Reoriented the product from a requirement-ledger-first Intent Loop into Intent Formation: a quiet Codex interaction policy that continues on clear work and uses one focused question, concrete comparison, or small sample only before materially divergent work.
+- Split the Codex distribution into a state-free `intent-formation` core and optional `intent-formation-state` companion.
+- Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 16 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-alpha.5` with its current peer identities.
+- Replaced the v0.2 public documentation with a beginner-first install path, explicit migration, narrower privacy terms, and a release-gate report.
+
+### Added
+
+- Published a frozen 80-scenario paired Codex study with 160/160 usable primary conversations, all sanitized responses and blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test.
+- Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
+- Added deterministic evidence verification to the root test suite.
+- Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
+- Added three-platform Codex, DeepSeek adapter, and real Harness lifecycle CI matrices totaling 18 jobs.
+
+### Fixed
+
+- Made manual export write a complete integrity-checked file inside the managed export directory while returning only path, count, digest, and receipt to model context.
+- Purged managed exports during private-mode transition and task deletion.
+- Allowed a fresh process to adopt the current private marker while rejecting a stale conflicting marker, avoiding failed writes and retry loops.
+- Made `/intent off` inject a task-specific override on every ordinary prompt and added a regression that prevents general policy context from silently re-enabling intervention.
+- Refused `/intent remember` in private mode rather than returning a receipt for memory that disappears when its short-lived Hook exits.
+- Closed a same-process lock-publication race by registering the unique owner token before its file becomes observable; the permanent regression now drives 100 simultaneous appends.
+- Removed obsolete selector and session prototypes from the shipped surface.
+
+### Evidence boundary
+
+- Avoidable rework fell from 66 to 0 units across 60 non-clear scenarios; mean final match rose from 2.96/4 to 3.89/4; clear-task extra interruptions were median 0 and p90 0; the clear paired median latency point estimate was +1.97%; and blind preference was 41 plugin, 3 baseline, 36 ties.
+- The evidence remains limited by a synthetic corpus, automated grading, one Windows execution host, unrecorded exact model identities, three grader timeout retries, a 175,993 ms longest turn, and a clear-latency bootstrap interval that reaches +7.29%.
+- DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.
+
 ## 0.2.0-beta.5 - 2026-09-01
 
 ### Fixed

@@ -1,0 +1,29 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:284f6e80-d4ae-523f-b311-87fd25ef6a5b",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "intent-formation",
+      "version": "0.3.0-beta.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:npm/intent-formation@0.3.0-beta.1",
+      "bom-ref": "pkg:npm/intent-formation@0.3.0-beta.1"
+    }
+  },
+  "components": [],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/intent-formation@0.3.0-beta.1",
+      "dependsOn": []
+    }
+  ]
+}

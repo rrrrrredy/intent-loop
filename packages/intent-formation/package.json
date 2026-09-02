@@ -1,0 +1,43 @@
+{
+  "name": "@intent-formation/codex-plugin",
+  "version": "0.3.0-beta.1",
+  "private": true,
+  "description": "A quiet, evidence-tested intent-formation layer for Codex.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "pretest": "npm run build",
+    "test": "node --test tests/evals.test.mjs tests/hook.test.mjs tests/package.test.mjs tests/policy-mcp.test.mjs tests/store.test.mjs tests/service.test.mjs tests/mcp.test.mjs",
+    "publish:evidence": "node evals/publish-evidence.mjs",
+    "pilot:codex": "node evals/run-codex-pilot.mjs",
+    "probe:latency": "node evals/run-codex-pilot.mjs --scenarios evals/latency-probes.jsonl"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0",
+  "author": "rrrrrredy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rrrrrredy/intent-loop.git",
+    "directory": "packages/intent-formation"
+  },
+  "homepage": "https://github.com/rrrrrredy/intent-loop",
+  "bugs": {
+    "url": "https://github.com/rrrrrredy/intent-loop/issues"
+  },
+  "keywords": [
+    "codex",
+    "intent",
+    "agent",
+    "mcp",
+    "human-ai-interaction"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

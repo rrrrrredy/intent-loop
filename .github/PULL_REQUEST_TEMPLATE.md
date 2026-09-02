@@ -4,7 +4,8 @@ Describe the user-visible change.
 
 ## Evidence
 
-- [ ] npm test passes in plugins/intent-loop
+- [ ] `npm test` passes in `packages/intent-formation`
+- [ ] Root `npm test` passes on the supported Node version
 - [ ] Runtime bundles and third-party notices were regenerated
 - [ ] New defects have regression coverage
 - [ ] Claims are separated into verified facts, judgments, and unverified hypotheses

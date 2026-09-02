@@ -10,33 +10,43 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..", "..");
-const runtimePath = path.join(repositoryRoot, "plugins", "intent-loop", "runtime", "server.mjs");
+const runtimePath = path.join(
+  repositoryRoot,
+  "plugins",
+  "intent-formation-state",
+  "dist",
+  "intent-formation-server.mjs"
+);
 const outputPath = path.join(repositoryRoot, "dsh", "tool-catalog.json");
 const packageManifest = JSON.parse(await readFile(path.join(repositoryRoot, "package.json"), "utf8"));
 const checkOnly = process.argv.includes("--check");
-const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-loop-dsh-catalog-"));
+const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-formation-dsh-catalog-"));
 
 function sanitizedInputSchema(schema) {
   const result = structuredClone(schema);
   assert.equal(result.type, "object");
   result.properties ??= {};
+  delete result.properties.task_id;
+  delete result.properties.cwd;
   delete result.properties.project_root;
   delete result.properties.host_session_id;
   if (Array.isArray(result.required)) {
-    result.required = result.required.filter((name) => name !== "project_root" && name !== "host_session_id");
+    result.required = result.required.filter(
+      (name) => !["task_id", "cwd", "project_root", "host_session_id"].includes(name)
+    );
   }
   result.additionalProperties = false;
   return result;
 }
 
-const client = new Client({ name: "intent-loop-dsh-catalog", version: packageManifest.version });
+const client = new Client({ name: "intent-formation-dsh-catalog", version: packageManifest.version });
 try {
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [runtimePath],
     cwd: repositoryRoot,
     env: {
-      INTENT_LOOP_DATA_DIR: path.join(scratch, "data"),
+      INTENT_FORMATION_DATA_DIR: path.join(scratch, "data"),
       ...(process.env.SystemRoot ? { SystemRoot: process.env.SystemRoot } : {}),
       ...(process.env.WINDIR ? { WINDIR: process.env.WINDIR } : {}),
       ...(process.env.PATH ? { PATH: process.env.PATH } : {})
@@ -53,7 +63,7 @@ try {
   const runtimeBytes = await readFile(runtimePath);
   const catalog = {
     schema_version: 1,
-    generated_from: "plugins/intent-loop/runtime/server.mjs",
+    generated_from: "plugins/intent-formation-state/dist/intent-formation-server.mjs",
     source_runtime_sha256: createHash("sha256").update(runtimeBytes).digest("hex"),
     tools: listed.tools
       .map((tool) => ({
@@ -67,9 +77,11 @@ try {
   };
   const names = new Set(catalog.tools.map((tool) => tool.name));
   assert.equal(names.size, 15, "tool names must be unique");
-  assert.equal(names.has("intent_start_task"), true);
-  assert.equal(names.has("intent_delete"), true);
+  assert.equal(names.has("intent_start"), true);
+  assert.equal(names.has("intent_forget"), true);
   for (const tool of catalog.tools) {
+    assert.equal("task_id" in tool.inputSchema.properties, false);
+    assert.equal("cwd" in tool.inputSchema.properties, false);
     assert.equal("project_root" in tool.inputSchema.properties, false);
     assert.equal("host_session_id" in tool.inputSchema.properties, false);
   }

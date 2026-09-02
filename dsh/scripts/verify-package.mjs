@@ -5,10 +5,12 @@ import { readFile } from "node:fs/promises";
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const repositoryRoot = new URL("../..", import.meta.url);
 const rootPackage = JSON.parse(await readFile(new URL("package.json", repositoryRoot), "utf8"));
-const codexPackage = JSON.parse(await readFile(new URL("plugins/intent-loop/package.json", repositoryRoot), "utf8"));
-const codexManifest = JSON.parse(await readFile(new URL("plugins/intent-loop/.codex-plugin/plugin.json", repositoryRoot), "utf8"));
+const codexPackage = JSON.parse(await readFile(new URL("packages/intent-formation/package.json", repositoryRoot), "utf8"));
+const codexManifest = JSON.parse(await readFile(new URL("plugins/intent-formation/.codex-plugin/plugin.json", repositoryRoot), "utf8"));
+const stateManifest = JSON.parse(await readFile(new URL("plugins/intent-formation-state/.codex-plugin/plugin.json", repositoryRoot), "utf8"));
 assert.equal(rootPackage.version, codexPackage.version, "DeepSeek and Codex package versions must match");
 assert.equal(codexManifest.version, codexPackage.version, "Codex installed manifest version must match package.json");
+assert.equal(stateManifest.version, codexPackage.version, "State companion manifest version must match package.json");
 const packed = spawnSync(npm, ["pack", "--dry-run", "--json", "--ignore-scripts"], {
   cwd: repositoryRoot,
   encoding: "utf8",
@@ -36,11 +38,13 @@ const expectedFiles = [
   "dsh/index.js",
   "dsh/tool-catalog.json",
   "package.json",
-  "plugins/intent-loop/LICENSE",
-  "plugins/intent-loop/NOTICE",
-  "plugins/intent-loop/THIRD_PARTY_NOTICES.md",
-  "plugins/intent-loop/runtime/server.mjs",
-  "plugins/intent-loop/skills/intent/SKILL.md"
+  "packages/intent-formation/LICENSE",
+  "packages/intent-formation/NOTICE",
+  "packages/intent-formation/src/policy.mjs",
+  "plugins/intent-formation-state/LICENSE",
+  "plugins/intent-formation-state/NOTICE",
+  "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+  "plugins/intent-formation-state/dist/intent-formation-server.mjs"
 ].sort();
 assert.deepEqual(files, expectedFiles, "packed DeepSeek bundle path set must match the exact allowlist");
 assert.equal(files.some((file) => file.includes("node_modules") || file.includes("/tests/") || file.includes("/scripts/")), false);

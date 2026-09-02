@@ -6,13 +6,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-loop-dsh-host-"));
+const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-formation-dsh-host-"));
 const dshHome = path.join(scratch, "dsh-home");
 const npmCache = path.join(scratch, "npm-cache");
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const npx = process.platform === "win32" ? "npx.cmd" : "npx";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-const dshPackage = "@deepseek-ai/dsh@0.1.2-alpha.2";
+const dshPackage = "@deepseek-ai/dsh@0.1.2-alpha.5";
 
 const cleanEnv = { ...process.env };
 for (const key of Object.keys(cleanEnv)) {
@@ -56,19 +56,19 @@ try {
 
   run(npx, ["--yes", dshPackage, "plugin", "--profile", "headless", "add", archive]);
   const installed = run(npx, ["--yes", dshPackage, "--profile", "headless", "--dump-config"]);
-  assert.match(installed, /id:\s*intent-loop/u);
-  assert.match(installed, /name:\s*["']?dsh-intent-loop/u);
+  assert.match(installed, /id:\s*intent-formation/u);
+  assert.match(installed, /name:\s*["']?dsh-intent-formation/u);
 
   const help = run(npx, ["--yes", dshPackage, "--profile", "headless", "--help"]);
   assert.match(help, /DeepSeek Harness|dsh|headless/iu);
 
-  run(npx, ["--yes", dshPackage, "plugin", "--profile", "headless", "remove", "dsh-intent-loop"]);
+  run(npx, ["--yes", dshPackage, "plugin", "--profile", "headless", "remove", "dsh-intent-formation"]);
   const removed = run(npx, ["--yes", dshPackage, "--profile", "headless", "--dump-config"]);
-  assert.doesNotMatch(removed, /name:\s*["']?dsh-intent-loop/u);
+  assert.doesNotMatch(removed, /name:\s*["']?dsh-intent-formation/u);
 
   process.stdout.write(JSON.stringify({
     ok: true,
-    dsh: "0.1.2-alpha.2",
+    dsh: "0.1.2-alpha.5",
     lifecycle: "pack-add-compose-boot-help-remove",
     api_key_used: false,
     dsh_home: "temporary-and-removed"

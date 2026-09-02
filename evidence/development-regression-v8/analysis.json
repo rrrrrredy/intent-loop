@@ -1,0 +1,208 @@
+{
+  "generated_at": "2026-09-02T15:21:18.909Z",
+  "decision": "GO_PENDING_STATE_TESTS",
+  "interpretation": "V2 final match scores the first completed intent-formation cycle. Retry text may complete blind quality grading but never replaces primary reliability or timing statistics.",
+  "primary_run_reliability": {
+    "run_count": 160,
+    "usable_count": 160,
+    "usable_rate_pct": 100,
+    "failures": []
+  },
+  "metrics": {
+    "nonclear_scenario_count": 60,
+    "baseline_avoidable_rework_sum": 66,
+    "plugin_avoidable_rework_sum": 0,
+    "avoidable_rework_reduction_pct": 100,
+    "baseline_final_match_mean_0_to_4": 2.96,
+    "plugin_final_match_mean_0_to_4": 3.89,
+    "final_match_gain_percentage_points": 23.13,
+    "nonclear_final_match_gain_percentage_points": 30.83,
+    "clear_extra_interruption_median": 0,
+    "clear_extra_interruption_p90": 0,
+    "clear_plugin_interruption_median": 0,
+    "clear_plugin_interruption_p90": 0,
+    "clear_baseline_first_turn_median_ms": 9115,
+    "clear_plugin_first_turn_median_ms": 9169,
+    "clear_arm_median_latency_overhead_pct": 0.59,
+    "clear_paired_latency_overhead_pct": 1.97,
+    "intervention_counts": {
+      "helpful": 29,
+      "wrong_or_unhelpful": 0,
+      "none": 51
+    },
+    "proactive_intervention_count": 29,
+    "helpful_proactive_rate_pct": 100,
+    "wrong_or_unhelpful_proactive_rate_pct": 0,
+    "inference_made_count": 0,
+    "inference_denied_count": 0,
+    "inference_denial_rate_pct": 0,
+    "blind_preference_counts": {
+      "plugin": 41,
+      "baseline": 3,
+      "tie": 36
+    },
+    "result_feedback_correct_count": 15,
+    "result_feedback_incorrect_count": 0,
+    "result_feedback_case_count": 15,
+    "match_basis_counts": {
+      "baseline": {
+        "first_response": 55,
+        "post_followup_response": 25
+      },
+      "plugin": {
+        "first_response": 20,
+        "post_followup_response": 60
+      }
+    }
+  },
+  "class_breakdown": {
+    "poorly_expressed": {
+      "count": 15,
+      "baseline_rework_sum": 27,
+      "plugin_rework_sum": 0,
+      "rework_reduction_pct": 100,
+      "baseline_final_match_mean": 1.8,
+      "plugin_final_match_mean": 3.8,
+      "plugin_preferences": 14,
+      "baseline_preferences": 0,
+      "ties": 1
+    },
+    "unformed": {
+      "count": 15,
+      "baseline_rework_sum": 15,
+      "plugin_rework_sum": 0,
+      "rework_reduction_pct": 100,
+      "baseline_final_match_mean": 2.87,
+      "plugin_final_match_mean": 3.93,
+      "plugin_preferences": 10,
+      "baseline_preferences": 1,
+      "ties": 4
+    },
+    "conflict": {
+      "count": 15,
+      "baseline_rework_sum": 23,
+      "plugin_rework_sum": 0,
+      "rework_reduction_pct": 100,
+      "baseline_final_match_mean": 2.07,
+      "plugin_final_match_mean": 4,
+      "plugin_preferences": 15,
+      "baseline_preferences": 0,
+      "ties": 0
+    },
+    "preference_after_result": {
+      "count": 15,
+      "baseline_rework_sum": 1,
+      "plugin_rework_sum": 0,
+      "rework_reduction_pct": 100,
+      "baseline_final_match_mean": 3.73,
+      "plugin_final_match_mean": 3.67,
+      "plugin_preferences": 2,
+      "baseline_preferences": 2,
+      "ties": 11
+    },
+    "clear": {
+      "count": 20,
+      "baseline_rework_sum": 0,
+      "plugin_rework_sum": 0,
+      "rework_reduction_pct": null,
+      "baseline_final_match_mean": 4,
+      "plugin_final_match_mean": 4,
+      "plugin_preferences": 0,
+      "baseline_preferences": 0,
+      "ties": 20
+    }
+  },
+  "privacy": {
+    "status": "PASS",
+    "state_bytes": 310,
+    "exact_complete_prompt_matches": [],
+    "storage_location": "local plugin-data ledger; machine-specific path omitted"
+  },
+  "gates": {
+    "avoidable_rework": {
+      "metric": 100,
+      "threshold": ">= 25% reduction",
+      "status": "PASS"
+    },
+    "final_match": {
+      "metric": 23.13,
+      "threshold": ">= 10 percentage points",
+      "status": "PASS"
+    },
+    "clear_extra_interruptions_median": {
+      "metric": 0,
+      "threshold": "= 0",
+      "status": "PASS"
+    },
+    "clear_extra_interruptions_p90": {
+      "metric": 0,
+      "threshold": "<= 1",
+      "status": "PASS"
+    },
+    "clear_latency": {
+      "metric": 1.97,
+      "threshold": "<= 5% overhead",
+      "status": "PASS"
+    },
+    "proactive_helpful": {
+      "metric": 100,
+      "threshold": ">= 70% of proactive interventions",
+      "status": "PASS"
+    },
+    "proactive_wrong": {
+      "metric": 0,
+      "threshold": "<= 15% of proactive interventions",
+      "status": "PASS"
+    },
+    "inference_denial": {
+      "metric": 0,
+      "threshold": "<= 10% of inferred cases",
+      "status": "PASS"
+    },
+    "raw_prompt_persistence": {
+      "metric": 0,
+      "threshold": "= 0 exact full corpus prompts",
+      "status": "PASS"
+    }
+  },
+  "state_test_gate": "UNVERIFIED_IN_THIS_SCRIPT",
+  "inferential_statistics": {
+    "final_match_gain_percentage_points": {
+      "estimate": 23.125,
+      "confidence_interval": {
+        "method": "paired percentile bootstrap",
+        "iterations": 50000,
+        "seed": 520749057,
+        "lower_95": 16.25,
+        "upper_95": 30.3125
+      }
+    },
+    "nonclear_avoidable_rework_units_saved_per_case": {
+      "estimate": 1.1,
+      "confidence_interval": {
+        "method": "paired percentile bootstrap",
+        "iterations": 50000,
+        "seed": 520749058,
+        "lower_95": 0.8333,
+        "upper_95": 1.3667
+      }
+    },
+    "clear_task_paired_latency_overhead_percentage_points": {
+      "estimate": 1.9734,
+      "confidence_interval": {
+        "method": "paired percentile bootstrap",
+        "iterations": 50000,
+        "seed": 520749059,
+        "lower_95": -4.1223,
+        "upper_95": 7.2926
+      }
+    },
+    "blind_preference_sign_test": {
+      "plugin_wins": 41,
+      "baseline_wins": 3,
+      "ties_excluded": 36,
+      "two_sided_exact_p_value": 1.6183321349672042e-9
+    },
+    "caution": "Intervals quantify sampling variation within this frozen synthetic corpus. They do not cover model drift, judge error, host changes, or population generalization."
+  }
+}

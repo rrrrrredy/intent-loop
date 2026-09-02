@@ -1,5 +1,37 @@
 # Decision log
 
+## 2026-09-03: rebuild around user-visible intent formation
+
+Accepted: replace the v0.2 requirement-ledger-first experience with a quiet interaction policy that proceeds on clear work, asks one question before a costly divergent branch, compares concrete directions when vocabulary is missing, and uses a small sample when preference needs a result.
+
+Rejected: presenting the structured ledger, tool count, or process protocol as the product. Sparse state remains an optional continuity layer.
+
+## 2026-09-03: split core behavior from optional state
+
+Accepted: a state-free `intent-formation` core and an independently installable `intent-formation-state` companion. Core policy transport accepts no prompt input. State controls require receipt-backed success; `remember` may start standard state directly, while private, off, export, and forget remain explicit user controls rather than hidden automation.
+
+Accepted: keep the existing GitHub repository and history while using a semver-minor prerelease with explicit breaking migration notes. Old v0.2 state is never imported silently.
+
+## 2026-09-03: publish full efficacy evidence and its weaknesses
+
+Accepted: publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test. The v0.3 point-estimate gates pass.
+
+Limit: the latency interval crosses the five-percent gate, the corpus is synthetic, the judge is automated, and exact model identities were not recorded. These constraints keep the release at beta and narrow the claim to the tested Codex policy.
+
+Accepted: build the user-authorized DeepSeek Harness adapter from the identical policy and state server, but describe it only as compatibility and lifecycle evidence until a separate DeepSeek outcome study exists.
+
+## 2026-09-03: make deliberate memory deterministic without widening the automatic boundary
+
+Accepted: add `/intent remember <one short goal>` to the reviewed local command Hook, with optional explicit role prefixes. This produces a real record and receipt without depending on whether the model volunteers an MCP call.
+
+Accepted: refuse `remember` in private mode without a receipt. The command Hook is short-lived, so an in-process private record would disappear as it exits. An automatically invoked, state-changing MCP prompt bridge was rejected because it would widen the trusted prompt and mutation surface.
+
+## 2026-09-03: repair same-process lock initialization
+
+Accepted: register a lock token as active before publishing its owner file, and remove the token on every exit path. A real test failure showed that a concurrent caller could otherwise observe the new owner before registration and reclaim a live same-process lock.
+
+Verification: ten independent rounds of 100 simultaneous appends plus the strengthened permanent 100-writer regression completed without loss or lock residue.
+
 ## 2026-08-28: freeze the product boundary
 
 Accepted: one Codex Plugin, one intervention Skill, one local MCP state service, and optional fail-open Hooks. Codex keeps all planning and execution ownership.

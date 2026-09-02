@@ -1,27 +1,15 @@
-# Intent Loop usage notice
+# Terms of use
 
-Effective date: 2026-08-28
+Effective date: 2026-09-03
 
-Intent Loop is pre-release open-source software provided under the Apache License 2.0. This page is informational product guidance, not an additional license or contract. Use, modification, and redistribution are governed by the bundled Apache License 2.0.
+Intent Formation is prerelease open-source software provided under the Apache License 2.0. The license text controls copying, modification, redistribution, patent rights, warranty, and liability.
 
-## Safe use
+The project provides local software and documentation. It does not provide a hosted service, professional advice, guaranteed model behavior, guaranteed data recovery, or a service-level agreement.
 
-Use Intent Loop only on projects and data you are authorized to process. Review its Skill, MCP tools, Hooks, data location, and permissions before enabling it. Keep backups appropriate to your work and verify destructive requests before confirming them.
+Users are responsible for reviewing plugin manifests and Hooks, complying with the terms of Codex, DeepSeek Harness, model providers, and GitHub, protecting local files and exports, and confirming important outputs before acting on them. Do not use the software to bypass host permissions or applicable law.
 
-The software is not designed to bypass Codex permissions, represent inferred or external statements as a user's explicit intent, or act as a surveillance or profiling system.
+The beta can ask a poor question, miss an ambiguity, or interpret feedback incorrectly. It must not be relied on as the sole control for legal, medical, financial, safety-critical, irreversible, or externally consequential decisions.
 
-## Beta status
+DeepSeek Harness support targets a developer-preview API and may break when that upstream API changes. Platform and version claims apply only to the tested combinations recorded in this repository.
 
-This release is intended for opt-in evaluation and dogfooding. Automated tests establish defined implementation behavior; they do not prove that the plugin improves every task or meets the frozen efficacy thresholds.
-
-## No hosted service
-
-The maintainer does not operate a hosted Intent Loop service. The local runtime has no outbound network client. External services used separately, including Codex and GitHub, are governed by their own terms.
-
-## Warranty and liability
-
-The software is provided as is. The bundled Apache License 2.0 contains the controlling warranty disclaimer and limitation of liability.
-
-## Documentation changes
-
-Future releases may update this guidance. The `LICENSE` file bundled with each version remains the controlling license text.
+No additional warranty or liability is offered beyond the Apache-2.0 terms. Contributions are accepted under the same license unless explicitly stated otherwise.

@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rrrrrredy/intent-formation/schemas/intent-record.schema.json",
+  "title": "Intent Formation materialized record",
+  "description": "One atomic intent statement as returned in a current snapshot or portable export.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "statement",
+    "redaction_count",
+    "role",
+    "epistemic_status",
+    "source_ref",
+    "scope",
+    "scope_ref",
+    "confidence",
+    "valid_from",
+    "last_confirmed",
+    "supersedes",
+    "user_confirmed",
+    "confirmation_count",
+    "feedback_class",
+    "created_at",
+    "status",
+    "invalidated_reason"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "redaction_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "role": {
+      "enum": [
+        "desired_outcome",
+        "success_signal",
+        "failure_signal",
+        "hard_constraint",
+        "soft_constraint",
+        "tradeoff",
+        "unknown",
+        "result_feedback",
+        "disagreement"
+      ]
+    },
+    "epistemic_status": {
+      "enum": [
+        "explicit",
+        "inferred",
+        "evidence",
+        "unknown",
+        "disputed"
+      ]
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "excerpt", "sha256"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "user_turn",
+            "agent_inference",
+            "result",
+            "external_evidence",
+            "manual_import"
+          ]
+        },
+        "ref": {
+          "type": ["string", "null"],
+          "maxLength": 256
+        },
+        "excerpt": {
+          "type": ["string", "null"],
+          "maxLength": 160
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "scope": {
+      "enum": ["task", "project", "long_term"]
+    },
+    "scope_ref": {
+      "type": ["string", "null"],
+      "maxLength": 256
+    },
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_confirmed": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "supersedes": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      }
+    },
+    "user_confirmed": {
+      "type": "boolean"
+    },
+    "confirmation_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "feedback_class": {
+      "type": ["string", "null"],
+      "enum": [
+        "keep",
+        "implementation_change",
+        "intent_change",
+        "uncertain",
+        null
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": ["active", "superseded", "invalidated"]
+    },
+    "invalidated_reason": {
+      "type": ["string", "null"],
+      "maxLength": 300
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "epistemic_status": {
+            "const": "explicit"
+          }
+        },
+        "required": ["epistemic_status"]
+      },
+      "then": {
+        "properties": {
+          "source_ref": {
+            "properties": {
+              "kind": {
+                "const": "user_turn"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "epistemic_status": {
+            "const": "inferred"
+          }
+        },
+        "required": ["epistemic_status"]
+      },
+      "then": {
+        "properties": {
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "source_ref": {
+            "properties": {
+              "kind": {
+                "const": "agent_inference"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "confidence": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "epistemic_status": {
+            "const": "evidence"
+          }
+        },
+        "required": ["epistemic_status"]
+      },
+      "then": {
+        "properties": {
+          "source_ref": {
+            "properties": {
+              "kind": {
+                "enum": ["result", "external_evidence"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "unknown"
+          }
+        },
+        "required": ["role"]
+      },
+      "then": {
+        "properties": {
+          "epistemic_status": {
+            "const": "unknown"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "disagreement"
+          }
+        },
+        "required": ["role"]
+      },
+      "then": {
+        "properties": {
+          "epistemic_status": {
+            "const": "disputed"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scope": {
+            "const": "long_term"
+          }
+        },
+        "required": ["scope"]
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "epistemic_status": {
+                "const": "explicit"
+              },
+              "user_confirmed": {
+                "const": true
+              }
+            },
+            "required": ["epistemic_status", "user_confirmed"]
+          },
+          {
+            "properties": {
+              "confirmation_count": {
+                "minimum": 3
+              },
+              "user_confirmed": {
+                "const": true
+              }
+            },
+            "required": ["confirmation_count", "user_confirmed"]
+          }
+        ]
+      }
+    }
+  ]
+}

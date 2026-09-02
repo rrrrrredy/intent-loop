@@ -10,7 +10,13 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 const dshDirectory = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(dshDirectory, "..");
-const serverPath = path.join(packageRoot, "plugins", "intent-loop", "runtime", "server.mjs");
+const serverPath = path.join(
+  packageRoot,
+  "plugins",
+  "intent-formation-state",
+  "dist",
+  "intent-formation-server.mjs"
+);
 const packageManifest = JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8"));
 
 export const TOOL_CATALOG = Object.freeze(
@@ -53,7 +59,7 @@ function positiveInteger(value, name, minimum, maximum) {
 
 export function resolveAdapterConfig(input = {}) {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
-    throw new TypeError("Intent Loop adapter config must be an object");
+    throw new TypeError("Intent Formation adapter config must be an object");
   }
   const configuredDataDir = input.dataDir ?? DEFAULTS.dataDir;
   if (typeof configuredDataDir !== "string") throw new TypeError("dataDir must be a string");
@@ -61,7 +67,7 @@ export function resolveAdapterConfig(input = {}) {
     ? path.resolve(process.env.DSH_HOME)
     : path.join(os.homedir(), ".dsh");
   const dataDir = configuredDataDir.trim() === ""
-    ? path.join(dshHome, "plugin-data", "intent-loop", "v1")
+    ? path.join(dshHome, "plugin-data", "intent-formation", "v1")
     : path.resolve(configuredDataDir);
   if (!path.isAbsolute(dataDir)) throw new TypeError("dataDir must resolve to an absolute path");
   return Object.freeze({
@@ -89,7 +95,7 @@ export function resolveAdapterConfig(input = {}) {
 }
 
 export function safeChildEnvironment(dataDir, parent = process.env) {
-  const result = { INTENT_LOOP_DATA_DIR: dataDir };
+  const result = { INTENT_FORMATION_DATA_DIR: dataDir };
   for (const key of SYSTEM_ENV_KEYS) {
     const value = parent[key];
     if (typeof value === "string" && value !== "") result[key] = value;
@@ -97,17 +103,85 @@ export function safeChildEnvironment(dataDir, parent = process.env) {
   return result;
 }
 
-function sessionBinding(sessionId) {
+export function sessionBinding(sessionId) {
   return `dsh:${createHash("sha256").update(sessionId).digest("hex")}`;
+}
+
+function persistedModeFromBody(body, taskId) {
+  let exists = false;
+  let mode = "standard";
+  for (const rawLine of body.split(/\r?\n/u)) {
+    const line = rawLine.trim();
+    if (line === "") continue;
+    let event;
+    try {
+      event = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (event?.task_id !== taskId) continue;
+    if (event.event_type === "task_started") {
+      exists = true;
+      mode = event.payload?.mode ?? "standard";
+    } else if (event.event_type === "task_mode_changed") {
+      exists = true;
+      mode = event.payload?.mode ?? mode;
+    }
+  }
+  return exists && ["standard", "private", "off"].includes(mode) ? mode : "standard";
+}
+
+function persistedMode(dataDir, taskId) {
+  const primary = path.join(dataDir, "intent-events-v1.jsonl");
+  const backup = primary + ".bak";
+  for (const filePath of [primary, backup]) {
+    try {
+      return persistedModeFromBody(readFileSync(filePath, "utf8"), taskId);
+    } catch (error) {
+      if (error?.code !== "ENOENT") return "standard";
+    }
+  }
+  return "standard";
+}
+
+export class SessionPolicyController {
+  constructor(config) {
+    this.dataDir = config.dataDir;
+    this.observedModes = new Map();
+  }
+
+  modeForSession(sessionId) {
+    const observed = this.observedModes.get(sessionId);
+    if (observed !== undefined) return observed;
+    return persistedMode(this.dataDir, sessionBinding(sessionId));
+  }
+
+  textFor(exec, guidance) {
+    const sessionId = exec?.agent?.session?.header?.id;
+    if (typeof sessionId !== "string" || sessionId.trim() === "") return guidance;
+    return this.modeForSession(sessionId) === "off" ? "" : guidance;
+  }
+
+  observe(toolName, execution, envelope) {
+    let mode = envelope?.data?.mode ?? envelope?.data?.snapshot?.mode;
+    if (toolName === "intent_forget") mode = "standard";
+    if (["standard", "private", "off"].includes(mode)) {
+      this.observedModes.set(execution.sessionId, mode);
+    }
+  }
+
+  clear() {
+    this.observedModes.clear();
+  }
 }
 
 export async function resolveExecutionContext(exec) {
   const header = exec?.agent?.session?.header;
   if (header === undefined || typeof header.id !== "string" || header.id.trim() === "") {
-    throw new Error("Intent Loop requires a DeepSeek Harness agent session id");
+    throw new Error("Intent Formation requires a DeepSeek Harness agent session id");
   }
   if (typeof header.cwd !== "string" || header.cwd.trim() === "") {
-    throw new Error("Intent Loop requires a DeepSeek Harness session workspace");
+    throw new Error("Intent Formation requires a DeepSeek Harness session workspace");
   }
   let cwd;
   try {
@@ -115,7 +189,7 @@ export async function resolveExecutionContext(exec) {
     const details = await stat(cwd);
     if (!details.isDirectory()) throw new Error("not a directory");
   } catch {
-    throw new Error("Intent Loop could not resolve the current DeepSeek Harness workspace");
+    throw new Error("Intent Formation could not resolve the current DeepSeek Harness workspace");
   }
   return Object.freeze({
     sessionId: header.id,
@@ -129,11 +203,13 @@ export function bindHostArguments(toolName, value, execution) {
     throw new TypeError(`${toolName} arguments must be an object`);
   }
   const args = { ...value };
+  delete args.task_id;
+  delete args.cwd;
   delete args.project_root;
   delete args.host_session_id;
-  args.project_root = execution.cwd;
-  if (toolName === "intent_start_task" && args.mode === "private") {
-    args.host_session_id = execution.hostSessionId;
+  args.task_id = execution.hostSessionId;
+  if (toolName === "intent_start") {
+    args.cwd = execution.cwd;
   }
   return args;
 }
@@ -165,7 +241,7 @@ export function envelopeFromMcpResult(result) {
     }
   }
   if (!isRecord(envelope) || typeof envelope.ok !== "boolean") {
-    throw new Error("Intent Loop MCP returned an invalid structured envelope");
+    throw new Error("Intent Formation MCP returned an invalid structured envelope");
   }
   if (result?.isError === true || envelope.ok === false) {
     const code = isRecord(envelope.error) && typeof envelope.error.code === "string"
@@ -174,14 +250,14 @@ export function envelopeFromMcpResult(result) {
     const message = isRecord(envelope.error) && typeof envelope.error.message === "string"
       ? envelope.error.message
       : textFromContent(result?.content);
-    throw new Error(`Intent Loop ${code}: ${message}`);
+    throw new Error(`Intent Formation ${code}: ${message}`);
   }
   return envelope;
 }
 
 export async function createMcpClient(config, signal) {
   const client = new Client(
-    { name: "dsh-intent-loop", version: String(packageManifest.version) },
+    { name: "dsh-intent-formation", version: String(packageManifest.version) },
     { capabilities: {} }
   );
   const transport = new StdioClientTransport({
@@ -199,7 +275,7 @@ export async function createMcpClient(config, signal) {
   }
 }
 
-export class IntentLoopSessionPool {
+export class IntentFormationSessionPool {
   constructor(config, createClient = createMcpClient) {
     this.config = config;
     this.createClient = createClient;
@@ -209,7 +285,7 @@ export class IntentLoopSessionPool {
   }
 
   async run(sessionId, cwd, signal, operation) {
-    if (this.disposed) throw new Error("Intent Loop adapter is unloaded");
+    if (this.disposed) throw new Error("Intent Formation adapter is unloaded");
     const holder = await this.acquireHolder(sessionId, cwd, signal);
     try {
       const client = await holder.promise;
@@ -246,17 +322,17 @@ export class IntentLoopSessionPool {
 
   async acquireHolder(sessionId, cwd, signal) {
     return this.withCreationLock(async () => {
-      if (this.disposed) throw new Error("Intent Loop adapter is unloaded");
+      if (this.disposed) throw new Error("Intent Formation adapter is unloaded");
       let holder = this.holders.get(sessionId);
       if (holder !== undefined && holder.cwd !== cwd) {
-        throw new Error("Intent Loop rejected a changed workspace for the same DeepSeek Harness session");
+        throw new Error("Intent Formation rejected a changed workspace for the same DeepSeek Harness session");
       }
       if (holder?.draining) {
-        throw new Error("Intent Loop session is draining after a failed call; retry after active calls settle");
+        throw new Error("Intent Formation session is draining after a failed call; retry after active calls settle");
       }
       if (holder === undefined) {
         await this.ensureCapacity();
-        if (this.disposed) throw new Error("Intent Loop adapter is unloaded");
+        if (this.disposed) throw new Error("Intent Formation adapter is unloaded");
         holder = {
           sessionId,
           cwd,
@@ -295,7 +371,7 @@ export class IntentLoopSessionPool {
       .filter((holder) => holder.active === 0)
       .sort((left, right) => left.lastUsed - right.lastUsed)[0];
     if (idle === undefined) {
-      throw new Error(`Intent Loop has ${this.config.maxSessions} active DeepSeek Harness sessions; retry after one settles`);
+      throw new Error(`Intent Formation has ${this.config.maxSessions} active DeepSeek Harness sessions; retry after one settles`);
     }
     await this.closeHolder(idle);
   }
@@ -352,9 +428,9 @@ function mcpToolDefinition(tool) {
   };
 }
 
-export function createToolDefinitions(config, pool, catalog = TOOL_CATALOG) {
+export function createToolDefinitions(config, pool, policyController, catalog = TOOL_CATALOG) {
   if (!Array.isArray(catalog.tools) || catalog.tools.length !== 15) {
-    throw new Error("Intent Loop DeepSeek tool catalog must contain exactly 15 tools");
+    throw new Error("Intent Formation DeepSeek tool catalog must contain exactly 15 tools");
   }
   return catalog.tools.map((tool) => ({
     name: tool.name,
@@ -380,7 +456,9 @@ export function createToolDefinitions(config, pool, catalog = TOOL_CATALOG) {
           }
         )
       );
-      return envelopeFromMcpResult(result);
+      const envelope = envelopeFromMcpResult(result);
+      policyController?.observe(tool.name, execution, envelope);
+      return envelope;
     }
   }));
 }

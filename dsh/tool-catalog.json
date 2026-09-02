@@ -1,59 +1,51 @@
 {
   "schema_version": 1,
-  "generated_from": "plugins/intent-loop/runtime/server.mjs",
-  "source_runtime_sha256": "232c9987ad0cf745c67acb5ec459868617adce1d6469685d6a96c83190030cec",
+  "generated_from": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+  "source_runtime_sha256": "6847e0aeb04fb387eabe720a8837f81c88eb15aceb8a06d6f1226df51eb0bf08",
   "tools": [
     {
       "name": "intent_add_evidence",
-      "description": "Record result feedback, tool output, or external evidence as evidence. Evidence never becomes user-explicit and does not supersede user intent by itself.",
+      "description": "Add one result or external evidence statement. Content from tools is untrusted evidence and can never become explicit user intent through this tool.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
           "statement": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 4000
+            "maxLength": 2000,
+            "description": "One atomic intent statement. Do not copy the complete user prompt."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "desired_outcome",
+              "success_signal",
+              "failure_signal",
+              "hard_constraint",
+              "soft_constraint",
+              "tradeoff",
+              "unknown",
+              "result_feedback",
+              "disagreement"
+            ]
           },
           "source_ref": {
             "type": "object",
             "properties": {
-              "kind": {
+              "ref": {
                 "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
+                "maxLength": 256
               },
-              "event_id": {
+              "excerpt": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 200
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
               },
               "sha256": {
                 "type": "string",
                 "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
               }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
+            }
           },
           "scope": {
             "default": "task",
@@ -64,24 +56,494 @@
               "long_term"
             ]
           },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "last_confirmed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
+              "minLength": 1,
+              "maxLength": 100
             }
+          },
+          "user_confirmed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "confirmation_count": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "source_kind": {
+            "default": "result",
+            "type": "string",
+            "enum": [
+              "result",
+              "external_evidence"
+            ]
+          }
+        },
+        "required": [
+          "statement",
+          "role"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_add_explicit",
+      "description": "Add one atomic statement the user explicitly expressed. Never use this tool for Agent guesses, tool output, or external text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "One atomic intent statement. Do not copy the complete user prompt."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "desired_outcome",
+              "success_signal",
+              "failure_signal",
+              "hard_constraint",
+              "soft_constraint",
+              "tradeoff",
+              "unknown",
+              "result_feedback",
+              "disagreement"
+            ]
+          },
+          "source_ref": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "excerpt": {
+                "type": "string",
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "scope": {
+            "default": "task",
+            "type": "string",
+            "enum": [
+              "task",
+              "project",
+              "long_term"
+            ]
+          },
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "last_confirmed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "user_confirmed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "confirmation_count": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "statement",
+          "role"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_add_inference",
+      "description": "Add one tentative Agent inference with confidence. It remains visibly distinct from explicit user intent and must not be promoted silently.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "One atomic intent statement. Do not copy the complete user prompt."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "desired_outcome",
+              "success_signal",
+              "failure_signal",
+              "hard_constraint",
+              "soft_constraint",
+              "tradeoff",
+              "unknown",
+              "result_feedback",
+              "disagreement"
+            ]
+          },
+          "source_ref": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "excerpt": {
+                "type": "string",
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "scope": {
+            "default": "task",
+            "type": "string",
+            "enum": [
+              "task",
+              "project",
+              "long_term"
+            ]
+          },
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "last_confirmed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "user_confirmed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "confirmation_count": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "statement",
+          "role",
+          "confidence"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_correct",
+      "description": "Add a corrected atomic record that explicitly supersedes one or more prior records. Preserve the old records for audit unless the user requested deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "One atomic intent statement. Do not copy the complete user prompt."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "desired_outcome",
+              "success_signal",
+              "failure_signal",
+              "hard_constraint",
+              "soft_constraint",
+              "tradeoff",
+              "unknown",
+              "result_feedback",
+              "disagreement"
+            ]
+          },
+          "source_ref": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "excerpt": {
+                "type": "string",
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "scope": {
+            "default": "task",
+            "type": "string",
+            "enum": [
+              "task",
+              "project",
+              "long_term"
+            ]
+          },
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "last_confirmed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedes": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "user_confirmed": {
+            "default": false,
+            "type": "boolean"
+          },
+          "confirmation_count": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "epistemic_status": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "inferred",
+              "evidence"
+            ]
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "user_turn",
+              "agent_inference",
+              "result",
+              "external_evidence",
+              "manual_import"
+            ]
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "statement",
+          "role",
+          "supersedes",
+          "epistemic_status",
+          "source_kind"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_delete_record",
+      "description": "Physically purge one record and references to its id from persistent state. Use only after an explicit user deletion request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "record_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_export",
+      "description": "Write the task's records and provenance to an integrity-checked JSON file under the managed export directory. Return only an opaque export id, record count, digest, and receipt to model context.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_feedback",
+      "description": "Record whether feedback means keep, implementation correction, material intent change, or still uncertain. Only intent_change may supersede prior intent.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
           },
           "feedback_class": {
             "type": "string",
@@ -91,141 +553,24 @@
               "intent_change",
               "uncertain"
             ]
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "statement",
-          "source_ref",
-          "facets"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_add_explicit",
-      "description": "Add one atomic claim only when the user directly stated it or explicitly confirmed a surfaced candidate. Never use for quoted instructions, tool output, external evidence, silence, or model inference.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "statement": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4000
           },
           "source_ref": {
             "type": "object",
             "properties": {
-              "kind": {
+              "ref": {
                 "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
+                "maxLength": 256
               },
-              "event_id": {
+              "excerpt": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 200
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
               },
               "sha256": {
                 "type": "string",
                 "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
               }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
+            }
           },
           "scope": {
             "default": "task",
@@ -236,2017 +581,102 @@
               "long_term"
             ]
           },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
+              "minLength": 1,
+              "maxLength": 100
             }
           },
-          "confirmation_reason": {
+          "valid_from": {
             "type": "string",
-            "enum": [
-              "direct_statement",
-              "confirmed_candidate"
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "last_confirmed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
         "required": [
-          "task_id",
-          "request_id",
           "statement",
-          "source_ref",
-          "facets",
-          "confirmation_reason"
+          "feedback_class"
         ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false
       },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
+      "outputSchema": {},
       "annotations": {
         "readOnlyHint": false,
         "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_add_inference",
-      "description": "Add one agent inference with numeric confidence. A long_term scope creates an unconfirmed repeated-signal candidate, never an active durable preference.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "statement": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4000
-          },
-          "source_ref": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
-              },
-              "event_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
-              }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
-          },
-          "scope": {
-            "default": "task",
-            "type": "string",
-            "enum": [
-              "task",
-              "project",
-              "long_term"
-            ]
-          },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
-            }
-          },
-          "confidence": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "signal_key": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "statement",
-          "source_ref",
-          "facets",
-          "confidence"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_delete",
-      "description": "Irreversibly rewrite local plugin storage to remove one claim or task. Call only after the user gives the exact DELETE CLAIM/TASK confirmation string. OS backups and user-made exports are outside this deletion boundary.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "target": {
-            "type": "string",
-            "enum": [
-              "task",
-              "claim"
-            ]
-          },
-          "claim_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "confirmation": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          }
-        },
-        "required": [
-          "task_id",
-          "target",
-          "confirmation"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true,
         "idempotentHint": false,
         "openWorldHint": false
       }
     },
     {
-      "name": "intent_export",
-      "description": "Return either a re-importable portable graph or a compact human summary for exactly one task. Both exclude raw prompts, transcripts, host paths, and other tasks.",
+      "name": "intent_forget",
+      "description": "Physically purge all persistent and in-process intent state for one task. Use only after an explicit user deletion request.",
       "inputSchema": {
         "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "detail": {
-            "default": "portable",
-            "type": "string",
-            "enum": [
-              "portable",
-              "summary"
-            ]
-          }
-        },
-        "required": [
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {},
+        "required": [],
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false
       },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
+      "outputSchema": {},
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_get_snapshot",
-      "description": "Read the compact, status-preserving current intent for exactly one project and task. Does not search other projects.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "max_characters": {
-            "type": "integer",
-            "minimum": 500,
-            "maximum": 8000
-          }
-        },
-        "required": [
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
         "openWorldHint": false
       }
     },
     {
       "name": "intent_import",
-      "description": "Validate and import a portable graph as incomplete external history. Preserve provenance and disagreement; never claim complete pre-install understanding.",
+      "description": "Import a valid Intent Formation export into a target task only after the user explicitly approves that import. Preserve record ids and provenance; an integrity digest does not authenticate the author. Existing state requires merge=true.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "graph": {
+          "payload": {
             "type": "object",
-            "properties": {
-              "format": {
-                "type": "string",
-                "const": "intent-loop-export"
-              },
-              "schema_version": {
-                "type": "number",
-                "const": 1
-              },
-              "exported_at": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-              },
-              "source_project_id": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "source_task_id": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "history_complete": {
-                "type": "boolean",
-                "const": false
-              },
-              "claims": {
-                "maxItems": 1000,
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "claim_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    },
-                    "statement": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 500
-                    },
-                    "role": {
-                      "type": "string",
-                      "enum": [
-                        "user",
-                        "agent",
-                        "evidence",
-                        "system"
-                      ]
-                    },
-                    "epistemic_status": {
-                      "type": "string",
-                      "enum": [
-                        "explicit",
-                        "inferred",
-                        "evidence",
-                        "unknown",
-                        "disputed"
-                      ]
-                    },
-                    "source_ref": {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "enum": [
-                            "user_event",
-                            "agent_turn",
-                            "tool_result",
-                            "external_evidence",
-                            "explicit_import"
-                          ]
-                        },
-                        "event_id": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 200
-                        },
-                        "sha256": {
-                          "type": "string",
-                          "pattern": "^[a-f0-9]{64}$"
-                        },
-                        "excerpt": {
-                          "type": "string",
-                          "maxLength": 2000
-                        }
-                      },
-                      "required": [
-                        "kind"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "scope": {
-                      "type": "string",
-                      "enum": [
-                        "task",
-                        "project",
-                        "long_term"
-                      ]
-                    },
-                    "confidence": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    },
-                    "valid_from": {
-                      "type": "string",
-                      "format": "date-time",
-                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-                    },
-                    "last_confirmed": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "date-time",
-                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "supersedes": {
-                      "maxItems": 20,
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                      }
-                    },
-                    "facets": {
-                      "minItems": 1,
-                      "maxItems": 9,
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "enum": [
-                          "outcome",
-                          "success_signal",
-                          "failure_signal",
-                          "hard_constraint",
-                          "soft_constraint",
-                          "tradeoff",
-                          "unknown",
-                          "result_feedback",
-                          "disagreement"
-                        ]
-                      }
-                    },
-                    "related_claim_ids": {
-                      "maxItems": 20,
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                      }
-                    },
-                    "review_after": {
-                      "type": "string",
-                      "format": "date-time",
-                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-                    },
-                    "result_feedback_class": {
-                      "type": "string",
-                      "enum": [
-                        "keep",
-                        "implementation_change",
-                        "intent_change",
-                        "uncertain"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "claim_id",
-                    "statement",
-                    "role",
-                    "epistemic_status",
-                    "source_ref",
-                    "scope",
-                    "valid_from",
-                    "last_confirmed",
-                    "supersedes",
-                    "facets",
-                    "related_claim_ids"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "invalidated_claim_ids": {
-                "maxItems": 1000,
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                }
-              },
-              "candidates": {
-                "maxItems": 1000,
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "candidate_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    },
-                    "candidate_type": {
-                      "type": "string",
-                      "enum": [
-                        "prompt_update",
-                        "result_feedback",
-                        "long_term_preference",
-                        "recovery_needed"
-                      ]
-                    },
-                    "source_ref": {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "enum": [
-                            "user_event",
-                            "agent_turn",
-                            "tool_result",
-                            "external_evidence",
-                            "explicit_import"
-                          ]
-                        },
-                        "event_id": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 200
-                        },
-                        "sha256": {
-                          "type": "string",
-                          "pattern": "^[a-f0-9]{64}$"
-                        },
-                        "excerpt": {
-                          "type": "string",
-                          "maxLength": 2000
-                        }
-                      },
-                      "required": [
-                        "kind"
-                      ],
-                      "additionalProperties": false
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-                    },
-                    "summary": {
-                      "type": "string",
-                      "maxLength": 500
-                    },
-                    "task_ids": {
-                      "maxItems": 100,
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                      }
-                    }
-                  },
-                  "required": [
-                    "candidate_id",
-                    "candidate_type",
-                    "source_ref",
-                    "created_at"
-                  ],
-                  "additionalProperties": false
-                }
-              }
+            "propertyNames": {
+              "type": "string"
             },
-            "required": [
-              "format",
-              "schema_version",
-              "exported_at",
-              "source_project_id",
-              "source_task_id",
-              "history_complete",
-              "claims",
-              "invalidated_claim_ids",
-              "candidates"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "graph"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
+            "additionalProperties": {}
+          },
+          "merge": {
+            "default": false,
             "type": "boolean"
           },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
+          "user_confirmed": {
+            "type": "boolean",
+            "const": true,
+            "description": "True only after the user explicitly requested or approved this import."
           }
         },
         "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
+          "payload",
+          "user_confirmed"
         ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false
       },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_invalidate",
-      "description": "Append an invalidation so a claim leaves the current view but remains auditable. User-explicit claims require a direct user_event invalidation. This is not physical deletion.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "claim_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "reason": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1000
-          },
-          "source_ref": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
-              },
-              "event_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
-              }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "claim_id",
-          "reason",
-          "source_ref"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_list_candidates",
-      "description": "Read Hook, result, and repeated-history candidates. Listing never promotes them into current intent.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_mark_dispute",
-      "description": "Record disagreement without choosing a winner or requiring user-agent consensus.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "statement": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4000
-          },
-          "source_ref": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
-              },
-              "event_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
-              }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
-          },
-          "scope": {
-            "default": "task",
-            "type": "string",
-            "enum": [
-              "task",
-              "project",
-              "long_term"
-            ]
-          },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
-            }
-          },
-          "related_claim_ids": {
-            "default": [],
-            "maxItems": 20,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "statement",
-          "source_ref",
-          "facets"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_mark_unknown",
-      "description": "Preserve an unresolved intent unknown. Do not guess or merge it into an inference.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "statement": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4000
-          },
-          "source_ref": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
-              },
-              "event_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
-              }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
-          },
-          "scope": {
-            "default": "task",
-            "type": "string",
-            "enum": [
-              "task",
-              "project",
-              "long_term"
-            ]
-          },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
-            }
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "statement",
-          "source_ref",
-          "facets"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_replace_claim",
-      "description": "Atomically add a corrected claim and supersede active claims while retaining history. A user-explicit claim can only be superseded by a new direct user-explicit claim.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "statement": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4000
-          },
-          "source_ref": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "user_event",
-                  "agent_turn",
-                  "tool_result",
-                  "external_evidence",
-                  "explicit_import"
-                ]
-              },
-              "event_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 200
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "excerpt": {
-                "type": "string",
-                "maxLength": 2000
-              }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
-          },
-          "scope": {
-            "default": "task",
-            "type": "string",
-            "enum": [
-              "task",
-              "project",
-              "long_term"
-            ]
-          },
-          "facets": {
-            "minItems": 1,
-            "maxItems": 9,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "outcome",
-                "success_signal",
-                "failure_signal",
-                "hard_constraint",
-                "soft_constraint",
-                "tradeoff",
-                "unknown",
-                "result_feedback",
-                "disagreement"
-              ]
-            }
-          },
-          "replacement_kind": {
-            "type": "string",
-            "enum": [
-              "explicit",
-              "inferred",
-              "evidence",
-              "unknown",
-              "disputed"
-            ]
-          },
-          "supersedes": {
-            "minItems": 1,
-            "maxItems": 20,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          "related_claim_ids": {
-            "default": [],
-            "maxItems": 20,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
-          },
-          "confidence": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "confirmation_reason": {
-            "type": "string",
-            "enum": [
-              "direct_statement",
-              "confirmed_candidate"
-            ]
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "statement",
-          "source_ref",
-          "facets",
-          "replacement_kind",
-          "supersedes"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_set_mode",
-      "description": "Set on, private, or off. Private semantic changes stay in process memory while a hashed control suppresses separate Hooks; leaving private discards those changes before durable state resumes.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "task_id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "request_id": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "mode": {
-            "type": "string",
-            "enum": [
-              "on",
-              "private",
-              "off"
-            ]
-          }
-        },
-        "required": [
-          "task_id",
-          "request_id",
-          "mode"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      }
-    },
-    {
-      "name": "intent_start_task",
-      "description": "First say, or faithfully translate: 'Intent Loop stores structured task state locally in the Codex plugin data directory, not full prompts.' On Codex, make one new-task call with only {initial_explicit: ['one atomic requirement']}; omit project_root, request_id, and task_id because the server binds to host sandbox metadata and creates IDs. Other MCP hosts may pass project_root or advertise exactly one local file root. A string initial claim becomes a task hard constraint; use {statement, scope, facets} when its facet is known. Put every direct user claim in this one call. Never call shell, Memory, or separate intent_add_explicit tools to create IDs or hashes. Private requires host_session_id. Off rejects labels and initial claims.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "request_id": {
-            "description": "Optional opaque idempotency key. If omitted, the server creates a non-secret random ID for this start.",
-            "type": "string",
-            "pattern": "^[A-Za-z0-9_.:@-]{1,200}$"
-          },
-          "task_id": {
-            "description": "Omit for a new task. Supply only an exact UUID returned by an earlier successful Intent Loop call.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "label": {
-            "type": "string",
-            "maxLength": 500
-          },
-          "mode": {
-            "default": "on",
-            "type": "string",
-            "enum": [
-              "on",
-              "private",
-              "off"
-            ]
-          },
-          "initial_explicit": {
-            "default": [],
-            "description": "Directly stated atomic user claims to create in this same start operation. Prefer {statement, scope, facets}; a plain string is accepted as a task hard constraint. No event IDs or hashes are needed.",
-            "maxItems": 12,
-            "type": "array",
-            "items": {
-              "anyOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "statement": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 4000
-                    },
-                    "scope": {
-                      "default": "task",
-                      "type": "string",
-                      "enum": [
-                        "task",
-                        "project",
-                        "long_term"
-                      ]
-                    },
-                    "facets": {
-                      "minItems": 1,
-                      "maxItems": 9,
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "enum": [
-                          "outcome",
-                          "success_signal",
-                          "failure_signal",
-                          "hard_constraint",
-                          "soft_constraint",
-                          "tradeoff",
-                          "unknown",
-                          "result_feedback",
-                          "disagreement"
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "statement",
-                    "facets"
-                  ],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 4000,
-                  "description": "String shorthand; the server records it as a task-scoped hard constraint."
-                }
-              ]
-            }
-          }
-        },
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
-          },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
+      "outputSchema": {},
       "annotations": {
         "readOnlyHint": false,
         "destructiveHint": false,
@@ -2255,88 +685,266 @@
       }
     },
     {
-      "name": "intent_status",
-      "description": "Report local schema, mode, task counts, candidate counts, and resolved data location without returning claim content.",
+      "name": "intent_invalidate",
+      "description": "Mark a record inactive without replacing it. The source remains auditable. Use delete only when the user asks to remove data.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "task_id": {
+          "record_id": {
             "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "additionalProperties": false
-      },
-      "outputSchema": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean"
+            "minLength": 1,
+            "maxLength": 100
           },
-          "schema_version": {
-            "type": "number",
-            "const": 1
-          },
-          "operation": {
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "task_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "result": {},
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "retryable": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "code",
-              "message",
-              "retryable"
-            ],
-            "additionalProperties": false
+          "reason": {
+            "type": "string",
+            "maxLength": 300
           }
         },
         "required": [
-          "ok",
-          "schema_version",
-          "operation",
-          "project_id",
-          "task_id"
+          "record_id"
         ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false
       },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_mark_disagreement",
+      "description": "Record an unresolved difference between the user's stated direction, Agent recommendation, or evidence without forcing consensus.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "source_ref": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "excerpt": {
+                "type": "string",
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "scope": {
+            "default": "task",
+            "type": "string",
+            "enum": [
+              "task",
+              "project",
+              "long_term"
+            ]
+          },
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          }
+        },
+        "required": [
+          "statement"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_mark_unknown",
+      "description": "Record one unresolved question or missing intent fact without guessing its answer.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "source_ref": {
+            "type": "object",
+            "properties": {
+              "ref": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "excerpt": {
+                "type": "string",
+                "maxLength": 160,
+                "description": "Optional minimal excerpt, never the full prompt."
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          "scope": {
+            "default": "task",
+            "type": "string",
+            "enum": [
+              "task",
+              "project",
+              "long_term"
+            ]
+          },
+          "scope_ref": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          },
+          "supersedes": {
+            "default": [],
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          }
+        },
+        "required": [
+          "statement"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_set_mode",
+      "description": "Set standard, private, or off mode. Switching to private purges persisted task content and keeps new record text only in process memory.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "private",
+              "off"
+            ]
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_show",
+      "description": "Read the compact current intent plus traceable records, status, unknowns, and disagreement for one task.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "maximum": {
+            "default": 900,
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 4000
+          }
+        },
+        "required": [],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "intent_start",
+      "description": "Start or resume intent state for the current task. Standard persists atomic records locally; private keeps record text only in the MCP process; off disables updates. reset=true discards prior task state.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "default": "standard",
+            "type": "string",
+            "enum": [
+              "standard",
+              "private",
+              "off"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "reset": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "outputSchema": {},
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
         "openWorldHint": false
       }
     }

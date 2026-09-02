@@ -1,98 +1,73 @@
-# Gate 2: evaluation protocol
+# Candidate-bound holdout protocol
 
-Status: frozen before source implementation on 2026-08-28. Product thresholds cannot be relaxed after seeing results; a changed threshold requires a new protocol version and a fresh run.
+## Question
 
-## Unit of evaluation
+Does the frozen Intent Formation policy reduce avoidable first-cycle rework and improve final intent match on non-clear tasks without adding friction to clear tasks or acting before the consequential choice is formed?
 
-The unit is an independently reviewable task delivery, not a question, tool call, claim, or protocol event. Each of the 80 frozen scenarios is run once with ordinary Codex (baseline) and once with Codex plus Intent Loop (plugin) on cloned inputs. The two runs use the same Codex model, reasoning setting, permissions, tool availability, time limit, and acceptance rubric.
+## Separation from development
 
-To limit carry-over, matched runs are assigned to different participants where possible. Otherwise, use equivalent A/B fixtures and counterbalance condition order. Workspace identifiers and outputs are blinded before outcome grading. The task owner supplies result feedback, but does not see telemetry-derived condition labels during scoring.
+The earlier 80-scenario v8 corpus was used during policy iteration. Its outputs remain available as development regression evidence and are excluded from the release decision.
 
-## Operational definition: avoidable rework
+For the release holdout:
 
-An **action unit** is a reviewable piece of substantive work: a file change, research branch, generated section, design variant, data transformation, build/configuration attempt, or comparable artifact-producing action. Waiting and ordinary reading are not action units.
+- an adversarial reviewer authors 80 new scenarios outside the repository;
+- the product policy is frozen before the main engineer inspects the scenario contents;
+- the corpus, method note, and SHA-256 manifest are committed with the candidate;
+- any policy change after seeing holdout results invalidates that holdout for release efficacy; and
+- a failed holdout becomes development evidence and requires a newly authored holdout after the next candidate freeze.
 
-An action unit is **avoidable rework** only when all are true:
+## Corpus
 
-1. it is later discarded or materially redone;
-2. the cause is a mismatch with intent relevant to the decision that launched it;
-3. that mismatch was already present or could reasonably have been surfaced at that decision point with one low-burden question, two or three comparisons, or an inexpensive sample;
-4. the later work is not primarily caused by an execution error, tool error, new external information, or intent that genuinely formed or changed only after a valid result.
+The committed `packages/intent-formation/evals/holdout-manifest.json` binds the exact corpus and method note. Composition is predeclared:
 
-Annotators record both action-unit count and active minutes. The primary rework measure is adjudicated active minutes. The secondary measure is discarded/materially-redone action units. Idle time, model wait time, and unrelated exploration are excluded.
+- 15 poorly expressed requests;
+- 15 requests where the user lacks an option model;
+- 15 requests with conflicting goals;
+- 15 cases where preference becomes visible after a result; and
+- 20 clear controls where the correct behavior is direct completion.
 
-For the 60 ambiguous or changing scenarios, aggregate reduction is:
+Every non-clear scenario has a response frozen before either arm runs. Prompts are natural user messages that can run safely in an empty workspace without accounts or network access.
 
-```text
-1 - (sum plugin avoidable-rework minutes / sum baseline avoidable-rework minutes)
-```
+## Candidate and execution binding
 
-If the baseline aggregate is zero, efficacy is not measurable and the release gate fails rather than treating the result as improvement.
+The runner refuses to start unless all of the following match:
 
-## Failure attribution
+- one clean full Git candidate commit;
+- the complete generated `plugins/intent-formation` tree fingerprint;
+- a deterministic Git archive fingerprint of that plugin tree;
+- the exact installed local plugin path;
+- a dedicated Codex Home marker and plugin inventory; and
+- an explicit Codex model and reasoning effort.
 
-Each material correction gets one primary label and optional secondary labels:
+Each arm gets a separate empty workspace. The initial request and frozen follow-up are sent verbatim, with no evaluation wrapper. User configuration and project rules are ignored. All non-target plugins are disabled. The State companion is disabled in both arms. Model tools run with `workspace-write`, no approval escalation, and no network requirement. The only dangerous automation flag is the Hook-trust bypass, used after the exact package has been inspected and fingerprinted.
 
-- `execution_error`: the current intent was sufficiently understood, but the agent implemented or delivered it incorrectly.
-- `tool_error`: a tool, dependency, permission, environment, network, or host capability failed independently of intent interpretation.
-- `intent_misunderstanding`: the agent followed a materially different interpretation even though the divergence was present and reasonably surfacable at the decision point.
-- `intent_change`: the user formed or changed a preference after a valid comparison/result or because genuinely new information arrived; prior valid work is not avoidable rework.
-- `no_material_error`: no correction materially affected acceptance.
+The baseline disables the core plugin. The plugin arm enables only `intent-formation@intent-loop`. Pair order alternates AB/BA, and the two arms of one scenario run sequentially.
 
-Priority for a single primary label is causal, not convenient: tool/environment failure, then execution against understood intent, then pre-existing intent misunderstanding, then later intent formation/change. Disagreements are adjudicated by a second reviewer using the frozen event timeline. The plugin's own label is never ground truth.
+## Blind grading
 
-## Metrics
+The grader receives randomized A/B conversations, frozen requirements, decision risk, and completed first-turn action-item types. It does not receive the system label. It records first move, interruption count, proactive intervention, avoidable rework from 0 to 3, first-cycle final match from 0 to 4, inference handling, result-feedback handling, preference, and confidence.
 
-| Metric | Definition |
-| --- | --- |
-| Avoidable rework | Primary: adjudicated active minutes; secondary: action units. Report aggregate and every intent stratum. |
-| Final match | Blind 0-100 rubric: outcome 35, success/failure signals 25, constraints 20, tradeoff handling 10, unresolved-issue honesty 10. |
-| Interruption count | Plugin-originated turns that require user attention before work can proceed. Codex safety/permission prompts and task-owner feedback requested by the protocol are excluded. |
-| Helpful intervention | User rates it helpful, or blind trace review shows it prevented a divergent high-cost action without adding a comparable burden. |
-| Wrong/unhelpful intervention | It asks what was already clear, frames false choices, promotes an untrusted signal, changes settled intent, or costs more than the divergence it could prevent. |
-| Denied inference | An active agent-inferred claim later explicitly rejected by the user. Denominator is inferred claims that were exposed to a genuine opportunity for confirmation or correction. |
-| Elapsed time | Wall-clock task time excluding approval queues and infrastructure outages. Clear-task overhead uses paired median ratio. |
-| Privacy | At-rest scan for complete raw prompts, seeded secrets, and cross-project records in default mode. |
-| Export/delete | Contract cases in which the exported graph round-trips and deletion removes the target from views, indexes, exports, and persistent bytes. |
+A direct first delivery cannot receive retroactive final-match credit from its later correction. A bounded question, comparison, or sample is scored after the frozen response because that exchange is the first completed intent-formation cycle.
 
-Intervention usefulness is rated immediately on `helpful`, `neutral`, `unhelpful`, or `wrong/harmful`, with a short reason. The published helpfulness numerator includes only `helpful`; the error numerator includes `unhelpful` and `wrong/harmful`. `neutral` remains visible and cannot be silently discarded.
+## Predeclared gates
 
-## Frozen corpus
+| Gate | Required |
+| --- | ---: |
+| Avoidable rework across 60 non-clear cases | At least 25% reduction |
+| Mean final-match gain | At least +10 percentage points on the 0-4 scale |
+| Clear extra interruptions, median | 0 |
+| Clear extra interruptions, p90 | At most 1 |
+| Clear paired median latency overhead | At most 5% |
+| Helpful proactive interventions | At least 70% of proactive interventions |
+| Wrong or unhelpful proactive interventions | At most 15% |
+| Later denial of a committed inference | At most 10% of cases where an inference was committed |
+| Plugin tool/action items before a non-clear first response | 0 |
+| Exact complete holdout prompt in default state | 0 |
 
-`evals/tasks.jsonl` contains 80 scenarios:
+When both inference opportunities and violations are zero, the denial rate is defined as zero. This means no denial was observed; it does not estimate conditional performance where an inference exists.
 
-- 15 `known_underspecified`;
-- 15 `unformed`;
-- 15 `goal_conflict`;
-- 15 `result_formed`;
-- 20 `clear_control`.
+## Publication boundary
 
-Each record includes the user-visible prompt, hidden evaluator context or a result-formation rule, the high-cost decision point, expected intervention class, acceptance signals, and a named fixture. The fixture is synthetic and contains no real user data. Corpus structure and identifiers are validated in CI; content changes require a new corpus version.
+All primary conversations must be usable; a primary retry cannot replace timing or reliability. Grader batches may retry once after timeout or schema failure and every attempt is disclosed.
 
-Frozen corpus SHA-256: `6796B9E40A5C0D6259CEF454A69AFFC767A0BD34C0E88153EF109FA2D2DB4F52`.
-
-## Release thresholds
-
-All must pass simultaneously before another-agent adaptation:
-
-- ambiguous/changing-task avoidable rework falls at least 25%;
-- final-match mean rises by at least 10 percentage points;
-- clear-task added interruptions have median 0 and P90 at most 1;
-- clear-task paired median elapsed-time overhead is at most 5%;
-- proactive intervention helpfulness is at least 70%;
-- wrong or unhelpful intervention rate is at most 15%;
-- inferred claims later explicitly denied are at most 10%;
-- default persistence contains zero complete raw prompts;
-- export and deletion contract pass rate is 100%.
-
-Report bootstrap 95% confidence intervals for rework and final-match deltas, but do not replace the fixed point thresholds with significance tests. Report every task, exclusion, timeout, neutral intervention, and disagreement. Missing plugin runs count as failures unless an independently confirmed infrastructure outage affected both arms.
-
-## Exit rules
-
-Stop expansion and report when any frozen product exit condition holds, including rework improvement below 25%, clear-task median added interventions above 1, dependence on private transcripts or a client, inability to distinguish execution error from intent change, or a core that must take over planning/execution.
-
-A failed metric is diagnosed as intervention timing, data model, host limitation, or product value. It is not repaired by adding forms, more mandatory questions, or forced workflow steps.
-
-## Gate decision
-
-Gate 2 result: **PASS FOR IMPLEMENTATION**. Value can be measured from paired deliverables, traceable user corrections, rework, latency, and privacy outcomes. No efficacy result exists yet; the frozen corpus is an instrument, not proof that the product works.
+The public evidence includes sanitized complete responses, action types, blind grades, source and artifact hashes, candidate/tree/archive fingerprints, model settings, CLI version, plugin inventory, retry history, gates, and bootstrap intervals. Machine paths, common credential patterns, and control characters are replaced and counted; response text is not length-truncated. Automated grading and a synthetic holdout support only a bounded beta claim. DeepSeek efficacy requires separate evidence.

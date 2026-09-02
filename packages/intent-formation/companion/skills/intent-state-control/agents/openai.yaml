@@ -1,0 +1,7 @@
+interface:
+  display_name: "Intent Formation State"
+  short_description: "Run exact receipt-backed /intent controls."
+  default_prompt: "/intent show"
+
+policy:
+  allow_implicit_invocation: true

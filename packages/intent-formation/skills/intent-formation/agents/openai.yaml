@@ -1,0 +1,7 @@
+interface:
+  display_name: "Intent Formation"
+  short_description: "Help form intent with one low-burden move."
+  default_prompt: "Help me figure out what I want while we work on this task."
+
+policy:
+  allow_implicit_invocation: false

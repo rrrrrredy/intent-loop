@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "intent_formation": {
+      "command": "node",
+      "args": ["dist/intent-formation-server.mjs"],
+      "cwd": "."
+    }
+  }
+}

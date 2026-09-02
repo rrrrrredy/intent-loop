@@ -1,138 +1,130 @@
-# Intent Loop
+# Intent Formation
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-0.2.0--beta.5-6657D9.svg)](CHANGELOG.md)
+[![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Prerelease](https://img.shields.io/github/v/release/rrrrrredy/intent-loop?include_prereleases&label=prerelease)](https://github.com/rrrrrredy/intent-loop/releases)
 
-Intent Loop gives Codex or DeepSeek Harness a small, local, traceable memory of what you currently want. It keeps requirements, guesses, evidence, unknowns, and disagreements separate, and updates the current view without erasing earlier corrections.
+Intent Formation helps Codex notice the one undecided choice that could send expensive work in the wrong direction. Clear tasks continue normally. When a choice genuinely changes the next useful action, Codex asks one focused question, shows two or three concrete directions, or makes a tiny sample you can react to.
 
-It stays inside the task where work is already happening. It does not plan or execute the work, bypass permissions, read private transcripts, create a user profile, or add another agent harness.
+There is no form to fill in and no separate chat app. Talk to Codex as usual.
 
-## In plain language
+## What it feels like
 
-Think of Intent Loop as a requirement note that the AI can keep tidy while you work:
+- “Translate this paragraph.” → Codex translates it directly.
+- “Design the product so it feels premium.” → If plausible meanings would produce materially different work, Codex asks one useful tradeoff question.
+- “I know this screen is wrong, but I cannot describe why.” → Codex shows a few small alternatives so you can point to what fits.
+- “The button is broken; keep the design.” → Codex treats that as an implementation correction, not a new preference.
 
-1. You say what you want, what must not change, and what is still uncertain.
-2. Intent Loop records those points in separate labeled boxes.
-3. When you correct something, the new version becomes current and the old version remains traceable.
-4. You can ask to see, export, switch off, or delete the note at any time.
+The product stays inside the current task. Codex still owns planning, tools, permissions, implementation, testing, and delivery.
 
-See the [simple Chinese guide](docs/simple-guide.zh-CN.md) for a two-minute introduction.
+## Install the simplest version
 
-## What it does
+Prerequisites: [Codex CLI](https://developers.openai.com/codex/cli) and Node.js 20 or newer on `PATH`.
 
-- Keeps explicit statements, inferences, external evidence, unknowns, and disagreements separate.
-- Preserves corrections through supersession and invalidation instead of silently overwriting history.
-- Stores structured, credential-redacted local records instead of complete prompts or transcripts by default.
-- Supports `on`, `private`, and `off` modes.
-- Binds every project-scoped call to the active host workspace; a model cannot redirect a call to another project.
-- Exports a compact summary or a portable task graph and physically deletes a claim or task after exact confirmation.
-- Provides the same fifteen intent-state tools to Codex and DeepSeek Harness through one shared local MCP core.
-
-## Hosts and evidence boundary
-
-| Host | Package | Runtime | Current boundary |
-| --- | --- | --- | --- |
-| Codex | Repository marketplace plugin | Node.js 20+ | Self-contained Skill, MCP server, and optional fail-open Hooks |
-| DeepSeek Harness | `dsh-intent-loop` bundle | Node.js `^22.19.0` or `>=24.0.0` | Thin adapter pinned to Harness `0.1.2-alpha.2`, which is a developer preview |
-
-The source suite has 73 Codex tests. The DeepSeek adapter additionally tests tool registration, credential isolation, bounded session cleanup, real MCP calls, workspace forgery rejection, session isolation, deletion, and package composition. A temporary Windows DeepSeek Harness lifecycle completed package, add, compose, boot-help, remove, and cleanup without a model API key.
-
-GitHub Actions runs the Codex and DeepSeek suites on Windows, Ubuntu, and macOS. Exact release results are recorded in the [verification report](docs/verification-report.md). These checks establish implementation and packaging behavior. The frozen paired 80-task human study has not been run, so this beta makes no claim that it reduces rework or improves final results.
-
-## Install for Codex
-
-Review the plugin manifest, Skill, MCP definition, and optional Hooks before installation:
-
-- `plugins/intent-loop/.codex-plugin/plugin.json`
-- `plugins/intent-loop/skills/intent/SKILL.md`
-- `plugins/intent-loop/.mcp.json`
-- `plugins/intent-loop/hooks/hooks.json`
-
-~~~powershell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.2.0-beta.5
-codex plugin add intent-loop@intent-loop
-~~~
-
-Start a new Codex task after installation. Manual Skill and MCP use works without Hook trust. Automatic session association and compact-context restoration require you to inspect and explicitly trust the Hook definition.
-
-## Install for DeepSeek Harness
-
-DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
+Copy these two commands into a terminal:
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.5
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.3.0-beta.1
+codex plugin add intent-formation@intent-loop
 ~~~
 
-Use `web` instead of `headless` for the Web profile. See the [DeepSeek adapter guide](dsh/README.md) for its session, storage, and uninstall boundaries.
+Start a new Codex task. Review the plugin Hook when Codex asks. The core plugin receives no prompt text through its MCP tool and writes no intent records.
 
-## Use
+That is all most people need. Give Codex a task in your own words.
 
-Ask in ordinary language:
+## Optional local memory and controls
 
-- `Track the requirements I just gave you with Intent Loop.`
-- `Show the current intent for this task.`
-- `I changed my mind: the output must be a single HTML file.`
-- `Keep the goal, but record that this result needs an implementation change.`
-- `Export a short intent summary.`
-- `Delete this task's Intent Loop data.`
+Install the State companion only when you want a small task-local record that can survive compaction or a later process:
 
-Codex also supports the manual routes `$intent start`, `$intent show`, `$intent correct`, `$intent feedback`, `$intent export`, `$intent forget`, and `$intent off`.
+~~~shell
+codex plugin add intent-formation-state@intent-loop
+~~~
 
-## Data and privacy
+Start a new task, review the two local Hooks, then type:
 
-The bundled runtime has no outbound network client. Durable state stays under the active host's local plugin data directory. The host supplies the current workspace; Intent Loop canonicalizes and hashes it for isolation and does not persist the raw project path in ledger events.
+~~~text
+/intent start
+~~~
 
-Default persistence stores atomic claims and minimal source references, not complete prompts, transcripts, workspace files, or tool output. Credential-pattern redaction is not comprehensive personal-information detection: personal data intentionally placed in a claim can remain. See the [privacy policy](docs/privacy-policy.md), [threat model](docs/privacy-threat-model.md), and [security policy](SECURITY.md).
+Useful controls:
+
+| Message | Effect |
+| --- | --- |
+| `/intent remember <one short goal>` | In standard mode, save one explicit goal with a receipt; `constraint:`, `preference:`, `success:`, and `tradeoff:` prefixes are optional. |
+| `/intent show` | Show the active task records and their source. |
+| `/intent export` | Write an integrity-checked JSON export and report its opaque export ID and SHA-256. |
+| `/intent private` | Purge persisted task content; new record text lives only in the current MCP process. |
+| `/intent off` | Stop implicit intent intervention and state updates for this task. |
+| `/intent forget` | Physically purge this task from plugin-managed state and managed exports. |
+
+`/intent off` is confirmed only when the reviewed State UserPromptSubmit Hook returns an `IF-...` receipt. Noninteractive `codex exec` cannot perform Codex's Hook review; do not treat its model-only fallback as an off switch. Release automation uses the bypass flag only after reviewing the exact packaged Hook.
+
+Successful controls return a short receipt such as `IF-12AB34CD`. No receipt means no success claim.
+
+Exports are stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`. The plugin does not place an absolute local path into model context.
+
+The State companion stores deliberate, atomic statements. It does not store complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Personal information deliberately placed in an atomic statement can still remain; this is not a secret vault or general DLP system. On Unix-like systems, managed directories/files use `0700`/`0600`; Windows relies on the current account's inherited filesystem ACLs.
+
+The trusted short-lived Hook refuses `/intent remember` in private mode because it cannot honestly promise that process-memory data survives after the Hook exits. Private records can still be created through the State MCP tools and last only for that MCP process. Returning to standard mode with `/intent start` restores the reliable slash-command path.
+
+See the [two-minute Chinese guide](docs/simple-guide.zh-CN.md), [privacy policy](docs/privacy-policy.md), and [threat model](docs/privacy-threat-model.md).
+
+## DeepSeek Harness
+
+The repository also contains `dsh-intent-formation`, a thin adapter for the official DeepSeek Harness developer preview. It shares the exact interaction policy and exposes the optional state tools through a session-bound local MCP process. Setting a session to `off` removes the policy on the next Harness system-prompt assembly, including after adapter restart.
+
+~~~shell
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1
+~~~
+
+DeepSeek Harness currently requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm`. The adapter is pinned to Harness `0.1.2-alpha.5`; preview API changes may require a new prerelease. See [dsh/README.md](dsh/README.md).
+
+## Evidence status
+
+An earlier 80-scenario run is preserved as a [development regression](evidence/development-regression-v8/README.md). Because the policy was iterated against that corpus, its strong result is not used as release-efficacy evidence.
+
+The prerelease remains blocked until a new sealed holdout is run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and complete sanitized outputs. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
+
+## Platform boundary
+
+Source and packaging checks run on Windows, Ubuntu, and macOS with supported Node versions. The release gate requires all 18 jobs to pass: 9 Codex package combinations, 6 DeepSeek adapter combinations, and a real temporary DeepSeek package/add/compose/boot-help/remove lifecycle on all three operating systems. Native GUI behavior is outside this headless claim.
 
 ## Uninstall
 
-Codex:
+If State is installed and you want its current task data removed, run `/intent forget` first and keep the receipt. Then:
 
-~~~powershell
-codex plugin remove intent-loop@intent-loop
+~~~shell
+codex plugin remove intent-formation-state@intent-loop
+codex plugin remove intent-formation@intent-loop
 codex plugin marketplace remove intent-loop
 ~~~
 
-DeepSeek Harness:
+For DeepSeek Harness:
 
 ~~~shell
-dsh plugin --profile headless remove dsh-intent-loop
+dsh plugin --profile headless remove dsh-intent-formation
 ~~~
 
-Package removal and task-data deletion are separate operations. Ask Intent Loop to delete the task first if its local records must also be physically removed. Operating-system backups, snapshots, and copied exports remain outside the deletion boundary.
+Removing a package does not remove operating-system backups or exports copied outside the managed plugin-data directory.
 
-## Develop and test
+Users of the older Intent Loop v0.2 beta should read the [v0.2 migration note](docs/migration-v0.2.md). This release deliberately does not import old state silently.
 
-Codex package, Node.js 20+:
+## Develop and verify
 
-~~~powershell
-Set-Location .\plugins\intent-loop
+~~~shell
+cd packages/intent-formation
+npm ci
+npm test
+
+cd ../..
 npm ci
 npm test
 ~~~
 
-DeepSeek package, Node.js 22.19+ or 24+:
+The core build creates exact, dependency-contained Codex distributions in `plugins/intent-formation` and `plugins/intent-formation-state`. The root suite verifies published study hashes, DeepSeek tool generation, credential isolation, real MCP behavior, and the exact package allowlist.
 
-~~~powershell
-Set-Location ..\..
-npm ci
-npm test
-npm run test:dsh-host
-~~~
-
-The host-smoke command creates a temporary DeepSeek home, installs the packed repository bundle, composes and boots the profile help path, removes the bundle, and deletes the temporary home. It does not require or use a model API key.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution requirements and [distribution-and-submission.md](docs/distribution-and-submission.md) for the two public package paths.
-
-## Release and evidence
-
-- [verification-report.md](docs/verification-report.md) records automated and real-host behavior.
-- [paired-evaluation-result.md](docs/paired-evaluation-result.md) records `NO RESULT` for the unrun human comparison.
-- [release-decision.md](docs/release-decision.md) separates public-beta readiness from unverified efficacy.
-- [accepted-deferred-rejected.md](docs/accepted-deferred-rejected.md) records the bounded, user-authorized DeepSeek transport exception.
-- [independent-reviews.md](docs/independent-reviews.md) records adversarial and practical-use review findings.
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the [release evidence report](docs/verification-report.md).
 
 ## License
 
-Apache License 2.0. It permits commercial and private use, modification, and redistribution while retaining notices, and includes an explicit patent grant. See [LICENSE](LICENSE), the [Codex notices](plugins/intent-loop/THIRD_PARTY_NOTICES.md), and the [DeepSeek package notices](dsh/THIRD_PARTY_NOTICES.md).
+Apache License 2.0. You may use, modify, and redistribute the project, including commercially, while retaining the required license and notices. The license includes an explicit patent grant. See [LICENSE](LICENSE) and the package-specific third-party notices.

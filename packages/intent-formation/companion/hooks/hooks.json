@@ -1,0 +1,30 @@
+{
+  "description": "Exact, receipt-backed local /intent state controls. Ordinary prompts are never stored or echoed.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${PLUGIN_ROOT}/dist/intent-resume.mjs\"",
+            "timeout": 3,
+            "additionalContextLimit": 1500
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${PLUGIN_ROOT}/dist/intent-command.mjs\"",
+            "timeout": 3,
+            "additionalContextLimit": 4000
+          }
+        ]
+      }
+    ]
+  }
+}

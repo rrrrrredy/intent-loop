@@ -2,16 +2,18 @@
 
 ## Supported versions
 
-Intent Loop 0.2.0-beta.5 and the main branch are supported. Earlier beta builds are superseded and do not receive backported fixes.
+The latest v0.3 prerelease and the main branch receive security fixes. Intent Loop v0.2 prereleases are superseded and do not receive backports.
 
-## Reporting a vulnerability
+## Report privately
 
-Do not open a public issue for a suspected vulnerability or include private task data in a report. Use the repository's private GitHub Security Advisory reporting flow:
+Do not open a public issue for a suspected vulnerability. Use [GitHub private vulnerability reporting](https://github.com/rrrrrredy/intent-loop/security/advisories/new).
 
-https://github.com/rrrrrredy/intent-loop/security/advisories/new
-
-Include the affected version, platform, reproduction steps using synthetic data, and expected impact. Never attach real prompts, credentials, ledger files, or exported intent graphs.
+Include the affected version, operating system, synthetic reproduction, and expected impact. Never attach real prompts, credentials, task IDs, ledger files, exported intent records, or user data.
 
 ## Security boundary
 
-The runtime is local and contains no outbound network client. It stores structured claims rather than full prompts by default and redacts seeded credential formats; it does not claim comprehensive PII detection. OS backups, snapshots, copied exports, and data outside the resolved Intent Loop data root are outside its deletion guarantee.
+The core policy runtime is local, accepts no prompt input, writes no state, and contains no outbound network client. The optional State companion persists deliberate atomic records locally and performs best-effort credential-pattern redaction. It is not a secret vault or comprehensive DLP system.
+
+Task IDs isolate views but are not filesystem access-control credentials. A local user or process with permission to read the plugin-data directory can read standard-mode records. Physical purge covers plugin-managed active and recovery files plus managed exports; operating-system backups, snapshots, host conversation logs, and copied exports remain outside that guarantee.
+
+The DeepSeek adapter removes common model-provider credentials from the child-process environment and derives task and workspace identity from the host. The surrounding Harness, model provider, operating system, and package installer remain outside the project boundary.

@@ -1,7 +1,8 @@
 {
-  "name": "dsh-intent-loop",
-  "version": "0.2.0-beta.5",
-  "description": "Session-scoped Intent Loop tools for DeepSeek Harness, backed by the shared local MCP core.",
+  "name": "dsh-intent-formation",
+  "version": "0.3.0-beta.1",
+  "private": true,
+  "description": "Session-bound Intent Formation policy and local state tools for DeepSeek Harness.",
   "type": "module",
   "main": "dsh/index.js",
   "exports": {
@@ -16,9 +17,11 @@
     "dsh/README.md",
     "dsh/SBOM.cdx.json",
     "dsh/THIRD_PARTY_NOTICES.md",
-    "plugins/intent-loop/THIRD_PARTY_NOTICES.md",
-    "plugins/intent-loop/runtime/server.mjs",
-    "plugins/intent-loop/skills/intent/SKILL.md",
+    "packages/intent-formation/src/policy.mjs",
+    "plugins/intent-formation-state/LICENSE",
+    "plugins/intent-formation-state/NOTICE",
+    "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+    "plugins/intent-formation-state/dist/intent-formation-server.mjs",
     "LICENSE",
     "NOTICE"
   ],
@@ -35,9 +38,11 @@
     "verify:dsh-catalog": "node dsh/scripts/generate-tool-catalog.mjs --check",
     "generate:dsh-legal": "node dsh/scripts/generate-legal.mjs",
     "verify:dsh-legal": "node dsh/scripts/generate-legal.mjs --check",
+    "verify:evidence": "node scripts/verify-evidence.mjs",
+    "verify:release-content": "node scripts/verify-release-content.mjs",
     "test:dsh": "node --test --test-concurrency=1 dsh/tests/adapter.test.mjs",
     "test:dsh-pack": "node dsh/scripts/verify-package.mjs",
-    "test": "npm run verify:dsh-catalog && npm run verify:dsh-legal && npm run test:dsh && npm run test:dsh-pack",
+    "test": "npm run verify:evidence && npm run verify:release-content && npm run verify:dsh-catalog && npm run verify:dsh-legal && npm run test:dsh && npm run test:dsh-pack",
     "test:dsh-host": "node dsh/scripts/deepseek-host-smoke.mjs"
   },
   "dependencies": {
@@ -45,8 +50,8 @@
     "@modelcontextprotocol/client": "2.0.0"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "0.1.2-alpha.2",
-    "@deepseek-ai/dsh-tools": "0.1.2-alpha.2"
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-tools": "0.1.2-alpha.5"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -69,7 +74,7 @@
   "keywords": [
     "dsh-plugin",
     "deepseek-harness",
-    "intent",
+    "intent-formation",
     "mcp",
     "agent"
   ]

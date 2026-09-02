@@ -2,17 +2,17 @@
 
 ## English
 
-Long AI tasks often go wrong before the code does: the goal quietly drifts. I built Intent Loop to keep a local, traceable record of requirements, evidence, and corrections in Codex and DeepSeek Harness. Apache-2.0: https://github.com/rrrrrredy/intent-loop
+AI agents can waste hours by committing to a direction the user never chose. I built Intent Formation for Codex: clear tasks move ahead; costly forks trigger one focused question, a few concrete choices, or a tiny sample. Apache-2.0: https://github.com/rrrrrredy/intent-loop
 
-- Raw characters: 256
-- X weighted characters: 239
-- Standard single-post limit checked on 2026-08-31: 280
+- Raw characters: 274
+- X weighted characters: 257
+- Standard single-post limit checked on 2026-09-03: 280
 - Hashtags: none
 
 ## 中文翻译
 
-AI 长任务出问题，往往早于代码报错：目标会在对话里悄悄跑偏。于是我做了 Intent Loop，让 Codex 和 DeepSeek Harness 在本地保留一份可追溯的需求、证据和修改记录。Apache-2.0 开源：https://github.com/rrrrrredy/intent-loop
+AI Agent 很容易在用户还没选定方向时就一路做下去，几个小时后才发现从起点就猜错了。我做了 Intent Formation 给 Codex 用：任务清楚就直接推进；遇到会造成大量返工的关键分岔，只问一个问题、给几个具体选项，或先做一个很小的样例。Apache-2.0 开源：https://github.com/rrrrrredy/intent-loop
 
 ## Counting note
 
-The English copy is ASCII except for the URL. X counts a valid URL as 23 weighted characters, so the weighted length is `256 - 40 + 23 = 239`.
+The English copy is ASCII. X counts a valid URL as 23 weighted characters, so the weighted length is `274 - 40 + 23 = 257`.

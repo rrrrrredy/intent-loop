@@ -1,0 +1,30 @@
+{
+  "name": "intent-formation",
+  "version": "0.3.0-beta.1",
+  "description": "Help people form and revise intent while working with Codex.",
+  "author": {
+    "name": "rrrrrredy",
+    "url": "https://github.com/rrrrrredy"
+  },
+  "homepage": "https://github.com/rrrrrredy/intent-loop",
+  "repository": "https://github.com/rrrrrredy/intent-loop",
+  "license": "Apache-2.0",
+  "keywords": ["codex", "intent", "mcp", "workflow", "human-ai-interaction"],
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Intent Formation",
+    "shortDescription": "Clarify intent only when it changes the next step.",
+    "longDescription": "A quiet intent-formation loop for Codex: continue when the task is clear, ask one useful question before a costly divergent branch, offer concrete comparisons when the user lacks vocabulary, and use a small sample when preference is easier to form from a result.",
+    "developerName": "rrrrrredy",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/rrrrrredy/intent-loop",
+    "privacyPolicyURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/privacy-policy.md",
+    "termsOfServiceURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/terms-of-use.md",
+    "defaultPrompt": "Help me figure out what I want while we work on this task.",
+    "brandColor": "#6657D9",
+    "composerIcon": "./assets/intent-formation.svg",
+    "logo": "./assets/intent-formation.svg"
+  }
+}

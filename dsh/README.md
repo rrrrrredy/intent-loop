@@ -1,42 +1,39 @@
-# Intent Loop for DeepSeek Harness
+# Intent Formation for DeepSeek Harness
 
-This package is a thin DeepSeek Harness adapter over the same local MCP core used by the Codex plugin. It adds fifteen structured intent tools and a compact model-guidance section. It does not add another agent, planner, chat client, or execution layer.
+`dsh-intent-formation` brings the same compact intent-formation policy to the official DeepSeek Harness developer preview and exposes 15 session-bound local state tools. It contributes no planner, executor, chat client, or additional Agent.
 
-DeepSeek Harness is currently a developer preview. This adapter is pinned to `@deepseek-ai/dsh` `0.1.2-alpha.2`; breaking Harness changes may require a new Intent Loop prerelease.
+DeepSeek Harness is a moving preview surface. This package is pinned to `@deepseek-ai/dsh` `0.1.2-alpha.5`; a Harness API change may require a new Intent Formation prerelease.
 
-## Install from GitHub
+## Install
 
-DeepSeek Harness requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm` on `PATH`.
+Prerequisites: Node.js `^22.19.0` or `>=24.0.0`, `pnpm`, and DeepSeek Harness.
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.2.0-beta.5
+dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1
 ~~~
 
-Use `web` instead of `headless` to add the same bundle to the Web profile. The package contributes `dsh/cordis.patch.yml`, which inserts one `dsh-intent-loop` plugin row.
+Use `web` in place of `headless` for the Web profile. The patch contributes one `dsh-intent-formation` plugin row.
 
 ## Use
 
-Ask in ordinary language. For example:
+Talk to the active Harness Agent normally. The shared policy tells it to continue on clear tasks and use one bounded question, comparison, or sample before a costly divergent branch.
 
-- `Track the requirements I just gave you with Intent Loop.`
-- `Show the current intent for this task.`
-- `Record that this result needs an implementation change; the goal itself is unchanged.`
-- `Export a short intent summary.`
+The adapter opens one local MCP process lazily per active Harness session. It obtains the workspace and session identity from the trusted host path, removes `task_id`, `cwd`, `project_root`, and `host_session_id` from model control, and injects a session-derived task ID. The child process receives a narrow environment allowlist with model API keys removed.
 
-The adapter reads the immutable workspace and session identity from the active Harness agent. `project_root` and `host_session_id` are removed from model-visible schemas and injected by the adapter. A model cannot redirect an Intent Loop call to another workspace or select a different private-session owner.
-
-One local MCP process is opened lazily per active Harness session. This preserves private-mode memory within that session. The pool is bounded, closes idle processes, forwards cancellation and timeouts, and closes every process when the plugin unloads. If one concurrent call fails, that session stops accepting new calls, lets already-active sibling calls settle, and then closes the shared client once. A private task's in-memory semantic state is lost if its MCP process or the Harness process exits; the durable recovery control remains available for exact deletion.
-
-By default, durable data is stored under `${DSH_HOME}/plugin-data/intent-loop/v1`, or `~/.dsh/plugin-data/intent-loop/v1` when `DSH_HOME` is unset. The MCP runtime has no outbound network client. The child process receives a small allowlist of OS environment variables and no model API keys.
+State lives under `${DSH_HOME}/plugin-data/intent-formation/v1`, or `~/.dsh/plugin-data/intent-formation/v1` when `DSH_HOME` is unset. Private state lives only for the MCP process lifetime. The session pool is bounded, closes idle processes, forwards cancellation and timeouts, and drains active siblings before closing a failed session.
 
 ## Uninstall
 
-If task data must be physically deleted, ask the active task to use `intent_delete` with its exact confirmation before removing the package. Package removal and task-data deletion are separate operations.
+Delete required task data through `intent_forget` before removing the package. Package removal and data deletion are separate operations.
 
 ~~~shell
-dsh plugin --profile headless remove dsh-intent-loop
+dsh plugin --profile headless remove dsh-intent-formation
 ~~~
 
 ## Evidence boundary
 
-The adapter lifecycle, workspace binding, cross-project rejection, private-session isolation, deletion, package composition, and uninstall are testable without a model API key. Those checks establish transport and packaging behavior. The frozen paired 80-task outcome study remains `NO RESULT`, so this adapter does not establish reduced rework, better final matching, or a product-value Go for multi-host expansion.
+The repository tests the exact 15-tool catalog, shared-policy identity, next-turn and cold-restart `off` behavior, credential isolation, forged-workspace rejection, cross-session isolation, private-state disk absence, physical deletion, exact package contents, and a temporary package/add/compose/boot-help/remove lifecycle on Windows, Ubuntu, and macOS.
+
+Those checks establish adapter and packaging behavior. The 80-scenario outcome study ran in Codex, so it does not establish DeepSeek efficacy. Releasing this adapter is a bounded compatibility experiment while Harness remains in developer preview.
+
+Licensed under Apache-2.0.

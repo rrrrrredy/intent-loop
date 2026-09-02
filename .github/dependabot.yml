@@ -1,7 +1,12 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /plugins/intent-loop
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /packages/intent-formation
     schedule:
       interval: monthly
     open-pull-requests-limit: 5

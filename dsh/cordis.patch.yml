@@ -1,4 +1,4 @@
-# DeepSeek Harness profile layer for the Intent Loop adapter.
+# DeepSeek Harness profile layer for the Intent Formation adapter.
 - insert:
-    - id: intent-loop
-      name: dsh-intent-loop
+    - id: intent-formation
+      name: dsh-intent-formation

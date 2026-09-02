@@ -1,0 +1,19 @@
+{
+  "description": "Load a compact intent-formation policy through a warm MCP process.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "intent_formation_policy",
+            "tool": "get_intent_policy",
+            "input": {},
+            "timeout": 1,
+            "additionalContextLimit": 220
+          }
+        ]
+      }
+    ]
+  }
+}

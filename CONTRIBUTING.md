@@ -1,47 +1,49 @@
 # Contributing
 
-Thank you for helping improve Intent Loop.
+Thank you for helping improve Intent Formation.
 
 ## Ground rules
 
-- Preserve the product boundary in AGENTS.md. Intent Loop may expose thin host adapters, but it must not become a planner, execution harness, transcript parser, or user-profile product.
-- Do not add raw prompt or transcript persistence. Treat privacy, project isolation, export, and deletion behavior as release-critical.
-- Keep Hooks optional, inspectable, non-blocking, and fail-open.
-- Separate implementation evidence from claims about user outcomes.
+- Preserve the product boundary in `AGENTS.md`.
+- Optimize the user-visible interaction before adding state or framework machinery.
+- Do not add raw prompt, transcript, secret, workspace-file, or full-result persistence.
+- Keep Hooks optional, inspectable, bounded, non-blocking, and fail-open.
+- Treat privacy, task isolation, off/private controls, export, physical deletion, and receipt accuracy as release-critical.
+- Separate implementation evidence, Codex outcome evidence, DeepSeek compatibility evidence, and unverified hypotheses.
 
-## Codex development
+## Codex package
 
-Requires Node.js 20 or newer.
+Requires Node.js 20 or newer:
 
-~~~powershell
-Set-Location plugins/intent-loop
+~~~shell
+cd packages/intent-formation
 npm ci
 npm test
 ~~~
 
-The build produces committed self-contained files in `plugins/intent-loop/runtime`. Include the regenerated runtime, third-party notices, and `SBOM.cdx.json` whenever source or dependencies change.
+The build regenerates the exact committed distributions under `plugins/intent-formation` and `plugins/intent-formation-state`, including SBOMs and third-party notices. Include those generated changes whenever source or dependencies change.
 
-## DeepSeek Harness development
+## DeepSeek Harness adapter
 
-Requires Node.js `^22.19.0` or `>=24.0.0`. DeepSeek Harness is pinned to the version recorded in the root package and is treated as a developer-preview host.
+Requires Node.js `^22.19.0` or `>=24.0.0` plus `pnpm`:
 
-~~~powershell
+~~~shell
 npm ci
 npm test
 npm run test:dsh-host
 ~~~
 
-Root tests verify the generated tool catalog and legal inventory, exercise real shared MCP children, reject forged project scope, check private-session isolation and cleanup, and inspect the packed bundle. The host smoke test uses a temporary Harness home and removes it on success or failure. Include regenerated `dsh/tool-catalog.json`, `dsh/THIRD_PARTY_NOTICES.md`, and `dsh/SBOM.cdx.json` whenever the shared runtime or dependencies change.
-
-Before opening a pull request:
-
-1. Run `npm test` from `plugins/intent-loop`.
-2. Run root `npm test` with a supported DeepSeek Node.js version.
-3. Run the plugin validator documented in README.md when Codex development tools are available.
-4. Confirm the frozen corpus hash still passes.
-5. Describe new persistence, permission, Hook, deletion, host-binding, or external-network behavior explicitly.
-6. Add a regression test for every defect fix.
+Root tests verify the public evidence hashes, shared policy, generated 15-tool catalog, dynamic DeepSeek `off` behavior, environment credential isolation, host-derived session and workspace binding, real MCP calls, private-state disk absence, deletion, legal inventory, and exact package composition. The host smoke uses a temporary Harness home and removes it whether the test succeeds or fails.
 
 ## Pull requests
 
-Keep changes focused. Explain the user-visible outcome, evidence, limitations, and security/privacy impact. Contributions are licensed under Apache-2.0.
+Before opening a pull request:
+
+1. Run both package suites on supported runtimes.
+2. Run the current plugin validator when available.
+3. Confirm generated distributions and evidence hashes are clean.
+4. Add a regression for every behavior defect.
+5. Describe user-visible impact, new persistence or network behavior, permissions, Hook changes, evidence affected, and remaining limitations.
+6. Never include real prompts, credentials, task identifiers, state ledgers, or private exports in fixtures or issues.
+
+Contributions are licensed under Apache-2.0.

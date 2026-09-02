@@ -14,11 +14,11 @@ if (!existsSync(lockPath)) throw new Error("package-lock.json is missing; run np
 const manifest = JSON.parse(await readFile(path.join(repositoryRoot, "package.json"), "utf8"));
 const lock = JSON.parse(await readFile(lockPath, "utf8"));
 const embeddedSbom = JSON.parse(await readFile(
-  path.join(repositoryRoot, "plugins", "intent-loop", "SBOM.cdx.json"),
+  path.join(repositoryRoot, "plugins", "intent-formation-state", "SBOM.cdx.json"),
   "utf8"
 ));
 const embeddedNotices = await readFile(
-  path.join(repositoryRoot, "plugins", "intent-loop", "THIRD_PARTY_NOTICES.md"),
+  path.join(repositoryRoot, "plugins", "intent-formation-state", "THIRD_PARTY_NOTICES.md"),
   "utf8"
 );
 
@@ -128,7 +128,7 @@ const noticeSections = additional.map((pkg) => [
 const notices = [
   "# DeepSeek Harness bundle third-party notices",
   "",
-  "The bundled Intent Loop MCP runtime retains the notices below. The DeepSeek Harness adapter adds the separately listed runtime dependencies.",
+  "The bundled Intent Formation State MCP runtime retains the notices below. The DeepSeek Harness adapter adds the separately listed runtime dependencies.",
   "",
   normalizeNoticeText(embeddedNotices),
   ...(noticeSections.length === 0 ? [] : ["", "# Additional adapter dependencies", "", ...noticeSections]),

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "evidence_class": "sealed_holdout",
+  "sealed_before_candidate_run": true,
+  "sealed_date": "2026-09-03",
+  "corpus": {
+    "path": "packages/intent-formation/evals/holdout-80.jsonl",
+    "sha256": "9b209f5fe28de8f0c58e16fbc7cc44dbd5945a566b39e4d8afad9c6d34afa216",
+    "scenario_count": 80,
+    "distribution": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    }
+  },
+  "method": {
+    "path": "packages/intent-formation/evals/holdout-method.md",
+    "sha256": "edc834bae2152ac61e77d13964154663fd48348b64c2f6c8ed4e6d0fe0c8c6df",
+    "authoring": "independent adversarial review agent",
+    "arm_runs_before_seal": 0,
+    "product_policy_opened_by_author": false,
+    "old_corpus_used_only_for_shape_and_overlap_checks": true,
+    "near_duplicate_thresholds": {
+      "token_set_jaccard": 0.65,
+      "character_four_gram_dice": 0.72
+    }
+  }
+}

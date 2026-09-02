@@ -1,0 +1,27 @@
+{
+  "name": "intent-formation-state",
+  "version": "0.3.0-beta.1",
+  "description": "Optional local MCP state companion for Intent Formation.",
+  "author": {
+    "name": "rrrrrredy",
+    "url": "https://github.com/rrrrrredy"
+  },
+  "homepage": "https://github.com/rrrrrredy/intent-loop",
+  "repository": "https://github.com/rrrrrredy/intent-loop",
+  "license": "Apache-2.0",
+  "keywords": ["codex", "intent", "local-state", "privacy", "mcp"],
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Intent Formation State",
+    "shortDescription": "Optional local state, export, and provenance tools.",
+    "longDescription": "Adds the local MCP tools for traceable intent records, private mode, correction, feedback, export, import, and physical deletion. The core Intent Formation plugin works without this companion.",
+    "developerName": "rrrrrredy",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/rrrrrredy/intent-loop",
+    "privacyPolicyURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/privacy-policy.md",
+    "termsOfServiceURL": "https://github.com/rrrrrredy/intent-loop/blob/main/docs/terms-of-use.md",
+    "defaultPrompt": "Show the task-local intent state and available privacy controls."
+  }
+}

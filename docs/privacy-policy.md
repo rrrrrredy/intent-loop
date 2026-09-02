@@ -1,43 +1,33 @@
-# Intent Loop privacy policy
+# Privacy policy
 
-Effective date: 2026-08-31
+Effective date: 2026-09-03
 
-Intent Loop is open-source software that runs locally in Codex or DeepSeek Harness. The project maintainer does not operate a hosted Intent Loop service and does not receive plugin data through the runtime.
+Intent Formation is open-source software distributed through GitHub. The project author does not operate a hosted Intent Formation service, user account system, analytics endpoint, or telemetry collector.
 
-## Data processed locally
+## Core plugin
 
-When enabled for a task, Intent Loop can process and store:
+The core `intent-formation` plugin runs locally. Its MCP policy tool accepts no arguments, receives no prompt text, and returns a fixed compact policy. It does not write intent records and contains no outbound network client.
 
-- atomic intent claims and their explicit, inferred, evidence, unknown, or disputed status;
-- minimal source references such as event IDs and SHA-256 hashes;
-- task and project-scoped identifiers;
-- correction, supersession, invalidation, mode, and deletion events;
-- optional Hook candidates represented by hashes and short redacted excerpts.
+Codex supplies the UserPromptSubmit event and may retain conversations under its own product terms. That host processing is outside this project's data control.
 
-By default it does not persist complete prompts, transcripts, workspace files, or tool outputs. Input is screened for seeded credential formats and transcript-shaped records are rejected. Redaction is not comprehensive PII detection: a user can intentionally place names, addresses, or other personal information in an atomic claim, and that content can then be stored locally.
+## Optional State companion
 
-## Storage and network behavior
+State is opt-in. After `/intent start`, it can store deliberately selected atomic statements, semantic labels, minimal provenance, timestamps, task identifiers, record links, and integrity hashes in the local Codex plugin-data directory.
 
-The runtime contains no outbound network client. Durable data stays below the active host's plugin data root reported by the status tool. Codex supplies its sandbox working directory through MCP metadata. The DeepSeek adapter supplies the immutable workspace and session identity from the active Harness agent and removes those fields from model-visible schemas. Intent Loop canonicalizes and hashes the workspace for project isolation and does not persist the raw path in ledger events.
+It does not persist complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Common credential patterns are redacted before a record is written, but redaction is best effort and is not general personal-information detection.
 
-The DeepSeek adapter starts one local MCP child lazily per active Harness session. Its child environment contains a small allowlist of operating-system variables and intentionally omits model API keys and similar credentials. Private mode keeps semantic state only in the session's MCP process. It writes a small control file containing hashed session metadata and a task ID so independent processes fail closed and a restarted MCP does not write private semantics. Re-enabling durable mode or deleting the task removes that control. Off mode stores no semantic records.
+Standard mode persists records locally. On Unix-like systems, managed directories are restricted to mode `0700` and files to `0600`; on Windows, protection depends on the current account's inherited filesystem ACLs. A verified private-mode receipt means the task's managed persisted content and managed exports were purged before new record text is kept only in the current MCP process. If a privacy or deletion command fails, the result reports that change is unknown and tells the user to inspect and retry. Off mode retains existing state but blocks new updates. `/intent forget` purges the task's managed events and managed export files. Copies moved elsewhere, operating-system backups and snapshots, and host conversation logs remain outside the plugin's deletion authority.
 
-Codex, DeepSeek Harness, the operating system, GitHub, and any tools a user separately invokes have their own data practices and are not controlled by Intent Loop.
+## DeepSeek Harness adapter
 
-## Retention, access, export, and deletion
+The adapter runs the same state server locally. It derives task identity from the active Harness session, removes model credentials from the child-process environment, and contains no project telemetry. DeepSeek Harness and any configured model provider process data under their own terms.
 
-Durable task data remains until the user deletes it. Uninstalling the plugin does not delete that data. Users can inspect current state, return a compact human summary, export one task's portable graph, invalidate a claim while retaining audit history, or physically delete one claim or task after an exact confirmation.
+## Network access and sharing
 
-Physical deletion verifies the live Intent Loop data root. It cannot erase independent backups, volume snapshots, copied exports, or files outside that root.
+The product runtime does not send intent state to the project author or third parties. Installing from GitHub, installing dependencies for development, checking for updates, and using Codex, DeepSeek Harness, or a model provider can involve those services independently.
 
-## Sharing
+## Security and questions
 
-The runtime does not transmit or sell local plugin data. Users decide whether to share exported graphs, diagnostics, or repository issues. Never include private task data in a public issue.
+Do not put passwords, private keys, access tokens, or highly sensitive personal data in intent records. Anyone with access to the local account or plugin-data directory may read standard-mode records.
 
-## Security
-
-The project uses host-bound project isolation, explicit-path mismatch rejection, schema validation, a hash-chained ledger, live-owner locks with heartbeats, credential-pattern redaction, bounded Codex Hook input, fail-open Hooks, a credential-minimized DeepSeek child environment, and post-delete identifier scans. Hook-injected compact context contains only direct user-event and user-explicit claims; persisted evidence, inferences, imports, unknowns, and disputes are not re-injected as instructions. No software can eliminate all risk; review SECURITY.md before reporting a vulnerability.
-
-## Changes and contact
-
-Material policy changes will be recorded in the repository history and release notes. Questions may be opened at https://github.com/rrrrrredy/intent-loop/issues using synthetic data only.
+Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/rrrrrredy/intent-loop/security/advisories/new). General privacy questions may be opened in the repository issue tracker without including sensitive data.

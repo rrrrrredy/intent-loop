@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "evidence_class": "development_regression",
+  "current_release_efficacy": false,
+  "evidence_id": "intent-formation-0.3.0-beta.1-study-80-v8",
+  "product_version": "0.3.0-beta.1",
+  "corpus": {
+    "path": "packages/intent-formation/evals/study-80.jsonl",
+    "scenario_count": 80,
+    "sha256": "9f66af3f968d2df52fac4f0ffb5ea8c12fa9a8f5076a0645ec25ddca0e4f428b",
+    "composition": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    }
+  },
+  "design": {
+    "pairing": "within-scenario",
+    "pair_order": "alternating AB/BA",
+    "arms_within_pair": "sequential",
+    "pair_worker_concurrency": 2
+  },
+  "execution": {
+    "host_os": "Windows",
+    "primary_conversations": 160,
+    "usable_primary_conversations": 160,
+    "primary_timeouts": 0,
+    "cleanup_failures": 0,
+    "model": null,
+    "model_identity_note": "The runner used the configured Codex default; the exact model identity was not recorded.",
+    "codex_cli_version_at_evidence_export": "0.152.1",
+    "codex_cli_version_during_study": "not recorded by the runner",
+    "longest_turn": {
+      "id": "conflict-06",
+      "arm": "plugin",
+      "phase": "second",
+      "duration_ms": 175993
+    }
+  },
+  "grading": {
+    "method": "automated blind pairwise grading",
+    "rubric_version": "intent-formation-blind-v2",
+    "model": null,
+    "model_identity_note": "The grader used the configured Codex default; the exact model identity was not recorded.",
+    "batches": 40,
+    "retry_batch_count": 3,
+    "retry_batches": [
+      {
+        "batch": 5,
+        "attempts": [
+          {
+            "attempt": 1,
+            "exit_code": null,
+            "signal": "SIGTERM",
+            "timed_out": true,
+            "duration_ms": 300111,
+            "validation_error": "missing response after timeout"
+          },
+          {
+            "attempt": 2,
+            "exit_code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 87334,
+            "validation_error": null
+          }
+        ]
+      },
+      {
+        "batch": 6,
+        "attempts": [
+          {
+            "attempt": 1,
+            "exit_code": null,
+            "signal": "SIGTERM",
+            "timed_out": true,
+            "duration_ms": 300102,
+            "validation_error": "missing response after timeout"
+          },
+          {
+            "attempt": 2,
+            "exit_code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 206375,
+            "validation_error": null
+          }
+        ]
+      },
+      {
+        "batch": 18,
+        "attempts": [
+          {
+            "attempt": 1,
+            "exit_code": null,
+            "signal": "SIGTERM",
+            "timed_out": true,
+            "duration_ms": 300092,
+            "validation_error": "missing response after timeout"
+          },
+          {
+            "attempt": 2,
+            "exit_code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 109196,
+            "validation_error": null
+          }
+        ]
+      }
+    ],
+    "failed_batches_after_retry": 0
+  },
+  "release_gate_result": "NOT_APPLICABLE_TUNED_DEVELOPMENT_CORPUS",
+  "limitations": [
+    "The policy was iterated against this corpus. These results are development regression evidence, not an independent estimate of release efficacy.",
+    "The corpus is synthetic and frozen; it is not a sample of production users.",
+    "The study ran on one Windows host and did not record exact model identities.",
+    "The judge was an automated model, not a human panel; full outputs and grades are published for audit.",
+    "AB/BA order alternated by scenario, but arms ran sequentially within each pair.",
+    "Confidence intervals cover corpus resampling only and do not capture model or judge drift.",
+    "The efficacy study evaluates the Codex policy; DeepSeek support has separate protocol and lifecycle evidence only."
+  ],
+  "source_sha256": {
+    "packages/intent-formation/src/policy.mjs": "81170f23be0b6ee14767fe9aae183e03c523c854c6a7fb93deeff22a34d6f8ec",
+    "packages/intent-formation/evals/study-80.jsonl": "9f66af3f968d2df52fac4f0ffb5ea8c12fa9a8f5076a0645ec25ddca0e4f428b",
+    "packages/intent-formation/evals/run-study.mjs": "d09af57d595bc8b7d9457e7bef86c911c3a2df1a5dfd74df8759a46995bca6ad",
+    "packages/intent-formation/evals/grade-study.mjs": "c7ff9963108894788518899eb349e11487acc0a61234fe6f6ad359f44ea1f9b8",
+    "packages/intent-formation/evals/grading-protocol-v2.md": "7d918fb2176e3cae53b664b39cf82a1bff128640e706f6cbba5ec2da6badfcf7",
+    "packages/intent-formation/evals/grading-output-v2.schema.json": "6f29b64fa7eb3e5120f38934c7945a14bec1593bde68ebd8ea7c5cdfb481f8df",
+    "packages/intent-formation/evals/analyze-study.mjs": "ae7eed15b47315d5250b124af60021301f725f5bda06acb3fa1b331d9c6a60a4",
+    "packages/intent-formation/evals/metrics.mjs": "554347c7614bbebaab98f4d49730a8c134fc8a88e0e7ec327713af30b4656f0a"
+  },
+  "artifact_sha256": {
+    "analysis.json": "ae289ea6ce5e64c067fc8cbad1a46daad987025a97dbb1717b6d675c2568a8f7",
+    "blind-grades.jsonl": "c50f6cf2fa16b4c98e3f5984eb6c661ba1a2167a645d9765544a1604caf3ffa9",
+    "runs.jsonl": "6d0a4c3bf7edfbf6796fa398cc1f56569719827b022be8e830ec718c1905317d"
+  }
+}

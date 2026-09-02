@@ -1,46 +1,71 @@
-# Intent Loop 小白说明
+# 两分钟上手 Intent Formation
 
-## 一句话
+## 它有什么用
 
-Intent Loop 是给 AI 用的一张“需求便签”。你说过的目标、限制和修改，它会分开记好，随时可以查看、改正或删除。
+Intent Formation 会帮 Codex 在开工前发现一个关键问题：你的要求里还有没有会让结果走向完全不同方向的选择。
 
-## 它能帮什么
+任务很清楚时，Codex 直接做。方向没定，而且猜错会浪费很多时间时，它只问一个有用的问题，或者给你两三个具体方案看。你照平时的方式说话就行。
 
-假设你让 AI 做一个网站：
+## 最简单的安装方法
 
-- 你说“手机上也要好看”，它记成明确要求。
-- AI 猜“可能要深色主题”，它只记成猜测，不会当成你的原话。
-- 测试发现“旧手机打开很慢”，它记成证据。
-- 你后来改成“先做浅色主题”，它会更新当前要求，也保留这次修改的来路。
+电脑需要有 Codex CLI 和 Node.js 20 或更高版本，并且在终端里直接输入 `node --version` 能看到版本号。这里常说的 PATH，简单理解就是“终端能直接找到并运行这个命令”。
 
-这样，任务做久了或对话变长后，AI 仍能看到一份短而清楚的当前要求。
+Windows 打开 PowerShell，macOS 打开“终端”，Linux 打开 Terminal。依次粘贴下面两行：
+
+~~~shell
+codex plugin marketplace add rrrrrredy/intent-loop --ref v0.3.0-beta.1
+codex plugin add intent-formation@intent-loop
+~~~
+
+安装后新建一个 Codex 任务。Codex 提示检查 Hook 时，先看内容，再启用。Hook 就是插件在你发送消息前运行的一小段本地脚本；它的内容可以先检查。
+
+到这里就能用了，不用学命令，也不用填表。
 
 ## 怎么用
 
-先按 README 的命令装到 Codex 或 DeepSeek Harness。打开一个新任务后，直接说：
+直接说你要做什么：
 
-> 用 Intent Loop 记住我刚才说的要求。
+> 帮我做一个产品首页，要显得专业。
 
-以后可以继续说：
+“专业”可能有几种差别很大的方向。如果这个选择会影响接下来的设计，Codex 会问一个具体问题，或者给出少量可比较的样例。你可以选一个、混合几个，也可以说都不对。
 
-> 给我看看现在记了什么。
+如果你说：
 
-> 我改一下：必须支持手机，平板先不做。
+> 把这段中文翻成英文。
 
-> 这个测试结果只算证据，别当成我的要求。
+它会直接翻译，不多问。
 
-> 导出一份简短总结。
+## 什么时候需要 State
 
-> 删除这个任务的 Intent Loop 数据。
+普通使用不用装 State。只有在你希望 Codex 下次打开任务时还记得已经确认的目标，才安装：
 
-不用学表格，也不用自己写编号。Intent Loop 只整理意图，真正的写代码、查资料、改文件仍由当前 AI 完成。
+~~~shell
+codex plugin add intent-formation-state@intent-loop
+~~~
 
-## 数据放在哪里
+新建任务后，在 **Codex 任务的聊天输入框**里输入 `/intent start`，不要输到 PowerShell 或 Terminal。成功时会看到一段 `IF-...` 回执。没有回执，就当作没有成功。
 
-记录保存在你电脑上的宿主数据目录中。运行时没有向外发送数据的网络客户端。默认不会保存整段对话，不过你主动写进要求里的姓名、地址等内容仍可能被保存。
+- `/intent remember 只在所有发布门槛通过后公开`：在 standard 模式明确保存一条目标。也可以写 `/intent remember constraint: 不上传私密数据` 来保存硬性限制。
+- `/intent show`：查看已保存的简短记录。
+- `/intent private`：清掉已落盘的当前任务内容，之后只在本次进程内临时保存。
+- `/intent off`：关闭当前任务的意图干预和状态更新。
+- `/intent export`：导出 JSON 文件，并给出文件位置和校验值。
+- `/intent forget`：删除插件管理范围内的当前任务记录和导出文件。
 
-卸载插件不会自动删除之前的任务记录。如果要彻底删掉，请先让 Intent Loop 删除对应任务，再卸载插件。
+`/intent off` 只有在你已经检查并信任 State 的 Hook，而且命令返回 `IF-...` 回执时才算生效。自动命令模式 `codex exec` 没有可点击的检查界面，不能替你完成这次安全检查，也不能把模型自己调用本地 State 助手后写下的 off 状态当成真正关闭。
 
-## 需要记住的限制
+State 只保存有意写入的短句，不会默认保存整段对话。主动写进短句里的个人信息仍会留在本机，所以不要把密码、密钥或敏感原文放进去。
 
-这还是 beta 版。自动测试和真实安装流程可以证明它按设计运行；尚未完成的 80 任务对照研究意味着，目前没有证据保证它一定能减少返工或让结果更好。
+private 模式只保留当前本地 State 助手运行期间的临时内容。执行命令的 Hook 很快就会退出，无法保证临时内容继续存在，所以它会拒绝 `/intent remember`，也不会给成功回执。要用这条简单命令，先输入 `/intent start` 回到 standard 模式。
+
+## 怎么卸载
+
+装过 State，并且想删掉当前任务数据，先输入 `/intent forget`，确认拿到回执。然后在终端执行：
+
+~~~shell
+codex plugin remove intent-formation-state@intent-loop
+codex plugin remove intent-formation@intent-loop
+codex plugin marketplace remove intent-loop
+~~~
+
+复制到其他目录的导出文件、系统备份和 Codex 自己保存的对话不归这个插件管理，需要你单独处理。

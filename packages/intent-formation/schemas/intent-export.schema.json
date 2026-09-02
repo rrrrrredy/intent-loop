@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rrrrrredy/intent-formation/schemas/intent-export.schema.json",
+  "title": "Intent Formation portable export",
+  "description": "Integrity-checked task intent that can be imported into another task or Agent host.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "exported_at",
+    "task",
+    "integrity"
+  ],
+  "properties": {
+    "format": {
+      "const": "intent-formation-export"
+    },
+    "version": {
+      "const": 1
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_task_hash",
+        "mode",
+        "label",
+        "records"
+      ],
+      "properties": {
+        "source_task_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mode": {
+          "enum": ["standard", "private", "off"]
+        },
+        "label": {
+          "type": ["string", "null"],
+          "maxLength": 120
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "./intent-record.schema.json"
+          }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "digest"],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  }
+}
