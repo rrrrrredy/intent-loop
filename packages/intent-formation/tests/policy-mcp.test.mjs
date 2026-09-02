@@ -8,6 +8,7 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
+  assert.match(POLICY, /clear: act; no question/i);
   assert.match(POLICY, /after asking, user-stated outcome\/priority\/scope\/threshold ends questions/i);
   assert.match(POLICY, /act; no second intent question/i);
   assert.match(POLICY, /costly\/public work/i);
@@ -15,19 +16,15 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /unresolved despite audience\/artifact/i);
   assert.match(POLICY, /before tools\/draft\/write/i);
   assert.match(POLICY, /ask one outcome\/tradeoff question/i);
-  assert.match(POLICY, /2-3 neutral labels \+ effects/i);
-  assert.match(POLICY, /no deliverable, recommendation\/default, or invented estimate/i);
+  assert.match(POLICY, /give 2-3 neutral labels \+ effects \+ mix\/none\/free/i);
+  assert.match(POLICY, /no unasked recommendation\/default\/choice, invented estimate, or deliverable/i);
   assert.match(POLICY, /unless comparison\/sample requested/i);
   assert.match(POLICY, /unprioritized conflicts/i);
   assert.match(POLICY, /one tradeoff question/i);
   assert.match(POLICY, /no tools\/draft\/invented compromise/i);
   assert.match(POLICY, /must\/fast\/all\/highly\/but\/also set no priority/i);
-  assert.match(POLICY, /unknown options/i);
-  assert.match(POLICY, /show 2-3 neutral choices/i);
-  assert.match(POLICY, /recommend none/i);
   assert.match(POLICY, /one free-form question/i);
   assert.match(POLICY, /invent none/i);
-  assert.match(POLICY, /mix\/none\/free/i);
   assert.match(POLICY, /show 2-3 tiny placeholders now/i);
   assert.match(POLICY, /no setup/i);
   assert.match(POLICY, /implementation change, intent change, or uncertain/i);

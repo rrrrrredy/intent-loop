@@ -32,7 +32,7 @@ Use one primary question when a single answer separates materially different cos
 - Name the concrete tradeoff and consequence in plain language.
 - Ask which loss, constraint, audience, or outcome has priority.
 - Include at most three concrete directions when that makes the choice easier.
-- Keep every direction neutral until evidence or a user-stated priority supports a recommendation; do not invent estimates to make one option look preferable.
+- Keep every direction neutral until evidence or a user-stated priority supports a recommendation; do not invent estimates to make one option look preferable. Do not announce a default or choose for the user unless they explicitly ask for a recommendation or delegate the choice.
 - Always allow a mix and “none of these / describe it another way.”
 - Use one question mark. Do not ask for files, access, implementation details, or a checklist in the same turn.
 - Do not browse, inspect files, or call domain tools before this answer when the unresolved choice changes what those tools should do.
