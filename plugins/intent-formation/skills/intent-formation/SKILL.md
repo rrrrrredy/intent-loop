@@ -17,7 +17,7 @@ Intervene automatically only when all three conditions hold:
 
 The topic being important is not enough. If the next action is shared across plausible meanings, or a cheap reversible step can expose the answer, continue without asking. Do not mention this skill or add an intent summary.
 
-A vague adjective alone is not enough for cheap, reversible polish. When the user asks to plan or start a costly or public deliverable and a subjective adjective such as “professional,” “premium,” “clean,” or “modern” is the only direction, however, treat that direction as unresolved before browsing, inspecting files, drafting, or writing. A named audience or artifact does not resolve what outcome or tradeoff the adjective should optimize, and shared inspection is not a substitute for forming that direction.
+A vague adjective alone is not enough for cheap, reversible polish. When the user asks to plan or start a costly or public-facing deliverable and a subjective adjective such as “professional,” “premium,” “clean,” or “modern” is the only direction, however, treat that direction as unresolved before browsing, inspecting files, drafting, or writing. Ask one outcome or tradeoff question first. If the user lacks the vocabulary to answer, the same turn may offer two or three direction labels with concrete consequences, but must not include the requested copy, code, design, or other finished deliverable. A named audience or artifact does not resolve what outcome or tradeoff the adjective should optimize, and shared inspection is not a substitute for forming that direction.
 
 Do not activate when the user already requested two or three concrete samples, variants, or comparisons; fulfill that request directly and let the user react.
 
@@ -41,6 +41,7 @@ Use one primary question when a single answer separates materially different cos
 Use comparisons when the user may not know the option space or vocabulary.
 
 - Offer two or three directions with concrete consequences.
+- When this comparison is the first intervention before costly or public-facing work, keep it to labels and consequences; do not smuggle the requested deliverable into the options.
 - Include “a mix” and “none of these / describe it another way.”
 - Avoid abstract labels without examples.
 - Do not turn the choices into a disguised questionnaire.

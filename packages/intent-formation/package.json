@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "pretest": "npm run build",
-    "test": "node --test tests/evals.test.mjs tests/hook.test.mjs tests/package.test.mjs tests/policy-mcp.test.mjs tests/store.test.mjs tests/service.test.mjs tests/mcp.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/evals.test.mjs tests/hook.test.mjs tests/package.test.mjs tests/policy-mcp.test.mjs tests/store.test.mjs tests/service.test.mjs tests/mcp.test.mjs",
     "publish:evidence": "node evals/publish-evidence.mjs",
     "pilot:codex": "node evals/run-codex-pilot.mjs",
     "probe:latency": "node evals/run-codex-pilot.mjs --scenarios evals/latency-probes.jsonl"

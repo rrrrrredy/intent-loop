@@ -1,7 +1,7 @@
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { chmod, mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { access, chmod, mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import {
   EPISTEMIC_STATUSES,
   EXPORT_FORMAT,
@@ -24,6 +24,15 @@ const feedbackClasses = new Set(FEEDBACK_CLASSES);
 const recordStatuses = new Set(["active", "superseded", "invalidated"]);
 const MAX_IMPORT_BYTES = 1_000_000;
 const MAX_IMPORT_RECORDS = 500;
+const EXPORT_CLEANUP_ATTEMPTS = 8;
+const RETRYABLE_REMOVE_CODES = new Set([
+  "EACCES",
+  "EBUSY",
+  "EMFILE",
+  "ENFILE",
+  "ENOTEMPTY",
+  "EPERM"
+]);
 const RECORD_EXPORT_KEYS = Object.freeze([
   "record_id", "statement", "redaction_count", "role", "epistemic_status",
   "source_ref", "scope", "scope_ref", "confidence", "valid_from",
@@ -52,6 +61,56 @@ function makeId(prefix) {
 
 function managedExportPrefix(taskId) {
   return "intent-" + hashText(taskId).slice(0, 24) + "-";
+}
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function removeFileVerified(filePath) {
+  let lastError = null;
+  for (let attempt = 0; attempt < EXPORT_CLEANUP_ATTEMPTS; attempt += 1) {
+    try {
+      await rm(filePath, { force: true });
+      lastError = null;
+    } catch (error) {
+      if (error?.code === "ENOENT") return;
+      lastError = error;
+    }
+
+    try {
+      await access(filePath);
+    } catch (error) {
+      if (error?.code === "ENOENT") return;
+      if (!lastError) lastError = error;
+    }
+
+    if (lastError && !RETRYABLE_REMOVE_CODES.has(lastError.code)) {
+      throw lastError;
+    }
+    if (attempt + 1 < EXPORT_CLEANUP_ATTEMPTS) {
+      await wait(Math.min(25 * (2 ** attempt), 250));
+    }
+  }
+
+  const error = new Error("could not verify removal of export artifact");
+  error.code = lastError?.code || "EEXPORTCLEANUP";
+  if (lastError) error.cause = lastError;
+  throw error;
+}
+
+async function removeFilesVerified(filePaths) {
+  const errors = [];
+  for (const filePath of new Set(filePaths)) {
+    try {
+      await removeFileVerified(filePath);
+    } catch (error) {
+      errors.push(error);
+    }
+  }
+  if (errors.length > 0) {
+    throw new AggregateError(errors, "failed to remove export artifacts");
+  }
 }
 
 function cleanTaskId(value) {
@@ -568,7 +627,7 @@ export class IntentService {
         entry.name.startsWith(prefix) &&
         (entry.name.endsWith(".json") || entry.name.endsWith(".tmp"))
       ) {
-        await rm(path.join(this.exportDirectory, entry.name), { force: true });
+        await removeFileVerified(path.join(this.exportDirectory, entry.name));
         removed += 1;
       }
     }
@@ -952,7 +1011,6 @@ export class IntentService {
 
     await mkdir(this.exportDirectory, { recursive: true, mode: 0o700 });
     await chmod(this.exportDirectory, 0o700);
-    let published = false;
     try {
       await writeFile(temporaryPath, body, {
         encoding: "utf8",
@@ -960,21 +1018,20 @@ export class IntentService {
         mode: 0o600
       });
       await rename(temporaryPath, targetPath);
-      published = true;
       await chmod(targetPath, 0o600);
-    } catch (error) {
-      await rm(temporaryPath, { force: true });
-      if (published) await rm(targetPath, { force: true });
-      throw error;
-    }
-
-    try {
       const afterWrite = await this.show({ task_id: taskId });
       if (!afterWrite.exists || afterWrite.mode === "private") {
         throw new Error("intent state changed before the export completed");
       }
     } catch (error) {
-      await rm(targetPath, { force: true });
+      try {
+        await removeFilesVerified([temporaryPath, targetPath]);
+      } catch (cleanupError) {
+        throw new AggregateError(
+          [error, cleanupError],
+          "export failed and cleanup could not be verified"
+        );
+      }
       throw error;
     }
 
