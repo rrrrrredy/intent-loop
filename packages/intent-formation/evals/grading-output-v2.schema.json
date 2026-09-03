@@ -91,6 +91,7 @@
         },
         "rationale": {
           "type": "string",
+          "minLength": 40,
           "maxLength": 520
         }
       }

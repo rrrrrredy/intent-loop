@@ -48,6 +48,14 @@ Verification: the 80 scenarios contain 60 English and 20 Simplified Chinese case
 
 Boundary: sealing authorizes only the exact candidate-bound experiment. It does not authorize an efficacy claim or publication. Any user-visible policy change after the run retires v5.
 
+## 2026-09-03: invalidate the first v5 grader run and align its contract
+
+Observed: all 160 candidate-bound primary conversations completed without retry, timeout, prompt drift, MCP calls, or cleanup failure. The first blind grader run produced only 70 / 80 grades because two clear-control batches twice returned rationales shorter than the runtime-only 40-character minimum. The JSON Schema declared no minimum and the rubric did not state one.
+
+Accepted: invalidate the entire grader run before inspecting semantic scores. Preserve its summary at SHA-256 `4ab5df8d454ef15e624c86b518f70bf72f565a2eaf8920129bbbc26d8f422125`; do not combine its 70 grades with another run or silently add a third batch attempt. Align Schema, rubric, and runtime on 40-520 characters, bind grading to a clean committed tooling revision, and rerun all 80 pairs in a fresh grader Home and output directory.
+
+Boundary: this changes evaluation infrastructure only. The evaluated plugin tree remains byte-identical to candidate `fca68c5489d9698ad4894096818469aad3f5520b`; if any user-visible policy byte changes, v5 is retired.
+
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses
 
 Accepted: freeze an independently authored 80-scenario holdout before running either arm, then publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test only if every predeclared release gate passes.

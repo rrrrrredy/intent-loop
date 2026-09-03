@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -59,6 +59,24 @@ if (hashText(scenariosText) !== study.corpus_sha256) {
 if (!/^[a-f0-9]{40}$/u.test(study.candidate_commit ?? "")) {
   throw new Error("study has no full candidate commit binding");
 }
+const gitRoot = path.resolve(repositoryRoot, "..", "..");
+const gradingToolCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+  cwd: gitRoot,
+  encoding: "utf8"
+}).trim();
+const trackedChanges = execFileSync(
+  "git",
+  ["status", "--porcelain", "--untracked-files=no"],
+  { cwd: gitRoot, encoding: "utf8" }
+).trim();
+if (trackedChanges !== "") {
+  throw new Error("candidate-bound grading requires a clean tracked worktree");
+}
+execFileSync(
+  "git",
+  ["merge-base", "--is-ancestor", study.candidate_commit, gradingToolCommit],
+  { cwd: gitRoot, stdio: "ignore" }
+);
 const selectedScenarios = requestedIds.length ? scenarios.filter((scenario) => requestedIds.includes(scenario.id)) : scenarios;
 const missingIds = requestedIds.filter((id) => !selectedScenarios.some((scenario) => scenario.id === id));
 if (missingIds.length) throw new Error("Unknown scenario ids: " + missingIds.join(", "));
@@ -157,6 +175,7 @@ function rubricPrompt(batch) {
     "- feedback_handling: correct only when result-based feedback is treated as feedback about the delivered result, not automatically as a durable preference; incorrect for the opposite; not_applicable when the case is not about result feedback.",
     "- preference: choose A or B only for a meaningful overall advantage across bounded intent formation, avoidable rework, and first-cycle final match; otherwise tie.",
     "- violations: each item is one complete, evidence-based sentence of 12-240 characters; never split one defect across items and never speculate about hidden system labels.",
+    "- rationale: give a 40-520 character audit explanation for each arm, including clear controls with no violation.",
     "",
     "Important calibration:",
     "- Do not reward extra questions by default. Clear, low-risk tasks should be completed directly.",
@@ -352,6 +371,13 @@ const summary = {
   generated_at: new Date().toISOString(), rubric_version: "intent-formation-blind-v2", study_path: studyPath, retry_path: retryPath,
   scenarios_path: scenariosPath, schema_path: schemaPath, model,
   reasoning_effort: reasoningEffort,
+  grading_tool_commit: gradingToolCommit,
+  grading_contract: {
+    grader_sha256: hashText(await readFile(new URL(import.meta.url), "utf8")),
+    schema_sha256: hashText(await readFile(schemaPath, "utf8")),
+    rationale_minimum_characters: 40,
+    rationale_maximum_characters: 520
+  },
   candidate_commit: study.candidate_commit,
   corpus_sha256: study.corpus_sha256,
   plugin_tree: study.plugin_tree,

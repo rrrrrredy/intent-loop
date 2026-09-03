@@ -7,8 +7,10 @@ This report is intentionally incomplete while the candidate is being prepared. A
 - Historical v8 development regression: preserved and hash-verified, but excluded from release-efficacy claims because the policy was tuned against its corpus.
 - First independently sealed holdout on candidate `bae8e03`: 160 / 160 usable conversations, but `ITERATE` because intervention-quality and premature-action gates failed. It is retired from release-gate use after informing the revision.
 - Second independently sealed holdout on candidate `fcba88e`: 160 / 160 usable primary conversations, but `ITERATE` because final-match, inference-denial, and premature-action gates failed. It is also retired after informing the reduced policy.
-- Independently authored v5 holdout: SEALED before either arm ran, SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; 80 scenarios, 60 English / 20 Chinese, 80 distinct domains, and zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora. Candidate-bound execution is PENDING.
-- Exact model/reasoning settings, isolated Codex Home, candidate commit, plugin-tree fingerprint, verbatim prompts, blind grades, and sanitized public artifacts: PENDING.
+- Independently authored v5 holdout: SEALED before either arm ran, SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; 80 scenarios, 60 English / 20 Chinese, 80 distinct domains, and zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora. Candidate-bound execution is complete; the effect decision is PENDING.
+- Candidate `fca68c5489d9698ad4894096818469aad3f5520b`: 160 / 160 primary conversations completed without timeout, prompt drift, MCP calls, or cleanup failure; source, Git, and executed plugin trees match SHA-256 `dba53218e6b4b7feab0e1c0d1e86d69177b38c75508b8e4898332643a670f7a8`. Effect gates remain PENDING blind grading.
+- First grader run: INVALID before score inspection. It produced 70 / 80 grades, but two clear-control batches exhausted their two allowed attempts because the runtime required a 40-character rationale that the output schema and rubric had not declared. Invalid summary SHA-256: `4ab5df8d454ef15e624c86b518f70bf72f565a2eaf8920129bbbc26d8f422125`. A clean, contract-aligned rerun is PENDING.
+- Exact blind grades, canonical metrics, and sanitized public artifacts: PENDING.
 
 ## State lifecycle
 

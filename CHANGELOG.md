@@ -28,6 +28,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Fixed
 
+- Aligned the blind-grader JSON Schema, rubric, and runtime validator on a 40-520 character per-arm audit rationale after an invalid grading run exposed the mismatch; grading now records its clean Git tooling commit and contract hashes.
 - Removed redundant DeepSeek adapter assertions tied to one policy phrase; the adapter tests still require its guidance to begin with the exact imported shared policy and retain the host/state boundaries.
 - Kept the 100-process lock stress test inside its 180-second outer safety bound while allowing 120 seconds for a heavily scheduled worker to observe progress; a separate regression still proves that a live owner with no progress times out at the configured product boundary.
 - Made manual export write a complete integrity-checked file inside the managed export directory while returning only an opaque export ID, count, digest, and receipt to model context.
@@ -47,7 +48,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - The earlier tuned v8 result and the failed v3/v4 holdouts are preserved as development evidence and excluded from the release decision.
 - The v4 candidate completed 160 / 160 primary conversations but failed final match (+6.87 percentage points), inference denial (4 / 4), and premature action (2 searches) gates. Its blind grader used one grader-only retry and no primary conversation retry.
 - Candidate `8def5a3` completed a separate 16 / 16 installed-Hook confirmation with zero first-turn actions, zero first-turn MCP calls, and complete task cleanup; this is targeted development evidence, not an efficacy result.
-- The v5 release holdout is sealed but not yet run. Its presence does not activate an efficacy claim.
+- The v5 primary run completed 160 / 160 without timeout, prompt drift, MCP calls, or cleanup failure. Its first blind-grading run was invalidated before score inspection after a Schema/rubric mismatch left 10 pairs ungraded; the clean full rerun remains pending, so no efficacy claim is active.
 - Publication requires the independently sealed holdout to produce 160/160 usable primary conversations, record exact execution and grader model settings, and pass every predeclared gate; its actual metrics and limitations are published in the candidate evidence bundle.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.

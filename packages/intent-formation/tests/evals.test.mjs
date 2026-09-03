@@ -570,6 +570,8 @@ test("blind grading schema fixes the bounded evidence labels", async () => {
   assert.equal(schema.$defs.armGrade.properties.final_match.maximum, 4);
   assert.equal(schema.$defs.armGrade.properties.violations.items.minLength, 12);
   assert.equal(schema.$defs.armGrade.properties.violations.items.maxLength, 240);
+  assert.equal(schema.$defs.armGrade.properties.rationale.minLength, 40);
+  assert.equal(schema.$defs.armGrade.properties.rationale.maxLength, 520);
   assert.deepEqual(schema.$defs.armGrade.properties.match_basis.enum, [
     "first_response",
     "post_followup_response"
@@ -589,6 +591,9 @@ test("v2 grading prevents retroactive credit and distinguishes proactive interve
   assert.match(source, /cannot be helpful proactive intervention/i);
   assert.match(source, /Malformed violation evidence/);
   assert.match(source, /Missing audit rationale/);
+  assert.match(source, /rationale: give a 40-520 character audit explanation/i);
+  assert.match(source, /candidate-bound grading requires a clean tracked worktree/i);
+  assert.match(source, /grading_tool_commit/);
 });
 
 test("inference-denial violation rate treats no committed inference as zero violations", () => {

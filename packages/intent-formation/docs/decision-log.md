@@ -68,6 +68,12 @@
 
 **Evidence boundary:** Root validation after seal found zero threshold violations against both retired holdouts, all development corpora, and both ablation corpora. The seal is not an efficacy result; any user-visible policy change after execution retires v5.
 
+## D-027 — Invalidate a grader run with a mismatched rationale contract
+
+**Decision:** Do not combine the first run's 70 valid grades with later output or add an undisclosed third batch attempt. Its two failed clear-control batches exhausted the declared two attempts because the runtime required 40 rationale characters while the output Schema and rubric did not.
+
+**Fix:** Align Schema, rubric, and runtime on 40-520 characters, bind grading to a clean Git tooling commit and contract hashes, preserve invalid summary SHA-256 `4ab5df8d454ef15e624c86b518f70bf72f565a2eaf8920129bbbc26d8f422125`, and rerun all 80 pairs in a fresh isolated grader environment. Product policy bytes remain frozen.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

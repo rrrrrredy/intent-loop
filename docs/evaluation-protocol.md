@@ -47,7 +47,7 @@ The baseline disables the core plugin. The plugin arm enables only `intent-forma
 
 ## Blind grading
 
-The grader receives randomized A/B conversations, frozen requirements, decision risk, and completed first-turn action-item types. It does not receive the system label. It records first move, interruption count, proactive intervention, avoidable rework from 0 to 3, first-cycle final match from 0 to 4, inference handling, result-feedback handling, preference, and confidence.
+The grader receives randomized A/B conversations, frozen requirements, decision risk, and completed first-turn action-item types. It does not receive the system label. It records first move, interruption count, proactive intervention, avoidable rework from 0 to 3, first-cycle final match from 0 to 4, inference handling, result-feedback handling, preference, confidence, and a 40-520 character audit rationale for each arm.
 
 A direct first delivery cannot receive retroactive final-match credit from its later correction. A bounded question, comparison, or sample is scored after the frozen response because that exchange is the first completed intent-formation cycle.
 
@@ -70,6 +70,6 @@ When both inference opportunities and violations are zero, the denial rate is de
 
 ## Publication boundary
 
-All primary conversations must be usable; a primary retry cannot replace timing or reliability. Grader batches may retry once after timeout or schema failure and every attempt is disclosed.
+All primary conversations must be usable; a primary retry cannot replace timing or reliability. Grader batches may retry once after timeout or schema failure and every attempt is disclosed. Grading runs are bound to a clean committed evaluator and schema; a structurally invalid run is retained as diagnostic evidence and cannot be combined with a later run.
 
 The public evidence includes sanitized complete responses, action types, blind grades, source and artifact hashes, candidate/tree/archive fingerprints, model settings, CLI version, plugin inventory, retry history, gates, and bootstrap intervals. Machine paths, common credential patterns, and control characters are replaced and counted; response text is not length-truncated. Automated grading and a synthetic holdout support only a bounded beta claim. DeepSeek efficacy requires separate evidence.
