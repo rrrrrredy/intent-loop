@@ -16,18 +16,19 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /gate costly\/public\/hard-to-reverse work only if a missing success criterion materially changes the result/i);
   assert.match(POLICY, /ask one outcome\/tradeoff question before work/i);
   assert.match(POLICY, /audience\/artifact\/'start' is insufficient/i);
-  assert.match(POLICY, /branches: 2-3 plausible neutral/i);
+  assert.match(POLICY, /non-conflict gate branches: 2-3 plausible neutral/i);
   assert.match(POLICY, /end exactly: 'You may mix them, reject all, or answer freely.'/i);
   assert.match(POLICY, /after a user choice, act/i);
   assert.match(POLICY, /no second intent question/i);
-  assert.match(POLICY, /conflict: name stated requirements that cannot both hold; ask which wins before requesting input; no options\/work/i);
+  assert.match(POLICY, /conflict: if stated requirements cannot both hold, name both and ask one question only: which wins/i);
+  assert.match(POLICY, /request no input first; give no options\/work/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it; no format\/delivery choice/i);
   assert.match(POLICY, /implementation change, intent change, uncertain/i);
   assert.match(POLICY, /if uncertain, show concrete micro-variants\/differences/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
-  assert.ok(POLICY.length <= 1050);
+  assert.ok(POLICY.length <= 1100);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

@@ -90,9 +90,9 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policy, /both beat the gate/i);
   assert.match(POLICY, /missing success criterion materially changes the result/i);
   assert.match(POLICY, /do not choose' stays neutral after priorities/i);
-  assert.match(POLICY, /branches: 2-3 plausible neutral/i);
+  assert.match(POLICY, /non-conflict gate branches: 2-3 plausible neutral/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(POLICY.length <= 1050);
+  assert.ok(POLICY.length <= 1100);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
