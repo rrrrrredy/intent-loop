@@ -42,7 +42,7 @@ const commonBuild = {
 
 async function normalizeGeneratedText(filePath) {
   const source = await readFile(filePath, "utf8");
-  const normalized = source.replace(/[ \t]+$/gmu, "");
+  const normalized = source.replace(/\r\n?/gu, "\n").replace(/[ \t]+$/gmu, "");
   if (normalized !== source) await writeFile(filePath, normalized, "utf8");
 }
 
@@ -222,6 +222,7 @@ async function copyEntry(sourceRoot, destinationRoot, sourceRelative, destinatio
   const destination = path.join(destinationRoot, destinationRelative);
   await mkdir(path.dirname(destination), { recursive: true });
   await copyFile(source, destination);
+  await normalizeGeneratedText(destination);
 }
 
 for (const target of [coreDistribution, stateDistribution]) {

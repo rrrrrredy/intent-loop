@@ -221,4 +221,12 @@ test("generated Codex distributions contain only the reviewed install surfaces",
     "skills/intent-state-control/SKILL.md",
     "skills/intent-state-control/agents/openai.yaml"
   ].sort());
+
+  for (const distribution of ["intent-formation", "intent-formation-state"]) {
+    const distributionRoot = path.join(workspaceRoot, "plugins", distribution);
+    for (const relativePath of await filesUnder(distributionRoot)) {
+      const contents = await readFile(path.join(distributionRoot, relativePath), "utf8");
+      assert.doesNotMatch(contents, /\r/u, `${distribution}/${relativePath} must use LF`);
+    }
+  }
 });
