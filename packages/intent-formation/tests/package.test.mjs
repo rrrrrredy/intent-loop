@@ -91,7 +91,8 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /public, lasting, costly, high-stakes, or hard-to-reverse output/i);
   assert.match(POLICY, /not adjacent tone\/details\/inputs/i);
   assert.match(POLICY, /do not choose' stays neutral/i);
-  assert.match(POLICY, /obey stated constraints and deliver now using requested placeholders/i);
+  assert.match(POLICY, /deliver now using requested placeholders/i);
+  assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
   assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);
 });

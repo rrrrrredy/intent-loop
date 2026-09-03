@@ -317,6 +317,11 @@ test("post-failure regressions cover direct evidence, neutrality, missing input,
   );
   assert.ok(scenarios.some((scenario) => scenario.id === "dev-neutral-after-priorities"));
   assert.ok(scenarios.some((scenario) => scenario.id === "dev-clear-missing-input"));
+  assert.ok(
+    scenarios
+      .find((scenario) => scenario.id === "dev-explicit-comparison")
+      .unacceptable_first.some((item) => /browse or inspect files/i.test(item))
+  );
   assert.ok(scenarios.every((scenario) => Array.isArray(scenario.unacceptable_first)));
 });
 

@@ -9,6 +9,7 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /explicit comparison\/options: give requested count, else 2-3 neutral choices/i);
+  assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
   assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline/i);
   assert.match(POLICY, /no inspection\/tools\/files/i);
   assert.match(POLICY, /both override gate/i);
@@ -18,13 +19,13 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /ask one question separating those outputs, not adjacent tone\/details\/inputs/i);
   assert.match(POLICY, /if choices help, give 2-3 neutral branches/i);
   assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
-  assert.match(POLICY, /once resolved, obey stated constraints and deliver now using requested placeholders/i);
+  assert.match(POLICY, /once resolved, deliver now using requested placeholders/i);
   assert.match(POLICY, /no second question, nonessential input/i);
   assert.match(POLICY, /conflict: if requirements cannot coexist, name both; ask one question: which wins/i);
   assert.match(POLICY, /no work\/options\/input request/i);
   assert.match(POLICY, /missing required file\/data\/access: ask only for it/i);
-  assert.match(POLICY, /feedback changes intent only if outcome\/priority\/constraint changes; otherwise implement it/i);
-  assert.match(POLICY, /uncertain: show micro-variants/i);
+  assert.doesNotMatch(POLICY, /feedback changes intent/i);
+  assert.doesNotMatch(POLICY, /uncertain: show micro-variants/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);

@@ -27,6 +27,8 @@ Do not activate when the user already requested two or three concrete samples, v
 
 For an explicit options or comparison request, give the requested count, or two or three concrete neutral alternatives when no count is stated, with one practical consequence each. Do not ask a prior preference question or choose an option. If the user asks for a neutral comparison or says not to choose, later priorities refine the comparison but do not delegate the decision.
 
+Keep an intent-forming comparison inside the response. Do not browse, inspect a workspace, call tools, or start implementation merely to produce its direction options.
+
 For an explicit sample or example request, give exactly the requested count. Keep an intent-forming sample tiny, inline, and disposable; do not inspect a workspace, run commands or tools, or write files merely to produce it.
 
 ## Choose exactly one move
@@ -46,7 +48,7 @@ Use one primary question when a single answer separates materially different cos
 - Use one question mark. Do not ask for files, access, implementation details, or a checklist in the same turn.
 - Do not browse, inspect files, or call domain tools before this answer when the unresolved choice changes what those tools should do.
 
-Once the user answers in their own words with an outcome, priority, scope, threshold, or mix, the gate is resolved even if they did not select one offered label. Continue immediately and obey every stated constraint. Use requested placeholders or invented options when they make the remaining detail nonessential. Do not ask a second direction question or another nonessential input question. Never invent personal, biographical, legal, or case facts as filler.
+Once the user answers in their own words with an outcome, priority, scope, threshold, or mix, the gate is resolved even if they did not select one offered label. Continue immediately. Use requested placeholders or invented options when they make the remaining detail nonessential. Do not ask a second direction question or another nonessential input question. Never invent personal, biographical, legal, or case facts as filler.
 
 ### Concrete comparison
 
