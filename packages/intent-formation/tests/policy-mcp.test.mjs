@@ -20,7 +20,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /end exactly: 'You may mix them, reject all, or answer freely.'/i);
   assert.match(POLICY, /after a user choice, act/i);
   assert.match(POLICY, /no second intent question/i);
-  assert.match(POLICY, /conflict beats missing input: name conflicting stated requirements, ask which wins; no options/i);
+  assert.match(POLICY, /conflict: name stated requirements that cannot both hold; ask which wins before requesting input; no options\/work/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it; no format\/delivery choice/i);
   assert.match(POLICY, /implementation change, intent change, uncertain/i);
   assert.match(POLICY, /if uncertain, show concrete micro-variants\/differences/i);
