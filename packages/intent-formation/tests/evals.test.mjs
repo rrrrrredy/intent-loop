@@ -182,6 +182,12 @@ function fourGramDice(left, right) {
   return (2 * intersection) / (a.size + b.size);
 }
 
+function scenarioPrompt(scenario) {
+  const prompt = scenario.initial_prompt ?? scenario.turns?.[0];
+  assert.equal(typeof prompt, "string", `missing prompt for ${scenario.id}`);
+  return prompt;
+}
+
 async function loadSemanticSmoke() {
   const raw = await readFile(path.join(repositoryRoot, "evals", "semantic-smoke.jsonl"), "utf8");
   return raw
@@ -418,33 +424,48 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   assert.deepEqual(languageCounts, manifest.corpus.language_distribution);
   assert.deepEqual(languageCounts, { en: 60, "zh-CN": 20 });
   for (const className of Object.keys(manifest.corpus.distribution)) {
-    assert.equal(
-      scenarios.filter((scenario) => scenario.class === className && scenario.language === "zh-CN").length,
-      4,
-      className + " must include four independently authored Chinese scenarios"
-    );
+    const classLanguages = scenarios
+      .filter((scenario) => scenario.class === className)
+      .reduce((result, scenario) => {
+        result[scenario.language] = (result[scenario.language] ?? 0) + 1;
+        return result;
+      }, {});
+    assert.deepEqual(classLanguages, manifest.corpus.language_allocation_by_class[className]);
   }
   const domainCounts = scenarios.reduce((result, scenario) => {
     result[scenario.domain] = (result[scenario.domain] ?? 0) + 1;
     return result;
   }, {});
   assert.ok(Object.keys(domainCounts).length >= manifest.corpus.minimum_distinct_domains);
-  assert.ok(Math.max(...Object.values(domainCounts)) <= 6);
+  assert.equal(Object.keys(domainCounts).length, manifest.corpus.actual_distinct_domains);
+  assert.equal(manifest.corpus.maximum_cases_per_domain, 2);
+  assert.ok(Math.max(...Object.values(domainCounts)) <= manifest.corpus.maximum_cases_per_domain);
+  assert.equal(Math.max(...Object.values(domainCounts)), manifest.corpus.actual_maximum_cases_per_domain);
+  assert.notEqual(raw.charCodeAt(0), 0xfeff);
+  assert.doesNotMatch(raw, /\r/u);
   assert.doesNotMatch(raw, /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/u);
   assert.doesNotMatch(raw, /(?:\\\\\?\\)?\b[A-Za-z]:[\\/]/u);
   assert.doesNotMatch(raw, /\b(?:sk-(?:proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/u);
 });
 
-test("sealed holdout has no exact or threshold near-duplicate prompt in itself or the development corpus", async () => {
+test("sealed holdout has no exact or threshold near-duplicate prompt in itself or any development corpus", async () => {
   const { scenarios: holdout } = await loadHoldout();
-  const { scenarios: development } = await loadStudy();
-  const normalized = holdout.map((scenario) => normalizedText(scenario.initial_prompt));
+  const { scenarios: study } = await loadStudy();
+  const development = [
+    ...study,
+    ...(await loadScenarios()),
+    ...(await loadSemanticSmoke()),
+    ...(await loadLatencyProbes()),
+    ...(await loadHostRegressions()),
+    ...(await loadPostFailureRegressions())
+  ];
+  const normalized = holdout.map((scenario) => normalizedText(scenarioPrompt(scenario)));
   assert.equal(new Set(normalized).size, holdout.length);
 
   const compare = (left, right) => {
-    assert.ok(tokenJaccard(left.initial_prompt, right.initial_prompt) < 0.65,
+    assert.ok(tokenJaccard(scenarioPrompt(left), scenarioPrompt(right)) < 0.65,
       `token overlap threshold exceeded: ${left.id}/${right.id}`);
-    assert.ok(fourGramDice(left.initial_prompt, right.initial_prompt) < 0.72,
+    assert.ok(fourGramDice(scenarioPrompt(left), scenarioPrompt(right)) < 0.72,
       `four-gram overlap threshold exceeded: ${left.id}/${right.id}`);
   };
   for (let left = 0; left < holdout.length; left += 1) {
@@ -654,7 +675,12 @@ test("candidate Git tree fingerprint excludes an untracked auto-discovered skill
   const scratchRoot = path.join(repositoryRoot, ".tmp");
   await mkdir(scratchRoot, { recursive: true });
   const repository = await mkdtemp(path.join(scratchRoot, "candidate-tree-"));
-  context.after(() => rm(repository, { recursive: true, force: true }));
+  context.after(() => rm(repository, {
+    recursive: true,
+    force: true,
+    maxRetries: 5,
+    retryDelay: 100
+  }));
   const pluginRoot = path.join(repository, "plugins", "intent-formation");
   await mkdir(pluginRoot, { recursive: true });
   await writeFile(path.join(pluginRoot, "plugin.json"), "{}\n", "utf8");

@@ -8,15 +8,16 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 - Reoriented the product from a requirement-ledger-first Intent Loop into Intent Formation: a quiet Codex interaction policy that continues on clear work and uses one focused question, concrete comparison, or small sample only before materially divergent work.
 - Split the Codex distribution into a state-free `intent-formation` core and optional `intent-formation-state` companion.
-- Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 15 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-alpha.5` with its current peer identities.
+- Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 15 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-rc.1` with its current peer identities.
 - Replaced the v0.2 public documentation with a beginner-first install path, explicit migration, narrower privacy terms, and a release-gate report.
 - Generalized the costly-divergence rule around missing success criteria and materially different outcomes; the shipped policy no longer enumerates lexical trigger words or a memorized website example.
-- Ablated the interaction policy from 1,254 to 999 bytes, removed conflict-generated option lists and required option-format scaffolding after real Hook failures, and documented the model-specific reliability boundary.
+- Ran the first sealed 80-scenario paired study to an `ITERATE` decision, then ablated the observed failure mechanisms: explicit comparisons and exact-count samples now route directly, neutral ownership persists, ordinary missing inputs do not trigger delivery choices, and conflicts cannot fall through to generic option generation.
+- Reduced the revised interaction policy from the original 1,254 to 1,098 bytes while retaining only behavior supported by real Hook failures or the frozen product boundary.
 
 ### Added
 
 - Added an independently authored, hash-sealed 80-scenario paired Codex holdout pipeline that publishes all 160 primary conversations, blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test only after every release gate passes.
-- Predeclared a bilingual release holdout with 60 English and 20 Simplified Chinese cases across at least 16 task domains, without giving its independent author access to the product policy or prior corpus text.
+- Predeclared a bilingual release holdout with 60 English and 20 Simplified Chinese cases across at least 40 task domains and sealed 80 distinct domains, without giving its independent author access to the product policy or prior corpus text.
 - Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
 - Added deterministic evidence verification to the root test suite.
 - Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
@@ -34,6 +35,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Removed obsolete selector and session prototypes from the shipped surface.
 - Made evidence publication recompute every metric from complete unique pairs before an atomic publish, reject stale run directories and untracked candidate-plugin files, and bind the live tree to the candidate Git object and archive.
 - Made tag publication require an annotated tag targeting the workflow commit, deterministic archives, exact-candidate evidence, and digest-aware draft reconciliation that verifies an already immutable matching release without mutation.
+- Made the real DeepSeek lifecycle probe use the invoking Node runtime's exact npm/npx binaries, reject unsupported Node versions, terminate a timed-out process tree, preserve the primary failure, and clean its temporary profile with bounded retries.
 
 ### Evidence boundary
 

@@ -55,8 +55,8 @@ invariant(sourcePackage.version === version, "source package version mismatch");
 invariant(manifests.every((manifest) => manifest.version === version), "Codex manifest version mismatch");
 invariant(rootPackage.name === "dsh-intent-formation", "DeepSeek package identity mismatch");
 invariant(rootPackage.peerDependencies?.["@deepseek-ai/cordis"] === "4.0.2", "Cordis peer mismatch");
-invariant(rootPackage.peerDependencies?.["@deepseek-ai/dsh-tools"] === "0.1.2-alpha.5", "DeepSeek tools peer mismatch");
-invariant(read("dsh/scripts/deepseek-host-smoke.mjs").includes("@deepseek-ai/dsh@0.1.2-alpha.5"), "DeepSeek host version mismatch");
+invariant(rootPackage.peerDependencies?.["@deepseek-ai/dsh-tools"] === "0.1.2-rc.1", "DeepSeek tools peer mismatch");
+invariant(read("dsh/scripts/deepseek-host-smoke.mjs").includes("@deepseek-ai/dsh@0.1.2-rc.1"), "DeepSeek host version mismatch");
 const releaseWorkflow = read(".github/workflows/release.yml");
 invariant(
   releaseWorkflow.includes('node scripts/verify-annotated-tag.mjs --tag "$GITHUB_REF_NAME" --commit "$GITHUB_SHA"'),

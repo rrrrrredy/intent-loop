@@ -77,7 +77,7 @@ The repository also contains `dsh-intent-formation`, a thin adapter for the offi
 dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1
 ~~~
 
-DeepSeek Harness currently requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm`. The adapter is pinned to Harness `0.1.2-alpha.5`; preview API changes may require a new prerelease. See [dsh/README.md](dsh/README.md).
+DeepSeek Harness currently requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm`. The adapter is pinned to Harness `0.1.2-rc.1`; prerelease API changes may require a new Intent Formation prerelease. See [dsh/README.md](dsh/README.md).
 
 ## Evidence status
 

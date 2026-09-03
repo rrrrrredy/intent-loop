@@ -2,7 +2,7 @@
 
 `dsh-intent-formation` brings the same compact intent-formation policy to the official DeepSeek Harness developer preview and exposes 15 session-bound local state tools. It contributes no planner, executor, chat client, or additional Agent.
 
-DeepSeek Harness is a moving preview surface. This package is pinned to `@deepseek-ai/dsh` `0.1.2-alpha.5`; a Harness API change may require a new Intent Formation prerelease.
+DeepSeek Harness is a moving prerelease surface. This package is pinned to `@deepseek-ai/dsh` `0.1.2-rc.1`; a Harness API change may require a new Intent Formation prerelease.
 
 ## Install
 

@@ -12,13 +12,17 @@ Accepted: a state-free `intent-formation` core and an independently installable 
 
 Accepted: keep the existing GitHub repository and history while using a semver-minor prerelease with explicit breaking migration notes. Old v0.2 state is never imported silently.
 
-## 2026-09-03: ablate policy and architecture before candidate freeze
+## 2026-09-03: ablate policy and architecture around observed failures
 
-Accepted: use real installed-Hook trials to remove lexical triggers, a separate unknown-branch rule, conflict-generated option lists, required `label+effect` formatting, and duplicated choice instructions. The policy is 999 bytes, down from 1,254 bytes, while State and DeepSeek remain optional adapters outside the state-free core.
+Accepted before the first formal freeze: use real installed-Hook trials to remove lexical triggers, a separate unknown-branch rule, conflict-generated option lists, required `label+effect` formatting, and duplicated choice instructions. That candidate was 999 bytes, down from 1,254 bytes, while State and DeepSeek remained optional adapters outside the state-free core.
 
-Rejected: deleting the semantic costly-divergence trigger or the neutral flexible-answer boundary. Removing them caused immediate execution, leading choices, missing exits, or empty responses. Also rejected: continuing to add prose to chase `gpt-5.4-mini` variation; the observed mini failure is published as a model boundary and the release gate uses the reliable tested Codex model.
+Formal result: candidate `bae8e03` completed all 160 primary conversations but returned `ITERATE`. Helpful proactive interventions were 50.85% against a 70% gate, wrong or unhelpful interventions were 49.15% against a 15% ceiling, and 15 premature actions violated the zero-action gate.
 
-Limit: the ablation set is small development evidence. It does not replace the independently sealed 80-scenario candidate study.
+Accepted after failure attribution: remove the global question-only override for explicit evidence requests; honor exact sample counts; preserve neutral user ownership; treat missing files/data/access as ordinary inputs; and isolate conflict handling from generic option generation. The revised policy is 1,098 bytes, 12.4% below the original, and passed 8 / 8 real-host failure regressions with no first-turn actions or MCP calls.
+
+Retained: the semantic costly-divergence trigger, neutral flexible-answer exit, tiny inline samples, and feedback classification. Removing these either caused observed failures or would erase a frozen product requirement.
+
+Limit: both ablation sets and the eight post-failure cases are development evidence. Because the first holdout informed the revision, it is permanently retired from release-gate use; a different independent author must seal a new unseen 80-scenario corpus before another formal run.
 
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses
 
@@ -26,7 +30,7 @@ Accepted: freeze an independently authored 80-scenario holdout before running ei
 
 Current boundary: the earlier v8 result is preserved as tuned development regression evidence and cannot authorize release. The candidate holdout must record exact execution and grader model settings and bind the source plugin tree, installed execution cache, and Git archive to one clean commit.
 
-Accepted: predeclare 60 English and 20 Simplified Chinese cases, four Chinese cases in every class, at least 16 task domains, and no more than six cases per domain. The independent author receives the outcome and schema but cannot inspect the product policy, generated plugin, old holdout, or development corpus text.
+Accepted: predeclare 60 English and 20 Simplified Chinese cases, four Chinese cases in every class, at least 40 task domains, and no more than two cases per domain. The sealed corpus exceeds this with 80 distinct domains. The independent author receives the outcome and schema but cannot inspect the product policy, generated plugin, old holdout, or development corpus text.
 
 Rejected: coupling either the policy or the release holdout contract to a list of subjective adjectives or one memorized product example. The policy now describes the semantic condition: an unstated success criterion matters only when plausible interpretations materially change the deliverable.
 

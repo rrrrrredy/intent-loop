@@ -28,6 +28,20 @@
 
 **Reason:** A real suite run exposed the prior publication window: another caller could read the just-written owner token before it was marked active and reclaim a live lock.
 
+## D-021 — Treat the first independent holdout as ITERATE
+
+**Decision:** Do not release candidate `bae8e03`. Its 160 / 160 usable conversations passed the rework, final-match, clear-interruption, latency, inference-denial, and raw-prompt gates, but helpful proactive intervention was 50.85%, wrong or unhelpful intervention was 49.15%, and non-clear tasks contained 15 premature actions.
+
+**Reason:** The product gate is conjunctive. Strong averages in other metrics cannot compensate for giving the wrong kind of help or beginning work when the user requested only evidence for forming a preference.
+
+## D-022 — Route explicit evidence before generic gates
+
+**Decision:** Answer an explicit comparison directly; produce exactly the requested number of tiny inline samples without project work; preserve neutrality after priorities; ask only for ordinary missing inputs; and keep impossible-requirement conflict handling outside generic option generation.
+
+**Result:** Eight new real installed-Hook regressions completed with 8 / 8 semantic passes, no first-turn actions or MCP calls, and complete cleanup. The policy is 1,098 UTF-8 bytes, 12.4% below the original 1,254-byte version.
+
+**Evidence boundary:** These cases were derived from failure classes and therefore remain development evidence. The holdout that exposed them is retired; release requires a newly and independently authored unseen corpus.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

@@ -10,7 +10,7 @@ Current state: **candidate; do not tag or announce until every remaining gate be
 - Full local source/package suites on Node 20.19 and Node 22.19, plus ten 100-writer lock stress rounds.
 - Fresh exact-candidate install with receipt-backed `remember`/show/export/private/off/forget, digest verification, private false-receipt prevention, and managed-data deletion.
 - Real `/intent off` follow-up on a frozen ambiguous prompt, with direct delivery and no intent interruption.
-- DeepSeek Harness `0.1.2-alpha.5` package/add/compose/boot-help/remove on Node 22.19 using a temporary cleaned profile and no model API key.
+- DeepSeek Harness `0.1.2-rc.1` package/add/compose/boot-help/remove on Node 22.19 using a temporary cleaned profile and no model API key.
 - Runtime npm audits with zero high-severity or greater findings at verification time.
 
 ## Required before publication

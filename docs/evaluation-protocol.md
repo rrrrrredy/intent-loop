@@ -26,7 +26,7 @@ The committed `packages/intent-formation/evals/holdout-manifest.json` binds the 
 - 15 cases where preference becomes visible after a result; and
 - 20 clear controls where the correct behavior is direct completion.
 
-The corpus contains 60 English and 20 Simplified Chinese scenarios, with four Chinese scenarios in each class. It spans at least 16 independently named task domains, with no domain contributing more than six scenarios. These constraints test semantic behavior without prescribing trigger words. Automated checks reject exact and threshold near-duplicates within the holdout and against the development corpus.
+The corpus contains 60 English and 20 Simplified Chinese scenarios, with four Chinese scenarios in each class. It spans at least 40 independently named task domains, with no domain contributing more than two scenarios; the sealed corpus contains 80 distinct domains. These constraints test semantic behavior without prescribing trigger words. Automated checks reject exact and threshold near-duplicates within the holdout, against every development corpus, and against the retired holdout that informed the revised policy.
 
 Every non-clear scenario has a response frozen before either arm runs. Prompts are natural user messages that can run safely in an empty workspace without accounts or network access.
 
