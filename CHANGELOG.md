@@ -11,8 +11,10 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 15 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-rc.1` with its current peer identities.
 - Replaced the v0.2 public documentation with a beginner-first install path, explicit migration, narrower privacy terms, and a release-gate report.
 - Generalized the costly-divergence rule around missing success criteria and materially different outcomes; the shipped policy no longer enumerates lexical trigger words or a memorized website example.
-- Ran the first sealed 80-scenario paired study to an `ITERATE` decision, then ablated the observed failure mechanisms: explicit comparisons and exact-count samples now route directly, neutral ownership persists, ordinary missing inputs do not trigger delivery choices, and conflicts cannot fall through to generic option generation.
-- Reduced the revised interaction policy from the original 1,254 to 1,098 bytes while retaining only behavior supported by real Hook failures or the frozen product boundary.
+- Ran two independently authored 80-scenario paired studies to `ITERATE`, attributed each failed gate, and retired both corpora after their results informed later policy revisions.
+- Ran a four-variant installed-Hook ablation and removed the automatic feedback taxonomy and generic constraint reminder from the compact policy; feedback semantics remain available in the explicit Skill and optional State companion.
+- Retained the exact mix/reject/free-answer exit after relaxed wording omitted complete answer rights, and prohibited tools or project work during an explicit intent-forming comparison after a real regression searched the web.
+- Reduced the final compact interaction policy from the original 1,254 to 967 UTF-8 bytes while preserving behavior with observed value or a product-boundary requirement.
 
 ### Added
 
@@ -25,6 +27,8 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Fixed
 
+- Removed redundant DeepSeek adapter assertions tied to one policy phrase; the adapter tests still require its guidance to begin with the exact imported shared policy and retain the host/state boundaries.
+- Kept the 100-process lock stress test inside its 180-second outer safety bound while allowing 120 seconds for a heavily scheduled worker to observe progress; a separate regression still proves that a live owner with no progress times out at the configured product boundary.
 - Made manual export write a complete integrity-checked file inside the managed export directory while returning only an opaque export ID, count, digest, and receipt to model context.
 - Bound ledger mutation, mode markers, and managed-export cleanup to one cross-process transaction; record deletion, private transition, and task deletion now scrub the intended artifacts without erasing a later generation's successful export.
 - Rejected private-mode export before serialization or any filesystem write, and paginated `/intent show` under a hard 3,000-byte Hook-output ceiling.
@@ -39,7 +43,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Evidence boundary
 
-- The earlier v8 result is preserved as tuned development regression evidence and is excluded from the release decision.
+- The earlier tuned v8 result and the failed v3/v4 holdouts are preserved as development evidence and excluded from the release decision.
+- The v4 candidate completed 160 / 160 primary conversations but failed final match (+6.87 percentage points), inference denial (4 / 4), and premature action (2 searches) gates. Its blind grader used one grader-only retry and no primary conversation retry.
+- Candidate `8def5a3` completed a separate 16 / 16 installed-Hook confirmation with zero first-turn actions, zero first-turn MCP calls, and complete task cleanup; this is targeted development evidence, not an efficacy result.
 - Publication requires the independently sealed holdout to produce 160/160 usable primary conversations, record exact execution and grader model settings, and pass every predeclared gate; its actual metrics and limitations are published in the candidate evidence bundle.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.

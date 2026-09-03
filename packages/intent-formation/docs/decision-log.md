@@ -42,6 +42,26 @@
 
 **Evidence boundary:** These cases were derived from failure classes and therefore remain development evidence. The holdout that exposed them is retired; release requires a newly and independently authored unseen corpus.
 
+## D-023 — Treat the second independent holdout as ITERATE
+
+**Decision:** Do not release candidate `fcba88e`. Its 160 / 160 usable primary conversations reduced avoidable rework by 82.93%, kept clear extra interruptions at median 0 and P90 0, limited clear paired latency overhead to 4.59%, and passed proactive-intervention rates. It failed the final-match gate at +6.87 percentage points, all four inferred preferences were denied, and one non-clear task produced two premature web searches.
+
+**Evidence boundary:** The blind grader completed 80 / 80 pairs in 16 batches. Batch 12 needed one grader-only retry after its first response omitted a required rationale; no primary conversation was retried. Because the result informed the next policy revision, v4 is permanently retired from release-gate use.
+
+## D-024 — Ablate redundant automatic policy text
+
+**Decision:** Remove the automatic feedback taxonomy and generic `obey stated constraints` sentence; keep feedback semantics in the explicit Skill and optional state schema. Retain the exact mix/reject/free-answer exit, and explicitly forbid tools or project work during an intent-forming comparison.
+
+**Result:** Four installed-Hook variants ran over the same frozen 16-task development corpus without primary retries. The relaxed exit omitted complete answer rights in three of five applicable responses, the full variant searched during an explicit comparison, and the two removed sentences showed no useful behavioral benefit. Candidate `8def5a3` reduces the policy from 1,254 to 967 UTF-8 bytes. A separate 16-task confirmation completed 16 / 16 with no first-turn actions, no first-turn MCP calls, and complete cleanup.
+
+**Evidence boundary:** The ablation is development evidence based on small-sample operational metrics and manual transcript inspection, not blind outcome grading. A newly authored v5 holdout remains mandatory.
+
+## D-025 — Separate stress-fixture scheduling margin from the product timeout
+
+**Decision:** Increase the synthetic 100-process worker's lock timeout from 60 to 120 seconds, within the test's existing 180-second outer bound. Keep the product's default no-progress and absolute deadlines unchanged.
+
+**Reason:** One exact Node 22.19 full-suite run failed at 99 / 100 when a worker was starved past 60 seconds; five isolated reruns passed in 10.6–13.0 seconds. A new regression proves that a live owner with no progress still fails at a deliberately configured 100 ms boundary, so the larger stress margin does not convert a deadlock into a pass.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

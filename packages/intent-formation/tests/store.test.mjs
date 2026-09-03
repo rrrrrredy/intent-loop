@@ -95,6 +95,36 @@ test("one hundred independent processes retain every event and leave no lock art
   assert.deepEqual(leftovers, []);
 });
 
+test("a live lock owner with no progress still times out at the configured boundary", async (context) => {
+  const directory = await temporaryDirectory("live-owner-timeout");
+  const enteredPath = path.join(directory, "holder-entered");
+  const releasePath = path.join(directory, "holder-release");
+  const holder = runWorker(["hold", directory, enteredPath, releasePath]);
+  context.after(async () => {
+    await writeFile(releasePath, "release", "utf8").catch(() => undefined);
+    await holder.catch(() => undefined);
+    await rm(directory, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  });
+
+  await waitForPath(enteredPath);
+  const waiter = new EventStore({
+    dataDirectory: directory,
+    lockTimeoutMs: 100,
+    staleLockMs: 0
+  });
+  await assert.rejects(
+    waiter.withLock(async () => "unexpected"),
+    /timed out waiting for the intent state lock/
+  );
+
+  await writeFile(releasePath, "release", "utf8");
+  await holder;
+  const leftovers = (await readdir(directory)).filter((name) =>
+    name.startsWith(path.basename(waiter.lockPath))
+  );
+  assert.deepEqual(leftovers, []);
+});
+
 test("a stale observation cannot reclaim a replacement generation", { timeout: 30_000 }, async (context) => {
   const directory = await temporaryDirectory("generation-aba");
   context.after(() =>

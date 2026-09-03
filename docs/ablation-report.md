@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-FAILURE ABLATION COMPLETE AS DEVELOPMENT EVIDENCE.** The first sealed 80-scenario study returned `ITERATE`; a newly authored, unseen holdout is required before release.
+Status: **POST-FAILURE ABLATION COMPLETE AS DEVELOPMENT EVIDENCE.** Two independent 80-scenario studies returned `ITERATE`. The second result informed the current policy, so a newly authored unseen holdout is still required before release.
 
 ## Question
 
@@ -12,7 +12,9 @@ Which policy and architecture elements are necessary for Intent Formation to int
 - Every trial used a fresh workspace and isolated Codex Home. The runner saved the visible response and completed action-item types, then deleted the task.
 - Component-removal trials used unretried conversations. Repeated prompts measure instruction-following variation; they are not independent product tasks.
 - The first formal study froze candidate `bae8e03` before running 80 unseen scenarios in baseline and plugin arms. All 160 conversations completed and were graded blind.
-- Post-failure regression prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
+- The second formal study independently sealed a different 80-scenario corpus before freezing candidate `fcba88e`. Its corpus SHA-256 is `252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70`.
+- The second study completed 160 / 160 primary conversations without a conversation retry. Its blind grader completed all 80 pairs in 16 batches; batch 12 required one grader-only retry because the first response omitted an audit rationale.
+- Post-failure regressions and component-removal prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
 
 ## First formal holdout result
 
@@ -32,43 +34,81 @@ The candidate passed rework, final-match, clear-task interruption, latency, infe
 
 Class-level inspection located the failures instead of averaging them away. All 15 `unformed` cases were wrong because the generic question-only rule displaced requested comparisons and the model sometimes chose after being told to stay neutral. Ten of 15 `preference_after_result` interventions were wrong because a request for one tiny sample became an abstract question or several alternatives. All 15 premature actions came from five sample tasks where inline evidence was mistaken for project execution. Three clear controls added format or delivery questions when only ordinary input was missing.
 
-## What the failure removed
+## Second formal holdout result
 
-The post-failure edit removed or narrowed these abstractions:
+Candidate `fcba88e` fixed most v3 mechanisms but still returned `ITERATE`:
+
+| Gate | Result | Threshold | Decision |
+| --- | ---: | ---: | --- |
+| Avoidable rework reduction | 82.93% | at least 25% | Pass |
+| Final-match change | +6.87 percentage points | at least +10 points | **Fail** |
+| Helpful proactive interventions | 85.19% (23 / 27) | at least 70% | Pass |
+| Wrong or unhelpful proactive interventions | 14.81% (4 / 27) | at most 15% | Pass |
+| Premature actions on non-clear tasks | 2 | 0 | **Fail** |
+| Clear-task extra interruptions | median 0, P90 0 | median 0, P90 at most 1 | Pass |
+| Clear-task paired latency | +4.59% | increase at most 5% | Pass |
+| Explicitly denied inferences | 100% (4 / 4) | at most 10% | **Fail** |
+| Full raw prompts persisted | 0 | 0 | Pass |
+
+The remaining error pattern was narrower and actionable. Four proactive interventions asked about an adjacent concern or proceeded directly instead of separating the consequential outcome. All four model-owned inferred preferences were later denied by the user. One explicit-comparison case performed two web searches before returning the comparison. The class means also showed that the plugin improved conflict and poorly expressed tasks, stayed flat on unformed tasks, and slightly reduced clear and result-feedback match.
+
+## What the two failures removed
+
+The revisions removed or narrowed these abstractions:
 
 - the global “question only” override, replacing it with direct routing for an explicitly requested comparison or sample;
 - the generic “two or three alternatives” expansion when the user requested exactly one sample;
 - any recommendation or selection after the user asks for neutral comparison, including after priorities are supplied;
 - format or delivery questions when the only blocker is a missing file, value, or access; and
-- shared option-generation behavior for impossible requirements. A conflict now names both incompatible requirements and asks only which one wins.
+- shared option-generation behavior for impossible requirements. A conflict now names both incompatible requirements and asks only which one wins;
+- success-criterion wording that could be satisfied by an adjacent tone or input question instead of the outcome, priority, tradeoff, or exposure that changes the deliverable; and
+- optional follow-up questions after the user has resolved the branch. Delivery now proceeds with requested placeholders and without invented personal or case facts.
 
 The experiment retained only behavior with observed or product-required value:
 
 - a semantic costly-divergence trigger before materially different expensive outcomes;
 - a neutral mix/reject/free-description exit when the user does not know the available directions;
 - one tiny inline sample, with no tools, commands, or files, when preference needs evidence;
-- explicit separation of implementation change, intent change, keep, and uncertainty; and
+- explicit feedback classification in the full, manually invoked Skill and optional state model; and
 - the state-free core. State continuity and DeepSeek compatibility remain optional adapters.
 
 No GUI, planner, transcript parser, custom Harness, intake form, or independent chat client was added. Earlier ablation had already removed lexical trigger lists, a memorized website example, conflict-generated “balanced” options, mandatory `label + effect` scaffolding, and duplicated reply-format instructions.
 
-## Post-failure real-host regression
+## Component-removal experiment after v4
 
-The revised policy is 1,098 UTF-8 bytes, 12.4% below the original 1,254-byte policy. It is 99 bytes longer than the failed formal candidate because those bytes isolate explicit evidence requests and conflict handling; byte count is descriptive, not the acceptance criterion.
+A frozen 16-task development corpus covered two clear, five conflict, five poorly expressed, two result-feedback, and two unformed cases. Its SHA-256 is `c5c3c889c302fbc1f8f11ced67c1f78125c8a2c768aae4081100f07d34b5b0b7`. Each variant used `gpt-5.6-sol` at low reasoning through an installed Hook, isolated Home and workspace, four workers, no primary retries, and task cleanup after every case.
 
-Eight new development cases ran through the installed Hook on `gpt-5.6-sol` at low reasoning:
+| Variant | Candidate | Policy bytes | Usable | First-turn actions | Median total | Maximum total |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Full pre-ablation policy | `2f1f003` | 1,096 | 16 / 16 | 1 | 27,893.5 ms | 166,546 ms |
+| Remove automatic feedback taxonomy | `37db32b` | 971 | 16 / 16 | 0 | 29,301.5 ms | 161,147 ms |
+| Relax the fixed answer exit | `bd7e6b4` | 1,084 | 16 / 16 | 0 | 30,281 ms | 168,274 ms |
+| Remove generic “obey constraints” | `a2cbcfb` | 1,068 | 16 / 16 | 0 | 25,319.5 ms | 185,587 ms |
 
-- 8 / 8 completed and passed their semantic assertions;
-- 0 first-turn action items and 0 first-turn MCP calls;
-- 8 / 8 task cleanups succeeded;
-- an explicit comparison was answered directly and neutrally;
-- a request for one sample returned one short inline sample;
-- neutral ownership remained with the user after priorities were supplied;
-- uncertain feedback produced concrete micro-variants; and
-- the adjacent-boundary conflict response named the contradiction and asked which requirement wins, without options or work.
+The small sample and high timing variance do not support a latency ranking. The useful evidence was behavioral:
 
-These are targeted development regressions. They show that the diagnosed failure mechanisms were removed on the tested host; they do not estimate product efficacy.
+- The full variant's one first-turn action was a web search during an explicitly requested comparison. The policy now forbids tools and project work for intent-forming comparisons.
+- Replacing the exact `mix / reject all / answer freely` exit with a generic allowance caused three of five applicable gate responses to omit at least one exit right. The exact exit remains.
+- Removing the automatic feedback taxonomy did not damage the two result-feedback cases. The compact always-on policy no longer carries it; the explicit Skill and optional state schema retain it where the user deliberately invokes that behavior.
+- Removing the generic `obey stated constraints` sentence produced no meaningful constraint or compactness loss. It remains deleted.
+- The current policy retains the product boundary and observed mechanisms in 967 UTF-8 bytes, 22.9% below the original 1,254-byte policy.
+
+No independent blind grade is claimed for this development ablation. Manual transcript inspection was used because the optional external ablation grader was not authorized to receive the local experiment material; an earlier draft also exposed variant paths and therefore was not blind. Formal outcome evidence remains the separate paired holdout.
+
+## Confirmation on the reduced policy
+
+Candidate `8def5a3` ran a second frozen 16-task confirmation corpus with SHA-256 `87252f02f62461e27ba881044db139e3199af2520180268c25edb4cf072aca03`:
+
+- 16 / 16 conversations were usable, with no timeout;
+- first-turn action items: 0; first-turn MCP calls: 0;
+- 16 / 16 task cleanups succeeded;
+- the explicit comparison completed directly and neutrally with no search;
+- every applicable choice response preserved mix, reject-all, and free-answer exits;
+- intent-resolved follow-ups delivered without a second question; and
+- two second turns created files only after the user explicitly said to begin implementation, so they are authorized execution rather than premature actions.
+
+Median total conversation time was 26,301 ms and the maximum was 166,818 ms. These values are operational observations, not efficacy or latency claims.
 
 ## Freeze decision
 
-Retire the first holdout from release-gate use because its result informed the policy. Freeze the revised policy only after a different independent author seals a new 80-scenario corpus without access to product policy, old holdout prompts, or development prompt text. Any later policy change invalidates that outcome run and requires another unseen holdout.
+Both v3 and v4 holdouts are permanently retired from release-gate use because their results informed later policy changes. Freeze the reduced policy only after a different independent author seals v5 without access to product policy, old holdout prompts, or development prompt text. Any later user-visible policy change invalidates that outcome run and requires another unseen holdout.

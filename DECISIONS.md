@@ -18,11 +18,27 @@ Accepted before the first formal freeze: use real installed-Hook trials to remov
 
 Formal result: candidate `bae8e03` completed all 160 primary conversations but returned `ITERATE`. Helpful proactive interventions were 50.85% against a 70% gate, wrong or unhelpful interventions were 49.15% against a 15% ceiling, and 15 premature actions violated the zero-action gate.
 
-Accepted after failure attribution: remove the global question-only override for explicit evidence requests; honor exact sample counts; preserve neutral user ownership; treat missing files/data/access as ordinary inputs; and isolate conflict handling from generic option generation. The revised policy is 1,098 bytes, 12.4% below the original, and passed 8 / 8 real-host failure regressions with no first-turn actions or MCP calls.
+Accepted after v3 failure attribution: remove the global question-only override for explicit evidence requests; honor exact sample counts; preserve neutral user ownership; treat missing files/data/access as ordinary inputs; and isolate conflict handling from generic option generation. That intermediate policy was 1,098 bytes, 12.4% below the original, and passed 8 / 8 real-host failure regressions with no first-turn actions or MCP calls.
 
-Retained: the semantic costly-divergence trigger, neutral flexible-answer exit, tiny inline samples, and feedback classification. Removing these either caused observed failures or would erase a frozen product requirement.
+Retained: the semantic costly-divergence trigger, an exact neutral mix/reject/free-answer exit, tiny inline samples, and feedback classification in the explicit Skill and optional state schema. The automatic compact policy carries only behavior that affected an observed next action.
 
-Limit: both ablation sets and the eight post-failure cases are development evidence. Because the first holdout informed the revision, it is permanently retired from release-gate use; a different independent author must seal a new unseen 80-scenario corpus before another formal run.
+Limit: both ablation sets and the eight post-failure cases are development evidence. Because the v3 holdout informed the revision, it is permanently retired from release-gate use.
+
+## 2026-09-03: treat the second independent holdout as ITERATE
+
+Formal result: candidate `fcba88e` completed 160 / 160 primary conversations on corpus `252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70`. Avoidable rework improved 82.93%, clear extra interruptions remained at median 0 and P90 0, clear paired latency rose 4.59%, and proactive intervention rates passed. Final match improved only 6.87 percentage points against a 10-point gate; all four inferred preferences were denied; and one non-clear case performed two premature web searches.
+
+Accepted: keep the decision at `ITERATE`. The grader completed all 80 pairs in 16 batches with one grader-only retry for a missing rationale; there was no primary conversation retry. The result informed later changes, so v4 is also permanently retired from release-gate use.
+
+## 2026-09-03: remove compact-policy abstractions without observed value
+
+Method: run four installed-Hook variants over the same frozen 16-task development corpus, one unretried conversation per variant and case, using `gpt-5.6-sol` at low reasoning in isolated homes and workspaces. Treat timing as descriptive because the corpus is small and long-tail variance is high.
+
+Accepted: remove the automatic feedback-taxonomy sentence and the generic `obey stated constraints` sentence. Neither improved the tested behavior. Keep the full taxonomy in the explicit Skill and optional state layer, where it still expresses a deliberate user operation.
+
+Accepted: retain the exact mix/reject/free-answer exit. Its relaxed wording omitted a complete exit in three of five applicable responses. Add a concrete no-tools/no-work rule to explicit comparisons after the full variant performed a web search. Candidate `8def5a3` is 967 policy bytes, 22.9% below the original, and its separate 16-task confirmation completed 16 / 16 with zero first-turn actions, zero first-turn MCP calls, and complete cleanup.
+
+Limit: no independent blind grade is claimed for the development ablation. A newly authored v5 holdout must pass every conjunctive release gate before publication.
 
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses
 
@@ -49,6 +65,12 @@ Accepted: refuse `remember` in private mode without a receipt. The command Hook 
 Accepted: register a lock token as active before publishing its owner file, and remove the token on every exit path. A real test failure showed that a concurrent caller could otherwise observe the new owner before registration and reclaim a live same-process lock.
 
 Verification: ten independent rounds of 100 simultaneous appends plus the strengthened permanent 100-writer regression completed without loss or lock residue.
+
+## 2026-09-03: keep lock-pressure evidence bounded without changing product semantics
+
+Observed: the exact Node 22.19 full suite produced one 99 / 100 result when a stress worker did not observe a new owner within its 60-second fixture timeout. Five immediate isolated reruns of the same 100-process test passed in 10.6–13.0 seconds, so the evidence supports a host-scheduling long tail rather than a data-loss or mutual-exclusion defect.
+
+Accepted: increase only the synthetic worker timeout to 120 seconds, still below the test's 180-second outer bound. Add a separate live-owner test with a 100 ms configured timeout so this margin cannot hide a no-progress deadlock. Do not change the product's default 5-second no-progress deadline or 120-second absolute deadline without product evidence.
 
 ## 2026-08-28: freeze the product boundary
 

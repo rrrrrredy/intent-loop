@@ -102,7 +102,6 @@ test("DeepSeek bundle registers the exact host-bound MCP catalog and shared inte
     assert.equal(typeof provider, "function");
     const guidance = provider(execution("unseen-session", os.tmpdir()));
     assert.equal(guidance.startsWith(POLICY), true);
-    assert.match(guidance, /no second intent question/u);
     assert.match(guidance, /store only deliberate atomic records/u);
     assert.match(guidance, /Neither performs the domain task/u);
   } finally {
@@ -331,7 +330,6 @@ test("real adapter binds session state, keeps private text off disk, and forgets
 
     const guidanceProvider = harness.sections.get("tool:intent-formation")?.text;
     assert.equal(guidanceProvider(execA).startsWith(POLICY), true);
-    assert.match(guidanceProvider(execA), /no second intent question/u);
     const turnedOff = await call(harness, "intent_set_mode", { mode: "off" }, execA);
     assert.equal(turnedOff.data.mode, "off");
     assert.equal(guidanceProvider(execA), "");
@@ -340,7 +338,6 @@ test("real adapter binds session state, keeps private text off disk, and forgets
     const restored = await call(harness, "intent_set_mode", { mode: "standard" }, execA);
     assert.equal(restored.data.mode, "standard");
     assert.equal(guidanceProvider(execA).startsWith(POLICY), true);
-    assert.match(guidanceProvider(execA), /no second intent question/u);
 
     const otherSession = await call(harness, "intent_show", {
       task_id: durableTaskId

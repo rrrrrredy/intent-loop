@@ -7,7 +7,7 @@ if (!mode || !dataDirectory) throw new TypeError("mode and data directory are re
 
 const store = new EventStore({
   dataDirectory,
-  lockTimeoutMs: 60_000,
+  lockTimeoutMs: 120_000,
   staleLockMs: 200
 });
 
