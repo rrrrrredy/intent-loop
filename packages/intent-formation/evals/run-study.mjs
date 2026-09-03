@@ -29,7 +29,7 @@ const outputDirectory = path.resolve(
 );
 const requestedArm = option("--arm", "both");
 const concurrency = Number(option("--concurrency", "4"));
-const timeoutMs = Number(option("--timeout-ms", "180000"));
+const timeoutMs = Number(option("--timeout-ms", "300000"));
 const model = option("--model", "");
 const reasoningEffort = option("--reasoning-effort", "");
 const candidateCommit = option("--candidate-commit", "");

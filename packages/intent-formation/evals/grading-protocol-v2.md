@@ -31,6 +31,7 @@ An inference exists only when the assistant commits work to an unstated preferen
 - A/B assignment is deterministic from the candidate commit, corpus hash, and scenario ID.
 - Pair order alternates by corpus index; arms within one pair run sequentially.
 - Both arms use the same explicit Codex model, reasoning effort, timeout, verbatim user prompts, and isolated workspace policy.
+- The predeclared primary turn timeout is 300,000 ms. A timeout remains a primary reliability failure and is never replaced by a rerun.
 - The candidate commit, full generated plugin tree, installed execution-cache tree, Git archive, dedicated Codex Home, and plugin inventory are fingerprinted. The run aborts if the installed cache differs from the candidate tree.
 - All non-target plugins and the State companion are disabled. The core is enabled only in the plugin arm.
 - Clear latency uses the median within-pair percentage difference; arm medians are secondary diagnostics.
