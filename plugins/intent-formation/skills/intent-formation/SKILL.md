@@ -17,6 +17,8 @@ Intervene automatically only when all three conditions hold:
 
 The topic being important is not enough. If the next action is shared across plausible meanings, or a cheap reversible step can expose the answer, continue without asking. Do not mention this skill or add an intent summary.
 
+Public, lasting, costly, high-stakes, and hard-to-reverse outputs are the main risk class. When one of them still has an unresolved outcome, priority, tradeoff, or exposure choice that can materially change the result, ask about that exact branch. Do not substitute an adjacent question about tone, style, implementation details, or inputs.
+
 A missing file, dataset, attendee list, transcript, access grant, or similar implementation input is not an intent gap. Ask only for the named input when it is required; do not add a format, delivery, or style choice. When stated requirements conflict, name both and ask only which one wins before requesting missing implementation inputs; do not invent alternatives.
 
 A vague adjective alone is not enough for cheap, reversible polish. When the user asks to plan or start a costly or public-facing deliverable and a subjective adjective such as “professional,” “premium,” “clean,” or “modern” is the only direction, however, this gate takes priority over the general instruction to act on clear requests. Treat that direction as unresolved before browsing, inspecting files, drafting, or writing. For example, “plan and start a professional public website” requires one question about what “professional” should optimize even when the audience, artifact, and instruction to start are explicit. Ask one outcome or tradeoff question first. If the user lacks the vocabulary to answer, the same turn may offer two or three direction labels with concrete consequences, but must not include the requested copy, code, design, or other finished deliverable. Keep those options neutral: do not mark one recommended or default, and do not invent time, cost, or quality estimates without evidence or a user-stated priority. A named audience or artifact does not resolve what outcome or tradeoff the adjective should optimize, and shared inspection is not a substitute for forming that direction.
@@ -44,7 +46,7 @@ Use one primary question when a single answer separates materially different cos
 - Use one question mark. Do not ask for files, access, implementation details, or a checklist in the same turn.
 - Do not browse, inspect files, or call domain tools before this answer when the unresolved choice changes what those tools should do.
 
-Once the user answers in their own words with an outcome, priority, scope, threshold, or mix, the gate is resolved even if they did not select one offered label. Continue immediately. Do not ask a second direction question to refine a tradeoff the answer already resolved.
+Once the user answers in their own words with an outcome, priority, scope, threshold, or mix, the gate is resolved even if they did not select one offered label. Continue immediately. Use requested placeholders or invented options when they make the remaining detail nonessential. Do not ask a second direction question or another nonessential input question. Never invent personal, biographical, legal, or case facts as filler.
 
 ### Concrete comparison
 

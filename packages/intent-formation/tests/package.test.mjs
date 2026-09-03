@@ -85,14 +85,15 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.doesNotMatch(metadata, /dependencies:/);
   assert.doesNotMatch(policyServer, /writeFile|appendFile|transcript_path|params\?\.arguments\?\.prompt/);
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
-  assert.match(policy, /tradeoff question/i);
+  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure/i);
   assert.match(policy, /explicit sample\/example/i);
-  assert.match(policy, /both beat the gate/i);
-  assert.match(POLICY, /missing success criterion materially changes the result/i);
-  assert.match(POLICY, /do not choose' stays neutral after priorities/i);
-  assert.match(POLICY, /non-conflict gate branches: 2-3 plausible neutral/i);
+  assert.match(policy, /both override gate/i);
+  assert.match(POLICY, /public, lasting, costly, high-stakes, or hard-to-reverse output/i);
+  assert.match(POLICY, /not adjacent tone\/details\/inputs/i);
+  assert.match(POLICY, /do not choose' stays neutral/i);
+  assert.match(POLICY, /deliver now using requested placeholders/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(POLICY.length <= 1100);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {

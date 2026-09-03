@@ -6,7 +6,11 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
-import { buildAnalysis, validateStudyStructure } from "../evals/analysis-core.mjs";
+import {
+  buildAnalysis,
+  renderAnalysisMarkdown,
+  validateStudyStructure
+} from "../evals/analysis-core.mjs";
 import { summarizeCodexEvents } from "../evals/codex-event-summary.mjs";
 import { createEvidenceSanitizer } from "../evals/evidence-sanitizer.mjs";
 import { gitTreeFingerprint, treeFingerprint } from "../evals/fingerprint.mjs";
@@ -91,6 +95,11 @@ function canonicalFixture() {
       model: "test-grader",
       reasoning_effort: "high",
       graded_count: scenarios.length,
+      retry_path: null,
+      batch_attempts: [
+        { index: 0, attempts: [{ attempt: 1 }, { attempt: 2 }] },
+        { index: 1, attempts: [{ attempt: 1 }] }
+      ],
       grades
     }
   };
@@ -272,15 +281,26 @@ test("latency probes are separate, paired, and clear-text only", async () => {
   assert.deepEqual([...promptCounts.values()], [2, 2, 2, 2, 2]);
 });
 
-test("real-host regressions freeze generalized divergence and none/mix/all follow-ups", async () => {
+test("real-host regressions freeze generalized divergence, follow-up control, and resolved delivery", async () => {
   const scenarios = await loadHostRegressions();
   assert.deepEqual(
     scenarios.map((scenario) => scenario.id),
-    ["host-generalized-divergence", "host-none-choice", "host-mixed-choice", "host-all-choice"]
+    [
+      "host-generalized-divergence",
+      "host-none-choice",
+      "host-mixed-choice",
+      "host-all-choice",
+      "host-lasting-public-meaning",
+      "host-costly-identity-branch",
+      "host-high-stakes-position",
+      "host-conflict-resolved-delivery"
+    ]
   );
   assert.ok(scenarios.every((scenario) => scenario.expected_first_move === "question"));
   assert.ok(scenarios.every((scenario) => scenario.follow_up.length > 20));
-  assert.equal(scenarios.filter((scenario) => scenario.language === "zh-CN").length, 1);
+  assert.equal(scenarios.filter((scenario) => scenario.language === "zh-CN").length, 2);
+  assert.ok(scenarios.some((scenario) => scenario.id === "host-conflict-resolved-delivery"));
+  assert.ok(scenarios.some((scenario) => scenario.final_requirements.includes("no invented biography")));
   assert.doesNotMatch(
     scenarios[0].initial_prompt,
     /\b(?:professional|premium|clean|modern)\b|专业|高级|清爽/iu
@@ -665,6 +685,16 @@ test("canonical analysis is derived from raw grades and exposes gate tampering",
     baseline: 0,
     tie: 1
   });
+  assert.deepEqual(canonical.evaluation_attempts, {
+    supplemental_conversation_retry_configured: false,
+    blind_grader_batch_count: 2,
+    blind_grader_attempt_count: 3,
+    blind_grader_retry_count: 1
+  });
+  const markdown = renderAnalysisMarkdown(canonical);
+  assert.match(markdown, /No supplemental conversation retry was configured/);
+  assert.match(markdown, /Blind grader: 2 batches, 3 attempts, 1 retry\./);
+  assert.doesNotMatch(markdown, /The one retry is used only/);
   const tampered = structuredClone(canonical);
   tampered.gates.clear_latency.status = "PASS";
   tampered.gates.clear_latency.metric = -99;

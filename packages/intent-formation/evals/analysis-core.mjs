@@ -303,6 +303,15 @@ export function buildAnalysis({ study, grading, scenarios, privacy, generatedAt 
     gates.clear_latency.status === "FAIL" ||
     clearExtraMedian > 1;
   const decision = allMeasuredPass ? "GO_PENDING_STATE_TESTS" : stopCondition ? "STOP" : "ITERATE";
+  const graderBatches = Array.isArray(grading.batch_attempts) ? grading.batch_attempts : [];
+  const graderAttemptCount = graderBatches.reduce(
+    (sum, batch) => sum + (Array.isArray(batch.attempts) ? batch.attempts.length : 0),
+    0
+  );
+  const graderRetryCount = graderBatches.reduce(
+    (sum, batch) => sum + Math.max(0, (Array.isArray(batch.attempts) ? batch.attempts.length : 0) - 1),
+    0
+  );
 
   return {
     generated_at: generatedAt || new Date().toISOString(),
@@ -315,6 +324,12 @@ export function buildAnalysis({ study, grading, scenarios, privacy, generatedAt 
     grader_reasoning_effort: grading.reasoning_effort,
     decision,
     interpretation: "V2 final match scores the first completed intent-formation cycle. Retry text may complete blind quality grading but never replaces primary reliability or timing statistics.",
+    evaluation_attempts: {
+      supplemental_conversation_retry_configured: Boolean(grading.retry_path),
+      blind_grader_batch_count: graderBatches.length,
+      blind_grader_attempt_count: graderAttemptCount,
+      blind_grader_retry_count: graderRetryCount
+    },
     primary_run_reliability: {
       run_count: primaryRuns.length,
       usable_count: primaryRuns.length - primaryFailures.length,
@@ -366,12 +381,16 @@ function markdownGateRow(name, value) {
 
 export function renderAnalysisMarkdown(analysis) {
   const metrics = analysis.metrics;
+  const attempts = analysis.evaluation_attempts;
+  const supplementalLine = attempts.supplemental_conversation_retry_configured
+    ? "A configured supplemental conversation run could supply missing text for blind quality grading only; primary reliability and timing still use the primary run."
+    : "No supplemental conversation retry was configured; primary responses supply reliability, timing, and blind quality evidence.";
   return [
     "# Frozen 80-task study result v2",
     "",
     `Decision: **${analysis.decision}**`,
     "",
-    "The primary run remains the source for reliability and timing. The one retry is used only to give the blind grader a complete text pair.",
+    supplementalLine,
     "",
     "## Measured gates",
     "",
@@ -386,6 +405,7 @@ export function renderAnalysisMarkdown(analysis) {
     `- Final match: ${metrics.baseline_final_match_mean_0_to_4}/4 baseline vs ${metrics.plugin_final_match_mean_0_to_4}/4 plugin (${metrics.final_match_gain_percentage_points} percentage points).`,
     `- Clear-task first-turn median: ${metrics.clear_baseline_first_turn_median_ms} ms baseline vs ${metrics.clear_plugin_first_turn_median_ms} ms plugin (${metrics.clear_paired_latency_overhead_pct}% overhead).`,
     `- Blind preferences: plugin ${metrics.blind_preference_counts.plugin}, baseline ${metrics.blind_preference_counts.baseline}, tie ${metrics.blind_preference_counts.tie}.`,
+    `- Blind grader: ${attempts.blind_grader_batch_count} batches, ${attempts.blind_grader_attempt_count} attempts, ${attempts.blind_grader_retry_count} ${attempts.blind_grader_retry_count === 1 ? "retry" : "retries"}.`,
     `- Proactive interventions: ${metrics.intervention_counts.helpful} helpful, ${metrics.intervention_counts.wrong_or_unhelpful} wrong/unhelpful, ${metrics.intervention_counts.none} none.`,
     `- Exact complete corpus prompts found in default state: ${analysis.privacy.exact_complete_prompt_matches.length}.`,
     "",

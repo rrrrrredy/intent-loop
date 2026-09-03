@@ -8,27 +8,27 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
-  assert.match(POLICY, /explicit options\/comparison: give requested count or 2-3 neutral choices/i);
-  assert.match(POLICY, /explicit sample\/example: give only that count, tiny inline/i);
-  assert.match(POLICY, /no inspection\/tools\/commands\/files/i);
-  assert.match(POLICY, /both beat the gate/i);
-  assert.match(POLICY, /'compare only'\/'do not choose' stays neutral after priorities/i);
-  assert.match(POLICY, /gate costly\/public\/hard-to-reverse work only if a missing success criterion materially changes the result/i);
-  assert.match(POLICY, /ask one outcome\/tradeoff question before work/i);
-  assert.match(POLICY, /audience\/artifact\/'start' is insufficient/i);
-  assert.match(POLICY, /non-conflict gate branches: 2-3 plausible neutral/i);
-  assert.match(POLICY, /end exactly: 'You may mix them, reject all, or answer freely.'/i);
-  assert.match(POLICY, /after a user choice, act/i);
-  assert.match(POLICY, /no second intent question/i);
-  assert.match(POLICY, /conflict: if stated requirements cannot both hold, name both and ask one question only: which wins/i);
-  assert.match(POLICY, /request no input first; give no options\/work/i);
-  assert.match(POLICY, /missing file\/data\/access: ask only for it; no format\/delivery choice/i);
-  assert.match(POLICY, /implementation change, intent change, uncertain/i);
-  assert.match(POLICY, /if uncertain, show concrete micro-variants\/differences/i);
+  assert.match(POLICY, /explicit comparison\/options: give the requested count, else 2-3 neutral choices/i);
+  assert.match(POLICY, /explicit sample\/example: give the exact count, tiny inline/i);
+  assert.match(POLICY, /no inspection\/tools\/files/i);
+  assert.match(POLICY, /both override gate/i);
+  assert.match(POLICY, /'compare only'\/'do not choose' stays neutral/i);
+  assert.match(POLICY, /gate public, lasting, costly, high-stakes, or hard-to-reverse output/i);
+  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure can materially change it/i);
+  assert.match(POLICY, /ask the one question separating those outputs, not adjacent tone\/details\/inputs/i);
+  assert.match(POLICY, /if choices help, give 2-3 neutral branches/i);
+  assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
+  assert.match(POLICY, /after branch resolution, deliver now using requested placeholders/i);
+  assert.match(POLICY, /no second question, nonessential input/i);
+  assert.match(POLICY, /conflict: if requirements cannot coexist, name both; ask one question: which wins/i);
+  assert.match(POLICY, /no work\/options\/input request/i);
+  assert.match(POLICY, /missing required file\/data\/access: ask only for it/i);
+  assert.match(POLICY, /feedback changes intent only if outcome\/priority\/constraint changes; otherwise implement it/i);
+  assert.match(POLICY, /uncertain: show micro-variants/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
-  assert.ok(POLICY.length <= 1100);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {
