@@ -396,6 +396,19 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   assert.equal(manifest.arm_runs_before_seal, 0);
   assert.equal(manifest.product_policy_opened_by_author, false);
   assert.equal(manifest.old_corpus_opened_by_author, false);
+  assert.equal(manifest.cross_corpus_validation_performed_by_author, false);
+  assert.equal(manifest.root_overlap_validation.compared_with_all_retired_holdouts, true);
+  assert.equal(manifest.root_overlap_validation.compared_with_all_development_corpora, true);
+  assert.equal(manifest.root_overlap_validation.compared_with_ablation_corpora, true);
+  assert.equal(manifest.root_overlap_validation.threshold_violations, 0);
+  assert.ok(
+    manifest.root_overlap_validation.maximum_token_set_jaccard
+      < manifest.near_duplicate_thresholds.token_set_jaccard
+  );
+  assert.ok(
+    manifest.root_overlap_validation.maximum_character_four_gram_dice
+      < manifest.near_duplicate_thresholds.character_four_gram_dice
+  );
   assert.equal(createHash("sha256").update(raw, "utf8").digest("hex"), manifest.corpus.sha256);
   assert.equal(createHash("sha256").update(method, "utf8").digest("hex"), manifest.method.sha256);
   assert.equal(scenarios.length, 80);
@@ -422,7 +435,11 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
       assert.equal(Object.hasOwn(scenario, "feedback_label"), false);
     } else {
       assert.equal(typeof scenario.follow_up, "string");
-      assert.ok(scenario.follow_up.length > 20);
+      const minimumFollowUpLength = scenario.language === "zh-CN" ? 8 : 20;
+      assert.ok(
+        [...scenario.follow_up.trim()].length >= minimumFollowUpLength,
+        `follow-up too short for ${scenario.id}/${scenario.language}`
+      );
       assert.equal(typeof scenario.decision_at_risk, "string");
     }
   }

@@ -8,7 +8,7 @@ Intent Formation 会帮 Codex 在开工前发现一个关键问题：你的要�
 
 ## 最简单的安装方法
 
-电脑需要有 [Codex CLI 官方版](https://learn.chatgpt.com/docs/codex/cli) 和 [Node.js 官方版](https://nodejs.org/en/download)。安装后关闭并重新打开终端，分别输入 `node --version` 和 `codex --version`：前者应显示 20 或更高版本，后者应显示 Codex 版本。这里常说的 PATH，简单理解就是“终端能直接找到并运行这个命令”。如果看到“找不到命令”或 `command not found`，先按对应链接完成安装，再重新打开终端重试。
+电脑需要有 [Codex CLI 官方版](https://developers.openai.com/codex/cli) 和 [Node.js 官方版](https://nodejs.org/en/download)。安装后关闭并重新打开终端，分别输入 `node --version` 和 `codex --version`：前者应显示 20 或更高版本，后者应显示 Codex 版本。这里常说的 PATH，简单理解就是“终端能直接找到并运行这个命令”。如果看到“找不到命令”或 `command not found`，先按对应链接完成安装，再重新打开终端重试。
 
 Windows 打开 PowerShell，macOS 打开“终端”，Linux 打开 Terminal。依次粘贴下面两行：
 

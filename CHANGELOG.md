@@ -20,6 +20,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 - Added an independently authored, hash-sealed 80-scenario paired Codex holdout pipeline that publishes all 160 primary conversations, blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test only after every release gate passes.
 - Predeclared a bilingual release holdout with 60 English and 20 Simplified Chinese cases across at least 40 task domains and sealed 80 distinct domains, without giving its independent author access to the product policy or prior corpus text.
+- Sealed the independent v5 release corpus at SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905` before either arm ran; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
 - Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
 - Added deterministic evidence verification to the root test suite.
 - Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
@@ -46,6 +47,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - The earlier tuned v8 result and the failed v3/v4 holdouts are preserved as development evidence and excluded from the release decision.
 - The v4 candidate completed 160 / 160 primary conversations but failed final match (+6.87 percentage points), inference denial (4 / 4), and premature action (2 searches) gates. Its blind grader used one grader-only retry and no primary conversation retry.
 - Candidate `8def5a3` completed a separate 16 / 16 installed-Hook confirmation with zero first-turn actions, zero first-turn MCP calls, and complete task cleanup; this is targeted development evidence, not an efficacy result.
+- The v5 release holdout is sealed but not yet run. Its presence does not activate an efficacy claim.
 - Publication requires the independently sealed holdout to produce 160/160 usable primary conversations, record exact execution and grader model settings, and pass every predeclared gate; its actual metrics and limitations are published in the candidate evidence bundle.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.

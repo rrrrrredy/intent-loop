@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-FAILURE ABLATION COMPLETE AS DEVELOPMENT EVIDENCE.** Two independent 80-scenario studies returned `ITERATE`. The second result informed the current policy, so a newly authored unseen holdout is still required before release.
+Status: **POST-FAILURE ABLATION COMPLETE AS DEVELOPMENT EVIDENCE.** Two independent 80-scenario studies returned `ITERATE`. A third, independently authored unseen holdout is now sealed; its candidate-bound run remains required before release.
 
 ## Question
 
@@ -14,6 +14,7 @@ Which policy and architecture elements are necessary for Intent Formation to int
 - The first formal study froze candidate `bae8e03` before running 80 unseen scenarios in baseline and plugin arms. All 160 conversations completed and were graded blind.
 - The second formal study independently sealed a different 80-scenario corpus before freezing candidate `fcba88e`. Its corpus SHA-256 is `252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70`.
 - The second study completed 160 / 160 primary conversations without a conversation retry. Its blind grader completed all 80 pairs in 16 batches; batch 12 required one grader-only retry because the first response omitted an audit rationale.
+- A different independent author sealed the v5 release holdout before either arm ran. Its corpus SHA-256 is `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
 - Post-failure regressions and component-removal prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
 
 ## First formal holdout result
@@ -111,4 +112,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-Both v3 and v4 holdouts are permanently retired from release-gate use because their results informed later policy changes. Freeze the reduced policy only after a different independent author seals v5 without access to product policy, old holdout prompts, or development prompt text. Any later user-visible policy change invalidates that outcome run and requires another unseen holdout.
+Both v3 and v4 holdouts are permanently retired from release-gate use because their results informed later policy changes. V5 is sealed without author access to product policy, old holdout prompts, development prompt text, or either evaluation arm; it may run only against the exact committed reduced-policy candidate. Any later user-visible policy change invalidates that outcome run and requires another unseen holdout.

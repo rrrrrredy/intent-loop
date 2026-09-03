@@ -40,6 +40,14 @@ Accepted: retain the exact mix/reject/free-answer exit. Its relaxed wording omit
 
 Limit: no independent blind grade is claimed for the development ablation. A newly authored v5 holdout must pass every conjunctive release gate before publication.
 
+## 2026-09-03: seal v5 before candidate execution
+
+Accepted: use the independently authored v5 corpus with SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`. The author worked from the evaluation contract alone, did not inspect product policy, prior holdouts, development material, repository state, or either arm, and recorded zero arm runs before seal.
+
+Verification: the 80 scenarios contain 60 English and 20 Simplified Chinese cases across 80 distinct domains. Root-owned validation after seal found zero threshold violations against both retired holdouts, all development corpora, and both ablation corpora; maximum observed cross-corpus overlap was 0.6086956522 token-set Jaccard and 0.5168539326 character four-gram Dice, below the frozen 0.65 and 0.72 limits.
+
+Boundary: sealing authorizes only the exact candidate-bound experiment. It does not authorize an efficacy claim or publication. Any user-visible policy change after the run retires v5.
+
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses
 
 Accepted: freeze an independently authored 80-scenario holdout before running either arm, then publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test only if every predeclared release gate passes.

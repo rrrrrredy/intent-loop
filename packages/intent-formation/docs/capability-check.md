@@ -23,7 +23,7 @@ Statuses mean:
 | Stable transcript parsing is available | Unsupported | [Codex Hooks](https://learn.chatgpt.com/docs/hooks) states transcript format is not stable | The product never reads or parses transcript files and cannot promise pre-install history access. |
 | Ordinary conversational input is available everywhere Codex runs | Confirmed | Real manual `/intent ...` messages and standard prompts | Headless text controls are the required MVP path. |
 | Rich structured user-choice UI is guaranteed on every Codex surface | Unverified | No current official cross-surface guarantee found | Comparisons use ordinary conversation. Rich UI is optional future enhancement. |
-| MCP Apps can provide an optional richer surface | Confirmed as platform capability, unused | [Build an MCP Apps UI](https://developers.openai.com/plugins/build/mcp-apps) | The MVP deliberately remains headless and does not depend on Apps. |
+| MCP Apps can provide an optional richer surface | Confirmed as platform capability, unused | [Add UI to your MCP server](https://developers.openai.com/plugins/build/chatgpt-ui) | The MVP deliberately remains headless and does not depend on Apps. |
 | Deletion and export can be implemented locally | Confirmed | stdio MCP integration plus failure regressions for main store, recovery side files, provenance-preserving export/import, and integrity rejection | Gate 3 can be tested without a custom client. |
 
 ## Real-host failure chronology

@@ -62,6 +62,12 @@
 
 **Reason:** One exact Node 22.19 full-suite run failed at 99 / 100 when a worker was starved past 60 seconds; five isolated reruns passed in 10.6–13.0 seconds. A new regression proves that a live owner with no progress still fails at a deliberately configured 100 ms boundary, so the larger stress margin does not convert a deadlock into a pass.
 
+## D-026 — Seal v5 before candidate execution
+
+**Decision:** Bind the next release attempt to the independently authored 80-scenario corpus with SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`. Its author ran neither arm and did not inspect the product policy, repository, previous holdouts, development corpora, prior experiment output, or conversation history.
+
+**Evidence boundary:** Root validation after seal found zero threshold violations against both retired holdouts, all development corpora, and both ablation corpora. The seal is not an efficacy result; any user-visible policy change after execution retires v5.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

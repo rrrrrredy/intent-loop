@@ -5,8 +5,8 @@
   "sealed_date": "2026-09-03",
   "corpus": {
     "path": "packages/intent-formation/evals/holdout-80.jsonl",
-    "sha256": "252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70",
-    "byte_size": 63956,
+    "sha256": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
+    "byte_size": 70320,
     "scenario_count": 80,
     "distribution": {
       "poorly_expressed": 15,
@@ -56,27 +56,30 @@
   },
   "method": {
     "path": "packages/intent-formation/evals/holdout-method.md",
-    "sha256": "fd0a98f51d58084b6c362702df25fc8502d7f532b3314bba946733676a96bdf4",
-    "byte_size": 1673
+    "sha256": "1a78c73bfcef16692afa01a810e1d3fe843df17fa5eec9ed9e6f5e64a7802e44",
+    "byte_size": 3159
   },
-  "authoring": "independent sealed holdout agent from explicit schema only",
-  "authoring_description": "Authored from scratch using only the supplied schema and class definitions; no repository, Git history, product policy, prior corpus, prior staging directory, evaluation result, or conversation history was opened or searched.",
+  "authoring": "independent",
+  "authoring_description": "I authored holdout-80-v5.jsonl from the evaluation contract alone in a brand-new staging directory. I did not open, search, list, or inspect any repository, Git history, product policy, previous holdout, development corpus, prior staging directory, experiment output, conversation history, memory, or internet source, and I did not run either evaluation arm.",
   "arm_runs_before_seal": 0,
   "product_policy_opened_by_author": false,
   "old_corpus_opened_by_author": false,
+  "cross_corpus_validation_performed_by_author": false,
+  "cross_corpus_overlap_check_owner": "root evaluator after seal",
   "near_duplicate_thresholds": {
     "token_set_jaccard": 0.65,
     "character_four_gram_dice": 0.72
   },
   "observed_internal_near_duplicate_maxima": {
-    "token_set_jaccard": 0.4117647058823529,
-    "character_four_gram_dice": 0.4578313253012048
+    "token_set_jaccard": 0.34965035,
+    "character_four_gram_dice": 0.435079727
   },
   "root_overlap_validation": {
-    "compared_with_retired_holdout": true,
+    "compared_with_all_retired_holdouts": true,
     "compared_with_all_development_corpora": true,
+    "compared_with_ablation_corpora": true,
     "threshold_violations": 0,
-    "maximum_token_set_jaccard": 0.37037037037037035,
-    "maximum_character_four_gram_dice": 0.42452830188679247
+    "maximum_token_set_jaccard": 0.6086956521739131,
+    "maximum_character_four_gram_dice": 0.5168539325842697
   }
 }
