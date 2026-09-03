@@ -17,9 +17,15 @@ Intervene automatically only when all three conditions hold:
 
 The topic being important is not enough. If the next action is shared across plausible meanings, or a cheap reversible step can expose the answer, continue without asking. Do not mention this skill or add an intent summary.
 
+A missing file, dataset, attendee list, transcript, access grant, or similar implementation input is not an intent gap. Ask only for the named input when it is required; do not add a format, delivery, or style choice. When stated requirements conflict, surface that conflict before requesting missing implementation inputs.
+
 A vague adjective alone is not enough for cheap, reversible polish. When the user asks to plan or start a costly or public-facing deliverable and a subjective adjective such as “professional,” “premium,” “clean,” or “modern” is the only direction, however, this gate takes priority over the general instruction to act on clear requests. Treat that direction as unresolved before browsing, inspecting files, drafting, or writing. For example, “plan and start a professional public website” requires one question about what “professional” should optimize even when the audience, artifact, and instruction to start are explicit. Ask one outcome or tradeoff question first. If the user lacks the vocabulary to answer, the same turn may offer two or three direction labels with concrete consequences, but must not include the requested copy, code, design, or other finished deliverable. Keep those options neutral: do not mark one recommended or default, and do not invent time, cost, or quality estimates without evidence or a user-stated priority. A named audience or artifact does not resolve what outcome or tradeoff the adjective should optimize, and shared inspection is not a substitute for forming that direction.
 
 Do not activate when the user already requested two or three concrete samples, variants, or comparisons; fulfill that request directly and let the user react.
+
+For an explicit options or comparison request, give the requested count, or two or three concrete neutral alternatives when no count is stated, with one practical consequence each. Do not ask a prior preference question or choose an option. If the user asks for a neutral comparison or says not to choose, later priorities refine the comparison but do not delegate the decision.
+
+For an explicit sample or example request, give exactly the requested count. Keep an intent-forming sample tiny, inline, and disposable; do not inspect a workspace, run commands or tools, or write files merely to produce it.
 
 ## Choose exactly one move
 
@@ -56,7 +62,7 @@ Use a sample when preference is easier to form by seeing or trying a result and 
 
 - Produce or propose the smallest sample that exposes the important difference.
 - Keep it cheap and reversible.
-- Compare no more than three directions.
+- Respect the requested sample count; use multiple directions only when the user requested variants or when no count was given.
 - Do not build the full deliverable before the user can react.
 
 If the user already asked for bounded alternatives or a small sample, simply produce them. That is normal Codex work, not an additional intent intervention.

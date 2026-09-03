@@ -120,6 +120,17 @@ async function loadHostRegressions() {
     .map((line) => JSON.parse(line));
 }
 
+async function loadPostFailureRegressions() {
+  const raw = await readFile(
+    path.join(repositoryRoot, "evals", "post-failure-regressions.jsonl"),
+    "utf8"
+  );
+  return raw
+    .split(/\r?\n/u)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
+
 async function loadStudy() {
   const raw = await readFile(path.join(repositoryRoot, "evals", "study-80.jsonl"), "utf8");
   return {
@@ -268,6 +279,19 @@ test("real-host regressions freeze generalized divergence and none/mix/all follo
     scenarios[0].initial_prompt,
     /\b(?:professional|premium|clean|modern)\b|专业|高级|清爽/iu
   );
+});
+
+test("post-failure regressions cover direct evidence, neutrality, missing input, conflict, and clear work", async () => {
+  const scenarios = await loadPostFailureRegressions();
+  assert.equal(scenarios.length, 8);
+  assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 8);
+  assert.deepEqual(
+    new Set(scenarios.map((scenario) => scenario.expected_first_move)),
+    new Set(["comparison", "sample", "question", "direct_delivery"])
+  );
+  assert.ok(scenarios.some((scenario) => scenario.id === "dev-neutral-after-priorities"));
+  assert.ok(scenarios.some((scenario) => scenario.id === "dev-clear-missing-input"));
+  assert.ok(scenarios.every((scenario) => Array.isArray(scenario.unacceptable_first)));
 });
 
 test("the paired study freezes exactly eighty unique tasks", async () => {
