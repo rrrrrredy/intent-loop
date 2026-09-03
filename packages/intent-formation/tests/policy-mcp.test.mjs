@@ -8,17 +8,17 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
-  assert.match(POLICY, /explicit comparison\/options: give the requested count, else 2-3 neutral choices/i);
-  assert.match(POLICY, /explicit sample\/example: give the exact count, tiny inline/i);
+  assert.match(POLICY, /explicit comparison\/options: give requested count, else 2-3 neutral choices/i);
+  assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline/i);
   assert.match(POLICY, /no inspection\/tools\/files/i);
   assert.match(POLICY, /both override gate/i);
   assert.match(POLICY, /'compare only'\/'do not choose' stays neutral/i);
   assert.match(POLICY, /gate public, lasting, costly, high-stakes, or hard-to-reverse output/i);
-  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure can materially change it/i);
-  assert.match(POLICY, /ask the one question separating those outputs, not adjacent tone\/details\/inputs/i);
+  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure materially changes it/i);
+  assert.match(POLICY, /ask one question separating those outputs, not adjacent tone\/details\/inputs/i);
   assert.match(POLICY, /if choices help, give 2-3 neutral branches/i);
   assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
-  assert.match(POLICY, /after branch resolution, deliver now using requested placeholders/i);
+  assert.match(POLICY, /once resolved, obey stated constraints and deliver now using requested placeholders/i);
   assert.match(POLICY, /no second question, nonessential input/i);
   assert.match(POLICY, /conflict: if requirements cannot coexist, name both; ask one question: which wins/i);
   assert.match(POLICY, /no work\/options\/input request/i);
