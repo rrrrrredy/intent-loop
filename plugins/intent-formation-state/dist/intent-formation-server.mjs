@@ -23247,7 +23247,7 @@ var EVENT_TYPES = Object.freeze([
 import os from "node:os";
 import path2 from "node:path";
 import { randomUUID as randomUUID2 } from "node:crypto";
-import { access, chmod as chmod2, mkdir as mkdir2, readdir as readdir2, rename as rename2, rm as rm2, writeFile as writeFile2 } from "node:fs/promises";
+import { access, chmod as chmod2, lstat as lstat2, mkdir as mkdir2, readdir as readdir2, rename as rename2, rm as rm2, writeFile as writeFile2 } from "node:fs/promises";
 
 // src/privacy.mjs
 import { createHash } from "node:crypto";
@@ -23521,17 +23521,20 @@ var EventStore = class {
   async readAll() {
     return this.withLock(async () => this.readAndRepairUnlocked());
   }
-  async append(events) {
-    const result = await this.appendIf(events, () => true);
+  async append(events, options = {}) {
+    const result = await this.appendIf(events, () => true, options);
     return { events: result.events, recovery: result.recovery };
   }
-  async appendIf(events, predicate) {
+  async appendIf(events, predicate, options = {}) {
     const additions = Array.isArray(events) ? events : [events];
     additions.forEach(validateEvent);
     if (additions.length === 0) {
       const current = await this.readAll();
       return { ...current, appended: false };
     }
+    await this.lockTestHooks.beforeAppendIfLock?.({
+      events: additions.map((event) => structuredClone(event))
+    });
     return this.withLock(async () => {
       const current = await this.readAndRepairUnlocked();
       const allowed = await predicate(
@@ -23549,26 +23552,47 @@ var EventStore = class {
       } finally {
         await handle.close();
       }
-      return {
+      const result = {
         events: current.events.concat(additions),
         recovery: current.recovery,
         appended: true
       };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: result.events.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+      return result;
     });
   }
-  async replaceTask(taskId2, replacementEvents = []) {
+  async replaceTask(taskId2, replacementEvents = [], options = {}) {
+    const result = await this.replaceTaskIf(taskId2, replacementEvents, () => true, options);
+    return result.removed;
+  }
+  async replaceTaskIf(taskId2, replacementEvents = [], predicate = () => true, options = {}) {
     replacementEvents.forEach((event) => {
       validateEvent(event);
       if (event.task_id !== taskId2) {
         throw new TypeError("replacement events must belong to the selected task");
       }
     });
-    let removed = 0;
-    const sensitiveTokens = /* @__PURE__ */ new Set([taskId2]);
-    await this.transform(
-      (events) => {
+    if (typeof predicate !== "function") {
+      throw new TypeError("replacement predicate must be a function");
+    }
+    await this.lockTestHooks.beforeReplaceTaskIfLock?.({ taskId: taskId2 });
+    const result = await this.withLock(async () => {
+      const current = await this.readAndRepairUnlocked();
+      const allowed = await predicate(
+        current.events.map((event) => structuredClone(event))
+      );
+      if (!allowed) {
+        return { ...current, replaced: false, removed: 0 };
+      }
+      let removed = 0;
+      const sensitiveTokens = /* @__PURE__ */ new Set([taskId2]);
+      const events = (() => {
         const kept = [];
-        for (const event of events) {
+        for (const event of current.events) {
           if (event.task_id === taskId2) {
             removed += 1;
             collectStrings(event, sensitiveTokens);
@@ -23577,10 +23601,31 @@ var EventStore = class {
           }
         }
         return kept.concat(replacementEvents);
-      },
-      { scrubRecovery: { taskId: taskId2, recordId: null, sensitiveTokens } }
-    );
-    return removed;
+      })();
+      await this.atomicWriteUnlocked(events);
+      await this.scrubRecoveryArtifactsUnlocked({
+        taskId: taskId2,
+        recordId: null,
+        sensitiveTokens
+      });
+      const result2 = {
+        events,
+        recovery: current.recovery,
+        replaced: true,
+        removed
+      };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: events.map((event) => structuredClone(event)),
+        recovery: current.recovery,
+        removed
+      });
+      return result2;
+    });
+    if (result.replaced) {
+      await this.lockTestHooks.afterReplaceTaskIfCommit?.({ taskId: taskId2 });
+    }
+    return result;
   }
   async transform(transformer, options = {}) {
     return this.withLock(async () => {
@@ -23594,13 +23639,31 @@ var EventStore = class {
       if (options.scrubRecovery) {
         await this.scrubRecoveryArtifactsUnlocked(options.scrubRecovery);
       }
-      return {
+      const result = {
         events: transformed,
         recovery: current.recovery
       };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: transformed.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+      return result;
     });
   }
-  async purgeTask(taskId2) {
+  async withLockedEvents(callback) {
+    if (typeof callback !== "function") {
+      throw new TypeError("locked event callback must be a function");
+    }
+    return this.withLock(async () => {
+      const current = await this.readAndRepairUnlocked();
+      return callback({
+        events: current.events.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+    });
+  }
+  async purgeTask(taskId2, options = {}) {
     let removed = 0;
     const sensitiveTokens = /* @__PURE__ */ new Set([taskId2]);
     await this.transform(
@@ -23617,12 +23680,13 @@ var EventStore = class {
           taskId: taskId2,
           recordId: null,
           sensitiveTokens
-        }
+        },
+        afterCommit: options.afterCommit
       }
     );
     return removed;
   }
-  async purgeRecord(taskId2, recordId2) {
+  async purgeRecord(taskId2, recordId2, options = {}) {
     let removed = 0;
     const sensitiveTokens = /* @__PURE__ */ new Set([recordId2]);
     await this.transform(
@@ -23643,7 +23707,8 @@ var EventStore = class {
           taskId: taskId2,
           recordId: recordId2,
           sensitiveTokens
-        }
+        },
+        afterCommit: options.afterCommit
       }
     );
     return removed;
@@ -24028,6 +24093,7 @@ var RECORD_EXPORT_KEYS = Object.freeze([
   "status",
   "invalidated_reason"
 ]);
+var OFF_MARKER_PREFIX = "off-";
 function plainObject(value, name) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new TypeError(name + " must be an object");
@@ -24046,6 +24112,9 @@ function makeId(prefix) {
 }
 function managedExportPrefix(taskId2) {
   return "intent-" + hashText(taskId2).slice(0, 24) + "-";
+}
+function offMarkerName(taskId2) {
+  return OFF_MARKER_PREFIX + hashText(taskId2).slice(0, 32);
 }
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -24279,15 +24348,13 @@ function deriveSnapshot(taskId2, events, recovery) {
     return { ...record2, status: "active", invalidated_reason: null };
   });
   const byId = new Map(materialized.map((record2) => [record2.record_id, record2]));
-  for (const record2 of materialized) {
-    if (record2.status !== "active") {
-      continue;
-    }
-    for (const targetId of record2.supersedes) {
-      const target = byId.get(targetId);
-      if (target && target.status === "active") {
-        target.status = "superseded";
-      }
+  const effectivelySupersededIds = new Set(
+    materialized.filter((record2) => record2.status !== "invalidated").flatMap((record2) => record2.supersedes)
+  );
+  for (const targetId of effectivelySupersededIds) {
+    const target = byId.get(targetId);
+    if (target && target.status === "active") {
+      target.status = "superseded";
     }
   }
   materialized.sort((left, right) => left.created_at.localeCompare(right.created_at));
@@ -24447,7 +24514,9 @@ function validatePortablePayload(payload, context) {
     }
     importedIds.add(record2.record_id);
   }
-  const supersededIds = new Set(records.flatMap(({ record: record2 }) => record2.supersedes));
+  const supersededIds = new Set(
+    records.filter((item) => item.status !== "invalidated").flatMap(({ record: record2 }) => record2.supersedes)
+  );
   for (const item of records) {
     if (item.status === "superseded" && !supersededIds.has(item.record.record_id)) {
       throw new TypeError("superseded imported record has no superseding record");
@@ -24503,8 +24572,27 @@ var IntentService = class {
       dataDirectory: options.dataDirectory || resolveDataDirectory(options.environment)
     });
     this.exportDirectory = path2.join(this.store.dataDirectory, "exports");
+    this.modeMarkerDirectory = path2.join(this.store.dataDirectory, "mode-markers");
     this.privateEvents = /* @__PURE__ */ new Map();
     this.privateMarkers = /* @__PURE__ */ new Map();
+    this.taskMutationTails = /* @__PURE__ */ new Map();
+  }
+  async serializeTaskMutation(taskId2, operation) {
+    const previous = this.taskMutationTails.get(taskId2) || Promise.resolve();
+    let release;
+    const current = new Promise((resolve) => {
+      release = resolve;
+    });
+    this.taskMutationTails.set(taskId2, current);
+    await previous;
+    try {
+      return await operation();
+    } finally {
+      release();
+      if (this.taskMutationTails.get(taskId2) === current) {
+        this.taskMutationTails.delete(taskId2);
+      }
+    }
   }
   async purgeManagedExports(taskId2) {
     let entries;
@@ -24523,6 +24611,62 @@ var IntentService = class {
       }
     }
     return removed;
+  }
+  offMarkerPath(taskId2) {
+    return path2.join(this.modeMarkerDirectory, offMarkerName(taskId2));
+  }
+  async writeOffModeMarker(taskId2) {
+    await mkdir2(this.modeMarkerDirectory, { recursive: true, mode: 448 });
+    await chmod2(this.modeMarkerDirectory, 448);
+    const markerPath = this.offMarkerPath(taskId2);
+    try {
+      await mkdir2(markerPath, { mode: 448 });
+    } catch (error2) {
+      if (error2?.code !== "EEXIST") throw error2;
+    }
+    const marker = await lstat2(markerPath);
+    if (marker.isSymbolicLink() || !marker.isDirectory()) {
+      throw new Error("intent off marker path is not a real directory");
+    }
+    await chmod2(markerPath, 448);
+  }
+  async clearOffModeMarker(taskId2) {
+    const markerPath = this.offMarkerPath(taskId2);
+    let marker;
+    try {
+      marker = await lstat2(markerPath);
+    } catch (error2) {
+      if (error2?.code === "ENOENT") return;
+      throw error2;
+    }
+    if (marker.isSymbolicLink() || !marker.isDirectory()) {
+      throw new Error("intent off marker path is not a real directory");
+    }
+    await rm2(markerPath, { recursive: true, force: true });
+    try {
+      await lstat2(markerPath);
+    } catch (error2) {
+      if (error2?.code === "ENOENT") return;
+      throw error2;
+    }
+    throw new Error("could not verify removal of intent off marker");
+  }
+  async syncOffModeMarker(taskId2, mode) {
+    if (mode === "off") {
+      await this.writeOffModeMarker(taskId2);
+    } else {
+      await this.clearOffModeMarker(taskId2);
+    }
+  }
+  async fastTaskMode(input) {
+    const taskId2 = cleanTaskId(input.task_id);
+    try {
+      const marker = await lstat2(this.offMarkerPath(taskId2));
+      return marker.isDirectory() && !marker.isSymbolicLink() ? "off" : null;
+    } catch (error2) {
+      if (error2?.code === "ENOENT" || error2?.code === "ENOTDIR") return null;
+      throw error2;
+    }
   }
   event(taskId2, eventType, payload, occurredAt = this.clock()) {
     return createEvent({
@@ -24567,14 +24711,12 @@ var IntentService = class {
     if (!taskModes.has(mode)) {
       throw new TypeError("mode is unsupported");
     }
-    const current = await this.allTaskEvents(taskId2);
-    const currentSnapshot = deriveSnapshot(taskId2, current.events, current.recovery);
-    if (currentSnapshot.exists && input.reset !== true) {
-      if (currentSnapshot.mode !== mode) {
-        return this.setMode({ task_id: taskId2, mode });
-      }
-      return { ...currentSnapshot, compact: compactSnapshot(currentSnapshot) };
-    }
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.startTaskLocked(input, taskId2, mode)
+    );
+  }
+  async startTaskLocked(input, taskId2, mode) {
     const labelValue = cleanOptionalText(input.label, "label", 120);
     const label = labelValue ? redactSecrets(labelValue).text : null;
     const cwdHash = input.cwd ? hashText(boundedText(input.cwd, "cwd", 2e3)) : null;
@@ -24583,7 +24725,37 @@ var IntentService = class {
       label,
       cwd_hash: cwdHash
     });
-    await this.store.replaceTask(taskId2, [startEvent]);
+    const result = await this.store.replaceTaskIf(
+      taskId2,
+      [startEvent],
+      (events) => {
+        const snapshot = deriveSnapshot(taskId2, events, null);
+        return input.reset === true || !snapshot.exists;
+      },
+      {
+        afterCommit: async () => {
+          await this.purgeManagedExports(taskId2);
+          await this.syncOffModeMarker(taskId2, mode);
+        }
+      }
+    );
+    if (!result.replaced) {
+      const currentSnapshot = deriveSnapshot(taskId2, result.events, result.recovery);
+      if (currentSnapshot.mode !== mode) {
+        return this.setModeLocked({ task_id: taskId2, mode }, taskId2, mode);
+      }
+      const stable = await this.store.withLockedEvents(async (current) => {
+        const snapshot = deriveSnapshot(taskId2, current.events, current.recovery);
+        if (!snapshot.exists || snapshot.mode !== mode) return false;
+        if (mode === "private") await this.purgeManagedExports(taskId2);
+        await this.syncOffModeMarker(taskId2, mode);
+        return true;
+      });
+      if (!stable) {
+        return this.setModeLocked({ task_id: taskId2, mode }, taskId2, mode);
+      }
+      return this.show({ task_id: taskId2 });
+    }
     this.privateEvents.delete(taskId2);
     this.privateMarkers.delete(taskId2);
     if (mode === "private") {
@@ -24598,58 +24770,104 @@ var IntentService = class {
     if (!taskModes.has(mode)) {
       throw new TypeError("mode is unsupported");
     }
-    const current = await this.show({ task_id: taskId2 });
-    if (!current.exists) {
-      return this.startTask({ task_id: taskId2, mode });
-    }
-    if (current.mode === mode && mode === "private") {
-      await this.purgeManagedExports(taskId2);
-      return this.show({ task_id: taskId2 });
-    }
-    if (current.mode === mode) {
-      return current;
-    }
-    if (mode === "private") {
-      const privateStart = this.event(taskId2, "task_started", {
-        mode: "private",
-        label: null,
-        cwd_hash: null
-      });
-      await this.store.replaceTask(taskId2, [privateStart]);
-      this.privateEvents.set(taskId2, []);
-      this.privateMarkers.set(taskId2, privateStart.event_id);
-      await this.purgeManagedExports(taskId2);
-    } else if (current.mode === "private") {
-      await this.store.replaceTask(taskId2, [
-        this.event(taskId2, "task_started", {
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.setModeLocked(input, taskId2, mode)
+    );
+  }
+  async setModeLocked(input, taskId2, mode) {
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const current = await this.show({ task_id: taskId2 });
+      if (!current.exists) {
+        return this.startTaskLocked({ task_id: taskId2, mode }, taskId2, mode);
+      }
+      if (current.mode === mode) {
+        const stable = await this.store.withLockedEvents(async (loaded) => {
+          const snapshot = deriveSnapshot(taskId2, loaded.events, loaded.recovery);
+          if (!snapshot.exists || snapshot.mode !== mode) return false;
+          if (mode === "private") await this.purgeManagedExports(taskId2);
+          await this.syncOffModeMarker(taskId2, mode);
+          return true;
+        });
+        if (!stable) continue;
+        return this.show({ task_id: taskId2 });
+      }
+      if (mode === "private" || current.mode === "private") {
+        const replacementStart = this.event(taskId2, "task_started", {
           mode,
           label: null,
           cwd_hash: null
-        })
-      ]);
-      this.privateEvents.delete(taskId2);
-      this.privateMarkers.delete(taskId2);
-    } else {
-      await this.store.append(this.event(taskId2, "task_mode_changed", { mode }));
+        });
+        const replaced = await this.store.replaceTaskIf(
+          taskId2,
+          [replacementStart],
+          (events) => {
+            const snapshot = deriveSnapshot(taskId2, events, null);
+            return snapshot.exists && snapshot.mode === current.mode;
+          },
+          {
+            afterCommit: async () => {
+              await this.purgeManagedExports(taskId2);
+              await this.syncOffModeMarker(taskId2, mode);
+            }
+          }
+        );
+        if (!replaced.replaced) continue;
+        if (mode === "private") {
+          this.privateEvents.set(taskId2, []);
+          this.privateMarkers.set(taskId2, replacementStart.event_id);
+        } else {
+          this.privateEvents.delete(taskId2);
+          this.privateMarkers.delete(taskId2);
+        }
+        return this.show({ task_id: taskId2 });
+      }
+      const changed = await this.store.appendIf(
+        this.event(taskId2, "task_mode_changed", { mode }),
+        (events) => {
+          const snapshot = deriveSnapshot(taskId2, events, null);
+          return snapshot.exists && snapshot.mode === current.mode && snapshot.mode !== "private";
+        },
+        {
+          afterCommit: async () => this.syncOffModeMarker(taskId2, mode)
+        }
+      );
+      if (!changed.appended) continue;
+      return this.show({ task_id: taskId2 });
     }
-    return this.show({ task_id: taskId2 });
+    throw new Error("intent mode changed repeatedly before the requested mode could be set");
   }
-  async appendForMode(taskId2, event) {
-    return this.appendManyForMode(taskId2, [event]);
+  async appendForMode(taskId2, event, options = {}) {
+    return this.appendManyForMode(taskId2, [event], options);
   }
-  async appendManyForMode(taskId2, additions) {
+  async appendManyForMode(taskId2, additions, options = {}) {
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.appendManyForModeLocked(taskId2, additions, options)
+    );
+  }
+  async appendManyForModeLocked(taskId2, additions, options = {}) {
     if (!Array.isArray(additions) || additions.length === 0) {
       throw new TypeError("at least one event is required");
     }
+    const validateSnapshot = options.validateSnapshot;
+    if (validateSnapshot !== void 0 && typeof validateSnapshot !== "function") {
+      throw new TypeError("validateSnapshot must be a function");
+    }
     const result = await this.store.appendIf(additions, (events) => {
       const snapshot2 = deriveSnapshot(taskId2, events, null);
-      return snapshot2.exists && snapshot2.mode === "standard";
+      if (!snapshot2.exists || snapshot2.mode !== "standard") {
+        return false;
+      }
+      validateSnapshot?.(snapshot2);
+      return true;
     });
     if (result.appended) {
       return;
     }
     const snapshot = deriveSnapshot(taskId2, result.events, result.recovery);
     if (!snapshot.exists) {
+      validateSnapshot?.(snapshot);
       throw new Error("intent task no longer exists");
     }
     if (snapshot.mode === "off") {
@@ -24666,6 +24884,9 @@ var IntentService = class {
         this.privateEvents.set(taskId2, []);
       }
       const events = this.privateEvents.get(taskId2) || [];
+      validateSnapshot?.(
+        deriveSnapshot(taskId2, result.events.concat(events), result.recovery)
+      );
       events.push(...additions);
       this.privateEvents.set(taskId2, events);
       return;
@@ -24688,21 +24909,33 @@ var IntentService = class {
     if (record2.supersedes.includes(record2.record_id)) {
       throw new TypeError("a record cannot supersede itself");
     }
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.addRecordLocked(taskId2, record2)
+    );
+  }
+  async addRecordLocked(taskId2, record2) {
+    const validateSnapshot = (current) => {
+      const knownIds = new Set(current.records.map((item) => item.record_id));
+      const unknownTargets = record2.supersedes.filter((id) => !knownIds.has(id));
+      if (unknownTargets.length > 0) {
+        throw new TypeError(
+          "unknown superseded record ids: " + unknownTargets.join(", ")
+        );
+      }
+    };
     const snapshot = await this.show({ task_id: taskId2 });
     if (snapshot.mode === "off") {
       throw new Error("intent tracking is off for this task");
     }
-    const knownIds = new Set(snapshot.records.map((item) => item.record_id));
-    const unknownTargets = record2.supersedes.filter((id) => !knownIds.has(id));
-    if (unknownTargets.length > 0) {
-      throw new TypeError("unknown superseded record ids: " + unknownTargets.join(", "));
-    }
     if (!snapshot.exists) {
-      await this.startTask({ task_id: taskId2, mode: "standard" });
+      validateSnapshot(snapshot);
+      await this.startTaskLocked({ task_id: taskId2, mode: "standard" }, taskId2, "standard");
     }
-    await this.appendForMode(
+    await this.appendManyForModeLocked(
       taskId2,
-      this.event(taskId2, "record_added", { record: record2 }, record2.created_at)
+      [this.event(taskId2, "record_added", { record: record2 }, record2.created_at)],
+      { validateSnapshot }
     );
     return {
       record: record2,
@@ -24780,20 +25013,25 @@ var IntentService = class {
   async invalidate(input) {
     const taskId2 = cleanTaskId(input.task_id);
     const recordId2 = boundedText(input.record_id, "record_id", 100);
-    const snapshot = await this.show({ task_id: taskId2 });
-    if (!snapshot.records.some((record2) => record2.record_id === recordId2)) {
-      throw new TypeError("record_id does not exist in this task");
-    }
     const reasonValue = cleanOptionalText(input.reason, "reason", 300);
     const reason = reasonValue ? redactSecrets(reasonValue).text : null;
-    await this.appendForMode(
-      taskId2,
-      this.event(taskId2, "record_invalidated", {
-        target_record_id: recordId2,
-        reason
-      })
-    );
-    return this.show({ task_id: taskId2 });
+    return this.serializeTaskMutation(taskId2, async () => {
+      await this.appendManyForModeLocked(
+        taskId2,
+        [this.event(taskId2, "record_invalidated", {
+          target_record_id: recordId2,
+          reason
+        })],
+        {
+          validateSnapshot(snapshot) {
+            if (!snapshot.records.some((record2) => record2.record_id === recordId2)) {
+              throw new TypeError("record_id does not exist in this task");
+            }
+          }
+        }
+      );
+      return this.show({ task_id: taskId2 });
+    });
   }
   async show(input) {
     const taskId2 = cleanTaskId(input.task_id);
@@ -24810,33 +25048,52 @@ var IntentService = class {
   async deleteRecord(input) {
     const taskId2 = cleanTaskId(input.task_id);
     const recordId2 = boundedText(input.record_id, "record_id", 100);
-    const mode = await this.taskMode(taskId2);
-    let removed = 0;
-    if (mode === "private") {
-      const events = this.privateEvents.get(taskId2) || [];
-      const kept = [];
-      for (const event of events) {
-        if (event.event_type === "record_added" && event.payload.record?.record_id === recordId2 || event.event_type === "record_invalidated" && event.payload.target_record_id === recordId2) {
-          removed += 1;
-          continue;
-        }
-        kept.push(scrubPrivateRecordReferences(event, taskId2, recordId2));
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.deleteRecordLocked(taskId2, recordId2)
+    );
+  }
+  async deleteRecordLocked(taskId2, recordId2) {
+    let removedPrivateEvents = 0;
+    const privateEvents = this.privateEvents.get(taskId2) || [];
+    const keptPrivateEvents = [];
+    for (const event of privateEvents) {
+      if (event.event_type === "record_added" && event.payload.record?.record_id === recordId2 || event.event_type === "record_invalidated" && event.payload.target_record_id === recordId2) {
+        removedPrivateEvents += 1;
+        continue;
       }
-      this.privateEvents.set(taskId2, kept);
-    } else {
-      removed = await this.store.purgeRecord(taskId2, recordId2);
+      keptPrivateEvents.push(scrubPrivateRecordReferences(event, taskId2, recordId2));
     }
+    if (this.privateEvents.has(taskId2)) {
+      this.privateEvents.set(taskId2, keptPrivateEvents);
+    }
+    let removedManagedExports = 0;
+    const removedPersistentEvents = await this.store.purgeRecord(taskId2, recordId2, {
+      afterCommit: async () => {
+        removedManagedExports = await this.purgeManagedExports(taskId2);
+      }
+    });
+    const removed = removedPersistentEvents + removedPrivateEvents;
     return {
       deleted: removed > 0,
       removed_events: removed,
+      removed_exports: removedManagedExports,
       snapshot: await this.show({ task_id: taskId2 })
     };
   }
   async deleteTask(input) {
     const taskId2 = cleanTaskId(input.task_id);
-    const removedPersistentEvents = await this.store.purgeTask(taskId2);
-    const removedManagedExports = await this.purgeManagedExports(taskId2);
+    return this.serializeTaskMutation(taskId2, () => this.deleteTaskLocked(taskId2));
+  }
+  async deleteTaskLocked(taskId2) {
     const removedPrivateEvents = (this.privateEvents.get(taskId2) || []).length;
+    let removedManagedExports = 0;
+    const removedPersistentEvents = await this.store.purgeTask(taskId2, {
+      afterCommit: async () => {
+        removedManagedExports = await this.purgeManagedExports(taskId2);
+        await this.clearOffModeMarker(taskId2);
+      }
+    });
     this.privateEvents.delete(taskId2);
     this.privateMarkers.delete(taskId2);
     const verification = await this.show({ task_id: taskId2 });
@@ -24856,47 +25113,58 @@ var IntentService = class {
   }
   async exportTaskFile(input) {
     const taskId2 = cleanTaskId(input.task_id);
-    const payload = await this.exportTask({ task_id: taskId2 });
-    const body = JSON.stringify(payload, null, 2) + "\n";
-    const prefix = managedExportPrefix(taskId2);
-    const suffix = randomUUID2().slice(0, 8);
-    const filename = prefix + payload.integrity.digest.slice(0, 16) + "-" + suffix + ".json";
-    const targetPath = path2.join(this.exportDirectory, filename);
-    const temporaryPath = targetPath + "." + randomUUID2().slice(0, 8) + ".tmp";
-    await mkdir2(this.exportDirectory, { recursive: true, mode: 448 });
-    await chmod2(this.exportDirectory, 448);
-    try {
-      await writeFile2(temporaryPath, body, {
-        encoding: "utf8",
-        flag: "wx",
-        mode: 384
-      });
-      await rename2(temporaryPath, targetPath);
-      await chmod2(targetPath, 384);
-      const afterWrite = await this.show({ task_id: taskId2 });
-      if (!afterWrite.exists || afterWrite.mode === "private") {
-        throw new Error("intent state changed before the export completed");
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.exportTaskFileLocked(taskId2)
+    );
+  }
+  async exportTaskFileLocked(taskId2) {
+    return this.store.withLockedEvents(async (loaded) => {
+      const snapshot = deriveSnapshot(taskId2, loaded.events, loaded.recovery);
+      if (!snapshot.exists) {
+        throw new TypeError("task does not exist");
       }
-    } catch (error2) {
+      if (snapshot.mode === "private") {
+        throw new Error("private intent state cannot be exported to disk");
+      }
+      const payload = portableSnapshot(snapshot, this.clock());
+      const body = JSON.stringify(payload, null, 2) + "\n";
+      const prefix = managedExportPrefix(taskId2);
+      const suffix = randomUUID2().slice(0, 8);
+      const filename = prefix + payload.integrity.digest.slice(0, 16) + "-" + suffix + ".json";
+      const targetPath = path2.join(this.exportDirectory, filename);
+      const temporaryPath = targetPath + "." + randomUUID2().slice(0, 8) + ".tmp";
+      await mkdir2(this.exportDirectory, { recursive: true, mode: 448 });
+      await chmod2(this.exportDirectory, 448);
       try {
-        await removeFilesVerified([temporaryPath, targetPath]);
-      } catch (cleanupError) {
-        throw new AggregateError(
-          [error2, cleanupError],
-          "export failed and cleanup could not be verified"
-        );
+        await writeFile2(temporaryPath, body, {
+          encoding: "utf8",
+          flag: "wx",
+          mode: 384
+        });
+        await rename2(temporaryPath, targetPath);
+        await chmod2(targetPath, 384);
+      } catch (error2) {
+        try {
+          await removeFilesVerified([temporaryPath, targetPath]);
+        } catch (cleanupError) {
+          throw new AggregateError(
+            [error2, cleanupError],
+            "export failed and cleanup could not be verified"
+          );
+        }
+        throw error2;
       }
-      throw error2;
-    }
-    return {
-      export_id: filename,
-      path: targetPath,
-      bytes: Buffer.byteLength(body),
-      record_count: payload.task.records.length,
-      format: payload.format,
-      version: payload.version,
-      integrity: payload.integrity
-    };
+      return {
+        export_id: filename,
+        path: targetPath,
+        bytes: Buffer.byteLength(body),
+        record_count: payload.task.records.length,
+        format: payload.format,
+        version: payload.version,
+        integrity: payload.integrity
+      };
+    });
   }
   async importTask(input) {
     const taskId2 = cleanTaskId(input.task_id);
@@ -24904,6 +25172,12 @@ var IntentService = class {
       throw new TypeError("intent import requires explicit user confirmation");
     }
     const imported = validatePortablePayload(input.payload, { idFactory: this.idFactory });
+    return this.serializeTaskMutation(
+      taskId2,
+      () => this.importTaskLocked(input, taskId2, imported)
+    );
+  }
+  async importTaskLocked(input, taskId2, imported) {
     const existing = await this.show({ task_id: taskId2 });
     if (existing.exists && input.merge !== true) {
       throw new Error("target task already exists; set merge=true to combine explicitly");
@@ -24911,21 +25185,24 @@ var IntentService = class {
     if (existing.exists && existing.mode === "off") {
       throw new Error("cannot merge into an off task; explicitly change its mode first");
     }
-    const knownIds = new Set(existing.records.map((record2) => record2.record_id));
-    const importedIds = /* @__PURE__ */ new Set();
-    for (const { record: record2 } of imported.records) {
-      if (knownIds.has(record2.record_id) || importedIds.has(record2.record_id)) {
-        throw new TypeError("duplicate imported record_id: " + record2.record_id);
+    const validateImportAgainst = (snapshot) => {
+      const knownIds = new Set(snapshot.records.map((record2) => record2.record_id));
+      const importedIds = /* @__PURE__ */ new Set();
+      for (const { record: record2 } of imported.records) {
+        if (knownIds.has(record2.record_id) || importedIds.has(record2.record_id)) {
+          throw new TypeError("duplicate imported record_id: " + record2.record_id);
+        }
+        importedIds.add(record2.record_id);
       }
-      importedIds.add(record2.record_id);
-    }
-    for (const { record: record2 } of imported.records) {
-      for (const targetId of record2.supersedes) {
-        if (!knownIds.has(targetId) && !importedIds.has(targetId)) {
-          throw new TypeError("import references unknown superseded record: " + targetId);
+      for (const { record: record2 } of imported.records) {
+        for (const targetId of record2.supersedes) {
+          if (!knownIds.has(targetId) && !importedIds.has(targetId)) {
+            throw new TypeError("import references unknown superseded record: " + targetId);
+          }
         }
       }
-    }
+    };
+    validateImportAgainst(existing);
     const importedEvents = [];
     for (const item of imported.records) {
       importedEvents.push(
@@ -24947,15 +25224,32 @@ var IntentService = class {
         label: imported.label,
         cwd_hash: null
       });
+      const replacementEvents = imported.mode === "private" ? [startEvent] : [startEvent, ...importedEvents];
+      const created = await this.store.replaceTaskIf(
+        taskId2,
+        replacementEvents,
+        (events) => !deriveSnapshot(taskId2, events, null).exists,
+        {
+          afterCommit: async () => {
+            await this.purgeManagedExports(taskId2);
+            await this.syncOffModeMarker(taskId2, imported.mode);
+          }
+        }
+      );
+      if (!created.replaced) {
+        throw new Error("target task already exists; set merge=true to combine explicitly");
+      }
       if (imported.mode === "private") {
-        await this.store.replaceTask(taskId2, [startEvent]);
         this.privateMarkers.set(taskId2, startEvent.event_id);
         this.privateEvents.set(taskId2, importedEvents);
       } else {
-        await this.store.replaceTask(taskId2, [startEvent, ...importedEvents]);
+        this.privateMarkers.delete(taskId2);
+        this.privateEvents.delete(taskId2);
       }
     } else {
-      await this.appendManyForMode(taskId2, importedEvents);
+      await this.appendManyForModeLocked(taskId2, importedEvents, {
+        validateSnapshot: validateImportAgainst
+      });
     }
     return {
       imported_records: imported.records.length,
@@ -25352,7 +25646,7 @@ function createIntentMcpServer(options = {}) {
     "intent_delete_record",
     {
       title: "Delete one intent record",
-      description: "Physically purge one record and references to its id from persistent state. Use only after an explicit user deletion request.",
+      description: "Physically purge one record, references to its id, and every managed export for the task. Use only after an explicit user deletion request.",
       inputSchema: {
         task_id: taskId,
         record_id: recordId
@@ -25366,14 +25660,14 @@ function createIntentMcpServer(options = {}) {
     },
     handler(
       (input) => service.deleteRecord(input),
-      (data) => data.deleted ? "The record was physically purged." : "No matching record existed."
+      (data) => data.deleted ? "The record and " + data.removed_exports + " managed export(s) were physically purged." : "No matching record existed; " + data.removed_exports + " managed export(s) were removed."
     )
   );
   server.registerTool(
     "intent_forget",
     {
       title: "Forget task intent",
-      description: "Physically purge all persistent and in-process intent state for one task. Use only after an explicit user deletion request.",
+      description: "Physically purge all persistent and in-process intent state, managed exports, and the off marker for one task. Use only after an explicit user deletion request.",
       inputSchema: { task_id: taskId },
       annotations: {
         readOnlyHint: false,

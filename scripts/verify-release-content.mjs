@@ -57,6 +57,26 @@ invariant(rootPackage.name === "dsh-intent-formation", "DeepSeek package identit
 invariant(rootPackage.peerDependencies?.["@deepseek-ai/cordis"] === "4.0.2", "Cordis peer mismatch");
 invariant(rootPackage.peerDependencies?.["@deepseek-ai/dsh-tools"] === "0.1.2-alpha.5", "DeepSeek tools peer mismatch");
 invariant(read("dsh/scripts/deepseek-host-smoke.mjs").includes("@deepseek-ai/dsh@0.1.2-alpha.5"), "DeepSeek host version mismatch");
+const releaseWorkflow = read(".github/workflows/release.yml");
+invariant(
+  releaseWorkflow.includes('node scripts/verify-annotated-tag.mjs --tag "$GITHUB_REF_NAME" --commit "$GITHUB_SHA"'),
+  "release workflow must verify the annotated tag object"
+);
+invariant(
+  releaseWorkflow.includes("node scripts/verify-evidence.mjs --require-candidate"),
+  "release workflow must require exact-candidate holdout evidence"
+);
+invariant(
+  releaseWorkflow.includes("--sort=name --mtime=") &&
+    releaseWorkflow.includes("--owner=0 --group=0 --numeric-owner") &&
+    releaseWorkflow.includes("gzip -n"),
+  "release archives must be deterministic"
+);
+invariant(
+  releaseWorkflow.includes("node scripts/release-asset-plan.mjs") &&
+    !releaseWorkflow.includes("--clobber"),
+  "release asset reconciliation must be digest-aware and non-clobbering"
+);
 
 const xMarkdown = read("social/x-post.md");
 const xCopy = section(xMarkdown, "## English", "- Raw characters:");

@@ -8,30 +8,23 @@ import { POLICY } from "../server/policy.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("compact policy preserves the four intent-formation moves", () => {
-  assert.match(POLICY, /intent gate has priority/i);
-  assert.match(POLICY, /clear: act; no question/i);
-  assert.match(POLICY, /costly\/public work depends on an unstated outcome behind subjective direction/i);
-  assert.match(POLICY, /professional\/premium\/clean\/modern/i);
-  assert.match(POLICY, /before any tool\/draft\/write, ask exactly one outcome\/tradeoff question/i);
-  assert.match(POLICY, /even if audience, artifact, or 'start now' is given/i);
-  assert.match(POLICY, /plan and start a professional public website/i);
-  assert.match(POLICY, /do not act that turn/i);
-  assert.match(POLICY, /2-3 complete, equally neutral label\+effect choices/i);
-  assert.match(POLICY, /explicitly allow mix\/none\/free answer/i);
-  assert.match(POLICY, /never ask for a number\/letter without all option text/i);
-  assert.match(POLICY, /never label or imply a default\/recommended\/best\/preferred choice unless advice was requested/i);
-  assert.match(POLICY, /invented time\/cost\/quality estimate, or deliverable/i);
-  assert.match(POLICY, /once the user states outcome\/priority\/scope\/threshold/i);
-  assert.match(POLICY, /act; no second intent question/i);
-  assert.match(POLICY, /unprioritized conflict/i);
-  assert.match(POLICY, /same one-question\/no-tools gate/i);
-  assert.match(POLICY, /must\/fast\/all\/highly\/but\/also set no priority/i);
-  assert.match(POLICY, /high-cost risk without known branches: one free-form question/i);
-  assert.match(POLICY, /invent no compromise/i);
-  assert.match(POLICY, /show 2-3 tiny samples now/i);
-  assert.match(POLICY, /no setup/i);
+  assert.match(POLICY, /intent gate overrides requests to start/i);
+  assert.match(POLICY, /clear request: act, no question/i);
+  assert.match(POLICY, /a missing success criterion has meanings that materially change the result/i);
+  assert.match(POLICY, /output one outcome\/tradeoff question only; no tools, drafts, or files/i);
+  assert.match(POLICY, /audience\/artifact\/'start' cannot resolve outcome-changing direction/i);
+  assert.match(POLICY, /never choose for the user or present a guessed deliverable, estimate, priority, or compromise as decided/i);
+  assert.match(POLICY, /use plausible distinctions relevant to the request, keep 2-3 neutral/i);
+  assert.match(POLICY, /end exactly: 'You may mix them, reject all, or answer freely.'/i);
+  assert.match(POLICY, /once outcome\/priority\/scope\/threshold arrives, act/i);
+  assert.match(POLICY, /no second intent question/i);
+  assert.match(POLICY, /conflict: ask which stated requirement wins; add no options/i);
+  assert.match(POLICY, /give 2-3 tiny alternatives now, no setup/i);
   assert.match(POLICY, /implementation change, intent change, uncertain/i);
-  assert.ok(POLICY.length < 1250);
+  assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
+  assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
+  assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
+  assert.ok(POLICY.length <= 1000);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

@@ -3,6 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
+import { POLICY } from "../src/policy.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -72,7 +73,8 @@ test("core package uses one selective UserPromptSubmit MCP hook", async () => {
   assert.equal(handler.tool, "get_intent_policy");
   assert.deepEqual(handler.input, {});
   assert.equal(handler.timeout, 1);
-  assert.ok(handler.additionalContextLimit <= 220);
+  assert.equal(handler.additionalContextLimit, 0);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 4096);
 });
 
 test("core avoids implicit Skill loading and keeps its policy state-free", async () => {
@@ -84,13 +86,13 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.doesNotMatch(policyServer, /writeFile|appendFile|transcript_path|params\?\.arguments\?\.prompt/);
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
   assert.match(policy, /tradeoff question/i);
-  assert.match(policy, /samples now; no setup/i);
-  assert.match(policy, /intent gate has priority/i);
-  assert.match(policy, /plan and start a professional public website/i);
-  assert.match(policy, /never ask for a number\/letter without all option text/i);
-  assert.match(policy, /equally neutral label\+effect choices/i);
-  assert.match(policy, /default\/recommended\/best\/preferred choice unless advice was requested/i);
-  assert.match(policy, /time\/cost\/quality estimate, or deliverable/i);
+  assert.match(policy, /tiny alternatives now, no setup/i);
+  assert.match(policy, /intent gate overrides requests to start/i);
+  assert.match(POLICY, /a missing success criterion has meanings that materially change the result/i);
+  assert.match(POLICY, /never choose for the user or present a guessed deliverable/i);
+  assert.match(POLICY, /use plausible distinctions relevant to the request, keep 2-3 neutral/i);
+  assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
+  assert.ok(POLICY.length <= 1000);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
@@ -114,10 +116,14 @@ test("optional MCP companion resolves its own bundled server", async () => {
   const commandHandler = hooks.hooks.UserPromptSubmit[0].hooks[0];
   assert.equal(commandHandler.type, "command");
   assert.equal(commandHandler.timeout, 3);
-  assert.ok(commandHandler.additionalContextLimit <= 4000);
+  assert.equal(commandHandler.additionalContextLimit, 4000);
   assert.match(commandHandler.command, /dist\/intent-command\.mjs/);
+  const commandSource = await read("hooks/intent-command.mjs");
+  assert.match(commandSource, /MAX_COMMAND_OUTPUT_BYTES\s*=\s*3000/);
   const commandBundle = await read("companion/dist/intent-command.mjs");
   assert.match(commandBundle, /intent_formation_hook/);
+  assert.match(commandBundle, /BOUNDED_OUTPUT_EXCEEDED/);
+  assert.match(commandBundle, /CONCURRENT_STATE_RECREATED/);
   const resumeBundle = await read("companion/dist/intent-resume.mjs");
   assert.match(resumeBundle, /Saved user-origin intent data follows/);
   const stateSkill = await read("companion/skills/intent-state-control/SKILL.md");
@@ -126,6 +132,10 @@ test("optional MCP companion resolves its own bundled server", async () => {
   assert.match(stateSkill, /Do not list the environment, search files, read Memory/i);
   assert.match(stateSkill, /Do not execute `\/intent off` or `\/intent start off` through this fallback/i);
   assert.match(stateSkill, /Never claim that intervention is off without the trusted Hook receipt/i);
+  assert.match(stateSkill, /two-step correction flow/i);
+  assert.match(stateSkill, /call .*intent_show.* first/i);
+  assert.match(stateSkill, /opaque export id/i);
+  assert.match(stateSkill, /does not expose an absolute path/i);
   assert.match(stateSkill, /receipt_id/);
   assert.match(stateMetadata, /allow_implicit_invocation:\s*true/);
 });

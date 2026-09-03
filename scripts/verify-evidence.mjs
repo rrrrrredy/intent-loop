@@ -2,11 +2,17 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
-import { gitArchiveFingerprint, sha256, treeFingerprint } from "../packages/intent-formation/evals/fingerprint.mjs";
+import {
+  gitArchiveFingerprint,
+  gitTreeFingerprint,
+  sha256,
+  treeFingerprint
+} from "../packages/intent-formation/evals/fingerprint.mjs";
 
 const repositoryRoot = path.resolve(import.meta.dirname, "..");
 const developmentRoot = path.join(repositoryRoot, "evidence", "development-regression-v8");
 const finalRoot = path.join(repositoryRoot, "evidence", "v0.3.0-beta.1");
+const requireCandidate = process.argv.includes("--require-candidate");
 
 async function exists(target) {
   try {
@@ -41,6 +47,9 @@ assert.equal(developmentRuns.length, 160);
 assert.equal(developmentGrades.length, 80);
 
 if (!(await exists(finalRoot))) {
+  if (requireCandidate) {
+    throw new Error("candidate holdout evidence is required for a release");
+  }
   process.stdout.write("verified development regression; candidate holdout evidence pending\n");
   process.exit(0);
 }
@@ -68,10 +77,27 @@ for (const [relativePath, expected] of Object.entries(manifest.source_sha256)) {
 await verifyArtifactHashes(finalRoot, manifest);
 
 const currentTree = await treeFingerprint(path.join(repositoryRoot, "plugins", "intent-formation"));
+const pluginPathspec = "plugins/intent-formation";
+assert.equal(
+  execFileSync(
+    "git",
+    ["status", "--porcelain", "--untracked-files=all", "--", pluginPathspec],
+    { cwd: repositoryRoot, encoding: "utf8" }
+  ).trim(),
+  "",
+  "candidate plugin tree contains tracked changes or untracked files"
+);
 assert.deepEqual(currentTree, manifest.candidate_plugin_tree);
 assert.deepEqual(manifest.executed_plugin_tree, manifest.candidate_plugin_tree);
+const candidateGitTree = gitTreeFingerprint(
+  repositoryRoot,
+  manifest.candidate_commit,
+  pluginPathspec
+);
+assert.deepEqual(candidateGitTree, manifest.candidate_git_tree);
+assert.deepEqual(currentTree, candidateGitTree);
 assert.deepEqual(
-  gitArchiveFingerprint(repositoryRoot, manifest.candidate_commit, "plugins/intent-formation"),
+  gitArchiveFingerprint(repositoryRoot, manifest.candidate_commit, pluginPathspec),
   manifest.candidate_git_archive
 );
 execFileSync("git", ["merge-base", "--is-ancestor", manifest.candidate_commit, "HEAD"], {

@@ -1,10 +1,21 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import {
+  buildAnalysis,
+  inspectPromptPrivacy,
+  validateStudyStructure
+} from "./analysis-core.mjs";
 import { createEvidenceSanitizer } from "./evidence-sanitizer.mjs";
-import { gitArchiveFingerprint, sha256, treeFingerprint } from "./fingerprint.mjs";
+import {
+  gitArchiveFingerprint,
+  gitTreeFingerprint,
+  sha256,
+  treeFingerprint
+} from "./fingerprint.mjs";
 
 function option(name, fallback = "") {
   const index = process.argv.indexOf(name);
@@ -19,6 +30,40 @@ function requiredPath(name) {
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
+}
+
+async function publishDirectoryAtomically(targetDirectory, files) {
+  const parent = path.dirname(targetDirectory);
+  await mkdir(parent, { recursive: true });
+  const staging = await mkdtemp(path.join(parent, ".intent-evidence-stage-"));
+  const backup = targetDirectory + ".previous-" + randomUUID();
+  let movedExisting = false;
+  let published = false;
+  try {
+    for (const [name, contents] of Object.entries(files)) {
+      await writeFile(path.join(staging, name), contents, "utf8");
+    }
+    try {
+      await rename(targetDirectory, backup);
+      movedExisting = true;
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+    try {
+      await rename(staging, targetDirectory);
+      published = true;
+    } catch (error) {
+      if (movedExisting) await rename(backup, targetDirectory);
+      throw error;
+    }
+    if (movedExisting) {
+      await rm(backup, { recursive: true, force: true });
+    }
+  } finally {
+    if (!published) {
+      await rm(staging, { recursive: true, force: true });
+    }
+  }
 }
 
 function jsonLine(value) {
@@ -142,6 +187,13 @@ const outputDirectory = path.resolve(
   option("--output", "evidence/v0.3.0-beta.1")
 );
 const productVersion = option("--product-version", "0.3.0-beta.1");
+const defaultStatePath = path.join(
+  process.env.CODEX_HOME || path.join(packageRoot, ".tmp", "missing-eval-home"),
+  "plugin-data",
+  "intent-formation",
+  "intent-events-v1.jsonl"
+);
+const statePath = path.resolve(option("--state", defaultStatePath));
 assert.ok(outputDirectory.startsWith(repositoryRoot + path.sep));
 
 const definition = await readJson(definitionPath);
@@ -180,6 +232,19 @@ assert.equal(study.isolation?.dangerous_approval_or_sandbox_bypass, false);
 assert.equal(study.plugin_id, "intent-formation@intent-loop");
 assert.equal(study.state_plugin_id, "intent-formation-state@intent-loop");
 assert.ok(study.model && study.reasoning_effort && grading.model && grading.reasoning_effort);
+validateStudyStructure(study, grading, scenarios, { requireUsable: true });
+const canonicalAnalysis = buildAnalysis({
+  study,
+  grading,
+  scenarios,
+  privacy: await inspectPromptPrivacy(statePath, scenarios),
+  generatedAt: sourceAnalysis.generated_at
+});
+assert.deepEqual(
+  sourceAnalysis,
+  canonicalAnalysis,
+  "analysis.json must exactly match canonical recomputation from study, grades, corpus, and state"
+);
 
 const currentCommit = execFileSync("git", ["rev-parse", "HEAD"], {
   cwd: repositoryRoot,
@@ -192,12 +257,30 @@ const trackedChanges = execFileSync(
   { cwd: repositoryRoot, encoding: "utf8" }
 ).trim();
 assert.equal(trackedChanges, "", "publish from a clean tracked worktree");
+const pluginPathspec = "plugins/intent-formation";
+const pluginWorktreeStatus = execFileSync(
+  "git",
+  ["status", "--porcelain", "--untracked-files=all", "--", pluginPathspec],
+  { cwd: repositoryRoot, encoding: "utf8" }
+).trim();
+assert.equal(
+  pluginWorktreeStatus,
+  "",
+  "candidate plugin tree contains tracked changes or untracked files"
+);
 const currentTree = await treeFingerprint(path.join(repositoryRoot, "plugins", "intent-formation"));
 assert.deepEqual(currentTree, study.plugin_tree);
+const currentGitTree = gitTreeFingerprint(
+  repositoryRoot,
+  study.candidate_commit,
+  pluginPathspec
+);
+assert.deepEqual(currentGitTree, study.candidate_git_tree);
+assert.deepEqual(currentTree, currentGitTree);
 const currentArchive = gitArchiveFingerprint(
   repositoryRoot,
   study.candidate_commit,
-  "plugins/intent-formation"
+  pluginPathspec
 );
 assert.deepEqual(currentArchive, study.candidate_archive);
 
@@ -214,7 +297,7 @@ for (const run of runs) {
   }
 }
 const grades = sanitizeValue(grading.grades);
-const sanitizedAnalysis = sanitizeValue(structuredClone(sourceAnalysis));
+const sanitizedAnalysis = sanitizeValue(structuredClone(canonicalAnalysis));
 delete sanitizedAnalysis.privacy.state_path;
 sanitizedAnalysis.privacy.storage_location = "isolated local plugin-data ledger; machine path omitted";
 
@@ -235,7 +318,7 @@ const clearLatencyDifferencesPp = scenarios
     const plugin = runs.find((run) => run.id === scenario.id && run.arm === "plugin").first.duration_ms;
     return ((plugin - baseline) / baseline) * 100;
   });
-const preferences = sourceAnalysis.metrics.blind_preference_counts;
+const preferences = canonicalAnalysis.metrics.blind_preference_counts;
 sanitizedAnalysis.inferential_statistics = {
   final_match_gain_percentage_points: {
     estimate: round(mean(finalMatchDifferencesPp)),
@@ -273,13 +356,9 @@ const graderAttempts = grading.batch_attempts.map((batch) => ({
 }));
 const retryBatches = graderAttempts.filter((batch) => batch.attempts.length > 1);
 
-await mkdir(outputDirectory, { recursive: true });
 const runsText = runs.map(jsonLine).join("");
 const gradesText = grades.map(jsonLine).join("");
 const analysisText = JSON.stringify(sanitizedAnalysis, null, 2) + "\n";
-await writeFile(path.join(outputDirectory, "runs.jsonl"), runsText, "utf8");
-await writeFile(path.join(outputDirectory, "blind-grades.jsonl"), gradesText, "utf8");
-await writeFile(path.join(outputDirectory, "analysis.json"), analysisText, "utf8");
 
 const sourceFiles = [
   "src/policy.mjs",
@@ -287,10 +366,12 @@ const sourceFiles = [
   "evals/holdout-manifest.json",
   "evals/holdout-method.md",
   "evals/fingerprint.mjs",
+  "evals/fresh-run-directories.mjs",
   "evals/run-study.mjs",
   "evals/grade-study.mjs",
   "evals/grading-protocol-v2.md",
   "evals/grading-output-v2.schema.json",
+  "evals/analysis-core.mjs",
   "evals/analyze-study.mjs",
   "evals/metrics.mjs",
   "evals/publish-evidence.mjs"
@@ -315,6 +396,7 @@ const manifest = {
   candidate_commit: study.candidate_commit,
   candidate_plugin_tree: study.plugin_tree,
   executed_plugin_tree: study.executed_plugin_tree,
+  candidate_git_tree: study.candidate_git_tree,
   candidate_git_archive: study.candidate_archive,
   corpus: definition.corpus,
   holdout_method: definition.method,
@@ -322,7 +404,7 @@ const manifest = {
   execution: {
     host: study.host,
     primary_conversations: runs.length,
-    usable_primary_conversations: sourceAnalysis.primary_run_reliability.usable_count,
+    usable_primary_conversations: canonicalAnalysis.primary_run_reliability.usable_count,
     primary_timeouts: timeouts,
     cleanup_failures: cleanupFailures,
     model: study.model,
@@ -362,11 +444,7 @@ const manifest = {
     "runs.jsonl": sha256(runsText)
   }
 };
-await writeFile(
-  path.join(outputDirectory, "manifest.json"),
-  JSON.stringify(manifest, null, 2) + "\n",
-  "utf8"
-);
+const manifestText = JSON.stringify(manifest, null, 2) + "\n";
 
 const metrics = sanitizedAnalysis.metrics;
 const readme = `# Intent Formation ${productVersion}: sealed holdout evidence\n\n` +
@@ -375,13 +453,19 @@ const readme = `# Intent Formation ${productVersion}: sealed holdout evidence\n\
   `Blind preference was plugin ${preferences.plugin}, baseline ${preferences.baseline}, tie ${preferences.tie}. ${retryBatches.length} grading batch(es) required a second attempt; primary product runs were never replaced.\n\n` +
   `This is synthetic, automated evidence for a bounded Codex beta. It is not a human-user study, a universal efficacy claim, or DeepSeek efficacy evidence. Read the limitations and sanitization record in \`manifest.json\`.\n\n` +
   `Files:\n\n- \`manifest.json\`: candidate binding, design, gates, retries, environment, sanitization, and limitations.\n- \`analysis.json\`: metrics, class detail, gates, and corpus-resampling uncertainty.\n- \`runs.jsonl\`: all sanitized primary responses, timings, and action-item types.\n- \`blind-grades.jsonl\`: all sanitized unblinded rubric results.\n`;
-await writeFile(path.join(outputDirectory, "README.md"), readme, "utf8");
-
-const publicText = [runsText, gradesText, analysisText, JSON.stringify(manifest), readme].join("\n");
+const publicText = [runsText, gradesText, analysisText, manifestText, readme].join("\n");
 assert.doesNotMatch(publicText, /(?:\\\\\?\\)?\b[A-Za-z]:[\\/]/u);
 assert.doesNotMatch(publicText, /(^|\s)\/(?:Users|home|tmp|private|var\/folders)\//mu);
 assert.doesNotMatch(publicText, /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/u);
 assert.doesNotMatch(publicText, /\b01[a-f0-9]{6}-[a-f0-9-]{20,}\b/u);
+
+await publishDirectoryAtomically(outputDirectory, {
+  "README.md": readme,
+  "manifest.json": manifestText,
+  "analysis.json": analysisText,
+  "runs.jsonl": runsText,
+  "blind-grades.jsonl": gradesText
+});
 
 process.stdout.write(JSON.stringify({
   output_directory: outputDirectory,

@@ -10,7 +10,7 @@ This report is intentionally incomplete while the candidate is being prepared. A
 
 ## State lifecycle
 
-- Source regression suite: 68/68 on Node 20.19 and Node 22.19, including the 100-writer lock regression.
+- Source regression suite: PENDING final-candidate rerun on Node 20.19 and Node 22.19, including the 100-writer lock regression.
 - Lock pressure: 10 additional rounds of 100 simultaneous appends completed without event loss after repairing the owner-publication race exposed by a real failed run.
 - Development-plugin real host: PASS for receipt-backed start, atomic save, show, file export plus digest verification, private purge, fresh-process private write, off, and forget.
 - Fresh candidate marketplace real host: PASS for direct `remember`, `show`, export plus independently recomputed digest, managed-export purge on private transition, private `remember` refusal without a receipt, `off`, and physical `forget`.
@@ -19,7 +19,7 @@ This report is intentionally incomplete while the candidate is being prepared. A
 
 ## DeepSeek Harness
 
-- Adapter and exact 18-file package suite: PASS on Node 20.19 and Node 22.19; the bundled DeepSeek package is 189,742 bytes in the current Windows build.
+- Adapter and exact 18-file package suite: PENDING final-candidate rerun on Node 20.19 and Node 22.19. Package bytes and digests come from the generated pack manifest rather than a hand-maintained number.
 - Real temporary package/add/compose/boot-help/remove lifecycle: PASS against `@deepseek-ai/dsh` `0.1.2-alpha.5`, with no model API key and automatic profile cleanup.
 - Node 22.19 real host lifecycle: PASS for pack/add/compose/boot-help/remove with a temporary `DSH_HOME`, no model API key, and complete cleanup.
 - Runtime dependency audit: PASS, with zero high-severity or greater npm advisories in both packages at verification time.

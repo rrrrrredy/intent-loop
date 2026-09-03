@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22.19.0
@@ -26,6 +27,8 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             packages/intent-formation/package-lock.json
+      - name: Verify annotated tag resolves to this commit
+        run: node scripts/verify-annotated-tag.mjs --tag "$GITHUB_REF_NAME" --commit "$GITHUB_SHA"
       - name: Wait for exact-tag CI
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,6 +74,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm audit --omit=dev --audit-level=high
+      - name: Require exact-candidate holdout evidence
+        run: node scripts/verify-evidence.mjs --require-candidate
       - name: Verify generated distribution is committed
         run: git diff --exit-code -- plugins/intent-formation plugins/intent-formation-state packages/intent-formation/THIRD_PARTY_NOTICES.md packages/intent-formation/SBOM.cdx.json dsh/tool-catalog.json dsh/SBOM.cdx.json dsh/THIRD_PARTY_NOTICES.md
       - name: Verify tag and installed identities match
@@ -87,10 +92,13 @@ jobs:
         shell: bash
         run: |
           mkdir -p artifacts
-          tar -czf "artifacts/intent-formation-core-$GITHUB_REF_NAME.tar.gz" \
-            -C plugins/intent-formation .
-          tar -czf "artifacts/intent-formation-state-$GITHUB_REF_NAME.tar.gz" \
-            -C plugins/intent-formation-state .
+          SOURCE_DATE_EPOCH=$(git show -s --format=%ct "$GITHUB_SHA")
+          tar --sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner \
+            -cf - -C plugins/intent-formation . \
+            | gzip -n > "artifacts/intent-formation-core-$GITHUB_REF_NAME.tar.gz"
+          tar --sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner \
+            -cf - -C plugins/intent-formation-state . \
+            | gzip -n > "artifacts/intent-formation-state-$GITHUB_REF_NAME.tar.gz"
           npm pack --json --ignore-scripts --pack-destination artifacts > "$RUNNER_TEMP/dsh-pack.json"
           cp plugins/intent-formation/SBOM.cdx.json artifacts/intent-formation-core-SBOM.cdx.json
           cp plugins/intent-formation-state/SBOM.cdx.json artifacts/intent-formation-state-SBOM.cdx.json
@@ -136,44 +144,88 @@ jobs:
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: artifacts/SHA256SUMS
-      - name: Create draft and upload all assets
+      - name: Create or safely reconcile the release draft
+        id: release-state
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --prerelease --draft --title "Intent Formation $GITHUB_REF_NAME"
-          gh release upload "$GITHUB_REF_NAME" artifacts/*
-      - name: Verify draft asset bytes
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          RELEASE_ID=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
-            --jq ".[] | select(.tag_name == \"$GITHUB_REF_NAME\" and .draft == true) | .id")
-          test -n "$RELEASE_ID"
-          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > "$RUNNER_TEMP/draft-release.json"
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
           node --input-type=module <<'NODE'
-          import { createHash } from "node:crypto";
-          import { readFileSync, readdirSync } from "node:fs";
-          import { join } from "node:path";
-          const release = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/draft-release.json`, "utf8"));
-          if (!release.draft || !release.prerelease) throw new Error("release must remain a draft prerelease during byte verification");
-          const byCodeUnit = (left, right) => left < right ? -1 : left > right ? 1 : 0;
-          const files = readdirSync("artifacts").sort(byCodeUnit);
-          const assets = [...release.assets].sort((a, b) => byCodeUnit(a.name, b.name));
-          if (files.length !== 7 || assets.length !== 7) throw new Error(`expected seven assets; local=${files.length} remote=${assets.length}`);
-          if (files.join("\n") !== assets.map((asset) => asset.name).join("\n")) throw new Error("draft asset names do not match local artifacts");
-          for (const asset of assets) {
-            const digest = `sha256:${createHash("sha256").update(readFileSync(join("artifacts", asset.name))).digest("hex")}`;
-            if (asset.digest !== digest) throw new Error(`digest mismatch for ${asset.name}`);
-          }
+          import { readFileSync, writeFileSync } from "node:fs";
+          const releases = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/releases.json`, "utf8"));
+          const matches = releases.filter((release) => release.tag_name === process.env.GITHUB_REF_NAME);
+          if (matches.length > 1) throw new Error("multiple releases use the same tag");
+          writeFileSync(`${process.env.RUNNER_TEMP}/target-release.json`, JSON.stringify(matches[0] || null));
           NODE
-      - name: Publish and verify immutable prerelease
+          if [ "$(node -p "JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/target-release.json', 'utf8')) === null")" = "true" ]; then
+            gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --prerelease --draft --title "Intent Formation $GITHUB_REF_NAME"
+            gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
+            node --input-type=module <<'NODE'
+            import { readFileSync, writeFileSync } from "node:fs";
+            const releases = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/releases.json`, "utf8"));
+            const matches = releases.filter((release) => release.tag_name === process.env.GITHUB_REF_NAME);
+            if (matches.length !== 1) throw new Error("new draft release could not be resolved uniquely");
+            writeFileSync(`${process.env.RUNNER_TEMP}/target-release.json`, JSON.stringify(matches[0]));
+            NODE
+          fi
+          node scripts/release-asset-plan.mjs \
+            --release "$RUNNER_TEMP/target-release.json" \
+            --artifacts artifacts \
+            --output "$RUNNER_TEMP/release-plan.json"
+          ACTION=$(node -p "JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/release-plan.json', 'utf8')).action")
+          RELEASE_ID=$(node -p "JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/release-plan.json', 'utf8')).release_id")
+          if [ "$ACTION" = "update_draft" ]; then
+            node -e "for (const id of JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/release-plan.json', 'utf8')).delete_asset_ids) console.log(id)" \
+              | while read -r ASSET_ID; do
+                  test -n "$ASSET_ID"
+                  gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$ASSET_ID"
+                done
+            node -e "for (const name of JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/release-plan.json', 'utf8')).upload_names) console.log(name)" \
+              | while read -r ASSET_NAME; do
+                  test -f "artifacts/$ASSET_NAME"
+                  gh release upload "$GITHUB_REF_NAME" "artifacts/$ASSET_NAME"
+                done
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+          elif [ "$ACTION" = "verify_published" ]; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "unsupported release action $ACTION" >&2
+            exit 1
+          fi
+          echo "release_id=$RELEASE_ID" >> "$GITHUB_OUTPUT"
+      - name: Verify reconciled asset bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ID: ${{ steps.release-state.outputs.release_id }}
+          ALREADY_PUBLISHED: ${{ steps.release-state.outputs.already_published }}
+        shell: bash
+        run: |
+          test -n "$RELEASE_ID"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > "$RUNNER_TEMP/reconciled-release.json"
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          import { localReleaseAssets, planReleaseAssets } from "./scripts/release-asset-plan.mjs";
+          const release = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/reconciled-release.json`, "utf8"));
+          const local = localReleaseAssets("artifacts");
+          if (local.length !== 7) throw new Error(`expected seven local assets, found ${local.length}`);
+          const plan = planReleaseAssets(release, local);
+          if (plan.upload_names.length > 0 || plan.delete_asset_ids.length > 0) throw new Error("release reconciliation is incomplete");
+          if (process.env.ALREADY_PUBLISHED === "true" && plan.action !== "verify_published") throw new Error("published release state changed");
+          if (process.env.ALREADY_PUBLISHED !== "true" && (!release.draft || plan.action !== "update_draft")) throw new Error("new release must remain a draft during verification");
+          NODE
+      - name: Publish verified draft prerelease
+        if: steps.release-state.outputs.already_published != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           gh release edit "$GITHUB_REF_NAME" --draft=false --prerelease --title "Intent Formation $GITHUB_REF_NAME"
+      - name: Verify immutable prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
           test "$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.immutable')" = "true"
           VERIFIED=false
           for attempt in $(seq 1 6); do

@@ -67,8 +67,8 @@ Every tool returns a short text result plus structured content.
 | `intent_set_mode` | Change task privacy behavior. |
 | `intent_export` | Create an integrity-checked portable export with a hashed source task ID and return an opaque managed-export ID. |
 | `intent_import` | Verify and import a portable export only with explicit user confirmation; merging requires a separate explicit flag. Integrity does not authenticate the export author. |
-| `intent_delete_record` | Physically purge one record and remove references to it. |
-| `intent_forget` | Physically purge all plugin-managed state for one task. |
+| `intent_delete_record` | Physically purge one record, references to it, and every managed export for that task. |
+| `intent_forget` | Physically purge all plugin-managed state, exports, and mode markers for one task. |
 
 Tools accept the exact current task ID supplied by hook context. Record statements are capped at 2,000 characters; source excerpts are capped at 160 characters. A complete prompt, response, or transcript is outside the contract.
 
@@ -79,7 +79,7 @@ These remain ordinary messages in the current Codex task:
 ~~~text
 /intent start
 /intent remember <one short goal>
-/intent show
+/intent show [page]
 /intent correct
 /intent feedback
 /intent export
@@ -88,11 +88,11 @@ These remain ordinary messages in the current Codex task:
 /intent forget
 ~~~
 
-The hook maps them to the bounded MCP tools. There is no separate chat product or form. An export is stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`; the absolute path is deliberately excluded from model context.
+The hook maps them to bounded local operations. `/intent show` returns at most three active records and accepts a positive page number; even the largest valid record remains under the command Hook's 3,000-byte output ceiling. There is no separate chat product or form. An export is stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`; the absolute path is deliberately excluded from model context.
 
 In standard mode, `/intent remember <text>` defaults to an explicit task `desired_outcome` and starts state when needed. Optional `goal:`, `outcome:`, `constraint:`, `preference:`, `success:`, and `tradeoff:` prefixes select a role without asking the model to infer one. The short-lived command Hook refuses this command in private mode because an in-memory record created there would disappear as soon as the Hook process exits; private records are available only through the continuing State MCP process.
 
-The controls require the packaged Hooks to be reviewed and trusted by Codex. The implicit Skill can recover receipt-backed operations when a command Hook is unavailable, except for `off`: it deliberately refuses `/intent off` and `/intent start off` because a model-initiated state write cannot prove that future UserPromptSubmit events will receive the task-specific override. Headless release automation may use Codex's explicit Hook-trust bypass only after auditing the exact package under test.
+The controls require the packaged Hooks to be reviewed and trusted by Codex. The implicit Skill can recover receipt-backed operations when a command Hook is unavailable, except for `off`: it deliberately refuses `/intent off` and `/intent start off` because a model-initiated state write cannot prove that future UserPromptSubmit events will receive the task-specific override. Most fallback commands use one MCP call; correction first reads the exact target and then submits one compare-validated replacement, failing if the target was deleted concurrently. Headless release automation may use Codex's explicit Hook-trust bypass only after auditing the exact package under test.
 
 ## Compact handoff
 

@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promis
 import path from "node:path";
 import test from "node:test";
 import { IntentService, resolveDataDirectory } from "../src/service.mjs";
+import { EventStore } from "../src/store.mjs";
 
 const temporaryRoot = path.join(process.cwd(), ".tmp", "service-tests");
 
@@ -45,6 +46,16 @@ function refreshIntegrity(payload) {
     .update(JSON.stringify(body), "utf8")
     .digest("hex");
   return payload;
+}
+
+function recordState(snapshot) {
+  return snapshot.records.map((record) => ({
+    record_id: record.record_id,
+    statement: record.statement,
+    supersedes: record.supersedes,
+    status: record.status,
+    invalidated_reason: record.invalidated_reason
+  }));
 }
 
 test("data directory ignores unexpanded placeholders and uses stable fallbacks", () => {
@@ -254,10 +265,14 @@ test("record and task deletion physically purge persisted content", async (conte
     recoveryPaths.map((recoveryPath) => writeFile(recoveryPath, recoveryBody, "utf8"))
   );
 
-  await service.deleteRecord({
+  const exportedBeforeRecordDelete = await service.exportTaskFile({ task_id: "task-delete" });
+  assert.match(await readFile(exportedBeforeRecordDelete.path, "utf8"), /Sensitive first direction/);
+  const recordDeletion = await service.deleteRecord({
     task_id: "task-delete",
     record_id: first.record.record_id
   });
+  assert.equal(recordDeletion.removed_exports, 1);
+  await assert.rejects(readFile(exportedBeforeRecordDelete.path, "utf8"), /ENOENT/);
   let persisted = await readFile(storePath, "utf8");
   assert.doesNotMatch(persisted, /Sensitive first direction/);
   assert.doesNotMatch(persisted, new RegExp(first.record.record_id));
@@ -433,6 +448,332 @@ test("portable export and import preserve provenance, disagreement, and status",
   );
 });
 
+test("exports round-trip after an invalidated superseder in every task mode", async (context) => {
+  const { service } = await fixture(context);
+
+  for (const mode of ["standard", "off", "private"]) {
+    const sourceTask = "case-invalidated-superseder-" + mode;
+    const targetTask = "case-invalidated-superseder-imported-" + mode;
+    if (mode === "private") {
+      await service.startTask({ task_id: sourceTask, mode: "private" });
+    }
+    const first = await service.addExplicit(explicit(sourceTask, "Keep the original direction"));
+    const second = await service.addExplicit(
+      explicit(sourceTask, "Try a replacement direction", {
+        source_ref: { ref: "turn-2" },
+        supersedes: [first.record.record_id]
+      })
+    );
+    await service.invalidate({
+      task_id: sourceTask,
+      record_id: second.record.record_id,
+      reason: "The replacement was withdrawn"
+    });
+    if (mode === "off") {
+      await service.setMode({ task_id: sourceTask, mode: "off" });
+    }
+
+    const source = await service.show({ task_id: sourceTask });
+    assert.deepEqual(
+      source.records.map((record) => record.status),
+      ["active", "invalidated"]
+    );
+    const exported = await service.exportTask({ task_id: sourceTask });
+    const imported = await service.importTask({
+      task_id: targetTask,
+      payload: exported,
+      user_confirmed: true
+    });
+
+    assert.equal(imported.snapshot.mode, mode);
+    assert.deepEqual(recordState(imported.snapshot), recordState(source));
+  }
+});
+
+test("superseding chains and merges round-trip independently of display timestamps", async (context) => {
+  const { service } = await fixture(context);
+  const taskId = "task-chain-merge";
+  const base = await service.addExplicit(
+    explicit(taskId, "Start with a local prototype", {
+      created_at: "2026-09-01T00:00:40.000Z"
+    })
+  );
+  const left = await service.addExplicit(
+    explicit(taskId, "Optimize for individual users", {
+      source_ref: { ref: "turn-2" },
+      supersedes: [base.record.record_id],
+      created_at: "2026-09-01T00:00:30.000Z"
+    })
+  );
+  const right = await service.addExplicit(
+    explicit(taskId, "Optimize for small teams", {
+      source_ref: { ref: "turn-3" },
+      supersedes: [base.record.record_id],
+      created_at: "2026-09-01T00:00:20.000Z"
+    })
+  );
+  await service.addExplicit(
+    explicit(taskId, "Support individuals and small teams", {
+      source_ref: { ref: "turn-4" },
+      supersedes: [left.record.record_id, right.record.record_id],
+      created_at: "2026-09-01T00:00:10.000Z"
+    })
+  );
+
+  const source = await service.show({ task_id: taskId });
+  assert.deepEqual(
+    source.records.map((record) => record.status),
+    ["active", "superseded", "superseded", "superseded"]
+  );
+  const imported = await service.importTask({
+    task_id: "case-chain-merge-imported",
+    payload: await service.exportTask({ task_id: taskId }),
+    user_confirmed: true
+  });
+  assert.deepEqual(recordState(imported.snapshot), recordState(source));
+});
+
+test("delete races cannot append dangling supersedes or invalidations", async (context) => {
+  const { directory } = await fixture(context);
+  let activeBarrier = null;
+  const racingStore = new EventStore({
+    dataDirectory: directory,
+    lockTestHooks: {
+      async beforeAppendIfLock() {
+        if (!activeBarrier) return;
+        const barrier = activeBarrier;
+        activeBarrier = null;
+        barrier.reached();
+        await barrier.release;
+      }
+    }
+  });
+  const writer = new IntentService({ store: racingStore });
+  const deleter = new IntentService({ dataDirectory: directory });
+  const armBarrier = () => {
+    let reached;
+    let release;
+    const reachedPromise = new Promise((resolve) => (reached = resolve));
+    const releasePromise = new Promise((resolve) => (release = resolve));
+    activeBarrier = { reached, release: releasePromise };
+    return { reached: reachedPromise, release };
+  };
+
+  const superseded = await deleter.addExplicit(
+    explicit("case-delete-race-supersede", "Target that may be deleted")
+  );
+  let barrier = armBarrier();
+  const racingAdd = writer.addExplicit(
+    explicit("case-delete-race-supersede", "Replacement must remain referentially valid", {
+      source_ref: { ref: "turn-racing-add" },
+      supersedes: [superseded.record.record_id]
+    })
+  );
+  await barrier.reached;
+  await deleter.deleteRecord({
+    task_id: "case-delete-race-supersede",
+    record_id: superseded.record.record_id
+  });
+  barrier.release();
+  await assert.rejects(racingAdd, /unknown superseded record ids/);
+
+  const supersedeSource = await writer.show({ task_id: "case-delete-race-supersede" });
+  assert.deepEqual(supersedeSource.records, []);
+  const supersedeImport = await writer.importTask({
+    task_id: "case-delete-race-supersede-imported",
+    payload: await writer.exportTask({ task_id: "case-delete-race-supersede" }),
+    user_confirmed: true
+  });
+  assert.deepEqual(supersedeImport.snapshot.records, []);
+
+  const invalidated = await deleter.addExplicit(
+    explicit("case-delete-race-invalidate", "Target that may be invalidated")
+  );
+  barrier = armBarrier();
+  const racingInvalidation = writer.invalidate({
+    task_id: "case-delete-race-invalidate",
+    record_id: invalidated.record.record_id,
+    reason: "Concurrent invalidation"
+  });
+  await barrier.reached;
+  await deleter.deleteRecord({
+    task_id: "case-delete-race-invalidate",
+    record_id: invalidated.record.record_id
+  });
+  barrier.release();
+  await assert.rejects(racingInvalidation, /record_id does not exist/);
+
+  const stored = await racingStore.readAll();
+  assert.equal(
+    stored.events.some(
+      (event) =>
+        event.event_type === "record_invalidated" &&
+        event.payload.target_record_id === invalidated.record.record_id
+    ),
+    false
+  );
+});
+
+test("start and import creation use locked create-only semantics", async (context) => {
+  const { directory } = await fixture(context);
+  let activeBarrier = null;
+  const gatedStore = new EventStore({
+    dataDirectory: directory,
+    lockTestHooks: {
+      async beforeReplaceTaskIfLock({ taskId }) {
+        if (activeBarrier?.taskId !== taskId) return;
+        const barrier = activeBarrier;
+        activeBarrier = null;
+        barrier.reached();
+        await barrier.release;
+      }
+    }
+  });
+  const gated = new IntentService({ store: gatedStore });
+  const concurrent = new IntentService({ dataDirectory: directory });
+  const armBarrier = (taskId) => {
+    let reached;
+    let release;
+    const reachedPromise = new Promise((resolve) => (reached = resolve));
+    const releasePromise = new Promise((resolve) => (release = resolve));
+    activeBarrier = { taskId, reached, release: releasePromise };
+    return { reached: reachedPromise, release };
+  };
+
+  let barrier = armBarrier("task-start-vs-add");
+  const starting = gated.startTask({ task_id: "task-start-vs-add", mode: "standard" });
+  await barrier.reached;
+  await concurrent.addExplicit(
+    explicit("task-start-vs-add", "Concurrent record must survive start")
+  );
+  barrier.release();
+  const started = await starting;
+  assert.deepEqual(
+    started.records.map((record) => record.statement),
+    ["Concurrent record must survive start"]
+  );
+
+  await concurrent.addExplicit(explicit("task-import-race-source", "Imported record"));
+  const payload = await concurrent.exportTask({ task_id: "task-import-race-source" });
+  barrier = armBarrier("task-import-vs-add");
+  const importing = gated.importTask({
+    task_id: "task-import-vs-add",
+    payload,
+    user_confirmed: true
+  });
+  await barrier.reached;
+  await concurrent.addExplicit(
+    explicit("task-import-vs-add", "Concurrent target record wins create race")
+  );
+  barrier.release();
+  await assert.rejects(importing, /target task already exists/);
+  assert.deepEqual(
+    (await gated.show({ task_id: "task-import-vs-add" })).records.map(
+      (record) => record.statement
+    ),
+    ["Concurrent target record wins create race"]
+  );
+
+  barrier = armBarrier("task-start-vs-import");
+  const racingStart = gated.startTask({
+    task_id: "task-start-vs-import",
+    mode: "standard"
+  });
+  await barrier.reached;
+  await concurrent.importTask({
+    task_id: "task-start-vs-import",
+    payload,
+    user_confirmed: true
+  });
+  barrier.release();
+  assert.deepEqual(
+    (await racingStart).records.map((record) => record.statement),
+    ["Imported record"]
+  );
+
+  await concurrent.addExplicit(explicit("task-start-vs-delete", "Delete before create"));
+  barrier = armBarrier("task-start-vs-delete");
+  const startAfterDelete = gated.startTask({
+    task_id: "task-start-vs-delete",
+    mode: "standard"
+  });
+  await barrier.reached;
+  await concurrent.deleteTask({ task_id: "task-start-vs-delete" });
+  barrier.release();
+  const recreated = await startAfterDelete;
+  assert.equal(recreated.exists, true);
+  assert.deepEqual(recreated.records, []);
+});
+
+test("private transition serializes successful add, invalidate, and delete operations", async (context) => {
+  const { directory } = await fixture(context);
+  let activeBarrier = null;
+  const gatedStore = new EventStore({
+    dataDirectory: directory,
+    lockTestHooks: {
+      async afterReplaceTaskIfCommit({ taskId }) {
+        if (activeBarrier?.taskId !== taskId) return;
+        const barrier = activeBarrier;
+        activeBarrier = null;
+        barrier.reached();
+        await barrier.release;
+      }
+    }
+  });
+  const service = new IntentService({ store: gatedStore });
+  const original = await service.addExplicit(
+    explicit("case-private-transition-race", "Persistent record before private mode")
+  );
+  let reached;
+  let release;
+  const reachedPromise = new Promise((resolve) => (reached = resolve));
+  const releasePromise = new Promise((resolve) => (release = resolve));
+  activeBarrier = {
+    taskId: "case-private-transition-race",
+    reached,
+    release: releasePromise
+  };
+
+  const transition = service.setMode({
+    task_id: "case-private-transition-race",
+    mode: "private"
+  });
+  await reachedPromise;
+  const addition = service.addExplicit(
+    explicit("case-private-transition-race", "Private concurrent record survives")
+  );
+  const invalidation = service.invalidate({
+    task_id: "case-private-transition-race",
+    record_id: original.record.record_id,
+    reason: "This old persistent record no longer exists"
+  });
+  const deletion = service.deleteRecord({
+    task_id: "case-private-transition-race",
+    record_id: original.record.record_id
+  });
+  release();
+
+  const outcomes = await Promise.allSettled([transition, addition, invalidation, deletion]);
+  assert.equal(outcomes[0].status, "fulfilled");
+  assert.equal(outcomes[1].status, "fulfilled");
+  assert.equal(outcomes[2].status, "rejected");
+  assert.match(outcomes[2].reason.message, /record_id does not exist/);
+  assert.equal(outcomes[3].status, "fulfilled");
+  assert.equal(outcomes[3].value.deleted, false);
+  const final = await service.show({ task_id: "case-private-transition-race" });
+  assert.equal(final.mode, "private");
+  assert.deepEqual(
+    final.records.map((record) => record.statement),
+    ["Private concurrent record survives"]
+  );
+  assert.equal(
+    (await readFile(path.join(directory, "intent-events-v1.jsonl"), "utf8")).includes(
+      "Private concurrent record survives"
+    ),
+    false
+  );
+});
+
 test("an off-mode export imports records before restoring off mode", async (context) => {
   const { service } = await fixture(context);
   await service.addExplicit(explicit("task-export-off", "Keep this record while off"));
@@ -541,22 +882,134 @@ test("a retried forget finishes export deletion after task-state deletion commit
   await assert.rejects(readFile(exported.path, "utf8"), /ENOENT/u);
 });
 
-test("an export verification failure removes the newly written artifact", async (context) => {
-  const { directory, service } = await fixture(context);
-  await service.addExplicit(explicit("task-export-fault", "Do not leave an unverified export"));
-  const show = service.show.bind(service);
-  let calls = 0;
-  service.show = async (input) => {
-    calls += 1;
-    if (calls === 2) throw new Error("injected post-write verification failure");
-    return show(input);
+test("forget linearizes ledger and export cleanup before concurrent recreation", async (context) => {
+  const { directory } = await fixture(context);
+  const importSource = new IntentService({ dataDirectory: path.join(directory, "import-source") });
+  await importSource.addExplicit(explicit("source", "Imported recreation survives"));
+  const importPayload = await importSource.exportTask({ task_id: "source" });
+  const cases = [
+    ["start", (service, taskId) => service.startTask({ task_id: taskId, mode: "standard" })],
+    ["add", (service, taskId) => service.addExplicit(explicit(taskId, "Added recreation survives"))],
+    ["import", (service, taskId) => service.importTask({
+      task_id: taskId,
+      payload: importPayload,
+      user_confirmed: true
+    })],
+    ["private", (service, taskId) => service.setMode({ task_id: taskId, mode: "private" })]
+  ];
+
+  for (const [label, recreate] of cases) {
+    const caseDirectory = path.join(directory, "forget-race-" + label);
+    const taskId = "task-forget-race-" + label;
+    const deleting = new IntentService({ dataDirectory: caseDirectory });
+    const concurrent = new IntentService({ dataDirectory: caseDirectory });
+    await deleting.addExplicit(explicit(taskId, "Old generation must be deleted"));
+    const oldExport = await deleting.exportTaskFile({ task_id: taskId });
+
+    let reached;
+    let release;
+    const reachedPromise = new Promise((resolve) => (reached = resolve));
+    const releasePromise = new Promise((resolve) => (release = resolve));
+    const realPurge = deleting.purgeManagedExports.bind(deleting);
+    deleting.purgeManagedExports = async (selectedTaskId) => {
+      const removed = await realPurge(selectedTaskId);
+      reached();
+      await releasePromise;
+      return removed;
+    };
+
+    let recreationPromise = null;
+    const realShow = deleting.show.bind(deleting);
+    deleting.show = async (input) => {
+      if (input.task_id === taskId && recreationPromise) await recreationPromise;
+      return realShow(input);
+    };
+
+    const deletionPromise = deleting.deleteTask({ task_id: taskId });
+    await reachedPromise;
+    let recreationSettled = false;
+    recreationPromise = recreate(concurrent, taskId).finally(() => {
+      recreationSettled = true;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    assert.equal(recreationSettled, false, label + " must wait for transactional cleanup");
+    release();
+
+    const deletion = await deletionPromise;
+    await recreationPromise;
+    assert.equal(deletion.exists_after, true, label + " must suppress a false forget receipt");
+    await assert.rejects(readFile(oldExport.path, "utf8"), /ENOENT/u);
+    const recreated = await concurrent.show({ task_id: taskId });
+    assert.equal(recreated.exists, true);
+
+    if (recreated.mode === "private") {
+      await assert.rejects(
+        concurrent.exportTaskFile({ task_id: taskId }),
+        /private intent state cannot be exported/u
+      );
+    } else {
+      if (recreated.active_records.length === 0) {
+        await concurrent.addExplicit(explicit(taskId, "New export survives old forget"));
+      }
+      const newExport = await concurrent.exportTaskFile({ task_id: taskId });
+      assert.match(await readFile(newExport.path, "utf8"), /survives/i);
+    }
+  }
+});
+
+test("a private transition cannot erase a later successful standard export", async (context) => {
+  const { directory } = await fixture(context);
+  const transitioning = new IntentService({ dataDirectory: directory });
+  const concurrent = new IntentService({ dataDirectory: directory });
+  const taskId = "case-private-export-linearization";
+  await transitioning.addExplicit(explicit(taskId, "Old standard record"));
+  const oldExport = await transitioning.exportTaskFile({ task_id: taskId });
+
+  let reached;
+  let release;
+  const reachedPromise = new Promise((resolve) => (reached = resolve));
+  const releasePromise = new Promise((resolve) => (release = resolve));
+  const realPurge = transitioning.purgeManagedExports.bind(transitioning);
+  transitioning.purgeManagedExports = async (selectedTaskId) => {
+    const removed = await realPurge(selectedTaskId);
+    reached();
+    await releasePromise;
+    return removed;
   };
 
+  const privateTransition = transitioning.setMode({ task_id: taskId, mode: "private" });
+  await reachedPromise;
+  let standardSettled = false;
+  const standardTransition = concurrent
+    .setMode({ task_id: taskId, mode: "standard" })
+    .finally(() => (standardSettled = true));
+  await new Promise((resolve) => setTimeout(resolve, 25));
+  assert.equal(standardSettled, false);
+  release();
+  await privateTransition;
+  await standardTransition;
+  await assert.rejects(readFile(oldExport.path, "utf8"), /ENOENT/u);
+
+  await concurrent.addExplicit(explicit(taskId, "Later standard export survives"));
+  const newExport = await concurrent.exportTaskFile({ task_id: taskId });
+  assert.match(await readFile(newExport.path, "utf8"), /Later standard export survives/u);
+});
+
+test("private state is rejected before any export write", async (context) => {
+  const { directory, service } = await fixture(context);
+  const canary = "PRIVATE-EXPORT-MUST-NEVER-HIT-DISK-7f31";
+  await service.startTask({ task_id: "case-private-export-denied", mode: "private" });
+  await service.addExplicit(explicit("case-private-export-denied", canary));
+
   await assert.rejects(
-    service.exportTaskFile({ task_id: "task-export-fault" }),
-    /injected post-write verification failure/u
+    service.exportTaskFile({ task_id: "case-private-export-denied" }),
+    /private intent state cannot be exported to disk/u
   );
-  assert.deepEqual(await readdir(path.join(directory, "exports")), []);
+  await assert.rejects(readdir(path.join(directory, "exports")), /ENOENT/u);
+  assert.doesNotMatch(
+    await readFile(path.join(directory, "intent-events-v1.jsonl"), "utf8"),
+    new RegExp(canary)
+  );
 });
 
 test("an import acknowledgement failure leaves one atomic, inspectable commit", async (context) => {
@@ -564,10 +1017,10 @@ test("an import acknowledgement failure leaves one atomic, inspectable commit", 
   await service.addExplicit(explicit("task-import-source", "Preserve one atomic imported record"));
   const payload = await service.exportTask({ task_id: "task-import-source" });
   const target = new IntentService({ dataDirectory: path.join(directory, "import-target") });
-  const replaceTask = target.store.replaceTask.bind(target.store);
+  const replaceTaskIf = target.store.replaceTaskIf.bind(target.store);
   let injected = true;
-  target.store.replaceTask = async (...args) => {
-    const result = await replaceTask(...args);
+  target.store.replaceTaskIf = async (...args) => {
+    const result = await replaceTaskIf(...args);
     if (injected) {
       injected = false;
       throw new Error("injected acknowledgement loss after atomic commit");

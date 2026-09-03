@@ -3,7 +3,13 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { summarizeCodexEvents } from "./codex-event-summary.mjs";
-import { gitArchiveFingerprint, sha256, treeFingerprint } from "./fingerprint.mjs";
+import { createFreshRunDirectories } from "./fresh-run-directories.mjs";
+import {
+  gitArchiveFingerprint,
+  gitTreeFingerprint,
+  sha256,
+  treeFingerprint
+} from "./fingerprint.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -97,6 +103,9 @@ const missingIds = requestedIds.filter(
 if (missingIds.length > 0) {
   throw new Error("Unknown scenario ids: " + missingIds.join(", "));
 }
+if (new Set(scenarios.map((scenario) => scenario.id)).size !== scenarios.length) {
+  throw new Error("scenario ids must be unique");
+}
 
 const actualCommit = execFileSync("git", ["rev-parse", "HEAD"], {
   cwd: gitRoot,
@@ -113,7 +122,24 @@ const trackedChanges = execFileSync(
 if (trackedChanges !== "") {
   throw new Error("candidate-bound study requires a clean tracked worktree");
 }
+const pluginPathspec = "plugins/intent-formation";
+const pluginWorktreeStatus = execFileSync(
+  "git",
+  ["status", "--porcelain", "--untracked-files=all", "--", pluginPathspec],
+  { cwd: gitRoot, encoding: "utf8" }
+).trim();
+if (pluginWorktreeStatus !== "") {
+  throw new Error("candidate plugin tree contains tracked changes or untracked files");
+}
 const pluginTree = await treeFingerprint(pluginRoot);
+const candidateGitTree = gitTreeFingerprint(gitRoot, candidateCommit, pluginPathspec);
+if (
+  candidateGitTree.sha256 !== pluginTree.sha256 ||
+  candidateGitTree.file_count !== pluginTree.file_count ||
+  candidateGitTree.bytes !== pluginTree.bytes
+) {
+  throw new Error("candidate commit plugin tree does not match the evaluated source tree");
+}
 const codexHome = path.resolve(process.env.CODEX_HOME);
 const isolationMarkerPath = path.join(
   codexHome,
@@ -167,7 +193,7 @@ const codexCliVersion = execFileSync(codexBinary, ["--version"], {
 const candidateArchive = gitArchiveFingerprint(
   gitRoot,
   candidateCommit,
-  "plugins/intent-formation"
+  pluginPathspec
 );
 
 const jobGroups = scenarios.map((scenario, index) => {
@@ -180,8 +206,10 @@ const jobGroups = scenarios.map((scenario, index) => {
   return orderedArms.map((arm) => ({ scenario, arm }));
 });
 
-await mkdir(workspace, { recursive: true });
-await mkdir(outputDirectory, { recursive: true });
+await createFreshRunDirectories([
+  { label: "study workspace", target: workspace },
+  { label: "study output", target: outputDirectory }
+]);
 
 function pluginOverride(arm) {
   return pluginConfigKey + (arm === "plugin" ? "true" : "false");
@@ -476,6 +504,7 @@ const summary = {
   codex_cli_version: codexCliVersion,
   plugin_tree: pluginTree,
   executed_plugin_tree: executedPluginTree,
+  candidate_git_tree: candidateGitTree,
   candidate_archive: candidateArchive,
   plugin_inventory: {
     installed_plugin_ids: installedPluginIds,

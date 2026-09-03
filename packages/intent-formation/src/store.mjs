@@ -270,12 +270,12 @@ export class EventStore {
     return this.withLock(async () => this.readAndRepairUnlocked());
   }
 
-  async append(events) {
-    const result = await this.appendIf(events, () => true);
+  async append(events, options = {}) {
+    const result = await this.appendIf(events, () => true, options);
     return { events: result.events, recovery: result.recovery };
   }
 
-  async appendIf(events, predicate) {
+  async appendIf(events, predicate, options = {}) {
     const additions = Array.isArray(events) ? events : [events];
     additions.forEach(validateEvent);
     if (additions.length === 0) {
@@ -283,6 +283,9 @@ export class EventStore {
       return { ...current, appended: false };
     }
 
+    await this.lockTestHooks.beforeAppendIfLock?.({
+      events: additions.map((event) => structuredClone(event))
+    });
     return this.withLock(async () => {
       const current = await this.readAndRepairUnlocked();
       const allowed = await predicate(
@@ -300,27 +303,55 @@ export class EventStore {
       } finally {
         await handle.close();
       }
-      return {
+      const result = {
         events: current.events.concat(additions),
         recovery: current.recovery,
         appended: true
       };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: result.events.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+      return result;
     });
   }
 
-  async replaceTask(taskId, replacementEvents = []) {
+  async replaceTask(taskId, replacementEvents = [], options = {}) {
+    const result = await this.replaceTaskIf(taskId, replacementEvents, () => true, options);
+    return result.removed;
+  }
+
+  async replaceTaskIf(
+    taskId,
+    replacementEvents = [],
+    predicate = () => true,
+    options = {}
+  ) {
     replacementEvents.forEach((event) => {
       validateEvent(event);
       if (event.task_id !== taskId) {
         throw new TypeError("replacement events must belong to the selected task");
       }
     });
-    let removed = 0;
-    const sensitiveTokens = new Set([taskId]);
-    await this.transform(
-      (events) => {
+    if (typeof predicate !== "function") {
+      throw new TypeError("replacement predicate must be a function");
+    }
+    await this.lockTestHooks.beforeReplaceTaskIfLock?.({ taskId });
+    const result = await this.withLock(async () => {
+      const current = await this.readAndRepairUnlocked();
+      const allowed = await predicate(
+        current.events.map((event) => structuredClone(event))
+      );
+      if (!allowed) {
+        return { ...current, replaced: false, removed: 0 };
+      }
+
+      let removed = 0;
+      const sensitiveTokens = new Set([taskId]);
+      const events = (() => {
         const kept = [];
-        for (const event of events) {
+        for (const event of current.events) {
           if (event.task_id === taskId) {
             removed += 1;
             collectStrings(event, sensitiveTokens);
@@ -329,10 +360,31 @@ export class EventStore {
           }
         }
         return kept.concat(replacementEvents);
-      },
-      { scrubRecovery: { taskId, recordId: null, sensitiveTokens } }
-    );
-    return removed;
+      })();
+      await this.atomicWriteUnlocked(events);
+      await this.scrubRecoveryArtifactsUnlocked({
+        taskId,
+        recordId: null,
+        sensitiveTokens
+      });
+      const result = {
+        events,
+        recovery: current.recovery,
+        replaced: true,
+        removed
+      };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: events.map((event) => structuredClone(event)),
+        recovery: current.recovery,
+        removed
+      });
+      return result;
+    });
+    if (result.replaced) {
+      await this.lockTestHooks.afterReplaceTaskIfCommit?.({ taskId });
+    }
+    return result;
   }
 
   async transform(transformer, options = {}) {
@@ -347,14 +399,33 @@ export class EventStore {
       if (options.scrubRecovery) {
         await this.scrubRecoveryArtifactsUnlocked(options.scrubRecovery);
       }
-      return {
+      const result = {
         events: transformed,
         recovery: current.recovery
       };
+      await options.afterCommit?.({
+        previousEvents: current.events.map((event) => structuredClone(event)),
+        events: transformed.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+      return result;
     });
   }
 
-  async purgeTask(taskId) {
+  async withLockedEvents(callback) {
+    if (typeof callback !== "function") {
+      throw new TypeError("locked event callback must be a function");
+    }
+    return this.withLock(async () => {
+      const current = await this.readAndRepairUnlocked();
+      return callback({
+        events: current.events.map((event) => structuredClone(event)),
+        recovery: current.recovery
+      });
+    });
+  }
+
+  async purgeTask(taskId, options = {}) {
     let removed = 0;
     const sensitiveTokens = new Set([taskId]);
     await this.transform(
@@ -372,13 +443,14 @@ export class EventStore {
           taskId,
           recordId: null,
           sensitiveTokens
-        }
+        },
+        afterCommit: options.afterCommit
       }
     );
     return removed;
   }
 
-  async purgeRecord(taskId, recordId) {
+  async purgeRecord(taskId, recordId, options = {}) {
     let removed = 0;
     const sensitiveTokens = new Set([recordId]);
     await this.transform(
@@ -406,7 +478,8 @@ export class EventStore {
           taskId,
           recordId,
           sensitiveTokens
-        }
+        },
+        afterCommit: options.afterCommit
       }
     );
     return removed;

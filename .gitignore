@@ -1,6 +1,5 @@
 node_modules/
 coverage/
-.intent-loop-test-data/
 artifacts/
 *.tgz
 packages/intent-formation/dist/

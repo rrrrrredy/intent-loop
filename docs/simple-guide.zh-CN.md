@@ -8,7 +8,7 @@ Intent Formation 会帮 Codex 在开工前发现一个关键问题：你的要�
 
 ## 最简单的安装方法
 
-电脑需要有 Codex CLI 和 Node.js 20 或更高版本，并且在终端里直接输入 `node --version` 能看到版本号。这里常说的 PATH，简单理解就是“终端能直接找到并运行这个命令”。
+电脑需要有 [Codex CLI 官方版](https://learn.chatgpt.com/docs/codex/cli) 和 [Node.js 官方版](https://nodejs.org/en/download)。安装后关闭并重新打开终端，分别输入 `node --version` 和 `codex --version`：前者应显示 20 或更高版本，后者应显示 Codex 版本。这里常说的 PATH，简单理解就是“终端能直接找到并运行这个命令”。如果看到“找不到命令”或 `command not found`，先按对应链接完成安装，再重新打开终端重试。
 
 Windows 打开 PowerShell，macOS 打开“终端”，Linux 打开 Terminal。依次粘贴下面两行：
 
@@ -46,10 +46,10 @@ codex plugin add intent-formation-state@intent-loop
 新建任务后，在 **Codex 任务的聊天输入框**里输入 `/intent start`，不要输到 PowerShell 或 Terminal。成功时会看到一段 `IF-...` 回执。没有回执，就当作没有成功。
 
 - `/intent remember 只在所有发布门槛通过后公开`：在 standard 模式明确保存一条目标。也可以写 `/intent remember constraint: 不上传私密数据` 来保存硬性限制。
-- `/intent show`：查看已保存的简短记录。
+- `/intent show`：每页查看最多三条已保存记录；还有更多时输入 `/intent show 2`、`/intent show 3` 继续看。
 - `/intent private`：清掉已落盘的当前任务内容，之后只在本次进程内临时保存。
 - `/intent off`：关闭当前任务的意图干预和状态更新。
-- `/intent export`：导出 JSON 文件，并给出文件位置和校验值。
+- `/intent export`：在 standard 或 off 模式导出 JSON 文件，并给出不包含本机路径的导出 ID 和 SHA-256 校验值；private 模式不会把临时内容写盘。
 - `/intent forget`：删除插件管理范围内的当前任务记录和导出文件。
 
 `/intent off` 只有在你已经检查并信任 State 的 Hook，而且命令返回 `IF-...` 回执时才算生效。自动命令模式 `codex exec` 没有可点击的检查界面，不能替你完成这次安全检查，也不能把模型自己调用本地 State 助手后写下的 off 状态当成真正关闭。

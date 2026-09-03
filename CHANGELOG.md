@@ -8,12 +8,15 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 - Reoriented the product from a requirement-ledger-first Intent Loop into Intent Formation: a quiet Codex interaction policy that continues on clear work and uses one focused question, concrete comparison, or small sample only before materially divergent work.
 - Split the Codex distribution into a state-free `intent-formation` core and optional `intent-formation-state` companion.
-- Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 16 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-alpha.5` with its current peer identities.
+- Renamed the DeepSeek package to `dsh-intent-formation`, shared the exact policy source across hosts, derived task identity from the trusted Harness session, exposed 15 state tools, and updated the tested host to `@deepseek-ai/dsh` `0.1.2-alpha.5` with its current peer identities.
 - Replaced the v0.2 public documentation with a beginner-first install path, explicit migration, narrower privacy terms, and a release-gate report.
+- Generalized the costly-divergence rule around missing success criteria and materially different outcomes; the shipped policy no longer enumerates lexical trigger words or a memorized website example.
+- Ablated the interaction policy from 1,254 to 999 bytes, removed conflict-generated option lists and required option-format scaffolding after real Hook failures, and documented the model-specific reliability boundary.
 
 ### Added
 
-- Published a frozen 80-scenario paired Codex study with 160/160 usable primary conversations, all sanitized responses and blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test.
+- Added an independently authored, hash-sealed 80-scenario paired Codex holdout pipeline that publishes all 160 primary conversations, blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test only after every release gate passes.
+- Predeclared a bilingual release holdout with 60 English and 20 Simplified Chinese cases across at least 16 task domains, without giving its independent author access to the product policy or prior corpus text.
 - Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
 - Added deterministic evidence verification to the root test suite.
 - Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
@@ -21,18 +24,22 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Fixed
 
-- Made manual export write a complete integrity-checked file inside the managed export directory while returning only path, count, digest, and receipt to model context.
-- Purged managed exports during private-mode transition and task deletion.
+- Made manual export write a complete integrity-checked file inside the managed export directory while returning only an opaque export ID, count, digest, and receipt to model context.
+- Bound ledger mutation, mode markers, and managed-export cleanup to one cross-process transaction; record deletion, private transition, and task deletion now scrub the intended artifacts without erasing a later generation's successful export.
+- Rejected private-mode export before serialization or any filesystem write, and paginated `/intent show` under a hard 3,000-byte Hook-output ceiling.
 - Allowed a fresh process to adopt the current private marker while rejecting a stale conflicting marker, avoiding failed writes and retry loops.
-- Made `/intent off` inject a task-specific override on every ordinary prompt and added a regression that prevents general policy context from silently re-enabling intervention.
+- Made `/intent off` use a durable lock-independent marker on every ordinary prompt, so a confirmed override still arrives under ledger-lock contention and general policy context cannot silently re-enable intervention.
 - Refused `/intent remember` in private mode rather than returning a receipt for memory that disappears when its short-lived Hook exits.
 - Closed a same-process lock-publication race by registering the unique owner token before its file becomes observable; the permanent regression now drives 100 simultaneous appends.
 - Removed obsolete selector and session prototypes from the shipped surface.
+- Made evidence publication recompute every metric from complete unique pairs before an atomic publish, reject stale run directories and untracked candidate-plugin files, and bind the live tree to the candidate Git object and archive.
+- Made tag publication require an annotated tag targeting the workflow commit, deterministic archives, exact-candidate evidence, and digest-aware draft reconciliation that verifies an already immutable matching release without mutation.
 
 ### Evidence boundary
 
-- Avoidable rework fell from 66 to 0 units across 60 non-clear scenarios; mean final match rose from 2.96/4 to 3.89/4; clear-task extra interruptions were median 0 and p90 0; the clear paired median latency point estimate was +1.97%; and blind preference was 41 plugin, 3 baseline, 36 ties.
-- The evidence remains limited by a synthetic corpus, automated grading, one Windows execution host, unrecorded exact model identities, three grader timeout retries, a 175,993 ms longest turn, and a clear-latency bootstrap interval that reaches +7.29%.
+- The earlier v8 result is preserved as tuned development regression evidence and is excluded from the release decision.
+- Publication requires the independently sealed holdout to produce 160/160 usable primary conversations, record exact execution and grader model settings, and pass every predeclared gate; its actual metrics and limitations are published in the candidate evidence bundle.
+- Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.
 
 ## 0.2.0-beta.5 - 2026-09-01

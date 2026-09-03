@@ -3,6 +3,8 @@ import process from "node:process";
 import { IntentService } from "../src/service.mjs";
 
 const chunks = [];
+const MAX_COMMAND_OUTPUT_BYTES = 3000;
+const SHOW_PAGE_SIZE = 3;
 const rememberRoles = new Map([
   ["goal", "desired_outcome"],
   ["outcome", "desired_outcome"],
@@ -45,18 +47,84 @@ function parseRemember(argument) {
   };
 }
 
-function outputContext(payload, instruction) {
-  process.stdout.write(
-    JSON.stringify({
-      continue: true,
-      suppressOutput: true,
-      hookSpecificOutput: {
-        hookEventName: "UserPromptSubmit",
-        additionalContext:
-          instruction + " Verified local result: " + JSON.stringify(payload)
+function truncateUtf8(value, maximumBytes) {
+  const text = typeof value === "string" ? value : "";
+  if (Buffer.byteLength(text, "utf8") <= maximumBytes) return text;
+  let output = "";
+  for (const character of text) {
+    if (Buffer.byteLength(output + character + "…", "utf8") > maximumBytes) break;
+    output += character;
+  }
+  return output + "…";
+}
+
+function showPage(snapshot, argument) {
+  const pageText = typeof argument === "string" ? argument.trim() : "";
+  if (pageText && !/^[1-9][0-9]*$/u.test(pageText)) return null;
+  const page = pageText ? Number(pageText) : 1;
+  if (!Number.isSafeInteger(page)) return null;
+  const totalRecords = snapshot.active_records.length;
+  const totalPages = Math.max(1, Math.ceil(totalRecords / SHOW_PAGE_SIZE));
+  if (page > totalPages) return null;
+  const start = (page - 1) * SHOW_PAGE_SIZE;
+  const records = snapshot.active_records
+    .slice(start, start + SHOW_PAGE_SIZE)
+    .map((record) => ({
+      record_id: record.record_id,
+      statement: truncateUtf8(record.statement, 360),
+      role: record.role,
+      epistemic_status: record.epistemic_status,
+      status: record.status,
+      scope: record.scope,
+      source: {
+        kind: record.source_ref?.kind || null,
+        ref: truncateUtf8(record.source_ref?.ref || "", 96) || null
       }
-    })
-  );
+    }));
+  return {
+    exists: snapshot.exists,
+    mode: snapshot.mode,
+    page,
+    page_size: SHOW_PAGE_SIZE,
+    total_active_records: totalRecords,
+    total_pages: totalPages,
+    has_more: page < totalPages,
+    records
+  };
+}
+
+function encodedHookOutput(payload, instruction) {
+  return JSON.stringify({
+    continue: true,
+    suppressOutput: true,
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext:
+        instruction + " Verified local result: " + JSON.stringify(payload)
+    }
+  });
+}
+
+function outputContext(payload, instruction) {
+  let output = encodedHookOutput(payload, instruction);
+  if (Buffer.byteLength(output, "utf8") > MAX_COMMAND_OUTPUT_BYTES) {
+    output = encodedHookOutput(
+      {
+        ok: false,
+        source: "intent_formation_hook",
+        changed: "unknown",
+        error: {
+          code: "BOUNDED_OUTPUT_EXCEEDED",
+          message: "The bounded local result could not be returned safely."
+        }
+      },
+      "The trusted local Intent Formation command hook returned no verified receipt. State that the result exceeded its safe context bound and ask the user to retry with a narrower page. Do not call tools or claim success."
+    );
+  }
+  if (Buffer.byteLength(output, "utf8") > MAX_COMMAND_OUTPUT_BYTES) {
+    throw new Error("bounded hook error output exceeded its hard byte limit");
+  }
+  process.stdout.write(output);
 }
 
 function requireInput(message) {
@@ -122,15 +190,16 @@ async function execute(event, command) {
     summary = "Saved explicit intent record " + result.record.record_id + ".";
   } else if (command.name === "show") {
     const snapshot = await service.show({ task_id: taskId, maximum: 900 });
-    data = {
-      exists: snapshot.exists,
-      mode: snapshot.mode,
-      compact: snapshot.compact,
-      active_records: snapshot.active_records
-    };
-    summary = snapshot.compact || (snapshot.exists
-      ? "Intent state is active in " + snapshot.mode + " mode with no saved records."
-      : "No saved intent is active for this task.");
+    data = showPage(snapshot, command.argument);
+    if (!data) {
+      requireInput("Use /intent show or /intent show <positive page number> within the available range.");
+      return;
+    }
+    summary = data.total_active_records > 0
+      ? "Showing active intent page " + data.page + " of " + data.total_pages + "."
+      : snapshot.exists
+        ? "Intent state is active in " + snapshot.mode + " mode with no saved records."
+        : "No saved intent is active for this task.";
   } else if (command.name === "private" || command.name === "off") {
     const result = await service.setMode({ task_id: taskId, mode: command.name });
     data = { mode: result.mode };
@@ -143,9 +212,26 @@ async function execute(event, command) {
       removed_exports: result.removed_exports,
       exists_after: result.exists_after
     };
+    if (result.exists_after) {
+      outputContext(
+        {
+          ok: false,
+          source: "intent_formation_hook",
+          changed: "unknown",
+          data,
+          recovery: "Run /intent show, then repeat /intent forget if the concurrently recreated state should also be removed.",
+          error: {
+            code: "CONCURRENT_STATE_RECREATED",
+            message: "Task intent state was recreated before deletion could be verified."
+          }
+        },
+        "The trusted local Intent Formation command hook did not issue a deletion receipt because task state was concurrently recreated. Explain the recovery step briefly in the user's current language. Do not claim that all state is gone."
+      );
+      return;
+    }
     summary = result.deleted
-      ? "All task intent state was physically purged."
-      : "No task intent state existed; nothing remains.";
+      ? "Task intent state present at the deletion point was physically purged."
+      : "No task intent state existed at the deletion point.";
   } else if (command.name === "export") {
     const result = await service.exportTaskFile({ task_id: taskId });
     data = {
@@ -229,8 +315,7 @@ async function applyTaskMode(event) {
   const taskId = taskIdFor(event);
   if (!taskId) return;
   const service = new IntentService();
-  const snapshot = await service.show({ task_id: taskId, maximum: 1 });
-  if (!snapshot.exists || snapshot.mode !== "off") return;
+  if (await service.fastTaskMode({ task_id: taskId }) !== "off") return;
   outputContext(
     {
       ok: true,

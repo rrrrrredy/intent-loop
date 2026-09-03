@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_from": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
-  "source_runtime_sha256": "c872ff7866662fd512b3cb0b1b83fdda1c8ad9f3867d780d0a190a8d101b1909",
+  "source_runtime_sha256": "9edd38797705d1f120796085681212b1c2cdb7968cdb0352033fa9f6a774a2dd",
   "tools": [
     {
       "name": "intent_add_evidence",
@@ -492,7 +492,7 @@
     },
     {
       "name": "intent_delete_record",
-      "description": "Physically purge one record and references to its id from persistent state. Use only after an explicit user deletion request.",
+      "description": "Physically purge one record, references to its id, and every managed export for the task. Use only after an explicit user deletion request.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -630,7 +630,7 @@
     },
     {
       "name": "intent_forget",
-      "description": "Physically purge all persistent and in-process intent state for one task. Use only after an explicit user deletion request.",
+      "description": "Physically purge all persistent and in-process intent state, managed exports, and the off marker for one task. Use only after an explicit user deletion request.",
       "inputSchema": {
         "type": "object",
         "properties": {},

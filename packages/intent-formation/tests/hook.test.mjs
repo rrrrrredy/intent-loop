@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promis
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import test from "node:test";
+import { POLICY } from "../src/policy.mjs";
 import { IntentService } from "../src/service.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -81,6 +82,35 @@ test("off mode overrides implicit intent intervention on every ordinary prompt",
   assert.match(additionalContext, /"mode":"off"/);
   assert.doesNotMatch(additionalContext, /receipt_id/);
   assert.equal(additionalContext.includes(privatePrompt), false);
+});
+
+test("off override remains available while the event ledger lock is held", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  await service.startTask({ task_id: "session-off-contended", mode: "off" });
+  let timeout;
+  const result = await service.store.withLockedEvents(() =>
+    Promise.race([
+      runHook(
+        JSON.stringify({
+          session_id: "session-off-contended",
+          hook_event_name: "UserPromptSubmit",
+          prompt: "Choose an irreversible deployment target"
+        }),
+        dataDirectory,
+        commandHookPath
+      ),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("off override waited for the ledger lock")), 1500);
+      })
+    ])
+  );
+  clearTimeout(timeout);
+  assert.equal(result.code, 0);
+  assert.match(
+    JSON.parse(result.stdout).hookSpecificOutput.additionalContext,
+    /"source":"intent_formation_mode"/
+  );
 });
 
 test("returning to standard mode removes the per-prompt off override", async (context) => {
@@ -175,10 +205,10 @@ test("SessionStart supplies only a compact interaction policy", async (context) 
     dataDirectory
   );
   const output = JSON.parse(result.stdout);
-  assert.match(output.hookSpecificOutput.additionalContext, /one decisive tradeoff question/i);
+  assert.equal(output.hookSpecificOutput.additionalContext, POLICY);
   assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /session-command/);
   assert.doesNotMatch(output.hookSpecificOutput.additionalContext, /intent_formation_mcp/);
-  assert.ok(output.hookSpecificOutput.additionalContext.length < 600);
+  assert.ok(Buffer.byteLength(output.hookSpecificOutput.additionalContext, "utf8") <= 4096);
 });
 
 test("exact start and forget commands return receipts backed by real state", async (context) => {
@@ -230,6 +260,70 @@ test("exact start and forget commands return receipts backed by real state", asy
   assert.match(forgetContext, /"exists_after":false/);
   assert.match(forgetContext, /"receipt_id":"IF-[A-F0-9]{8}"/);
   assert.equal((await service.show({ task_id: "session-manual" })).exists, false);
+});
+
+test("show is byte-bounded and paginates active records without full-state spill", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  for (let index = 1; index <= 8; index += 1) {
+    await service.addExplicit({
+      task_id: "session-show-pages",
+      statement: "记录" + index + "-" + "界".repeat(990),
+      role: "desired_outcome",
+      source_ref: { ref: "source-" + index + "-" + "r".repeat(240) },
+      scope: "task"
+    });
+  }
+
+  const first = await runHook(
+    JSON.stringify({
+      session_id: "session-show-pages",
+      hook_event_name: "UserPromptSubmit",
+      prompt: "/intent show"
+    }),
+    dataDirectory,
+    commandHookPath
+  );
+  assert.ok(Buffer.byteLength(first.stdout, "utf8") <= 3000);
+  const firstContext = JSON.parse(first.stdout).hookSpecificOutput.additionalContext;
+  const firstPayload = JSON.parse(firstContext.split(" Verified local result: ").at(-1));
+  assert.equal(firstPayload.ok, true);
+  assert.equal(firstPayload.data.page, 1);
+  assert.equal(firstPayload.data.total_active_records, 8);
+  assert.equal(firstPayload.data.total_pages, 3);
+  assert.equal(firstPayload.data.records.length, 3);
+  assert.equal(firstPayload.data.has_more, true);
+  assert.equal(firstContext.includes('"active_records":'), false);
+  assert.match(firstPayload.data.records[0].statement, /^记录1-/u);
+  assert.doesNotMatch(firstContext, /记录4-/u);
+
+  const second = await runHook(
+    JSON.stringify({
+      session_id: "session-show-pages",
+      hook_event_name: "UserPromptSubmit",
+      prompt: "/intent show 2"
+    }),
+    dataDirectory,
+    commandHookPath
+  );
+  assert.ok(Buffer.byteLength(second.stdout, "utf8") <= 3000);
+  const secondContext = JSON.parse(second.stdout).hookSpecificOutput.additionalContext;
+  const secondPayload = JSON.parse(secondContext.split(" Verified local result: ").at(-1));
+  assert.equal(secondPayload.data.page, 2);
+  assert.match(secondPayload.data.records[0].statement, /^记录4-/u);
+
+  const invalid = await runHook(
+    JSON.stringify({
+      session_id: "session-show-pages",
+      hook_event_name: "UserPromptSubmit",
+      prompt: "/intent show 99"
+    }),
+    dataDirectory,
+    commandHookPath
+  );
+  const invalidContext = JSON.parse(invalid.stdout).hookSpecificOutput.additionalContext;
+  assert.match(invalidContext, /"ok":false/);
+  assert.doesNotMatch(invalidContext, /receipt_id/u);
 });
 
 test("remember writes an explicit atomic record without relying on a model tool call", async (context) => {

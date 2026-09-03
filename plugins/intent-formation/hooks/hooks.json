@@ -10,7 +10,7 @@
             "tool": "get_intent_policy",
             "input": {},
             "timeout": 1,
-            "additionalContextLimit": 220
+            "additionalContextLimit": 0
           }
         ]
       }

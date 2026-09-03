@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdir, mkdtemp, mkdir, rm } from "node:fs/promises";
+import { readdir, mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -10,8 +10,11 @@ import {
   SessionPolicyController,
   TOOL_CATALOG,
   resolveAdapterConfig,
-  safeChildEnvironment
+  safeChildEnvironment,
+  sessionBinding
 } from "../adapter.js";
+import { IntentService } from "../../packages/intent-formation/src/service.mjs";
+import { POLICY } from "../../packages/intent-formation/src/policy.mjs";
 
 function createHarnessContext() {
   const tools = new Map();
@@ -98,8 +101,8 @@ test("DeepSeek bundle registers the exact host-bound MCP catalog and shared inte
     const provider = harness.sections.get("tool:intent-formation")?.text;
     assert.equal(typeof provider, "function");
     const guidance = provider(execution("unseen-session", os.tmpdir()));
-    assert.match(guidance, /Intent gate has priority/u);
-    assert.match(guidance, /act; no second intent question/u);
+    assert.equal(guidance.startsWith(POLICY), true);
+    assert.match(guidance, /no second intent question/u);
     assert.match(guidance, /store only deliberate atomic records/u);
     assert.match(guidance, /Neither performs the domain task/u);
   } finally {
@@ -121,6 +124,63 @@ test("child environment keeps OS essentials and drops model credentials", () => 
   assert.equal("DEEPSEEK_API_KEY" in env, false);
   assert.equal("OPENAI_API_KEY" in env, false);
   assert.equal("RANDOM_SECRET" in env, false);
+});
+
+test("policy mode cache follows durable commits even when tool responses are lost", async (context) => {
+  const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-formation-dsh-mode-cache-"));
+  context.after(() => rm(scratch, { recursive: true, force: true }));
+  const dataDir = path.join(scratch, "data");
+  const sessionId = "response-loss-session";
+  const exec = execution(sessionId, scratch);
+  const controller = new SessionPolicyController(resolveAdapterConfig({ dataDir }));
+  const service = new IntentService({ dataDirectory: dataDir });
+  const taskId = sessionBinding(sessionId);
+
+  await service.startTask({ task_id: taskId, mode: "standard" });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
+  controller.observe("intent_show", { sessionId }, { data: { mode: "standard" } });
+
+  await service.setMode({ task_id: taskId, mode: "off" });
+  assert.equal(controller.textFor(exec, "guidance"), "");
+  assert.equal(
+    new SessionPolicyController(resolveAdapterConfig({ dataDir })).textFor(exec, "guidance"),
+    ""
+  );
+
+  await service.setMode({ task_id: taskId, mode: "private" });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
+  await service.setMode({ task_id: taskId, mode: "standard" });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
+  await service.deleteTask({ task_id: taskId });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
+});
+
+test("a persisted off marker suppresses guidance even when both ledgers are unreadable", async (context) => {
+  const scratch = await mkdtemp(path.join(os.tmpdir(), "intent-formation-dsh-off-marker-"));
+  context.after(() => rm(scratch, { recursive: true, force: true }));
+  const dataDir = path.join(scratch, "data");
+  const sessionId = "off-marker-session";
+  const exec = execution(sessionId, scratch);
+  const controller = new SessionPolicyController(resolveAdapterConfig({ dataDir }));
+  const service = new IntentService({ dataDirectory: dataDir });
+  const taskId = sessionBinding(sessionId);
+
+  await service.startTask({ task_id: taskId, mode: "standard" });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
+  await service.setMode({ task_id: taskId, mode: "off" });
+
+  await Promise.all([
+    writeFile(path.join(dataDir, "intent-events-v1.jsonl"), "{truncated\n", "utf8"),
+    writeFile(path.join(dataDir, "intent-events-v1.jsonl.bak"), "{truncated\n", "utf8")
+  ]);
+  assert.equal(controller.textFor(exec, "guidance"), "");
+
+  const markerDirectory = path.join(dataDir, "mode-markers");
+  const markers = await readdir(markerDirectory, { withFileTypes: true });
+  assert.equal(markers.length, 1);
+  assert.equal(markers[0].isDirectory(), true);
+  await rm(path.join(markerDirectory, markers[0].name), { recursive: true, force: true });
+  assert.equal(controller.textFor(exec, "guidance"), "guidance");
 });
 
 test("session pool evicts only an idle client and closes everything on unload", async () => {
@@ -270,8 +330,8 @@ test("real adapter binds session state, keeps private text off disk, and forgets
     assert.match(JSON.stringify(snapshot.data), /inside the current task/u);
 
     const guidanceProvider = harness.sections.get("tool:intent-formation")?.text;
-    assert.match(guidanceProvider(execA), /Intent gate has priority/u);
-    assert.match(guidanceProvider(execA), /act; no second intent question/u);
+    assert.equal(guidanceProvider(execA).startsWith(POLICY), true);
+    assert.match(guidanceProvider(execA), /no second intent question/u);
     const turnedOff = await call(harness, "intent_set_mode", { mode: "off" }, execA);
     assert.equal(turnedOff.data.mode, "off");
     assert.equal(guidanceProvider(execA), "");
@@ -279,8 +339,8 @@ test("real adapter binds session state, keeps private text off disk, and forgets
     assert.equal(coldController.textFor(execA, "policy"), "");
     const restored = await call(harness, "intent_set_mode", { mode: "standard" }, execA);
     assert.equal(restored.data.mode, "standard");
-    assert.match(guidanceProvider(execA), /Intent gate has priority/u);
-    assert.match(guidanceProvider(execA), /act; no second intent question/u);
+    assert.equal(guidanceProvider(execA).startsWith(POLICY), true);
+    assert.match(guidanceProvider(execA), /no second intent question/u);
 
     const otherSession = await call(harness, "intent_show", {
       task_id: durableTaskId

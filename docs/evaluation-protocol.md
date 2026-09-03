@@ -10,8 +10,8 @@ The earlier 80-scenario v8 corpus was used during policy iteration. Its outputs 
 
 For the release holdout:
 
-- an adversarial reviewer authors 80 new scenarios outside the repository;
-- the product policy is frozen before the main engineer inspects the scenario contents;
+- an independent author receives the product outcome and evaluation schema but does not open the policy, generated plugin, prior holdout, or development corpus;
+- the product policy and machine-checkable corpus constraints are frozen before authoring begins, and the main engineer does not inspect the new scenario contents;
 - the corpus, method note, and SHA-256 manifest are committed with the candidate;
 - any policy change after seeing holdout results invalidates that holdout for release efficacy; and
 - a failed holdout becomes development evidence and requires a newly authored holdout after the next candidate freeze.
@@ -25,6 +25,8 @@ The committed `packages/intent-formation/evals/holdout-manifest.json` binds the 
 - 15 requests with conflicting goals;
 - 15 cases where preference becomes visible after a result; and
 - 20 clear controls where the correct behavior is direct completion.
+
+The corpus contains 60 English and 20 Simplified Chinese scenarios, with four Chinese scenarios in each class. It spans at least 16 independently named task domains, with no domain contributing more than six scenarios. These constraints test semantic behavior without prescribing trigger words. Automated checks reject exact and threshold near-duplicates within the holdout and against the development corpus.
 
 Every non-clear scenario has a response frozen before either arm runs. Prompts are natural user messages that can run safely in an empty workspace without accounts or network access.
 

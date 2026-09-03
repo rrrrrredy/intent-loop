@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { lstatSync, readFileSync } from "node:fs";
 import { realpath, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -107,6 +107,21 @@ export function sessionBinding(sessionId) {
   return `dsh:${createHash("sha256").update(sessionId).digest("hex")}`;
 }
 
+function offMarkerPath(dataDir, taskId) {
+  const digest = createHash("sha256").update(taskId).digest("hex").slice(0, 32);
+  return path.join(dataDir, "mode-markers", `off-${digest}`);
+}
+
+function hasPersistedOffMarker(dataDir, taskId) {
+  try {
+    lstatSync(offMarkerPath(dataDir, taskId));
+    return true;
+  } catch (error) {
+    if (error?.code === "ENOENT" || error?.code === "ENOTDIR") return false;
+    return true;
+  }
+}
+
 function persistedModeFromBody(body, taskId) {
   let exists = false;
   let mode = "standard";
@@ -132,6 +147,7 @@ function persistedModeFromBody(body, taskId) {
 }
 
 function persistedMode(dataDir, taskId) {
+  if (hasPersistedOffMarker(dataDir, taskId)) return "off";
   const primary = path.join(dataDir, "intent-events-v1.jsonl");
   const backup = primary + ".bak";
   for (const filePath of [primary, backup]) {
@@ -144,6 +160,25 @@ function persistedMode(dataDir, taskId) {
   return "standard";
 }
 
+function ledgerGeneration(dataDir, taskId) {
+  const primary = path.join(dataDir, "intent-events-v1.jsonl");
+  const backup = primary + ".bak";
+  return [primary, backup, offMarkerPath(dataDir, taskId)].map((filePath) => {
+    try {
+      const details = lstatSync(filePath, { bigint: true });
+      return [
+        details.dev,
+        details.ino,
+        details.size,
+        details.mtimeNs,
+        details.ctimeNs
+      ].join(":");
+    } catch (error) {
+      return error?.code === "ENOENT" ? "missing" : `error:${error?.code ?? "unknown"}`;
+    }
+  }).join("|");
+}
+
 export class SessionPolicyController {
   constructor(config) {
     this.dataDir = config.dataDir;
@@ -151,9 +186,13 @@ export class SessionPolicyController {
   }
 
   modeForSession(sessionId) {
+    const taskId = sessionBinding(sessionId);
+    const generation = ledgerGeneration(this.dataDir, taskId);
     const observed = this.observedModes.get(sessionId);
-    if (observed !== undefined) return observed;
-    return persistedMode(this.dataDir, sessionBinding(sessionId));
+    if (observed?.generation === generation) return observed.mode;
+    const mode = persistedMode(this.dataDir, taskId);
+    this.observedModes.set(sessionId, { generation, mode });
+    return mode;
   }
 
   textFor(exec, guidance) {
@@ -163,11 +202,9 @@ export class SessionPolicyController {
   }
 
   observe(toolName, execution, envelope) {
-    let mode = envelope?.data?.mode ?? envelope?.data?.snapshot?.mode;
-    if (toolName === "intent_forget") mode = "standard";
-    if (["standard", "private", "off"].includes(mode)) {
-      this.observedModes.set(execution.sessionId, mode);
-    }
+    void toolName;
+    void envelope;
+    this.observedModes.delete(execution.sessionId);
   }
 
   clear() {

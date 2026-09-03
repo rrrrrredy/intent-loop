@@ -12,11 +12,25 @@ Accepted: a state-free `intent-formation` core and an independently installable 
 
 Accepted: keep the existing GitHub repository and history while using a semver-minor prerelease with explicit breaking migration notes. Old v0.2 state is never imported silently.
 
-## 2026-09-03: publish full efficacy evidence and its weaknesses
+## 2026-09-03: ablate policy and architecture before candidate freeze
 
-Accepted: publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test. The v0.3 point-estimate gates pass.
+Accepted: use real installed-Hook trials to remove lexical triggers, a separate unknown-branch rule, conflict-generated option lists, required `label+effect` formatting, and duplicated choice instructions. The policy is 999 bytes, down from 1,254 bytes, while State and DeepSeek remain optional adapters outside the state-free core.
 
-Limit: the latency interval crosses the five-percent gate, the corpus is synthetic, the judge is automated, and exact model identities were not recorded. These constraints keep the release at beta and narrow the claim to the tested Codex policy.
+Rejected: deleting the semantic costly-divergence trigger or the neutral flexible-answer boundary. Removing them caused immediate execution, leading choices, missing exits, or empty responses. Also rejected: continuing to add prose to chase `gpt-5.4-mini` variation; the observed mini failure is published as a model boundary and the release gate uses the reliable tested Codex model.
+
+Limit: the ablation set is small development evidence. It does not replace the independently sealed 80-scenario candidate study.
+
+## 2026-09-03: require independent efficacy evidence and publish its weaknesses
+
+Accepted: freeze an independently authored 80-scenario holdout before running either arm, then publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test only if every predeclared release gate passes.
+
+Current boundary: the earlier v8 result is preserved as tuned development regression evidence and cannot authorize release. The candidate holdout must record exact execution and grader model settings and bind the source plugin tree, installed execution cache, and Git archive to one clean commit.
+
+Accepted: predeclare 60 English and 20 Simplified Chinese cases, four Chinese cases in every class, at least 16 task domains, and no more than six cases per domain. The independent author receives the outcome and schema but cannot inspect the product policy, generated plugin, old holdout, or development corpus text.
+
+Rejected: coupling either the policy or the release holdout contract to a list of subjective adjectives or one memorized product example. The policy now describes the semantic condition: an unstated success criterion matters only when plausible interpretations materially change the deliverable.
+
+Limit: even a passing result uses a synthetic corpus, one execution host, and an automated judge, and it cannot cover future model or judge drift. These constraints keep the release at beta and narrow any claim to the tested Codex policy.
 
 Accepted: build the user-authorized DeepSeek Harness adapter from the identical policy and state server, but describe it only as compatibility and lifecycle evidence until a separate DeepSeek outcome study exists.
 

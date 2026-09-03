@@ -475,7 +475,7 @@ export function createIntentMcpServer(options = {}) {
     {
       title: "Delete one intent record",
       description:
-        "Physically purge one record and references to its id from persistent state. Use only after an explicit user deletion request.",
+        "Physically purge one record, references to its id, and every managed export for the task. Use only after an explicit user deletion request.",
       inputSchema: {
         task_id: taskId,
         record_id: recordId
@@ -489,7 +489,9 @@ export function createIntentMcpServer(options = {}) {
     },
     handler(
       (input) => service.deleteRecord(input),
-      (data) => (data.deleted ? "The record was physically purged." : "No matching record existed.")
+      (data) => (data.deleted
+        ? "The record and " + data.removed_exports + " managed export(s) were physically purged."
+        : "No matching record existed; " + data.removed_exports + " managed export(s) were removed.")
     )
   );
 
@@ -498,7 +500,7 @@ export function createIntentMcpServer(options = {}) {
     {
       title: "Forget task intent",
       description:
-        "Physically purge all persistent and in-process intent state for one task. Use only after an explicit user deletion request.",
+        "Physically purge all persistent and in-process intent state, managed exports, and the off marker for one task. Use only after an explicit user deletion request.",
       inputSchema: { task_id: taskId },
       annotations: {
         readOnlyHint: false,
