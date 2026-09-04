@@ -44,6 +44,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Excluded package-local `.tmp` fixtures from npm archives after a dry-run exposed an untracked fake Skill; the corrected archive contains the expected 81 entries and zero temporary paths.
 - Required the opening sentence to express the user's selected priority before competing goals after stable-CLI repetitions exposed inconsistent lead order, and explicitly prohibited invented facts after a bounded sample added unsupported artistic themes.
 - Made evidence publication recompute every metric from complete unique pairs before an atomic publish, reject stale run directories and untracked candidate-plugin files, and bind the live tree to the candidate Git object and archive.
+- Aligned the permanent holdout overlap test with the published method by comparing complete scenario text, tokenizing Han characters individually, and retaining normalized whitespace in four-gram checks.
 - Made tag publication require an annotated tag targeting the workflow commit, deterministic archives, exact-candidate evidence, and digest-aware draft reconciliation that verifies an already immutable matching release without mutation.
 - Made the real DeepSeek lifecycle probe use the invoking Node runtime's exact npm/npx binaries, reject unsupported Node versions, terminate a timed-out process tree, preserve the primary failure, and clean its temporary profile with bounded retries.
 

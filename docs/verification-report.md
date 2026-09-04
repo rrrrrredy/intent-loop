@@ -15,6 +15,7 @@ This report is intentionally incomplete while the candidate is being prepared. A
 - Sanitized public release evidence: BLOCKED. V5 is retired after informing the next revision.
 - Post-v5 stable-CLI regression: the 1,099-byte candidate passed the original 15 cases but failed strict chosen-lead order in two of three targeted runs. An over-compressed intermediate variant caused four routing regressions and was rejected. The 1,145-byte correction passed a new lead-order case 5 / 5 and retained the other routes, but one bounded sample invented unsupported details.
 - Current development candidate: 1,165 policy bytes, 7.1% below the original 1,254 bytes. Warm MCP remains; the command Hook, generic fidelity reminder, and automatic feedback taxonomy remain removed. Local evaluation/policy/package contracts pass 40 / 40. The final installed-Hook stated-facts repetition and a new sealed holdout are PENDING, so no efficacy claim is active.
+- Permanent overlap checker: aligned before v6 inspection with the published whole-scenario, individual-Han-token, normalized four-gram method; the retired v5 corpus still passes the stronger test.
 
 ## State lifecycle
 

@@ -78,6 +78,12 @@ Accepted: keep the proven trigger phrases, require the opening sentence to expre
 
 Boundary: these failure-derived stable-CLI runs may justify implementation changes but cannot authorize publication. A fresh independently authored v6 holdout remains mandatory after the final candidate is frozen.
 
+## 2026-09-04: make the permanent overlap test match the sealed method
+
+Observed: the root test compared only the first prompt, removed punctuation before four-gram calculation, and did not tokenize Han text one character at a time, while the published holdout method specified whole-scenario text, NFKC plus whitespace normalization, and individual Han tokens.
+
+Accepted before v6 authoring completed: align the permanent test with the published method and verify that the retired v5 corpus still passes unchanged. Root v6 sealing will additionally compare the new corpus with three historical holdouts, every committed development corpus, and both hash-verified ablation corpora.
+
 Boundary: these are failure-derived development trials on `codex-cli 0.153.0-alpha.5`. Stable `0.153.0` regression and a fresh independent holdout are still required; no current efficacy or publication claim exists.
 
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses

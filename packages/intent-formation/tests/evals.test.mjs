@@ -175,22 +175,29 @@ async function loadHoldout() {
 
 function normalizedText(value) {
   return value.normalize("NFKC").toLocaleLowerCase("en-US")
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim()
     .replace(/\s+/gu, " ");
 }
 
 function tokenJaccard(left, right) {
-  const a = new Set(normalizedText(left).split(" ").filter(Boolean));
-  const b = new Set(normalizedText(right).split(" ").filter(Boolean));
+  const tokens = (value) => new Set(
+    normalizedText(value).match(/\p{Script=Han}|[\p{L}\p{N}]+/gu) ?? []
+  );
+  const a = tokens(left);
+  const b = tokens(right);
   const intersection = [...a].filter((token) => b.has(token)).length;
-  return intersection / new Set([...a, ...b]).size;
+  const union = new Set([...a, ...b]).size;
+  return union === 0 ? 1 : intersection / union;
 }
 
 function fourGramDice(left, right) {
   const grams = (value) => {
-    const compact = normalizedText(value).replaceAll(" ", "");
+    const compact = normalizedText(value);
     const result = new Set();
+    if (compact.length < 4) {
+      if (compact.length > 0) result.add(compact);
+      return result;
+    }
     for (let index = 0; index <= compact.length - 4; index += 1) {
       result.add(compact.slice(index, index + 4));
     }
@@ -199,7 +206,17 @@ function fourGramDice(left, right) {
   const a = grams(left);
   const b = grams(right);
   const intersection = [...a].filter((gram) => b.has(gram)).length;
-  return (2 * intersection) / (a.size + b.size);
+  return a.size + b.size === 0 ? 1 : (2 * intersection) / (a.size + b.size);
+}
+
+function scenarioText(scenario) {
+  return [
+    scenario.initial_prompt ?? scenario.turns?.[0],
+    ...(scenario.final_requirements ?? []),
+    ...(scenario.unacceptable_first ?? []),
+    scenario.decision_at_risk,
+    scenario.follow_up
+  ].filter((value) => typeof value === "string").join(" ");
 }
 
 function scenarioPrompt(scenario) {
@@ -543,13 +560,13 @@ test("sealed v5 holdout has no exact or threshold near-duplicate prompt in itsel
     ...(await loadHostRegressions()),
     ...(await loadPostFailureRegressions())
   ];
-  const normalized = holdout.map((scenario) => normalizedText(scenarioPrompt(scenario)));
+  const normalized = holdout.map((scenario) => normalizedText(scenarioText(scenario)));
   assert.equal(new Set(normalized).size, holdout.length);
 
   const compare = (left, right) => {
-    assert.ok(tokenJaccard(scenarioPrompt(left), scenarioPrompt(right)) < 0.65,
+    assert.ok(tokenJaccard(scenarioText(left), scenarioText(right)) < 0.65,
       `token overlap threshold exceeded: ${left.id}/${right.id}`);
-    assert.ok(fourGramDice(scenarioPrompt(left), scenarioPrompt(right)) < 0.72,
+    assert.ok(fourGramDice(scenarioText(left), scenarioText(right)) < 0.72,
       `four-gram overlap threshold exceeded: ${left.id}/${right.id}`);
   };
   for (let left = 0; left < holdout.length; left += 1) {

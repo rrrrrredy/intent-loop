@@ -94,6 +94,12 @@
 
 **Evidence:** Stable `codex-cli 0.153.0` exposed strict lead-order failures in two of three targeted runs. The revised lead-order case then passed 5 / 5, while a 16-case pass exposed unsupported embellishment in the 18-word sample. The final stated-facts repetition and an independent v6 holdout remain required.
 
+## D-031 — Align permanent overlap checks with the sealed method
+
+**Decision:** Compare complete scenario text, tokenize Han text one character at a time, and calculate four-gram Dice over NFKC/lowercased/whitespace-normalized text. Do not keep the weaker first-prompt-only implementation.
+
+**Evidence:** The stronger implementation was committed before v6 content was inspected and the existing v5 holdout still passes its thresholds. V6 root sealing will cover historical holdouts, every development corpus, and both hash-verified ablation corpora.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.
