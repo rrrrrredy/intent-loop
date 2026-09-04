@@ -41,6 +41,11 @@ test("plugin manifest points to the packaged skill", async () => {
   assert.equal(packageManifest.license, "Apache-2.0");
 });
 
+test("source package excludes test scratch state", async () => {
+  const npmIgnore = await read(".npmignore");
+  assert.match(npmIgnore, /^\.tmp\/$/mu);
+});
+
 test("skill preserves the five-move experience boundary", async () => {
   const skill = await read("skills/intent-formation/SKILL.md");
   for (const required of [
@@ -85,13 +90,16 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.doesNotMatch(metadata, /dependencies:/);
   assert.doesNotMatch(policyServer, /writeFile|appendFile|transcript_path|params\?\.arguments\?\.prompt/);
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
-  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure/i);
-  assert.match(policy, /explicit sample\/example/i);
+  assert.match(POLICY, /two stated goals yielding different versions need a lead question/i);
+  assert.match(policy, /explicit sample\/example.*from stated facts/i);
+  assert.match(policy, /mark\/omit unknowns/i);
   assert.match(policy, /both override gate/i);
-  assert.match(POLICY, /public, lasting, costly, high-stakes, or hard-to-reverse output/i);
-  assert.match(POLICY, /not adjacent tone\/details\/inputs/i);
+  assert.match(POLICY, /public\/lasting\/costly\/high-stakes\/hard-to-reverse output/i);
+  assert.match(POLICY, /public identity is lasting/i);
+  assert.match(POLICY, /assurance vs risk prominence is a lead choice/i);
+  assert.match(POLICY, /ignore wording\/details\/inputs/i);
   assert.match(POLICY, /do not choose' stays neutral/i);
-  assert.match(POLICY, /deliver now using requested placeholders/i);
+  assert.match(POLICY, /deliver now with the chosen lead first, using requested placeholders/i);
   assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
   assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);

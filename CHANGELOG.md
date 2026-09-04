@@ -12,9 +12,11 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Replaced the v0.2 public documentation with a beginner-first install path, explicit migration, narrower privacy terms, and a release-gate report.
 - Generalized the costly-divergence rule around missing success criteria and materially different outcomes; the shipped policy no longer enumerates lexical trigger words or a memorized website example.
 - Ran two independently authored 80-scenario paired studies to `ITERATE`, attributed each failed gate, and retired both corpora after their results informed later policy revisions.
+- Ran the independently authored v5 candidate to 160 / 160 primary completions and 80 / 80 clean blind grades; retained `STOP` after final-match, clear paired-latency, and inference-denial gates failed, and retired the corpus before further revision.
 - Ran a four-variant installed-Hook ablation and removed the automatic feedback taxonomy and generic constraint reminder from the compact policy; feedback semantics remain available in the explicit Skill and optional State companion.
+- Compared warm MCP with a minimal command Hook on ten matched clear-prompt pairs; kept MCP after the command variant's median paired latency rose 12.61%, and rejected generic fidelity and automatic-feedback policy text that showed no behavioral gain.
 - Retained the exact mix/reject/free-answer exit after relaxed wording omitted complete answer rights, and prohibited tools or project work during an explicit intent-forming comparison after a real regression searched the web.
-- Reduced the final compact interaction policy from the original 1,254 to 967 UTF-8 bytes while preserving behavior with observed value or a product-boundary requirement.
+- Revised the compact interaction policy to 1,099 UTF-8 bytes, 12.4% below the original 1,254 bytes, with targeted leading-goal, stated-facts sample, and chosen-lead delivery rules.
 
 ### Added
 
@@ -39,6 +41,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Refused `/intent remember` in private mode rather than returning a receipt for memory that disappears when its short-lived Hook exits.
 - Closed a same-process lock-publication race by registering the unique owner token before its file becomes observable; the permanent regression now drives 100 simultaneous appends.
 - Removed obsolete selector and session prototypes from the shipped surface.
+- Excluded package-local `.tmp` fixtures from npm archives after a dry-run exposed an untracked fake Skill; the corrected archive contains the expected 81 entries and zero temporary paths.
 - Made evidence publication recompute every metric from complete unique pairs before an atomic publish, reject stale run directories and untracked candidate-plugin files, and bind the live tree to the candidate Git object and archive.
 - Made tag publication require an annotated tag targeting the workflow commit, deterministic archives, exact-candidate evidence, and digest-aware draft reconciliation that verifies an already immutable matching release without mutation.
 - Made the real DeepSeek lifecycle probe use the invoking Node runtime's exact npm/npx binaries, reject unsupported Node versions, terminate a timed-out process tree, preserve the primary failure, and clean its temporary profile with bounded retries.
@@ -48,8 +51,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 - The earlier tuned v8 result and the failed v3/v4 holdouts are preserved as development evidence and excluded from the release decision.
 - The v4 candidate completed 160 / 160 primary conversations but failed final match (+6.87 percentage points), inference denial (4 / 4), and premature action (2 searches) gates. Its blind grader used one grader-only retry and no primary conversation retry.
 - Candidate `8def5a3` completed a separate 16 / 16 installed-Hook confirmation with zero first-turn actions, zero first-turn MCP calls, and complete task cleanup; this is targeted development evidence, not an efficacy result.
-- The v5 primary run completed 160 / 160 without timeout, prompt drift, MCP calls, or cleanup failure. Its first blind-grading run was invalidated before score inspection after a Schema/rubric mismatch left 10 pairs ungraded; the clean full rerun remains pending, so no efficacy claim is active.
-- Publication requires the independently sealed holdout to produce 160/160 usable primary conversations, record exact execution and grader model settings, and pass every predeclared gate; its actual metrics and limitations are published in the candidate evidence bundle.
+- The v5 primary run completed 160 / 160 without timeout, prompt drift, MCP calls, or cleanup failure. Its first blind-grading run was invalidated before score inspection; the clean rerun produced 80 / 80 grades and one allowed grader-only retry.
+- V5 reduced avoidable rework 69.70% but failed final match (+5.94 percentage points), clear paired latency (+5.36%), and inference denial (75%, 6 / 8). No efficacy claim is active, and another release attempt requires a new sealed holdout.
+- Post-v5 policy and transport trials are failure-derived development evidence on `codex-cli 0.153.0-alpha.5`. Stable-CLI regression and a fresh sealed holdout remain pending; the 1,099-byte candidate is not release evidence.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.
 

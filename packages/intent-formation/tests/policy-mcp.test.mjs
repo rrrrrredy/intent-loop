@@ -10,16 +10,20 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /explicit comparison\/options: give requested count, else 2-3 neutral choices/i);
   assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
-  assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline/i);
+  assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline from stated facts/i);
+  assert.match(POLICY, /mark\/omit unknowns/i);
   assert.match(POLICY, /no inspection\/tools\/files/i);
   assert.match(POLICY, /both override gate/i);
   assert.match(POLICY, /'compare only'\/'do not choose' stays neutral/i);
-  assert.match(POLICY, /gate public, lasting, costly, high-stakes, or hard-to-reverse output/i);
-  assert.match(POLICY, /unresolved outcome, priority, tradeoff, or exposure materially changes it/i);
-  assert.match(POLICY, /ask one question separating those outputs, not adjacent tone\/details\/inputs/i);
+  assert.match(POLICY, /before public\/lasting\/costly\/high-stakes\/hard-to-reverse output/i);
+  assert.match(POLICY, /two stated goals yielding different versions need a lead question before drafting unless a lead was chosen/i);
+  assert.match(POLICY, /do not self-balance\/blend/i);
+  assert.match(POLICY, /public identity is lasting/i);
+  assert.match(POLICY, /assurance vs risk prominence is a lead choice/i);
+  assert.match(POLICY, /ignore wording\/details\/inputs/i);
   assert.match(POLICY, /if choices help, give 2-3 neutral branches/i);
   assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
-  assert.match(POLICY, /once resolved, deliver now using requested placeholders/i);
+  assert.match(POLICY, /once resolved, deliver now with the chosen lead first, using requested placeholders/i);
   assert.match(POLICY, /no second question, nonessential input/i);
   assert.match(POLICY, /conflict: if requirements cannot coexist, name both; ask one question: which wins/i);
   assert.match(POLICY, /no work\/options\/input request/i);

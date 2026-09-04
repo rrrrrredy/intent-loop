@@ -140,6 +140,17 @@ async function loadPostFailureRegressions() {
     .map((line) => JSON.parse(line));
 }
 
+async function loadPostV5Development() {
+  const raw = await readFile(
+    path.join(repositoryRoot, "evals", "post-v5-development.jsonl"),
+    "utf8"
+  );
+  return raw
+    .split(/\r?\n/u)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
+
 async function loadStudy() {
   const raw = await readFile(path.join(repositoryRoot, "evals", "study-80.jsonl"), "utf8");
   return {
@@ -325,6 +336,32 @@ test("post-failure regressions cover direct evidence, neutrality, missing input,
   assert.ok(scenarios.every((scenario) => Array.isArray(scenario.unacceptable_first)));
 });
 
+test("post-v5 development corpus freezes gate, sample, resolved-delivery, control, and feedback probes", async () => {
+  const scenarios = await loadPostV5Development();
+  assert.equal(scenarios.length, 15);
+  assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 15);
+  const counts = scenarios.reduce((result, scenario) => {
+    result[scenario.class] = (result[scenario.class] ?? 0) + 1;
+    return result;
+  }, {});
+  assert.deepEqual(counts, {
+    leading_priority: 4,
+    resolved_delivery: 4,
+    bounded_sample: 2,
+    clear_control: 1,
+    comparison_control: 1,
+    result_feedback: 3
+  });
+  for (const scenario of scenarios) {
+    assert.ok(Array.isArray(scenario.turns) && scenario.turns.length >= 1);
+    assert.equal(typeof scenario.expected_move, "string");
+    assert.equal(typeof scenario.checks, "object");
+    if (scenario.class === "result_feedback") {
+      assert.equal(typeof scenario.representative_result, "string");
+    }
+  }
+});
+
 test("the paired study freezes exactly eighty unique tasks", async () => {
   const { raw, scenarios } = await loadStudy();
   assert.equal(scenarios.length, 80);
@@ -490,7 +527,7 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   assert.doesNotMatch(raw, /\b(?:sk-(?:proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/u);
 });
 
-test("sealed holdout has no exact or threshold near-duplicate prompt in itself or any development corpus", async () => {
+test("sealed v5 holdout has no exact or threshold near-duplicate prompt in itself or any pre-seal development corpus", async () => {
   const { scenarios: holdout } = await loadHoldout();
   const { scenarios: study } = await loadStudy();
   const development = [
@@ -513,6 +550,17 @@ test("sealed holdout has no exact or threshold near-duplicate prompt in itself o
   for (let left = 0; left < holdout.length; left += 1) {
     for (let right = left + 1; right < holdout.length; right += 1) compare(holdout[left], holdout[right]);
     for (const prior of development) compare(holdout[left], prior);
+  }
+});
+
+test("post-v5 development prompts do not copy a retired v5 holdout prompt verbatim", async () => {
+  const { scenarios: retiredV5 } = await loadHoldout();
+  const postV5 = await loadPostV5Development();
+  const retiredPrompts = new Set(
+    retiredV5.map((scenario) => normalizedText(scenarioPrompt(scenario)))
+  );
+  for (const scenario of postV5) {
+    assert.equal(retiredPrompts.has(normalizedText(scenarioPrompt(scenario))), false);
   }
 });
 
@@ -830,4 +878,8 @@ test("pilot runner defaults to reviewed hook state and supports a true baseline 
   assert.match(source, /--arm paired requires --concurrency 1/);
   assert.match(source, /index % 2 === 0/);
   assert.match(source, /runArm === "plugin" \? "true" : "false"/);
+  assert.match(source, /--first-turn-only/);
+  assert.match(source, /scenario\.initial_prompt/);
+  assert.match(source, /scenario\.follow_up/);
+  assert.match(source, /scenario\.representative_result/);
 });

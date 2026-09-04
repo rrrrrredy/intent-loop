@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-FAILURE ABLATION COMPLETE AS DEVELOPMENT EVIDENCE.** Two independent 80-scenario studies returned `ITERATE`. A third, independently authored unseen holdout is now sealed; its candidate-bound run remains required before release.
+Status: **REVISED DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Post-v5 component ablation produced a 1,099-byte local candidate, but stable-CLI regression and a newly sealed independent holdout remain mandatory before publication.
 
 ## Question
 
@@ -16,6 +16,47 @@ Which policy and architecture elements are necessary for Intent Formation to int
 - The second study completed 160 / 160 primary conversations without a conversation retry. Its blind grader completed all 80 pairs in 16 batches; batch 12 required one grader-only retry because the first response omitted an audit rationale.
 - A different independent author sealed the v5 release holdout before either arm ran. Its corpus SHA-256 is `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
 - Post-failure regressions and component-removal prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
+
+## Third formal holdout result
+
+Candidate `fca68c5` completed 160 / 160 primary conversations and 80 / 80 clean blind grades. It reduced avoidable rework 69.70% and kept non-clear premature actions at zero, but returned `STOP`:
+
+| Gate | Result | Threshold | Decision |
+| --- | ---: | ---: | --- |
+| Avoidable rework reduction | 69.70% | at least 25% | Pass |
+| Final-match change | +5.94 percentage points | at least +10 points | **Fail** |
+| Helpful proactive interventions | 91.67% (22 / 24) | at least 70% | Pass |
+| Wrong or unhelpful proactive interventions | 8.33% (2 / 24) | at most 15% | Pass |
+| Premature actions on non-clear tasks | 0 | 0 | Pass |
+| Clear-task extra interruptions | median 0, P90 0 | median 0, P90 at most 1 | Pass |
+| Clear-task paired latency | +5.36% | increase at most 5% | **Fail** |
+| Explicitly denied inferences | 75% (6 / 8) | at most 10% | **Fail** |
+| Full raw prompts persisted | 0 | 0 | Pass |
+
+The remaining behavior has two concrete causes. First, compatible goals in a public, lasting, or high-stakes request were sometimes treated as permission to choose which goal should lead. Second, after the user resolved a branch, the delivery sometimes changed exact text, case, count, format, or structure, or added unrequested advice. These mechanisms justify precise regression rules; they do not justify restoring the removed generic constraint abstraction.
+
+The predeclared paired clear-task latency exceeded its ceiling by 0.36 percentage points. The core's always-on MCP process returns only static policy text, so a command-Hook transport is eligible for an operational component ablation before the next freeze.
+
+## Post-v5 architecture and policy ablation
+
+The transport experiment ran the same ten clear prompts through baseline and plugin arms for each transport, alternating arm order with concurrency one. It used real installed Hooks, isolated homes and workspaces, `gpt-5.6-sol` at low reasoning, and `codex-cli 0.153.0-alpha.5`. All 20 pairs completed without user-work actions.
+
+| Transport | Pairs | Baseline median | Plugin median | Median paired change | Decision |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Warm static MCP | 10 / 10 | 9,047.5 ms | 8,751.5 ms | -356.5 ms (-3.75%) | Keep |
+| Minimal command Hook | 10 / 10 | 8,795 ms | 10,000 ms | +1,085.5 ms (+12.61%) | Remove |
+
+This small operational sample does not prove a general latency improvement for MCP. It does show that replacing the warm server with a per-prompt command did not solve the observed latency problem and made this matched probe materially slower, so the command abstraction was removed.
+
+Policy trials then isolated each v5 failure mechanism:
+
+- On seven retired v5 leading-priority failures, the prior policy asked before drafting in only 2 / 7 cases. A precise rule for two stated goals that yield different public, lasting, costly, or high-stakes versions raised the broad rerun to 6 / 7. Targeted follow-ups for lasting public identity, assurance-versus-risk prominence, and prohibiting self-blending each asked in 3 / 3 repetitions.
+- On the retired retry-message sample, the prior policy invented an unstated 30-second duration in 2 / 3 repetitions. Restricting tiny samples to stated facts and marking or omitting unknowns avoided invention in 3 / 3 repetitions.
+- A generic exact-delivery reminder did not improve preservation of literal text, capitalization, or requested emphasis, so it was removed. The narrower resolved-branch exit avoided a repeated question in 3 / 3 repetitions; the final `chosen lead first` wording still requires stable-CLI regression.
+- Reintroducing the automatic feedback taxonomy scored 9 / 9 on three repeated result-feedback cases, exactly matching the policy without it. It remains removed from the always-on core and available only in the explicit Skill and optional State companion.
+- The pre-final policy completed the 15-case post-v5 development corpus 15 / 15 operationally. These manually checked, failure-derived trials are development evidence only.
+
+The accepted candidate is 1,099 UTF-8 bytes, 12.4% below the original 1,254-byte policy. During this work Codex updated from `0.153.0-alpha.5` to stable `0.153.0`; no stable-CLI model run has yet been counted. Local Node 20 and Node 22 package suites pass, but those deterministic tests establish implementation integrity, not behavioral efficacy.
 
 ## First formal holdout result
 
@@ -53,7 +94,7 @@ Candidate `fcba88e` fixed most v3 mechanisms but still returned `ITERATE`:
 
 The remaining error pattern was narrower and actionable. Four proactive interventions asked about an adjacent concern or proceeded directly instead of separating the consequential outcome. All four model-owned inferred preferences were later denied by the user. One explicit-comparison case performed two web searches before returning the comparison. The class means also showed that the plugin improved conflict and poorly expressed tasks, stayed flat on unformed tasks, and slightly reduced clear and result-feedback match.
 
-## What the two failures removed
+## What the earlier failures removed
 
 The revisions removed or narrowed these abstractions:
 
@@ -63,7 +104,7 @@ The revisions removed or narrowed these abstractions:
 - format or delivery questions when the only blocker is a missing file, value, or access; and
 - shared option-generation behavior for impossible requirements. A conflict now names both incompatible requirements and asks only which one wins;
 - success-criterion wording that could be satisfied by an adjacent tone or input question instead of the outcome, priority, tradeoff, or exposure that changes the deliverable; and
-- optional follow-up questions after the user has resolved the branch. Delivery now proceeds with requested placeholders and without invented personal or case facts.
+- optional follow-up questions after the user has resolved the branch. Delivery now proceeds with the chosen lead first, requested placeholders, and no invented personal or case facts.
 
 The experiment retained only behavior with observed or product-required value:
 
@@ -92,7 +133,7 @@ The small sample and high timing variance do not support a latency ranking. The 
 - Replacing the exact `mix / reject all / answer freely` exit with a generic allowance caused three of five applicable gate responses to omit at least one exit right. The exact exit remains.
 - Removing the automatic feedback taxonomy did not damage the two result-feedback cases. The compact always-on policy no longer carries it; the explicit Skill and optional state schema retain it where the user deliberately invokes that behavior.
 - Removing the generic `obey stated constraints` sentence produced no meaningful constraint or compactness loss. It remains deleted.
-- The current policy retains the product boundary and observed mechanisms in 967 UTF-8 bytes, 22.9% below the original 1,254-byte policy.
+- That post-v4 candidate retained the product boundary and observed mechanisms in 967 UTF-8 bytes, 22.9% below the original 1,254-byte policy. Later v5 failures required the targeted rules documented above.
 
 No independent blind grade is claimed for this development ablation. Manual transcript inspection was used because the optional external ablation grader was not authorized to receive the local experiment material; an earlier draft also exposed variant paths and therefore was not blind. Formal outcome evidence remains the separate paired holdout.
 
@@ -112,4 +153,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-Both v3 and v4 holdouts are permanently retired from release-gate use because their results informed later policy changes. V5 is sealed without author access to product policy, old holdout prompts, development prompt text, or either evaluation arm; it may run only against the exact committed reduced-policy candidate. Any later user-visible policy change invalidates that outcome run and requires another unseen holdout.
+V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The revised candidate has passed deterministic Node 20 and Node 22 implementation tests, but it is not frozen for release. It must pass stable-CLI development regressions and then a newly authored unseen holdout whose author has no access to product policy, old holdout prompts, development prompt text, or either evaluation arm.

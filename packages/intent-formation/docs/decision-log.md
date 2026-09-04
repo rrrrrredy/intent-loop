@@ -74,6 +74,20 @@
 
 **Fix:** Align Schema, rubric, and runtime on 40-520 characters, bind grading to a clean Git tooling commit and contract hashes, preserve invalid summary SHA-256 `4ab5df8d454ef15e624c86b518f70bf72f565a2eaf8920129bbbc26d8f422125`, and rerun all 80 pairs in a fresh isolated grader environment. Product policy bytes remain frozen.
 
+## D-028 — Treat v5 as STOP and isolate its failure mechanisms
+
+**Decision:** Do not publish candidate `fca68c5489d9698ad4894096818469aad3f5520b`. Its 160 / 160 primary conversations and 80 / 80 clean blind grades passed rework, clear-interruption, proactive-intervention, premature-action, and persistence gates, but final match improved only 5.94 percentage points, clear paired latency rose 5.36%, and six of eight inferred preferences were denied.
+
+**Next experiment:** Test precise rules for unresolved leading priorities and exact post-resolution delivery on new development cases. Separately compare the static MCP policy transport with a minimal command Hook because the MCP server carries no dynamic product state. V5 is retired and cannot authorize a later release.
+
+## D-029 — Keep MCP and remove post-v5 abstractions without measured value
+
+**Decision:** Keep the warm static MCP transport. In ten matched clear-prompt pairs it had a -3.75% median paired change against baseline, while a minimal command Hook had +12.61%. Both completed 10 / 10 without user-work actions; the sample is operational development evidence, not a general latency claim.
+
+**Policy:** Add only precise leading-goal, stated-facts sample, and chosen-lead delivery rules. Remove the generic fidelity reminder after it failed to improve literal delivery, and keep the automatic feedback taxonomy out after both variants scored 9 / 9 on repeated feedback cases. The candidate is 1,099 UTF-8 bytes, 12.4% below the original.
+
+**Evidence boundary:** Development runs used `codex-cli 0.153.0-alpha.5`; the final wording has not yet run through stable `0.153.0`. Stable regression and a new independent sealed holdout are mandatory before release.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

@@ -56,6 +56,22 @@ Accepted: invalidate the entire grader run before inspecting semantic scores. Pr
 
 Boundary: this changes evaluation infrastructure only. The evaluated plugin tree remains byte-identical to candidate `fca68c5489d9698ad4894096818469aad3f5520b`; if any user-visible policy byte changes, v5 is retired.
 
+## 2026-09-04: treat v5 as STOP and retire it
+
+Formal result: candidate `fca68c5489d9698ad4894096818469aad3f5520b` completed 160 / 160 primary conversations and the clean rerun produced 80 / 80 blind grades. It passed rework, clear-interruption, proactive-intervention, premature-action, and raw-persistence gates. It failed final match at +5.94 percentage points, clear paired latency at +5.36%, and inference denial at 75% (6 / 8).
+
+Accepted: retain the conjunctive `STOP`; do not publish v5 or reuse its corpus as release evidence. Use only its failure classes to construct development regressions for unresolved leading priorities, exact post-resolution delivery, and static-policy transport latency. A subsequent release attempt requires a fresh independent holdout.
+
+## 2026-09-04: keep the warm MCP transport and accept only targeted post-v5 rules
+
+Architecture result: ten matched clear-prompt pairs per transport completed without user-work actions. The warm MCP arm had a -3.75% median paired change versus baseline; the command Hook had +12.61%. This small development sample does not establish general latency, but the proposed command replacement was slower and is rejected.
+
+Accepted: ask for the leading goal when two stated goals produce different public, lasting, costly, or high-stakes versions; treat public identity and assurance-versus-risk prominence as concrete instances; keep samples to stated facts; and put the chosen lead first after resolution. The resulting policy is 1,099 bytes, 12.4% below the original.
+
+Rejected: a generic fidelity reminder and automatic feedback taxonomy in the always-on policy. The former did not improve literal or emphasis preservation; the latter tied the 9 / 9 behavior of the smaller policy. Feedback classification stays in the explicit Skill and optional State companion.
+
+Boundary: these are failure-derived development trials on `codex-cli 0.153.0-alpha.5`. Stable `0.153.0` regression and a fresh independent holdout are still required; no current efficacy or publication claim exists.
+
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses
 
 Accepted: freeze an independently authored 80-scenario holdout before running either arm, then publish all 160 sanitized primary conversations, all 80 blind grades, hashes, grader retries, long-tail timing, deterministic paired-bootstrap intervals, and the exact sign test only if every predeclared release gate passes.

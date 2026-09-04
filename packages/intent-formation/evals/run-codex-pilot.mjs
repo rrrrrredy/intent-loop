@@ -20,6 +20,7 @@ const codexBinary = process.env.CODEX_BIN || "codex";
 const arm = option("--arm", "plugin");
 const model = option("--model", "");
 const bypassHookTrust = process.argv.includes("--bypass-hook-trust");
+const firstTurnOnly = process.argv.includes("--first-turn-only");
 const pluginId = option("--plugin-id", "intent-formation@intent-loop");
 const statePluginId = option("--state-plugin-id", "intent-formation-state@intent-loop");
 const pluginConfigKey = `plugins.${pluginId}.enabled=`;
@@ -106,16 +107,32 @@ async function prepareWorkspace(scenario) {
   return scenarioWorkspace;
 }
 
+function scenarioTurns(scenario) {
+  if (Array.isArray(scenario.turns) && scenario.turns.length > 0) {
+    return firstTurnOnly ? [scenario.turns[0]] : scenario.turns;
+  }
+  if (typeof scenario.initial_prompt === "string" && scenario.initial_prompt.trim()) {
+    return scenario.follow_up && !firstTurnOnly
+      ? [scenario.initial_prompt, scenario.follow_up]
+      : [scenario.initial_prompt];
+  }
+  throw new Error(`Scenario ${scenario.id ?? "<unknown>"} has no usable prompt`);
+}
+
 function buildPrompt(scenario) {
-  if (scenario.turns.length === 1) {
-    return scenario.turns[0];
+  const turns = scenarioTurns(scenario);
+  if (turns.length === 1) {
+    return turns[0];
   }
 
   return [
     "Continue this existing task conversation from the user's latest message.",
-    "User: " + scenario.turns[0],
-    "Assistant: [A representative result was delivered for that request.]",
-    "User: " + scenario.turns[1]
+    "User: " + turns[0],
+    "Assistant: " +
+      (typeof scenario.representative_result === "string"
+        ? scenario.representative_result
+        : "[A representative result was delivered for that request.]"),
+    "User: " + turns[1]
   ].join("\n");
 }
 
@@ -186,7 +203,7 @@ async function runScenario(scenario, runArm = arm) {
       resolve({
         id: scenario.id,
         arm: runArm,
-        expected_move: scenario.expected_move,
+        expected_move: scenario.expected_move ?? scenario.expected_first_move,
         code,
         signal,
         duration_ms: Date.now() - startedAt,
@@ -230,6 +247,7 @@ await writeFile(
       arm,
       model: model || null,
       hook_trust: bypassHookTrust ? "automation-bypass" : "reviewed-host-state",
+      first_turn_only: firstTurnOnly,
       plugin_id: pluginId,
       state_plugin_id: statePluginId,
       scenarios_path: scenariosPath,
