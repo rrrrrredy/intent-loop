@@ -136,6 +136,12 @@
 
 **Reason:** Two full-suite runs started workers while earlier workers were already acquiring the lock; Windows scheduling and endpoint scanning paused a live lock owner long enough to trip the worker's 120-second no-progress boundary. The old test mixed process-launch pressure with lock correctness. With the barrier, Node 20 and Node 22 completed simultaneous 100-writer runs in 16.2 and 18.0 seconds with all events and no lock residue. Product lock timeouts remain unchanged, and the separate stalled-live-owner regression still checks bounded failure.
 
+## D-038 — Remove named decision dimensions and repair the development labels
+
+**Decision:** Remove recipient, teaching, persuasion, autonomy, and brand-voice trigger lists from the compact Hook policy. Restore the three-condition activation gate and make bounded reversible drafts a direct-delivery exit. Keep all 17 authorized synthetic prompts unchanged, but relabel seven cheap drafts from `question` to `direct_delivery` and require a missing-data question when the library-card duration is absent.
+
+**Evidence:** Candidate `598f83f` completed every real Codex turn and cleanup without tools or user-work actions, yet asked eight unnecessary questions and fabricated one missing duration. The original seven question labels contradicted the frozen rule that a cheap reversible sample should precede an interview. The reduced policy is 1,293 UTF-8 bytes and passes 107 / 107 tests on Node 20.19.1 and Node 22.19.0; real behavioral rerun and component ablation remain required.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

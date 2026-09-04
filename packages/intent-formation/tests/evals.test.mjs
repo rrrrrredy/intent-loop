@@ -419,7 +419,7 @@ test("post-v5 development corpus freezes gate, sample, resolved-delivery, lead-o
   assert.equal(boundedFacts.checks.only_stated_facts, true);
 });
 
-test("post-v6 development corpus freezes missing decisions, concrete comparisons, feedback updates, and silence controls", async () => {
+test("post-v6 development corpus freezes reversible drafts, concrete comparisons, feedback updates, and silence controls", async () => {
   const scenarios = await loadPostV6Development();
   assert.equal(scenarios.length, 17);
   assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 17);
@@ -428,7 +428,7 @@ test("post-v6 development corpus freezes missing decisions, concrete comparisons
     return result;
   }, {});
   assert.deepEqual(counts, {
-    leading_decision: 7,
+    reversible_draft_control: 7,
     concrete_comparison: 3,
     feedback_resolution: 4,
     missing_data_control: 1,
@@ -449,6 +449,14 @@ test("post-v6 development corpus freezes missing decisions, concrete comparisons
   );
   const missingData = scenarios.find((scenario) => scenario.id === "pv6-boundary-missing-data-01");
   assert.equal(missingData.checks.must_not_claim_conflict, true);
+  const reversibleDrafts = scenarios.filter(
+    (scenario) => scenario.class === "reversible_draft_control"
+  );
+  assert.ok(reversibleDrafts.every((scenario) => scenario.expected_first_move === "direct_delivery"));
+  assert.ok(reversibleDrafts.every((scenario) => scenario.checks.no_question === true));
+  const missingDuration = scenarios.find((scenario) => scenario.id === "pv6-feedback-expand-02");
+  assert.equal(missingDuration.expected_first_move, "missing_data_question");
+  assert.equal(missingDuration.checks.must_not_invent, true);
 });
 
 test("the paired study freezes exactly eighty unique tasks", async () => {

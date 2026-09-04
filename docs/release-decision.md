@@ -15,17 +15,17 @@ Current state: **candidate; do not tag or announce until every remaining gate be
 - Independently authored v6 holdout sealed before execution at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; portable root overlap validation found zero threshold violations.
 - V6 completed 160 / 160 primary conversations and 80 / 80 blind grades, then returned `STOP`; its failure record is preserved without an efficacy claim.
 - Evaluation contract v3 rejects a corpus unless every final requirement is an exact excerpt from a frozen user-visible turn.
-- Current source/package suites: PASS, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0, covering the 1,317-byte failure-derived policy, evaluation contract v3, privacy/deletion behavior, generated packages, and simultaneous 100-process writes.
+- Current source/package suites: PASS, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0, covering the reduced 1,293-byte policy, corrected development labels, evaluation contract v3, privacy/deletion behavior, generated packages, and simultaneous 100-process writes.
 
 ## Required before publication
 
-- Real installed-Hook regression and component ablation for the post-v6 revision; remove any rule that does not show necessary behavior.
+- Corrected installed-Hook regression, genuinely costly decision-gate probes, and component ablation for the post-v6 revision; remove any rule that does not show necessary behavior.
 - A newly and independently authored v7 holdout with no hidden final requirements, sealed before any arm runs.
 - A verbatim, candidate-commit-bound v7 evaluation with explicit model settings, isolated Codex Home, full plugin-tree fingerprint, complete sanitized outputs, and all predeclared gates passing.
 - Independent adversarial review with accepted blockers fixed.
 - Independent beginner/user-perspective use with accepted blockers fixed.
 - Clean repository, version identity, generated-distribution, SBOM, notice, secret-scan, and package-allowlist checks.
-- Successful live npm advisory audits for both production dependency manifests. The latest authorized requests were blocked before transmission by the execution safety layer, so no current live result is claimed.
+- Successful live npm advisory audits for both production dependency manifests. Authorized requests reached npm: the retiring quick endpoint returned HTTP 500 and the official bulk endpoint timed out, so no current live result is claimed.
 - Commit and push, then all 18 main CI jobs.
 - Annotated `v0.3.0-beta.1` tag, all 18 exact-tag CI jobs, verified release assets, attestations, immutable prerelease, and fresh public installs.
 - GitHub profile placement and final local installation/state/cache/dependency cleanup.

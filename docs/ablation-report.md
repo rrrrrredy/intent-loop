@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. Its failures produced a 1,317-byte revision and a stricter evaluation contract; installed-Hook regression and component ablation remain pending before a new holdout can be sealed.
+Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. The first authorized 17-case installed-Hook run then exposed both a development-label defect and eight unnecessary questions. The named-dimension gate has been removed; the current 1,293-byte revision and corrected labels still require a real rerun and component ablation before a new holdout can be sealed.
 
 ## Question
 
@@ -94,11 +94,13 @@ The observed behavior, rather than a round byte target, set the v6 policy budget
 
 ## Post-v6 revision and component plan
 
-A first 1,260-byte repair used a generic `materially change the result` gate. In real installed-Hook trials it asked the correct missing decision in only 2 / 7 targeted cases: it missed teaching depth, persuasive feasibility, autonomy, and brand voice, and once asked a surface-tone question. That abstraction was rejected.
+A first 1,260-byte repair used a generic `materially change the result` gate. Under the then-current labels, real installed-Hook trials asked in only 2 / 7 targeted cases. Those results motivated named content dimensions, but the later corpus audit showed that all seven tasks requested cheap, reversible drafts and should not have required questions in the first place.
 
-The current 1,317-byte revision names observable decision dimensions, makes a newer turn override an earlier `this turn only` limit, requires a consequence plus parallel micro-example for abstract comparisons, restores a compact result-feedback rule, and limits samples only from inventing factual claims rather than suppressing requested creative examples. The 17-case post-v6 corpus freezes seven decision gates, three comparisons, four feedback updates, one missing-data control, and two clear controls. Its structure and user-visible requirements pass deterministic tests; real installed-Hook validation is still pending.
+Candidate `598f83f` ran the 17 unchanged synthetic prompts through a real installed Codex Hook with `gpt-5.6-sol` at low reasoning. All 17 first turns, all five follow-ups, and all 17 task cleanups completed, with no user-work or domain-tool action. Transcript review found eight unnecessary questions: six of seven bounded drafts, one one-sentence perfume draft, and one fully specified clear control. It also found a fabricated three-business-day value in the library-card case, whose prompt supplied no duration.
 
-Before sealing v7, component-removal runs must separately test the named decision dimensions, comparison micro-examples, result-feedback rule, facts-only boundary, exact answer exit, and warm MCP transport. A component stays only when removing it causes an observed behavior loss or it enforces a non-negotiable safety/product boundary.
+The prompts remain byte-for-byte unchanged. Seven `question` labels now require direct delivery because a cheap draft can reveal preference, and the library-card first move now requires asking only for its missing duration. The compact policy is 1,293 bytes after removing five named decision dimensions and restoring the general three-condition gate: at least two plausible directions, a different next action, and material rework, irreversibility, or external impact with no cheap shared step or sample.
+
+Before sealing v7, the corrected 17 cases must rerun through the installed Hook. Separate development probes must cover genuinely costly decision branches. Component-removal runs must test comparison micro-examples, result feedback, the facts-only boundary, exact answer exit, and warm MCP transport. A component stays only when removal causes an observed behavior loss or it enforces a non-negotiable safety or product boundary.
 
 ## First formal holdout result
 
@@ -195,4 +197,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-V3, v4, v5, and v6 are permanently retired from release-gate use because their results informed later policy, evaluation, or architecture work. V6 is additionally invalid for efficacy because its hidden final requirements violated the user-visible evidence boundary. The current revision must pass real development regression and component removal first. Only then may a fresh independent author create v7 under the exact-excerpt contract; no v7 arm may run before its corpus and candidate are separately sealed.
+V3, v4, v5, and v6 are permanently retired from release-gate use because their results informed later policy, evaluation, or architecture work. V6 is additionally invalid for efficacy because its hidden final requirements violated the user-visible evidence boundary. The current revision must pass the corrected installed-Hook regression, genuine costly-branch probes, and component removal first. Only then may a fresh independent author create v7 under the exact-excerpt contract; no v7 arm may run before its corpus and candidate are separately sealed.
