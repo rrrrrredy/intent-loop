@@ -10,9 +10,10 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /explicit comparison\/options: give requested count, else 2-3 neutral choices/i);
   assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
-  assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline from stated facts/i);
-  assert.match(POLICY, /never invent facts/i);
-  assert.match(POLICY, /mark\/omit unknowns/i);
+  assert.match(POLICY, /explicit sample\/example: exact count, tiny inline/i);
+  assert.match(POLICY, /under "only these facts", add no adjective\/theme\/implication\/intensifier\/scope/i);
+  assert.match(POLICY, /repeat supplied facts verbatim to fill count/i);
+  assert.match(POLICY, /else mark\/omit unknowns/i);
   assert.match(POLICY, /no inspection\/tools\/files/i);
   assert.match(POLICY, /both override gate/i);
   assert.match(POLICY, /'compare only'\/'do not choose' stays neutral/i);
@@ -34,7 +35,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1175);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1260);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

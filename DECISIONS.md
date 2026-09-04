@@ -74,15 +74,25 @@ Rejected: a generic fidelity reminder and automatic feedback taxonomy in the alw
 
 Observed on stable `codex-cli 0.153.0`: the 1,099-byte candidate passed the original 15 development cases but put a user-selected leading priority first in only 1 / 3 targeted runs. Compressing already proven trigger phrases to make room under 1,100 bytes then caused four routing regressions, so that compression was rejected.
 
-Accepted: keep the proven trigger phrases, require the opening sentence to express the selected priority before competing goals, and explicitly prohibit invented facts in bounded samples. The current policy is 1,165 bytes, still 7.1% below the original 1,254 bytes. The new lead-order probe passed 5 / 5; the final stated-facts repetition remains a development gate before candidate freeze.
+Accepted: keep the proven trigger phrases and require the opening sentence to express the selected priority before competing goals. The 1,165-byte candidate's `never invent facts` sentence still expanded a facts-only sample with unsupported scope in a valid Hook-enabled repetition, so it was insufficient.
 
-Boundary: these failure-derived stable-CLI runs may justify implementation changes but cannot authorize publication. A fresh independently authored v6 holdout remains mandatory after the final candidate is frozen.
+Accepted after that failure: for an explicit `only these facts` sample, forbid new adjectives, themes, implications, intensifiers, or scope and allow verbatim fact repetition when an exact count needs filler. The resulting 1,253-byte policy is one byte below the original. With the audited Hook-trust bypass used by the formal runner, the facts-only sample passed 5 / 5, chosen-lead order passed 5 / 5, and the complete 16-case development corpus passed with zero tool calls or user-work actions. Three intervening no-bypass repetition sets are invalid transport diagnostics and are excluded from behavioral evidence.
+
+Boundary: these failure-derived stable-CLI runs justify the final candidate but cannot authorize publication. The independently authored v6 holdout remains the release gate.
 
 ## 2026-09-04: make the permanent overlap test match the sealed method
 
 Observed: the root test compared only the first prompt, removed punctuation before four-gram calculation, and did not tokenize Han text one character at a time, while the published holdout method specified whole-scenario text, NFKC plus whitespace normalization, and individual Han tokens.
 
-Accepted before v6 authoring completed: align the permanent test with the published method and verify that the retired v5 corpus still passes unchanged. Root v6 sealing will additionally compare the new corpus with three historical holdouts, every committed development corpus, and both hash-verified ablation corpora.
+Accepted before v6 authoring completed: align the permanent test with the published method and verify that the retired v5 corpus still passes unchanged. Root v6 sealing then compared the new corpus with three historical holdouts, every committed development corpus, and both hash-verified ablation corpora.
+
+## 2026-09-04: seal independent v6 before either arm runs
+
+Accepted: preserve v5 under `evals/retired`, publish both frozen ablation corpora, and make the root overlap validator portable. The independent author produced 80 scenarios across 80 domains, with the predeclared 60 English / 20 Chinese distribution and zero model, arm, or grader runs. The canonical corpus SHA-256 is `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`.
+
+Root validation reported maximum token-set Jaccard `0.45614035087719296` and maximum normalized character four-gram Dice `0.5330882352941176`, below the frozen `0.65` and `0.72` rejection thresholds. The main engineer inspected only aggregate hashes, counts, scores, and pair identifiers, not scenario text.
+
+Boundary: v6 is sealed but unrun. A clean Git candidate commit must bind this corpus and the generated plugin before baseline, plugin, or blind-grader execution.
 
 Boundary: these are failure-derived development trials on `codex-cli 0.153.0-alpha.5`. Stable `0.153.0` regression and a fresh independent holdout are still required; no current efficacy or publication claim exists.
 

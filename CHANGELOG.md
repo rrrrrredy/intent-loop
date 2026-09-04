@@ -16,13 +16,14 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Ran a four-variant installed-Hook ablation and removed the automatic feedback taxonomy and generic constraint reminder from the compact policy; feedback semantics remain available in the explicit Skill and optional State companion.
 - Compared warm MCP with a minimal command Hook on ten matched clear-prompt pairs; kept MCP after the command variant's median paired latency rose 12.61%, and rejected generic fidelity and automatic-feedback policy text that showed no behavioral gain.
 - Retained the exact mix/reject/free-answer exit after relaxed wording omitted complete answer rights, and prohibited tools or project work during an explicit intent-forming comparison after a real regression searched the web.
-- Revised the compact interaction policy to 1,165 UTF-8 bytes, 7.1% below the original 1,254 bytes, with targeted leading-goal, stated-facts sample, and mechanically testable chosen-lead delivery rules.
+- Revised the interaction policy to 1,253 UTF-8 bytes, one byte below the original 1,254 bytes, with failure-derived leading-goal, explicit facts-only, and mechanically testable chosen-lead delivery rules; smaller variants that regressed behavior were rejected.
 
 ### Added
 
 - Added an independently authored, hash-sealed 80-scenario paired Codex holdout pipeline that publishes all 160 primary conversations, blind grades, source and artifact hashes, grader retry history, paired-bootstrap intervals, and an exact sign test only after every release gate passes.
 - Predeclared a bilingual release holdout with 60 English and 20 Simplified Chinese cases across at least 40 task domains and sealed 80 distinct domains, without giving its independent author access to the product policy or prior corpus text.
 - Sealed the independent v5 release corpus at SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905` before either arm ran; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
+- Sealed independent v6 at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` after zero model, arm, or grader runs; archived v5, preserved both frozen ablation corpora, and added a portable validator that reproduces zero cross-corpus threshold violations.
 - Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
 - Added deterministic evidence verification to the root test suite.
 - Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
@@ -41,8 +42,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Refused `/intent remember` in private mode rather than returning a receipt for memory that disappears when its short-lived Hook exits.
 - Closed a same-process lock-publication race by registering the unique owner token before its file becomes observable; the permanent regression now drives 100 simultaneous appends.
 - Removed obsolete selector and session prototypes from the shipped surface.
-- Excluded package-local `.tmp` fixtures from npm archives after a dry-run exposed an untracked fake Skill; the corrected archive contains the expected 81 entries and zero temporary paths.
+- Excluded package-local `.tmp` fixtures from npm archives after a dry-run exposed an untracked fake Skill; the then-current archive contained 81 entries, and the v6 evidence-preserving archive contains 87, both with zero temporary paths.
 - Required the opening sentence to express the user's selected priority before competing goals after stable-CLI repetitions exposed inconsistent lead order, and explicitly prohibited invented facts after a bounded sample added unsupported artistic themes.
+- Replaced the insufficient compact facts rule after a valid Hook-enabled run still expanded scope; an explicit `only these facts` fallback now forbids descriptive padding and repeats supplied facts when exact length otherwise forces invention.
 - Made evidence publication recompute every metric from complete unique pairs before an atomic publish, reject stale run directories and untracked candidate-plugin files, and bind the live tree to the candidate Git object and archive.
 - Aligned the permanent holdout overlap test with the published method by comparing complete scenario text, tokenizing Han characters individually, and retaining normalized whitespace in four-gram checks.
 - Made tag publication require an annotated tag targeting the workflow commit, deterministic archives, exact-candidate evidence, and digest-aware draft reconciliation that verifies an already immutable matching release without mutation.
@@ -55,7 +57,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Candidate `8def5a3` completed a separate 16 / 16 installed-Hook confirmation with zero first-turn actions, zero first-turn MCP calls, and complete task cleanup; this is targeted development evidence, not an efficacy result.
 - The v5 primary run completed 160 / 160 without timeout, prompt drift, MCP calls, or cleanup failure. Its first blind-grading run was invalidated before score inspection; the clean rerun produced 80 / 80 grades and one allowed grader-only retry.
 - V5 reduced avoidable rework 69.70% but failed final match (+5.94 percentage points), clear paired latency (+5.36%), and inference denial (75%, 6 / 8). No efficacy claim is active, and another release attempt requires a new sealed holdout.
-- Post-v5 policy and transport trials remain failure-derived development evidence. Stable `codex-cli 0.153.0` lead-order probing passed 5 / 5 only after a failed compressed variant was removed; the final stated-facts repetition and a fresh sealed holdout remain pending. The 1,165-byte candidate is not release evidence.
+- Post-v5 policy and transport trials remain failure-derived development evidence. Stable `codex-cli 0.153.0` facts-only and lead-order probes each passed 5 / 5, and the full 16-case corpus passed 16 / 16 under the audited Hook-trust path; three no-bypass repetition sets are excluded. The 1,253-byte candidate is not release evidence, and sealed v6 remains the publication gate.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.
 

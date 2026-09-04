@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **REVISED DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Stable-CLI regression found two second-order failures and produced a 1,165-byte local candidate. Its final stated-facts repetition and a newly sealed independent holdout remain mandatory before publication.
+Status: **FINAL DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Stable-CLI regression and failure-driven ablation produced a 1,253-byte policy. Its targeted development gates pass; independently authored v6 is sealed and remains unrun.
 
 ## Question
 
@@ -15,6 +15,7 @@ Which policy and architecture elements are necessary for Intent Formation to int
 - The second formal study independently sealed a different 80-scenario corpus before freezing candidate `fcba88e`. Its corpus SHA-256 is `252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70`.
 - The second study completed 160 / 160 primary conversations without a conversation retry. Its blind grader completed all 80 pairs in 16 batches; batch 12 required one grader-only retry because the first response omitted an audit rationale.
 - A different independent author sealed the v5 release holdout before either arm ran. Its corpus SHA-256 is `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
+- A new independent author sealed v6 at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` after zero model, arm, or grader runs. Root validation found zero overlap violations against all historical holdouts, tracked development corpora, and both now-preserved ablation corpora.
 - Post-failure regressions and component-removal prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
 
 ## Third formal holdout result
@@ -65,9 +66,11 @@ Real installed-Hook runs on `codex-cli 0.153.0` then exposed behavior hidden by 
 - The 1,099-byte candidate completed the 15-case post-v5 corpus 15 / 15, and three high-risk leading-priority classes each asked correctly in 3 / 3 repetitions. However, only one of three resolved merger-letter runs put the user-selected uncertainty emphasis strictly before the competing confidence goal.
 - Compressing several established trigger phrases to keep a strengthened lead-order rule under the old 1,100-byte ceiling caused four regressions in the next 15-case run and repeated the question after an explicit selection. That variant was rejected.
 - Restoring the proven phrases and requiring the opening sentence itself to express the chosen priority passed a new fictional museum closure case 5 / 5. A subsequent 16-case run preserved all other routing behavior, but its 18-word sample invented unsupported artistic themes.
-- The current 1,165-byte candidate adds the mechanical prohibition `never invent facts`; its evaluation, policy, and package contracts pass 40 / 40. The external five-repeat stated-facts check remains pending because the execution permission gate rejected that exact outbound run.
+- The 1,165-byte follow-up added `never invent facts`, but a valid Hook-enabled five-repeat still created unsupported scope with words such as `each`, `throughout`, and `across`. That compact wording was rejected.
+- Three intervening five-repeat sets omitted the evaluator's audited Hook-trust bypass. Their transport metadata did not establish policy injection, so their outputs are excluded rather than used to tune or support the candidate.
+- The final rule targets only an explicit `only these facts` request: it forbids new adjectives, themes, implications, intensifiers, and scope, and uses verbatim fact repetition when an exact count needs filler. With the same Hook-trust path as the formal runner, the facts-only probe passed 5 / 5, chosen-lead order passed 5 / 5, and the complete 16-case corpus passed 16 / 16 with no tool calls or user-work actions.
 
-The observed behavior, rather than a round byte target, now sets the compact-policy budget. The candidate remains 7.1% smaller than the original policy, while the removed command Hook, generic fidelity reminder, automatic feedback taxonomy, and other unused abstractions stay removed. None of these stable-CLI trials is independent release evidence.
+The observed behavior, rather than a round byte target, sets the policy budget. The 1,253-byte candidate is one byte smaller than the original policy, while the command Hook, generic fidelity reminder, automatic feedback taxonomy, and other unused abstractions stay removed. The restored bytes are tied to observed failures; none of these stable-CLI trials is independent release evidence.
 
 ## First formal holdout result
 
@@ -129,7 +132,7 @@ No GUI, planner, transcript parser, custom Harness, intake form, or independent 
 
 ## Component-removal experiment after v4
 
-A frozen 16-task development corpus covered two clear, five conflict, five poorly expressed, two result-feedback, and two unformed cases. Its SHA-256 is `c5c3c889c302fbc1f8f11ced67c1f78125c8a2c768aae4081100f07d34b5b0b7`. Each variant used `gpt-5.6-sol` at low reasoning through an installed Hook, isolated Home and workspace, four workers, no primary retries, and task cleanup after every case.
+A frozen 16-task development corpus covered two clear, five conflict, five poorly expressed, two result-feedback, and two unformed cases. Its original run-input SHA-256 was `c5c3c889c302fbc1f8f11ced67c1f78125c8a2c768aae4081100f07d34b5b0b7`; the byte-equivalent public LF-normalized copy is `513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72`. Each variant used `gpt-5.6-sol` at low reasoning through an installed Hook, isolated Home and workspace, four workers, no primary retries, and task cleanup after every case.
 
 | Variant | Candidate | Policy bytes | Usable | First-turn actions | Median total | Maximum total |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -150,7 +153,7 @@ No independent blind grade is claimed for this development ablation. Manual tran
 
 ## Confirmation on the reduced policy
 
-Candidate `8def5a3` ran a second frozen 16-task confirmation corpus with SHA-256 `87252f02f62461e27ba881044db139e3199af2520180268c25edb4cf072aca03`:
+Candidate `8def5a3` ran a second frozen 16-task confirmation corpus with original run-input SHA-256 `87252f02f62461e27ba881044db139e3199af2520180268c25edb4cf072aca03`; its public LF-normalized copy is `addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c`:
 
 - 16 / 16 conversations were usable, with no timeout;
 - first-turn action items: 0; first-turn MCP calls: 0;
@@ -164,4 +167,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The revised candidate is not frozen for release. It must pass the pending final stable-CLI stated-facts repetition, the complete deterministic matrix, and then a newly authored unseen holdout whose author has no access to product policy, old holdout prompts, development prompt text, or either evaluation arm.
+V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The final development candidate has passed its targeted stable-CLI regressions. V6 was authored unseen, hash-sealed, copied byte-identically to the canonical path, and mechanically cleared against all frozen prior material. The next step is one clean candidate commit followed by the verbatim paired v6 run and blind grade; no further policy change is allowed without retiring v6.

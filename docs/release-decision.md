@@ -12,11 +12,12 @@ Current state: **candidate; do not tag or announce until every remaining gate be
 - Real `/intent off` follow-up on a frozen ambiguous prompt, with direct delivery and no intent interruption.
 - DeepSeek Harness `0.1.2-rc.1` package/add/compose/boot-help/remove on Node 22.19 using a temporary cleaned profile and no model API key.
 - DeepSeek/root live npm audit with zero vulnerabilities; Codex package cache-backed audit with zero vulnerabilities.
+- Final stable-CLI development regression: facts-only sample 5 / 5, chosen-lead order 5 / 5, and the complete 16-case corpus 16 / 16 with zero tools or user-work actions under the formal runner's audited Hook-trust path.
+- Independently authored v6 holdout sealed after zero model, arm, or grader runs at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; portable root overlap validation found zero threshold violations.
 
 ## Required before publication
 
 - A sealed, verbatim, candidate-commit-bound holdout evaluation with explicit model settings, isolated Codex Home, full plugin-tree fingerprint, complete sanitized outputs, and all predeclared gates passing.
-- The final 1,165-byte installed-Hook candidate must first pass repeated stated-facts and lead-order development probes; the lead-order probe is 5 / 5, while the stated-facts rerun is still pending.
 - Independent adversarial review with accepted blockers fixed.
 - Independent beginner/user-perspective use with accepted blockers fixed.
 - Clean repository, version identity, generated-distribution, SBOM, notice, secret-scan, and package-allowlist checks.

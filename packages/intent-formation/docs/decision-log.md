@@ -90,15 +90,27 @@
 
 ## D-030 — Let stable behavior set the policy byte budget
 
-**Decision:** Restore the established explicit-sample, explicit-comparison, conflict, and resolved-branch phrases after an over-compressed variant caused four routing regressions. Require the opening sentence to express the chosen priority before competing goals, and add `never invent facts` for bounded samples. Accept 1,165 bytes, still 7.1% below the original 1,254-byte policy.
+**Decision:** Restore the established explicit-sample, explicit-comparison, conflict, and resolved-branch phrases after an over-compressed variant caused four routing regressions. Require the opening sentence to express the chosen priority before competing goals. Treat the 1,165-byte version as an intermediate candidate rather than a byte ceiling.
 
-**Evidence:** Stable `codex-cli 0.153.0` exposed strict lead-order failures in two of three targeted runs. The revised lead-order case then passed 5 / 5, while a 16-case pass exposed unsupported embellishment in the 18-word sample. The final stated-facts repetition and an independent v6 holdout remain required.
+**Evidence:** Stable `codex-cli 0.153.0` exposed strict lead-order failures in two of three targeted runs. The revised lead-order case then passed 5 / 5, while a 16-case pass exposed unsupported embellishment in the 18-word sample. A later valid Hook-enabled five-repeat showed that `never invent facts` still allowed unsupported scope.
 
 ## D-031 — Align permanent overlap checks with the sealed method
 
 **Decision:** Compare complete scenario text, tokenize Han text one character at a time, and calculate four-gram Dice over NFKC/lowercased/whitespace-normalized text. Do not keep the weaker first-prompt-only implementation.
 
-**Evidence:** The stronger implementation was committed before v6 content was inspected and the existing v5 holdout still passes its thresholds. V6 root sealing will cover historical holdouts, every development corpus, and both hash-verified ablation corpora.
+**Evidence:** The stronger implementation was committed before v6 content was inspected and the existing v5 holdout still passes its thresholds. V6 root sealing covered historical holdouts, every development corpus, and both hash-verified ablation corpora with zero violations.
+
+## D-032 — Prefer explicit facts-only behavior over a smaller ineffective rule
+
+**Decision:** Under an explicit `only these facts` request, forbid added adjectives, themes, implications, intensifiers, and scope; permit verbatim repetition of supplied facts to satisfy an exact count. The final development policy is 1,253 UTF-8 bytes, one byte below the original 1,254-byte policy.
+
+**Evidence:** With the exact Hook-trust bypass used by the formal runner, the 1,165-byte rule still expanded scope in at least two of five repetitions. The explicit rule then passed the facts-only probe 5 / 5, the chosen-lead probe 5 / 5, and the full 16-case development corpus 16 / 16 with zero tool calls or user-work actions. Three no-bypass repetition sets are excluded because they did not establish policy injection.
+
+## D-033 — Seal v6 and make overlap evidence reproducible
+
+**Decision:** Archive the used v5 corpus, preserve the two frozen ablation corpora, and bind the canonical v6 corpus plus a portable overlap validator in the candidate commit. Do not run either arm before that commit exists.
+
+**Evidence:** The independent author ran zero models, arms, or graders. Corpus SHA-256 is `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; root cross-corpus maxima are `0.45614035087719296` Jaccard and `0.5330882352941176` four-gram Dice, with zero threshold violations.
 
 ## D-001 — Start a new product repository
 

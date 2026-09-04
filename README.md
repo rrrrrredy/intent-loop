@@ -85,7 +85,7 @@ An earlier 80-scenario run is preserved as a [development regression](evidence/d
 
 The [development ablation report](docs/ablation-report.md) records which policy and architecture elements were removed, which removals caused real Hook failures, and the observed model boundary. It is also excluded from release-efficacy claims.
 
-The prerelease remains blocked until a new sealed holdout is run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and complete sanitized outputs. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
+The prerelease remains blocked until the sealed v6 holdout is run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and complete sanitized outputs. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
 
 ## Platform boundary
 

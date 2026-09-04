@@ -173,6 +173,29 @@ async function loadHoldout() {
   };
 }
 
+async function loadRetiredV5Holdout() {
+  const raw = await readFile(
+    path.join(repositoryRoot, "evals", "retired", "holdout-80-v5.jsonl"),
+    "utf8"
+  );
+  return {
+    raw,
+    scenarios: raw
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .map((line) => JSON.parse(line))
+  };
+}
+
+async function loadRetiredAblations() {
+  const paths = ["ablation-16.jsonl", "ablation-confirm-16.jsonl"];
+  const corpora = await Promise.all(paths.map(async (name) => {
+    const raw = await readFile(path.join(repositoryRoot, "evals", "retired", name), "utf8");
+    return raw.split(/\r?\n/u).filter(Boolean).map((line) => JSON.parse(line));
+  }));
+  return corpora.flat();
+}
+
 function normalizedText(value) {
   return value.normalize("NFKC").toLocaleLowerCase("en-US")
     .trim()
@@ -451,8 +474,11 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   const method = await readFile(path.join(repositoryRoot, "evals", "holdout-method.md"), "utf8");
 
   assert.equal(manifest.evidence_class, "sealed_holdout");
+  assert.equal(manifest.holdout_version, 6);
   assert.equal(manifest.sealed_before_candidate_run, true);
   assert.equal(manifest.arm_runs_before_seal, 0);
+  assert.equal(manifest.grader_runs_before_seal, 0);
+  assert.equal(manifest.model_runs_before_seal, 0);
   assert.equal(manifest.product_policy_opened_by_author, false);
   assert.equal(manifest.old_corpus_opened_by_author, false);
   assert.equal(manifest.cross_corpus_validation_performed_by_author, false);
@@ -470,6 +496,7 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   );
   assert.equal(createHash("sha256").update(raw, "utf8").digest("hex"), manifest.corpus.sha256);
   assert.equal(createHash("sha256").update(method, "utf8").digest("hex"), manifest.method.sha256);
+  assert.equal(manifest.author_seal.corpus_sha256, manifest.corpus.sha256);
   assert.equal(scenarios.length, 80);
   assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 80);
 
@@ -549,16 +576,20 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   assert.doesNotMatch(raw, /\b(?:sk-(?:proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/u);
 });
 
-test("sealed v5 holdout has no exact or threshold near-duplicate prompt in itself or any pre-seal development corpus", async () => {
+test("sealed v6 holdout has no exact or threshold near-duplicate scenario in tracked pre-seal corpora", async () => {
   const { scenarios: holdout } = await loadHoldout();
   const { scenarios: study } = await loadStudy();
+  const { scenarios: retiredV5 } = await loadRetiredV5Holdout();
   const development = [
     ...study,
     ...(await loadScenarios()),
     ...(await loadSemanticSmoke()),
     ...(await loadLatencyProbes()),
     ...(await loadHostRegressions()),
-    ...(await loadPostFailureRegressions())
+    ...(await loadPostFailureRegressions()),
+    ...(await loadPostV5Development()),
+    ...(await loadRetiredAblations()),
+    ...retiredV5
   ];
   const normalized = holdout.map((scenario) => normalizedText(scenarioText(scenario)));
   assert.equal(new Set(normalized).size, holdout.length);
@@ -575,8 +606,44 @@ test("sealed v5 holdout has no exact or threshold near-duplicate prompt in itsel
   }
 });
 
+test("portable v6 overlap validator reproduces the sealed root result", async () => {
+  const manifest = JSON.parse(
+    await readFile(path.join(repositoryRoot, "evals", "holdout-manifest.json"), "utf8")
+  );
+  const validatorPath = path.join(repositoryRoot, "evals", "validate-holdout-overlap.mjs");
+  const validator = await readFile(validatorPath);
+  assert.equal(digest(validator), manifest.root_overlap_validation.validator.sha256);
+  const { stdout } = await execFileAsync(process.execPath, [validatorPath], {
+    cwd: path.resolve(repositoryRoot, "..", ".."),
+    maxBuffer: 16 * 1024 * 1024
+  });
+  const report = JSON.parse(stdout);
+  assert.equal(report.candidate_sha256, manifest.corpus.sha256);
+  assert.deepEqual(report.threshold_violations, []);
+  assert.equal(
+    report.cross_corpus_maximum.token_set_jaccard,
+    manifest.root_overlap_validation.maximum_token_set_jaccard
+  );
+  assert.equal(
+    report.cross_corpus_maximum.character_four_gram_dice,
+    manifest.root_overlap_validation.maximum_character_four_gram_dice
+  );
+  assert.equal(
+    report.source_sha256["retired-v5-holdout"],
+    manifest.retired_predecessor.sha256
+  );
+  assert.equal(
+    report.source_sha256["ablation-16"],
+    manifest.root_overlap_validation.frozen_ablation_sha256["ablation-16"]
+  );
+  assert.equal(
+    report.source_sha256["ablation-confirm-16"],
+    manifest.root_overlap_validation.frozen_ablation_sha256["ablation-confirm-16"]
+  );
+});
+
 test("post-v5 development prompts do not copy a retired v5 holdout prompt verbatim", async () => {
-  const { scenarios: retiredV5 } = await loadHoldout();
+  const { scenarios: retiredV5 } = await loadRetiredV5Holdout();
   const postV5 = await loadPostV5Development();
   const retiredPrompts = new Set(
     retiredV5.map((scenario) => normalizedText(scenarioPrompt(scenario)))
