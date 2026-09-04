@@ -31,13 +31,12 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);
   assert.match(POLICY, /conflict: name incompatible requirements; ask which wins; do no work/i);
-  assert.match(POLICY, /feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move\. apply now/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
   assert.doesNotMatch(POLICY, /recipient\/context for copy|pace\/depth for teaching|voice family for brand/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1250);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1120);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

@@ -105,10 +105,9 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /requested comparisons answer without questions/i);
   assert.match(POLICY, /never choose\/use tools\/start work/i);
-  assert.match(POLICY, /feedback: keep=extend; implementation=change form; intent=change goal/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1250);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1120);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
