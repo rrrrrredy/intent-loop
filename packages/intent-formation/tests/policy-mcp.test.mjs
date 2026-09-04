@@ -10,13 +10,14 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
-  assert.match(POLICY, /requested comparison\/options: exact count/i);
-  assert.match(POLICY, /each branch gets one consequence \+ parallel micro-example/i);
-  assert.match(POLICY, /never ask\/choose\/use tools\/start work/i);
+  assert.match(POLICY, /comparison\/options: requested count or 2-3 neutral branches/i);
+  assert.match(POLICY, /each: one consequence \+ parallel micro-example/i);
+  assert.match(POLICY, /requested comparisons answer without questions/i);
+  assert.match(POLICY, /never choose\/use tools\/start work/i);
   assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size, inline/i);
   assert.match(POLICY, /use supplied case facts/i);
-  assert.match(POLICY, /creative wording may vary/i);
-  assert.match(POLICY, /"fictional" adds no rules\/properties\/history/i);
+  assert.match(POLICY, /fictional: invent only asked-for content/i);
+  assert.match(POLICY, /no extra facts\/rules\/properties\/history\/evidence/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
   assert.match(POLICY, /no tools\/files/i);
@@ -28,7 +29,6 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /act if a shared step or cheap draft\/sample can reveal it/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
-  assert.match(POLICY, /helpful choices: 2-3 neutral branches/i);
   assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);

@@ -454,6 +454,10 @@ test("post-v6 development corpus freezes reversible drafts, concrete comparisons
   );
   assert.ok(reversibleDrafts.every((scenario) => scenario.expected_first_move === "direct_delivery"));
   assert.ok(reversibleDrafts.every((scenario) => scenario.checks.no_question === true));
+  const comparisons = scenarios.filter((scenario) => scenario.class === "concrete_comparison");
+  assert.ok(comparisons.every((scenario) => scenario.checks.mix_reject_free_exit === true));
+  const specifiedWallLabel = scenarios.find((scenario) => scenario.id === "pv6-clear-copy-01");
+  assert.equal(specifiedWallLabel.checks.facts_only, true);
   const fictionalDuration = scenarios.find((scenario) => scenario.id === "pv6-feedback-expand-02");
   assert.equal(fictionalDuration.expected_first_move, "sample");
   assert.equal(fictionalDuration.feedback_label, "implementation_change");
