@@ -16,8 +16,9 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /never choose\/use tools\/start work/i);
   assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size, inline/i);
   assert.match(POLICY, /use supplied case facts/i);
-  assert.match(POLICY, /fictional: invent only asked-for content/i);
-  assert.match(POLICY, /no extra facts\/rules\/properties\/history\/evidence/i);
+  assert.match(POLICY, /fictional fact claims: supplied case facts only/i);
+  assert.match(POLICY, /meet length by framing\/repeating, not new details/i);
+  assert.match(POLICY, /invent a value\/property\/rule only when that exact thing is requested/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
   assert.match(POLICY, /no tools\/files/i);
@@ -39,7 +40,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
   assert.doesNotMatch(POLICY, /recipient\/context for copy|pace\/depth for teaching|voice family for brand/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1320);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1400);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {
