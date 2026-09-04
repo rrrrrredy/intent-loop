@@ -12,4 +12,6 @@ The run is diagnostic evidence against the 1,317-byte named-dimension policy: it
 
 Candidate `d10a920` reran the same prompt bytes after that reduction. All eight unnecessary questions disappeared, all comparison and feedback routes remained usable, no action was taken, and every task cleanup succeeded. The run still failed two explicit boundaries: the card-game tutorial invented unsupplied rules, and the library-card response marked its duration unspecified instead of asking only for the required value. Those failures motivated a narrower factual-boundary revision; they do not reopen the removed decision-dimension list.
 
+Candidate `6a54622` ran the seven reversible drafts and the library-card case after that factual wording changed. It preserved zero unnecessary intent questions, but again guessed “three business days” for the missing duration and still implied one unsupplied game mechanic. The next revision moves required-data handling ahead of draft handling and makes the precedence explicit. This remains failure-derived development work.
+
 Because the audit used observed candidate output to repair development labels, neither the original run nor a rerun on these prompts can serve as an independent holdout or efficacy claim.

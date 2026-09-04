@@ -148,6 +148,12 @@
 
 **Evidence:** Candidate `d10a920` removed all eight unnecessary questions on the unchanged 17 prompts, but added four unsupplied card-game mechanics and answered a missing library-card duration with “unspecified” instead of requesting the value. The strengthened compact policy is 1,315 bytes, two bytes below the rejected 1,317-byte named-dimension policy. Targeted real-Codex regression remains required.
 
+## D-040 — Give required data explicit precedence over drafting
+
+**Decision:** Move the missing required fact, file, data, or access rule before requested draft/sample handling and state that it overrides drafting. Separate allowed creative wording from user-supplied case facts. Raise the compact-policy guardrail from 1,320 to 1,400 bytes rather than compressing away an observed necessary precedence rule.
+
+**Evidence:** In the targeted real-Codex run, candidate `6a54622` again invented a three-business-day duration even though its draft rule said to ask for required facts, and it retained one unsupplied card-game implication. The missing-data and direct-draft instructions were adjacent without explicit priority. The revised policy is 1,362 bytes; targeted behavior and both full suites remain required.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

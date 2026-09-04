@@ -92,14 +92,16 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
-  assert.match(POLICY, /ask one question only if 2\+ plausible directions remain/i);
-  assert.match(POLICY, /act if a shared step or cheap reversible draft\/sample can reveal it/i);
-  assert.match(policy, /sample\/example\/bounded draft.*only these facts/i);
+  assert.match(POLICY, /ask once only if 2\+ plausible directions remain/i);
+  assert.match(POLICY, /act if a shared step or cheap draft\/sample can reveal it/i);
+  assert.match(policy, /requested sample\/example\/bounded draft.*only these facts/i);
   assert.match(POLICY, /no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
-  assert.match(policy, /never invent facts/i);
+  assert.match(policy, /use supplied case facts/i);
+  assert.match(policy, /creative wording may vary/i);
   assert.match(POLICY, /"fictional" adds no rules\/properties\/history/i);
-  assert.match(policy, /ask only for facts required to answer/i);
+  assert.match(policy, /missing required fact\/file\/data\/access: ask only for it; overrides draft\/sample/i);
+  assert.match(POLICY, /never guess or answer "unspecified"/i);
   assert.match(policy, /overrides gate/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
@@ -108,7 +110,7 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /never ask\/choose\/use tools\/start work/i);
   assert.match(POLICY, /feedback: keep=extend; implementation=change form; intent=change goal/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1320);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1400);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
