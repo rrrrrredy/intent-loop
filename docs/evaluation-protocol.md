@@ -30,6 +30,8 @@ The corpus contains 60 English and 20 Simplified Chinese scenarios, with four Ch
 
 Every non-clear scenario has a response frozen before either arm runs. Prompts are natural user messages that can run safely in an empty workspace without accounts or network access.
 
+From v7 onward, every item in `final_requirements` must be an exact excerpt from the initial prompt or frozen follow-up. The formal runner, blind grader, analyzer, and evidence publisher all reject a violation before using the corpus. Evaluator-only fields may describe decision risk and unacceptable moves; they may not supply facts, requested items, counts, or constraints that the user never saw.
+
 ## Candidate and execution binding
 
 The runner refuses to start unless all of the following match:
@@ -47,7 +49,7 @@ The baseline disables the core plugin. The plugin arm enables only `intent-forma
 
 ## Blind grading
 
-The grader receives randomized A/B conversations, frozen requirements, decision risk, and completed first-turn action-item types. It does not receive the system label. It records first move, interruption count, proactive intervention, avoidable rework from 0 to 3, first-cycle final match from 0 to 4, inference handling, result-feedback handling, preference, confidence, and a 40-520 character audit rationale for each arm.
+The v3 grader receives randomized A/B conversations, verbatim user-visible requirement excerpts, decision risk, and completed first-turn action-item types. It does not receive the system label and may not infer facts from evaluator-only fields. It records first move, interruption count, proactive intervention, avoidable rework from 0 to 3, first-cycle final match from 0 to 4, inference handling, result-feedback handling, preference, confidence, and a 40-520 character audit rationale for each arm.
 
 A direct first delivery cannot receive retroactive final-match credit from its later correction. A bounded question, comparison, or sample is scored after the frozen response because that exchange is the first completed intent-formation cycle.
 
@@ -70,6 +72,6 @@ When both inference opportunities and violations are zero, the denial rate is de
 
 ## Publication boundary
 
-All primary conversations must be usable; a primary retry cannot replace timing or reliability. Grader batches may retry once after timeout or schema failure and every attempt is disclosed. Grading runs are bound to a clean committed evaluator and schema; a structurally invalid run is retained as diagnostic evidence and cannot be combined with a later run.
+All primary conversations must be usable; a primary retry cannot replace timing or reliability. Grader batches may retry once after timeout or schema failure and every attempt is disclosed. Grading runs are bound to a clean committed evaluator and schema. A structurally invalid or user-invisible requirement is retained as diagnostic evidence and cannot be combined with a later run.
 
 The public evidence includes sanitized complete responses, action types, blind grades, source and artifact hashes, candidate/tree/archive fingerprints, model settings, CLI version, plugin inventory, retry history, gates, and bootstrap intervals. Machine paths, common credential patterns, and control characters are replaced and counted; response text is not length-truncated. Automated grading and a synthetic holdout support only a bounded beta claim. DeepSeek efficacy requires separate evidence.

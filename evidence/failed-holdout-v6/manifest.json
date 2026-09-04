@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "evidence_class": "failed_holdout_diagnostic",
+  "current_release_efficacy": false,
+  "candidate_commit": "a67148e7eb55db1bc92593829661c31b9929fb32",
+  "candidate_plugin_tree_sha256": "a26fb3ef63390701c13f7ff81e969a0dfb898b47a5b4ad9ff7760bb4d26f8897",
+  "corpus": {
+    "version": 6,
+    "scenario_count": 80,
+    "sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "valid_for_release_efficacy": false,
+    "minimum_user_visibility_defects": 11
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "primary_conversations": 160,
+    "usable_primary_conversations": 160,
+    "primary_timeouts": 0,
+    "cleanup_failures": 0,
+    "plugin_mcp_calls": 0,
+    "plugin_action_items": 0
+  },
+  "grading": {
+    "rubric": "intent-formation-blind-v2",
+    "model": "gpt-5.6-terra",
+    "reasoning_effort": "medium",
+    "graded_pairs": 80,
+    "batch_count": 16,
+    "attempt_count": 17,
+    "retry_count": 1,
+    "failed_batches": 0
+  },
+  "decision": "STOP_AND_INVALID_FOR_EFFICACY",
+  "gates": {
+    "avoidable_rework": { "metric": 65.96, "threshold": ">= 25% reduction", "status": "PASS" },
+    "final_match": { "metric": 13.75, "threshold": ">= 10 percentage points", "status": "PASS" },
+    "clear_extra_interruptions_median": { "metric": 0, "threshold": "= 0", "status": "PASS" },
+    "clear_extra_interruptions_p90": { "metric": 0, "threshold": "<= 1", "status": "PASS" },
+    "clear_latency": { "metric": 6.89, "threshold": "<= 5% overhead", "status": "FAIL" },
+    "proactive_helpful": { "metric": 75.86, "threshold": ">= 70%", "status": "PASS" },
+    "proactive_wrong": { "metric": 24.14, "threshold": "<= 15%", "status": "FAIL" },
+    "inference_denial": { "metric": 62.5, "threshold": "<= 10%", "status": "FAIL" },
+    "nonclear_premature_actions": { "metric": 0, "threshold": "= 0", "status": "PASS" },
+    "raw_prompt_persistence": { "metric": 0, "threshold": "= 0", "status": "PASS" }
+  },
+  "raw_local_artifact_sha256": {
+    "study_summary": "58e9660d7a41d0ab3ba6574e62952b3e11cea9abbe25dd20bd03335bfce51194",
+    "grading_summary": "e300f8f7fd569b2f243638cff3ecf45de676b17236301e046ccc6cb1849f38b8",
+    "analysis": "57c4791443cd813082e61fc929c71a3907a532b5eae8680c244756b5f7d59d37"
+  },
+  "raw_local_artifact_bytes": {
+    "study_summary": 390312,
+    "grading_summary": 138601,
+    "analysis": 5811
+  },
+  "published_artifact_sha256": {
+    "README.md": "df9bacc136628605571cff657dd9da7b2dfd7771350644c447517f15e68db1e2",
+    "corpus-audit.json": "08463a671ac579a18ec2b59f0db8809a2ca897d4c94b639d10993ce766bebc9b"
+  },
+  "limitations": [
+    "The corpus is synthetic and ran on one Windows host.",
+    "The judge was an automated model, not a human panel.",
+    "At least eleven final-match checklists included facts absent from the user-visible conversation.",
+    "No aggregate value from this run supports a release-efficacy claim."
+  ]
+}

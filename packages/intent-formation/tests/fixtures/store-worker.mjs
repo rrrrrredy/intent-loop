@@ -2,7 +2,7 @@ import { access, writeFile } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 import { createEvent, EventStore } from "../../src/store.mjs";
 
-const [mode, dataDirectory, value, signalPath] = process.argv.slice(2);
+const [mode, dataDirectory, value, signalPath, readyPath] = process.argv.slice(2);
 if (!mode || !dataDirectory) throw new TypeError("mode and data directory are required");
 
 const store = new EventStore({
@@ -27,9 +27,26 @@ if (mode === "hold") {
       await delay(10);
     }
   });
-} else if (mode === "append") {
+} else if (mode === "append" || mode === "append-barrier") {
   const index = Number(value);
   if (!Number.isInteger(index) || index < 0) throw new TypeError("append index is invalid");
+  if (mode === "append-barrier") {
+    if (!signalPath || !readyPath) {
+      throw new TypeError("append-barrier requires start and ready paths");
+    }
+    await writeFile(readyPath, "ready", { encoding: "utf8", flag: "wx" });
+    const deadline = Date.now() + 120_000;
+    while (true) {
+      try {
+        await access(signalPath);
+        break;
+      } catch (error) {
+        if (error?.code !== "ENOENT") throw error;
+      }
+      if (Date.now() >= deadline) throw new Error("timed out waiting for start signal");
+      await delay(10);
+    }
+  }
   await store.append(
     createEvent({
       event_id: "evt_process_" + index,

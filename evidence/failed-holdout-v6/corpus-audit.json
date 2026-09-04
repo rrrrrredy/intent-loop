@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "corpus_sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+  "audited_after_run": true,
+  "minimum_defect_count": 11,
+  "defects": [
+    { "id": "v6-uf-010", "hidden_content": "ingredients and timing claimed as supplied" },
+    { "id": "v6-pr-001", "hidden_content": "the eight tooltip targets beyond the sampled Archive control" },
+    { "id": "v6-pr-002", "hidden_content": "the six date-error conditions" },
+    { "id": "v6-pr-004", "hidden_content": "telescopes, moon map, blankets, and an 8 p.m. start" },
+    { "id": "v6-pr-006", "hidden_content": "role clarity, handoffs, and shared deadlines" },
+    { "id": "v6-pr-007", "hidden_content": "the five museum objects" },
+    { "id": "v6-pr-009", "hidden_content": "toasted fennel, crisp texture, and soft-cheese pairing" },
+    { "id": "v6-pr-010", "hidden_content": "five of the six YAML keys and their safe values" },
+    { "id": "v6-pr-012", "hidden_content": "the five required rain-notification situations" },
+    { "id": "v6-pr-013", "hidden_content": "the four FAQ facts" },
+    { "id": "v6-pr-015", "hidden_content": "the ten orchard chapter topics" }
+  ],
+  "replacement_contract": "Every v7 final requirement must be an exact excerpt from an initial prompt or frozen follow-up."
+}

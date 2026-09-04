@@ -19,6 +19,7 @@ const concurrency = Number(option("--concurrency", "2"));
 const codexBinary = process.env.CODEX_BIN || "codex";
 const arm = option("--arm", "plugin");
 const model = option("--model", "");
+const reasoningEffort = option("--reasoning-effort", "");
 const bypassHookTrust = process.argv.includes("--bypass-hook-trust");
 const firstTurnOnly = process.argv.includes("--first-turn-only");
 const pluginId = option("--plugin-id", "intent-formation@intent-loop");
@@ -38,6 +39,9 @@ if (!["baseline", "plugin", "paired"].includes(arm)) {
 }
 if (arm === "paired" && concurrency !== 1) {
   throw new Error("--arm paired requires --concurrency 1 so each AB/BA pair stays ordered");
+}
+if (reasoningEffort && !new Set(["low", "medium", "high", "xhigh"]).has(reasoningEffort)) {
+  throw new Error("--reasoning-effort must be low, medium, high, or xhigh");
 }
 
 const rawScenarios = await readFile(scenariosPath, "utf8");
@@ -146,9 +150,12 @@ async function runScenario(scenario, runArm = arm) {
       "-c",
       pluginConfigKey + (runArm === "plugin" ? "true" : "false"),
       "-c",
-      statePluginOverride,
-      "exec"
+      statePluginOverride
     ];
+    if (reasoningEffort) {
+      args.push("-c", `model_reasoning_effort=\"${reasoningEffort}\"`);
+    }
+    args.push("exec");
     if (model) {
       args.push("-m", model);
     }
@@ -246,6 +253,7 @@ await writeFile(
       codex_binary: codexBinary,
       arm,
       model: model || null,
+      reasoning_effort: reasoningEffort || null,
       hook_trust: bypassHookTrust ? "automation-bypass" : "reviewed-host-state",
       first_turn_only: firstTurnOnly,
       plugin_id: pluginId,

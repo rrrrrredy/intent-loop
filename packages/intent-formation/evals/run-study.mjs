@@ -10,6 +10,7 @@ import {
   sha256,
   treeFingerprint
 } from "./fingerprint.mjs";
+import { validateVisibleFinalRequirements } from "./scenario-contract.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -93,6 +94,7 @@ const allScenarios = rawScenarios
   .split(/\r?\n/)
   .filter(Boolean)
   .map((line) => JSON.parse(line));
+validateVisibleFinalRequirements(allScenarios);
 const scenarios =
   requestedIds.length === 0
     ? allScenarios

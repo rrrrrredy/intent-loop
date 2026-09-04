@@ -6,6 +6,7 @@ import {
   inspectPromptPrivacy,
   renderAnalysisMarkdown
 } from "./analysis-core.mjs";
+import { validateVisibleFinalRequirements } from "./scenario-contract.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -47,6 +48,7 @@ const scenarios = (await readFile(scenariosPath, "utf8"))
   .split(/\r?\n/u)
   .filter(Boolean)
   .map((line) => JSON.parse(line));
+validateVisibleFinalRequirements(scenarios);
 if (scenarios.length !== 80) {
   throw new Error(`Expected 80 scenarios, found ${scenarios.length}`);
 }

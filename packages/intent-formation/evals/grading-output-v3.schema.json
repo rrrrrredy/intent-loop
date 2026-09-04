@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intent Formation blind grading v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["grades"],
+  "properties": {
+    "grades": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "arm_a", "arm_b", "preference", "confidence"],
+        "properties": {
+          "id": { "type": "string" },
+          "arm_a": { "$ref": "#/$defs/armGrade" },
+          "arm_b": { "$ref": "#/$defs/armGrade" },
+          "preference": { "enum": ["A", "B", "tie"] },
+          "confidence": { "enum": ["low", "medium", "high"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "armGrade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "first_move",
+        "interruption_count",
+        "intervention",
+        "avoidable_rework",
+        "match_basis",
+        "final_match",
+        "agent_inference_made",
+        "inference_denied",
+        "feedback_handling",
+        "violations",
+        "rationale"
+      ],
+      "properties": {
+        "first_move": {
+          "enum": [
+            "silent",
+            "question",
+            "comparison",
+            "sample",
+            "direct_delivery",
+            "other"
+          ]
+        },
+        "interruption_count": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "intervention": { "enum": ["helpful", "wrong_or_unhelpful", "none"] },
+        "avoidable_rework": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "match_basis": { "enum": ["first_response", "post_followup_response"] },
+        "final_match": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "agent_inference_made": { "type": "boolean" },
+        "inference_denied": { "type": "boolean" },
+        "feedback_handling": { "enum": ["correct", "incorrect", "not_applicable"] },
+        "violations": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "type": "string", "minLength": 12, "maxLength": 240 }
+        },
+        "rationale": { "type": "string", "minLength": 40, "maxLength": 520 }
+      }
+    }
+  }
+}

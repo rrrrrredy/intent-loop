@@ -112,6 +112,30 @@
 
 **Evidence:** The independent author ran zero models, arms, or graders. Corpus SHA-256 is `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; root cross-corpus maxima are `0.45614035087719296` Jaccard and `0.5330882352941176` four-gram Dice, with zero threshold violations.
 
+## D-034 — Retire v6 after STOP and a corpus-integrity failure
+
+**Decision:** Do not publish candidate `a67148e7eb55db1bc92593829661c31b9929fb32`. All 160 primary conversations and all 80 blind grades completed, with one disclosed grader-only format retry. Rework reduction was 65.96% and final-match gain was 13.75 percentage points, but clear paired latency was +6.89%, wrong or unhelpful proactive intervention was 24.14%, and five of eight inferred preferences were denied.
+
+**Validity boundary:** Post-run inspection found at least eleven scenarios whose evaluator-only final requirements introduced concrete facts absent from both user-visible turns. V6 remains useful for failure discovery, but none of its aggregate efficacy values may support a release claim.
+
+## D-035 — Restore feedback updates and use observable decision dimensions
+
+**Decision:** Treat a limit scoped to one turn as expired when a later user message explicitly expands the work. Restore compact keep, implementation-change, intent-change, and uncertain-feedback behavior after v6 falsified its earlier removal. Require concrete parallel micro-examples for abstract comparisons. Replace the under-firing two-goal abstraction with observable content decisions: recipient or context, teaching pace or depth, feasibility or innovation, procedural autonomy or supervision, and brand voice family.
+
+**Evidence boundary:** The resulting policy is 1,317 UTF-8 bytes after narrowing the general sample rule from all content to factual claims. A 1,260-byte intermediate version retained the generic missing-decision test and failed five of seven real one-turn routing probes. The strengthened policy still requires authorized real-Codex regression and component-removal trials before a new holdout can be sealed.
+
+## D-036 — Reject hidden requirements at every formal evidence stage
+
+**Decision:** Upgrade blind grading to `intent-formation-blind-v3`. Require each frozen final requirement to be an exact excerpt from the initial prompt or follow-up. Validate this contract in the formal runner, grader, analyzer, and evidence publisher before accepting the corpus.
+
+**Reason:** A hash proves that a corpus stayed unchanged; it does not prove that the grader used only information the user supplied. Exact excerpt provenance closes the concrete v6 failure without adding a subjective post-hoc exception.
+
+## D-037 — Separate process launch from lock contention
+
+**Decision:** Keep the 100-process write requirement, but make every worker publish a ready marker and wait behind one start barrier before touching the EventStore. Open the barrier only after all 100 runtimes are live.
+
+**Reason:** Two full-suite runs started workers while earlier workers were already acquiring the lock; Windows scheduling and endpoint scanning paused a live lock owner long enough to trip the worker's 120-second no-progress boundary. The old test mixed process-launch pressure with lock correctness. With the barrier, Node 20 and Node 22 completed simultaneous 100-writer runs in 16.2 and 18.0 seconds with all events and no lock residue. Product lock timeouts remain unchanged, and the separate stalled-live-owner regression still checks bounded failure.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

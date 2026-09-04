@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { validateVisibleFinalRequirements } from "./scenario-contract.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -14,7 +15,7 @@ const studyPath = path.resolve(repositoryRoot, option("--study", path.join(".tmp
 const retryOption = option("--retry", "");
 const retryPath = retryOption ? path.resolve(repositoryRoot, retryOption) : null;
 const scenariosPath = path.resolve(repositoryRoot, option("--scenarios", path.join("evals", "holdout-80.jsonl")));
-const schemaPath = path.resolve(repositoryRoot, option("--schema", path.join("evals", "grading-output-v2.schema.json")));
+const schemaPath = path.resolve(repositoryRoot, option("--schema", path.join("evals", "grading-output-v3.schema.json")));
 const outputDirectory = path.resolve(repositoryRoot, option("--output", path.join(".tmp", "holdout-grades")));
 const workspace = path.resolve(option("--workspace", path.join(repositoryRoot, ".tmp", "holdout-grader-workspace")));
 const batchSize = Number(option("--batch-size", "5"));
@@ -53,6 +54,7 @@ const study = await readJson(studyPath);
 const retry = retryPath ? await readJson(retryPath) : { results: [] };
 const scenariosText = await readFile(scenariosPath, "utf8");
 const scenarios = scenariosText.split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
+validateVisibleFinalRequirements(scenarios);
 if (hashText(scenariosText) !== study.corpus_sha256) {
   throw new Error("grading corpus does not match the candidate-bound study");
 }
@@ -111,7 +113,7 @@ function anonymizeScenario(scenario) {
   const plugin = resolveResult(scenario, "plugin");
   if (!baseline.result || !plugin.result) throw new Error(`No valid pair for ${scenario.id}`);
   const pluginIsA = parseInt(
-    hashText("intent-formation-blind-v2:" + study.candidate_commit + ":" + study.corpus_sha256 + ":" + scenario.id).slice(0, 2),
+    hashText("intent-formation-blind-v3:" + study.candidate_commit + ":" + study.corpus_sha256 + ":" + scenario.id).slice(0, 2),
     16
   ) % 2 === 0;
   const armA = pluginIsA ? plugin : baseline;
@@ -160,6 +162,7 @@ function rubricPrompt(batch) {
     "You are a strict blind evaluator of two assistant conversations.",
     "The labels A and B are randomized. Never guess or discuss which system produced them.",
     "Evaluate only the supplied text against the frozen user request and follow-up.",
+    "Every frozen final requirement is a verbatim excerpt from those visible user turns; never infer extra facts from evaluator-only fields.",
     "Return exactly the JSON shape required by the output schema, with one grade for every supplied id.",
     "",
     "Definitions:",
@@ -368,7 +371,7 @@ const unblinded = anonymized.flatMap((item) => {
 });
 
 const summary = {
-  generated_at: new Date().toISOString(), rubric_version: "intent-formation-blind-v2", study_path: studyPath, retry_path: retryPath,
+  generated_at: new Date().toISOString(), rubric_version: "intent-formation-blind-v3", study_path: studyPath, retry_path: retryPath,
   scenarios_path: scenariosPath, schema_path: schemaPath, model,
   reasoning_effort: reasoningEffort,
   grading_tool_commit: gradingToolCommit,

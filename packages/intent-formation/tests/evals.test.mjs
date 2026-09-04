@@ -16,6 +16,7 @@ import { createEvidenceSanitizer } from "../evals/evidence-sanitizer.mjs";
 import { gitTreeFingerprint, treeFingerprint } from "../evals/fingerprint.mjs";
 import { createFreshRunDirectories } from "../evals/fresh-run-directories.mjs";
 import { violationRatePercent } from "../evals/metrics.mjs";
+import { validateVisibleFinalRequirements } from "../evals/scenario-contract.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
@@ -91,7 +92,7 @@ function canonicalFixture() {
     study: { ...binding, model: "test", reasoning_effort: "high", results },
     grading: {
       ...binding,
-      rubric_version: "intent-formation-blind-v2",
+      rubric_version: "intent-formation-blind-v3",
       model: "test-grader",
       reasoning_effort: "high",
       graded_count: scenarios.length,
@@ -143,6 +144,17 @@ async function loadPostFailureRegressions() {
 async function loadPostV5Development() {
   const raw = await readFile(
     path.join(repositoryRoot, "evals", "post-v5-development.jsonl"),
+    "utf8"
+  );
+  return raw
+    .split(/\r?\n/u)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
+
+async function loadPostV6Development() {
+  const raw = await readFile(
+    path.join(repositoryRoot, "evals", "post-v6-development.jsonl"),
     "utf8"
   );
   return raw
@@ -405,6 +417,38 @@ test("post-v5 development corpus freezes gate, sample, resolved-delivery, lead-o
   assert.equal(leadOrder.checks.benefit_after_uncertainty, true);
   const boundedFacts = scenarios.find((scenario) => scenario.id === "pv5-sample-02");
   assert.equal(boundedFacts.checks.only_stated_facts, true);
+});
+
+test("post-v6 development corpus freezes missing decisions, concrete comparisons, feedback updates, and silence controls", async () => {
+  const scenarios = await loadPostV6Development();
+  assert.equal(scenarios.length, 17);
+  assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 17);
+  const counts = scenarios.reduce((result, scenario) => {
+    result[scenario.class] = (result[scenario.class] ?? 0) + 1;
+    return result;
+  }, {});
+  assert.deepEqual(counts, {
+    leading_decision: 7,
+    concrete_comparison: 3,
+    feedback_resolution: 4,
+    missing_data_control: 1,
+    clear_control: 2
+  });
+  for (const scenario of scenarios) {
+    assert.equal(typeof scenario.initial_prompt, "string");
+    assert.equal(typeof scenario.expected_first_move, "string");
+    assert.ok(Array.isArray(scenario.final_requirements));
+    assert.equal(typeof scenario.checks, "object");
+  }
+  assert.doesNotThrow(() => validateVisibleFinalRequirements(scenarios));
+  assert.ok(scenarios.every((scenario) => JSON.stringify(scenario).includes("fictional")));
+  assert.ok(
+    scenarios
+      .filter((scenario) => scenario.class === "feedback_resolution")
+      .every((scenario) => typeof scenario.follow_up === "string")
+  );
+  const missingData = scenarios.find((scenario) => scenario.id === "pv6-boundary-missing-data-01");
+  assert.equal(missingData.checks.must_not_claim_conflict, true);
 });
 
 test("the paired study freezes exactly eighty unique tasks", async () => {
@@ -694,7 +738,7 @@ test("Codex diagnostics cannot be misclassified as premature user work", () => {
 
 test("blind grading schema fixes the bounded evidence labels", async () => {
   const schema = JSON.parse(
-    await readFile(path.join(repositoryRoot, "evals", "grading-output-v2.schema.json"), "utf8")
+    await readFile(path.join(repositoryRoot, "evals", "grading-output-v3.schema.json"), "utf8")
   );
   assert.deepEqual(schema.required, ["grades"]);
   assert.equal(schema.properties.grades.maxItems, 5);
@@ -715,12 +759,29 @@ test("blind grading schema fixes the bounded evidence labels", async () => {
   ]);
 });
 
-test("v2 grading prevents retroactive credit and distinguishes proactive intervention", async () => {
+test("formal corpus rejects final requirements hidden from user-visible turns", () => {
+  const visible = [{
+    id: "visible",
+    initial_prompt: "Write a label for general visitors.",
+    follow_up: "Use 70 words and mention salt damage.",
+    final_requirements: ["general visitors", "70 words", "salt damage"]
+  }];
+  assert.doesNotThrow(() => validateVisibleFinalRequirements(visible));
+  const hidden = structuredClone(visible);
+  hidden[0].final_requirements.push("mention a brass clock");
+  assert.throws(
+    () => validateVisibleFinalRequirements(hidden),
+    /not an exact user-visible excerpt: visible/
+  );
+});
+
+test("v3 grading prevents hidden facts, retroactive credit, and mislabeled intervention", async () => {
   const source = await readFile(
     path.join(repositoryRoot, "evals", "grade-study.mjs"),
     "utf8"
   );
-  assert.match(source, /intent-formation-blind-v2/);
+  assert.match(source, /intent-formation-blind-v3/);
+  assert.match(source, /verbatim excerpt from those visible user turns/i);
   assert.match(source, /Never give a direct first delivery retroactive credit/i);
   assert.match(source, /options\/samples the user explicitly requested/i);
   assert.match(source, /Select match_basis independently/i);
@@ -968,6 +1029,9 @@ test("pilot runner defaults to reviewed hook state and supports a true baseline 
   assert.match(source, /index % 2 === 0/);
   assert.match(source, /runArm === "plugin" \? "true" : "false"/);
   assert.match(source, /--first-turn-only/);
+  assert.match(source, /--reasoning-effort/);
+  assert.match(source, /model_reasoning_effort/);
+  assert.match(source, /reasoning_effort: reasoningEffort \|\| null/);
   assert.match(source, /scenario\.initial_prompt/);
   assert.match(source, /scenario\.follow_up/);
   assert.match(source, /scenario\.representative_result/);

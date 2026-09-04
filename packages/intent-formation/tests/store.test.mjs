@@ -76,15 +76,27 @@ test("concurrent append operations retain every complete event", async (context)
 
 test("one hundred independent processes retain every event and leave no lock artifacts", { timeout: 180_000 }, async (context) => {
   const directory = await temporaryDirectory("process-concurrency");
+  const startPath = path.join(directory, "start");
   context.after(() =>
     rm(directory, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 })
   );
 
-  await Promise.all(
-    Array.from({ length: 100 }, (_, index) =>
-      runWorker(["append", directory, String(index)])
-    )
+  const readyPaths = Array.from(
+    { length: 100 },
+    (_, index) => path.join(directory, `ready-${index}`)
   );
+  const workers = readyPaths.map((readyPath, index) =>
+    runWorker(["append-barrier", directory, String(index), startPath, readyPath])
+  );
+  const workerCompletion = Promise.all(workers);
+  await Promise.race([
+    Promise.all(readyPaths.map((readyPath) => waitForPath(readyPath, 120_000))),
+    workerCompletion.then(() => {
+      throw new Error("store workers exited before the contention barrier opened");
+    })
+  ]);
+  await writeFile(startPath, "start", "utf8");
+  await workerCompletion;
   const store = new EventStore({ dataDirectory: directory });
   const loaded = await store.readAll();
   assert.equal(loaded.events.length, 100);

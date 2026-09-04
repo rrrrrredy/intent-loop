@@ -16,6 +16,7 @@ import {
   sha256,
   treeFingerprint
 } from "./fingerprint.mjs";
+import { validateVisibleFinalRequirements } from "./scenario-contract.mjs";
 
 function option(name, fallback = "") {
   const index = process.argv.indexOf(name);
@@ -204,6 +205,7 @@ const corpusPath = path.resolve(repositoryRoot, definition.corpus.path);
 const corpusText = await readFile(corpusPath, "utf8");
 assert.equal(sha256(corpusText), definition.corpus.sha256, "sealed holdout hash changed");
 const scenarios = corpusText.split(/\r?\n/u).filter(Boolean).map((line) => JSON.parse(line));
+validateVisibleFinalRequirements(scenarios);
 assert.equal(scenarios.length, definition.corpus.scenario_count);
 
 const study = await readJson(studyPath);
@@ -217,7 +219,7 @@ assert.equal(study.plugin_tree?.sha256, grading.plugin_tree?.sha256);
 assert.equal(sourceAnalysis.plugin_tree?.sha256, study.plugin_tree?.sha256);
 assert.deepEqual(study.executed_plugin_tree, study.plugin_tree);
 assert.equal(study.results?.length, scenarios.length * 2);
-assert.equal(grading.rubric_version, "intent-formation-blind-v2");
+assert.equal(grading.rubric_version, "intent-formation-blind-v3");
 assert.equal(grading.graded_count, scenarios.length);
 assert.equal(grading.grades?.length, scenarios.length);
 assert.equal(sourceAnalysis.primary_run_reliability?.run_count, scenarios.length * 2);
@@ -369,8 +371,9 @@ const sourceFiles = [
   "evals/fresh-run-directories.mjs",
   "evals/run-study.mjs",
   "evals/grade-study.mjs",
-  "evals/grading-protocol-v2.md",
-  "evals/grading-output-v2.schema.json",
+  "evals/grading-protocol-v3.md",
+  "evals/grading-output-v3.schema.json",
+  "evals/scenario-contract.mjs",
   "evals/analysis-core.mjs",
   "evals/analyze-study.mjs",
   "evals/metrics.mjs",

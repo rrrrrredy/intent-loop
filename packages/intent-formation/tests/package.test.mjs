@@ -90,21 +90,23 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.doesNotMatch(metadata, /dependencies:/);
   assert.doesNotMatch(policyServer, /writeFile|appendFile|transcript_path|params\?\.arguments\?\.prompt/);
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
-  assert.match(POLICY, /two stated goals yielding different versions need a lead question/i);
+  assert.match(POLICY, /newest turn controls/i);
+  assert.match(POLICY, /this-turn\/for-now\/not-yet limits expire when the user later expands/i);
+  assert.match(POLICY, /recipient\/context for copy; pace\/depth for teaching/i);
+  assert.match(POLICY, /feasibility\/innovation for persuasion; autonomy\/supervision for procedure; voice family for brand/i);
   assert.match(policy, /explicit sample\/example.*only these facts/i);
   assert.match(POLICY, /add no adjective\/theme\/implication\/intensifier\/scope/i);
-  assert.match(POLICY, /repeat supplied facts verbatim to fill count/i);
-  assert.match(policy, /else mark\/omit unknowns/i);
+  assert.match(POLICY, /repeat facts verbatim if needed/i);
+  assert.match(policy, /invent no facts; mark\/omit unknowns/i);
   assert.match(policy, /both override gate/i);
-  assert.match(POLICY, /public\/lasting\/costly\/high-stakes\/hard-to-reverse output/i);
-  assert.match(POLICY, /public identity is lasting/i);
-  assert.match(POLICY, /assurance vs risk prominence is a lead choice/i);
-  assert.match(POLICY, /ignore wording\/details\/inputs/i);
-  assert.match(POLICY, /do not choose' stays neutral/i);
-  assert.match(POLICY, /opening sentence must express chosen priority; competing goals come later/i);
-  assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
+  assert.match(POLICY, /consequential\/public\/high-stakes or audience-sensitive copy\/instruction/i);
+  assert.match(POLICY, /ask that, not surface tone\/false tradeoff/i);
+  assert.match(POLICY, /'compare only' stays neutral/i);
+  assert.match(POLICY, /resolved: deliver now; lead with chosen priority/i);
+  assert.match(POLICY, /never ask\/choose\/use tools\/start work/i);
+  assert.match(POLICY, /feedback: keep extends; implementation changes form; intent switches goal/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1260);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1320);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {

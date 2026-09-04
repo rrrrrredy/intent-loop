@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **FINAL DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Stable-CLI regression and failure-driven ablation produced a 1,253-byte policy. Its targeted development gates pass; independently authored v6 is sealed and remains unrun.
+Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. Its failures produced a 1,317-byte revision and a stricter evaluation contract; installed-Hook regression and component ablation remain pending before a new holdout can be sealed.
 
 ## Question
 
@@ -15,7 +15,7 @@ Which policy and architecture elements are necessary for Intent Formation to int
 - The second formal study independently sealed a different 80-scenario corpus before freezing candidate `fcba88e`. Its corpus SHA-256 is `252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70`.
 - The second study completed 160 / 160 primary conversations without a conversation retry. Its blind grader completed all 80 pairs in 16 batches; batch 12 required one grader-only retry because the first response omitted an audit rationale.
 - A different independent author sealed the v5 release holdout before either arm ran. Its corpus SHA-256 is `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
-- A new independent author sealed v6 at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` after zero model, arm, or grader runs. Root validation found zero overlap violations against all historical holdouts, tracked development corpora, and both now-preserved ablation corpora.
+- A new independent author sealed v6 at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` after zero model, arm, or grader runs. Root validation found zero overlap violations against all historical holdouts, tracked development corpora, and both now-preserved ablation corpora. The study later completed but failed three gates and a post-run user-visibility audit.
 - Post-failure regressions and component-removal prompts were written from failure classes, not copied from holdout prompts. They cannot authorize release.
 
 ## Third formal holdout result
@@ -37,6 +37,26 @@ Candidate `fca68c5` completed 160 / 160 primary conversations and 80 / 80 clean 
 The remaining behavior has two concrete causes. First, compatible goals in a public, lasting, or high-stakes request were sometimes treated as permission to choose which goal should lead. Second, after the user resolved a branch, the delivery sometimes changed exact text, case, count, format, or structure, or added unrequested advice. These mechanisms justify precise regression rules; they do not justify restoring the removed generic constraint abstraction.
 
 The predeclared paired clear-task latency exceeded its ceiling by 0.36 percentage points. The core's always-on MCP process returns only static policy text, so a command-Hook transport is eligible for an operational component ablation before the next freeze.
+
+## Fourth formal holdout diagnostic
+
+Candidate `a67148e` completed 160 / 160 primary conversations and 80 / 80 blind grades. The run had no primary timeout, cleanup failure, action by the plugin arm, or prompt persistence, but its point estimates returned `STOP`:
+
+| Gate | Result | Threshold | Decision |
+| --- | ---: | ---: | --- |
+| Avoidable rework reduction | 65.96% | at least 25% | Pass |
+| Final-match change | +13.75 percentage points | at least +10 points | Pass |
+| Helpful proactive interventions | 75.86% (22 / 29) | at least 70% | Pass |
+| Wrong or unhelpful proactive interventions | 24.14% (7 / 29) | at most 15% | **Fail** |
+| Premature actions on non-clear tasks | 0 | 0 | Pass |
+| Clear-task extra interruptions | median 0, P90 0 | median 0, P90 at most 1 | Pass |
+| Clear-task paired latency | +6.89% | increase at most 5% | **Fail** |
+| Explicitly denied inferences | 62.5% (5 / 8) | at most 10% | **Fail** |
+| Full raw prompts persisted | 0 | 0 | Pass |
+
+A separate post-run corpus audit found at least eleven scenarios whose `final_requirements` contained concrete facts absent from both user-visible turns. That defect invalidates the study for efficacy independently of its failed gates. Its aggregate data is retained only to locate failure classes: the policy under-fired on recipient/context, teaching pace/depth, feasibility/innovation, autonomy/supervision, and brand voice; some questions selected a surface tone or false tradeoff; abstract comparisons lacked concrete micro-examples; turn-bounded constraints were treated as permanent; and result-feedback semantics were too weak after the earlier removal.
+
+Evaluation contract v3 now rejects hidden requirements in the runner, grader, analyzer, and publisher. Every final requirement must be an exact excerpt from the initial prompt or frozen follow-up. This structural check is necessary even when authorship and overlap controls pass.
 
 ## Post-v5 architecture and policy ablation
 
@@ -70,7 +90,15 @@ Real installed-Hook runs on `codex-cli 0.153.0` then exposed behavior hidden by 
 - Three intervening five-repeat sets omitted the evaluator's audited Hook-trust bypass. Their transport metadata did not establish policy injection, so their outputs are excluded rather than used to tune or support the candidate.
 - The final rule targets only an explicit `only these facts` request: it forbids new adjectives, themes, implications, intensifiers, and scope, and uses verbatim fact repetition when an exact count needs filler. With the same Hook-trust path as the formal runner, the facts-only probe passed 5 / 5, chosen-lead order passed 5 / 5, and the complete 16-case corpus passed 16 / 16 with no tool calls or user-work actions.
 
-The observed behavior, rather than a round byte target, sets the policy budget. The 1,253-byte candidate is one byte smaller than the original policy, while the command Hook, generic fidelity reminder, automatic feedback taxonomy, and other unused abstractions stay removed. The restored bytes are tied to observed failures; none of these stable-CLI trials is independent release evidence.
+The observed behavior, rather than a round byte target, set the v6 policy budget. That 1,253-byte candidate was one byte smaller than the original policy, while the command Hook, generic fidelity reminder, automatic feedback taxonomy, and other then-unused abstractions stayed removed. V6 later showed that the feedback removal and generic decision trigger were under-specified, so those conclusions were reopened rather than defended by byte count. None of these stable-CLI trials is independent release evidence.
+
+## Post-v6 revision and component plan
+
+A first 1,260-byte repair used a generic `materially change the result` gate. In real installed-Hook trials it asked the correct missing decision in only 2 / 7 targeted cases: it missed teaching depth, persuasive feasibility, autonomy, and brand voice, and once asked a surface-tone question. That abstraction was rejected.
+
+The current 1,317-byte revision names observable decision dimensions, makes a newer turn override an earlier `this turn only` limit, requires a consequence plus parallel micro-example for abstract comparisons, restores a compact result-feedback rule, and limits samples only from inventing factual claims rather than suppressing requested creative examples. The 17-case post-v6 corpus freezes seven decision gates, three comparisons, four feedback updates, one missing-data control, and two clear controls. Its structure and user-visible requirements pass deterministic tests; real installed-Hook validation is still pending.
+
+Before sealing v7, component-removal runs must separately test the named decision dimensions, comparison micro-examples, result-feedback rule, facts-only boundary, exact answer exit, and warm MCP transport. A component stays only when removing it causes an observed behavior loss or it enforces a non-negotiable safety/product boundary.
 
 ## First formal holdout result
 
@@ -125,7 +153,7 @@ The experiment retained only behavior with observed or product-required value:
 - a semantic costly-divergence trigger before materially different expensive outcomes;
 - a neutral mix/reject/free-description exit when the user does not know the available directions;
 - one tiny inline sample, with no tools, commands, or files, when preference needs evidence;
-- explicit feedback classification in the full, manually invoked Skill and optional state model; and
+- explicit feedback classification in the compact core, full manually invoked Skill, and optional state model; and
 - the state-free core. State continuity and DeepSeek compatibility remain optional adapters.
 
 No GUI, planner, transcript parser, custom Harness, intake form, or independent chat client was added. Earlier ablation had already removed lexical trigger lists, a memorized website example, conflict-generated “balanced” options, mandatory `label + effect` scaffolding, and duplicated reply-format instructions.
@@ -145,7 +173,7 @@ The small sample and high timing variance do not support a latency ranking. The 
 
 - The full variant's one first-turn action was a web search during an explicitly requested comparison. The policy now forbids tools and project work for intent-forming comparisons.
 - Replacing the exact `mix / reject all / answer freely` exit with a generic allowance caused three of five applicable gate responses to omit at least one exit right. The exact exit remains.
-- Removing the automatic feedback taxonomy did not damage the two result-feedback cases. The compact always-on policy no longer carries it; the explicit Skill and optional state schema retain it where the user deliberately invokes that behavior.
+- Removing the automatic feedback taxonomy did not damage those two result-feedback cases, so the v6 policy dropped it. V6 later exposed incorrect result-feedback handling in a broader independent set; the current revision restores a smaller rule and requires a new removal test before freeze.
 - Removing the generic `obey stated constraints` sentence produced no meaningful constraint or compactness loss. It remains deleted.
 - That post-v4 candidate retained the product boundary and observed mechanisms in 967 UTF-8 bytes, 22.9% below the original 1,254-byte policy. Later v5 failures required the targeted rules documented above.
 
@@ -167,4 +195,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The final development candidate has passed its targeted stable-CLI regressions. V6 was authored unseen, hash-sealed, copied byte-identically to the canonical path, and mechanically cleared against all frozen prior material. The next step is one clean candidate commit followed by the verbatim paired v6 run and blind grade; no further policy change is allowed without retiring v6.
+V3, v4, v5, and v6 are permanently retired from release-gate use because their results informed later policy, evaluation, or architecture work. V6 is additionally invalid for efficacy because its hidden final requirements violated the user-visible evidence boundary. The current revision must pass real development regression and component removal first. Only then may a fresh independent author create v7 under the exact-excerpt contract; no v7 arm may run before its corpus and candidate are separately sealed.

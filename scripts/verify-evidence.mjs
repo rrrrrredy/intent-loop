@@ -11,6 +11,7 @@ import {
 
 const repositoryRoot = path.resolve(import.meta.dirname, "..");
 const developmentRoot = path.join(repositoryRoot, "evidence", "development-regression-v8");
+const failedV6Root = path.join(repositoryRoot, "evidence", "failed-holdout-v6");
 const finalRoot = path.join(repositoryRoot, "evidence", "v0.3.0-beta.1");
 const requireCandidate = process.argv.includes("--require-candidate");
 
@@ -46,11 +47,44 @@ const developmentGrades = (await readFile(path.join(developmentRoot, "blind-grad
 assert.equal(developmentRuns.length, 160);
 assert.equal(developmentGrades.length, 80);
 
+const failedV6Manifest = await readJson(path.join(failedV6Root, "manifest.json"));
+assert.equal(failedV6Manifest.schema_version, 1);
+assert.equal(failedV6Manifest.evidence_class, "failed_holdout_diagnostic");
+assert.equal(failedV6Manifest.current_release_efficacy, false);
+assert.equal(failedV6Manifest.decision, "STOP_AND_INVALID_FOR_EFFICACY");
+assert.equal(failedV6Manifest.execution.primary_conversations, 160);
+assert.equal(failedV6Manifest.execution.usable_primary_conversations, 160);
+assert.equal(failedV6Manifest.grading.graded_pairs, 80);
+assert.equal(failedV6Manifest.corpus.minimum_user_visibility_defects, 11);
+assert.deepEqual(
+  Object.entries(failedV6Manifest.gates)
+    .filter(([, gate]) => gate.status === "FAIL")
+    .map(([name]) => name)
+    .sort(),
+  ["clear_latency", "inference_denial", "proactive_wrong"]
+);
+for (const [fileName, expected] of Object.entries(
+  failedV6Manifest.published_artifact_sha256
+)) {
+  assert.equal(
+    sha256(await readFile(path.join(failedV6Root, fileName))),
+    expected,
+    `failed-v6 ${fileName} hash drifted`
+  );
+}
+const failedV6Audit = await readJson(path.join(failedV6Root, "corpus-audit.json"));
+assert.equal(failedV6Audit.corpus_sha256, failedV6Manifest.corpus.sha256);
+assert.equal(failedV6Audit.minimum_defect_count, 11);
+assert.equal(failedV6Audit.defects.length, 11);
+assert.equal(new Set(failedV6Audit.defects.map(({ id }) => id)).size, 11);
+
 if (!(await exists(finalRoot))) {
   if (requireCandidate) {
     throw new Error("candidate holdout evidence is required for a release");
   }
-  process.stdout.write("verified development regression; candidate holdout evidence pending\n");
+  process.stdout.write(
+    "verified development regression and failed v6 diagnostic; candidate holdout evidence pending\n"
+  );
   process.exit(0);
 }
 
