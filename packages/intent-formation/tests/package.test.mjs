@@ -92,6 +92,7 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policyServer, /import \{ POLICY \} from "\.\.\/src\/policy\.mjs"/);
   assert.match(POLICY, /two stated goals yielding different versions need a lead question/i);
   assert.match(policy, /explicit sample\/example.*from stated facts/i);
+  assert.match(POLICY, /never invent facts/i);
   assert.match(policy, /mark\/omit unknowns/i);
   assert.match(policy, /both override gate/i);
   assert.match(POLICY, /public\/lasting\/costly\/high-stakes\/hard-to-reverse output/i);
@@ -99,10 +100,10 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /assurance vs risk prominence is a lead choice/i);
   assert.match(POLICY, /ignore wording\/details\/inputs/i);
   assert.match(POLICY, /do not choose' stays neutral/i);
-  assert.match(POLICY, /deliver now with the chosen lead first, using requested placeholders/i);
+  assert.match(POLICY, /opening sentence must express chosen priority; competing goals come later/i);
   assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1175);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {

@@ -88,6 +88,12 @@
 
 **Evidence boundary:** Development runs used `codex-cli 0.153.0-alpha.5`; the final wording has not yet run through stable `0.153.0`. Stable regression and a new independent sealed holdout are mandatory before release.
 
+## D-030 — Let stable behavior set the policy byte budget
+
+**Decision:** Restore the established explicit-sample, explicit-comparison, conflict, and resolved-branch phrases after an over-compressed variant caused four routing regressions. Require the opening sentence to express the chosen priority before competing goals, and add `never invent facts` for bounded samples. Accept 1,165 bytes, still 7.1% below the original 1,254-byte policy.
+
+**Evidence:** Stable `codex-cli 0.153.0` exposed strict lead-order failures in two of three targeted runs. The revised lead-order case then passed 5 / 5, while a 16-case pass exposed unsupported embellishment in the 18-word sample. The final stated-facts repetition and an independent v6 holdout remain required.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

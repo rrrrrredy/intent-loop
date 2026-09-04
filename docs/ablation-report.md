@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **REVISED DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Post-v5 component ablation produced a 1,099-byte local candidate, but stable-CLI regression and a newly sealed independent holdout remain mandatory before publication.
+Status: **REVISED DEVELOPMENT CANDIDATE; NOT RELEASE EVIDENCE.** V5 returned `STOP` and is retired. Stable-CLI regression found two second-order failures and produced a 1,165-byte local candidate. Its final stated-facts repetition and a newly sealed independent holdout remain mandatory before publication.
 
 ## Question
 
@@ -56,7 +56,18 @@ Policy trials then isolated each v5 failure mechanism:
 - Reintroducing the automatic feedback taxonomy scored 9 / 9 on three repeated result-feedback cases, exactly matching the policy without it. It remains removed from the always-on core and available only in the explicit Skill and optional State companion.
 - The pre-final policy completed the 15-case post-v5 development corpus 15 / 15 operationally. These manually checked, failure-derived trials are development evidence only.
 
-The accepted candidate is 1,099 UTF-8 bytes, 12.4% below the original 1,254-byte policy. During this work Codex updated from `0.153.0-alpha.5` to stable `0.153.0`; no stable-CLI model run has yet been counted. Local Node 20 and Node 22 package suites pass, but those deterministic tests establish implementation integrity, not behavioral efficacy.
+The alpha-CLI candidate was 1,099 UTF-8 bytes, 12.4% below the original 1,254-byte policy. Local Node 20 and Node 22 package suites passed, but those deterministic tests establish implementation integrity, not behavioral efficacy.
+
+### Stable CLI regression and second-order failures
+
+Real installed-Hook runs on `codex-cli 0.153.0` then exposed behavior hidden by the first development pass:
+
+- The 1,099-byte candidate completed the 15-case post-v5 corpus 15 / 15, and three high-risk leading-priority classes each asked correctly in 3 / 3 repetitions. However, only one of three resolved merger-letter runs put the user-selected uncertainty emphasis strictly before the competing confidence goal.
+- Compressing several established trigger phrases to keep a strengthened lead-order rule under the old 1,100-byte ceiling caused four regressions in the next 15-case run and repeated the question after an explicit selection. That variant was rejected.
+- Restoring the proven phrases and requiring the opening sentence itself to express the chosen priority passed a new fictional museum closure case 5 / 5. A subsequent 16-case run preserved all other routing behavior, but its 18-word sample invented unsupported artistic themes.
+- The current 1,165-byte candidate adds the mechanical prohibition `never invent facts`; its evaluation, policy, and package contracts pass 40 / 40. The external five-repeat stated-facts check remains pending because the execution permission gate rejected that exact outbound run.
+
+The observed behavior, rather than a round byte target, now sets the compact-policy budget. The candidate remains 7.1% smaller than the original policy, while the removed command Hook, generic fidelity reminder, automatic feedback taxonomy, and other unused abstractions stay removed. None of these stable-CLI trials is independent release evidence.
 
 ## First formal holdout result
 
@@ -153,4 +164,4 @@ Median total conversation time was 26,301 ms and the maximum was 166,818 ms. The
 
 ## Freeze decision
 
-V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The revised candidate has passed deterministic Node 20 and Node 22 implementation tests, but it is not frozen for release. It must pass stable-CLI development regressions and then a newly authored unseen holdout whose author has no access to product policy, old holdout prompts, development prompt text, or either evaluation arm.
+V3, v4, and v5 are permanently retired from release-gate use because their results informed later policy or architecture work. The revised candidate is not frozen for release. It must pass the pending final stable-CLI stated-facts repetition, the complete deterministic matrix, and then a newly authored unseen holdout whose author has no access to product policy, old holdout prompts, development prompt text, or either evaluation arm.

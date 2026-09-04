@@ -13,7 +13,8 @@ This report is intentionally incomplete while the candidate is being prepared. A
 - Clean blind-grader rerun: PASS operationally, 80 / 80 unique grades with one declared grader-only retry and no primary retry. Summary SHA-256: `10e995aa6f923f094fbcc27b9f4578e686fec9962f0b0269fc22dad3a553bb27`.
 - Canonical v5 decision: **STOP**. Rework reduction (69.70%), clear interruptions, proactive-intervention rates, premature-action, and persistence gates passed. Final-match gain (+5.94 points), clear paired latency (+5.36%), and inference denial (75%, 6 / 8) failed. Analysis JSON SHA-256: `2566f3c2a07e2b2fb060b5e583c911b710c73427b21c880754a59ab7dadb084e`.
 - Sanitized public release evidence: BLOCKED. V5 is retired after informing the next revision.
-- Post-v5 development candidate: 1,099 policy bytes after transport and rule ablation. Warm MCP was retained; the command Hook, generic fidelity reminder, and automatic feedback taxonomy were rejected. Stable-CLI regression and a new sealed holdout are PENDING, so this is not efficacy evidence.
+- Post-v5 stable-CLI regression: the 1,099-byte candidate passed the original 15 cases but failed strict chosen-lead order in two of three targeted runs. An over-compressed intermediate variant caused four routing regressions and was rejected. The 1,145-byte correction passed a new lead-order case 5 / 5 and retained the other routes, but one bounded sample invented unsupported details.
+- Current development candidate: 1,165 policy bytes, 7.1% below the original 1,254 bytes. Warm MCP remains; the command Hook, generic fidelity reminder, and automatic feedback taxonomy remain removed. Local evaluation/policy/package contracts pass 40 / 40. The final installed-Hook stated-facts repetition and a new sealed holdout are PENDING, so no efficacy claim is active.
 
 ## State lifecycle
 

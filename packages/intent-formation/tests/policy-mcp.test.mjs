@@ -11,6 +11,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /explicit comparison\/options: give requested count, else 2-3 neutral choices/i);
   assert.match(POLICY, /do not ask, choose, use tools, or start work/i);
   assert.match(POLICY, /explicit sample\/example: give exact count, tiny inline from stated facts/i);
+  assert.match(POLICY, /never invent facts/i);
   assert.match(POLICY, /mark\/omit unknowns/i);
   assert.match(POLICY, /no inspection\/tools\/files/i);
   assert.match(POLICY, /both override gate/i);
@@ -23,7 +24,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /ignore wording\/details\/inputs/i);
   assert.match(POLICY, /if choices help, give 2-3 neutral branches/i);
   assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
-  assert.match(POLICY, /once resolved, deliver now with the chosen lead first, using requested placeholders/i);
+  assert.match(POLICY, /once resolved, deliver now: opening sentence must express chosen priority; competing goals come later/i);
   assert.match(POLICY, /no second question, nonessential input/i);
   assert.match(POLICY, /conflict: if requirements cannot coexist, name both; ask one question: which wins/i);
   assert.match(POLICY, /no work\/options\/input request/i);
@@ -33,7 +34,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1100);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1175);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

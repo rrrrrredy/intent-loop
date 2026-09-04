@@ -16,6 +16,7 @@ Current state: **candidate; do not tag or announce until every remaining gate be
 ## Required before publication
 
 - A sealed, verbatim, candidate-commit-bound holdout evaluation with explicit model settings, isolated Codex Home, full plugin-tree fingerprint, complete sanitized outputs, and all predeclared gates passing.
+- The final 1,165-byte installed-Hook candidate must first pass repeated stated-facts and lead-order development probes; the lead-order probe is 5 / 5, while the stated-facts rerun is still pending.
 - Independent adversarial review with accepted blockers fixed.
 - Independent beginner/user-perspective use with accepted blockers fixed.
 - Clean repository, version identity, generated-distribution, SBOM, notice, secret-scan, and package-allowlist checks.

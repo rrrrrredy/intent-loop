@@ -70,6 +70,14 @@ Accepted: ask for the leading goal when two stated goals produce different publi
 
 Rejected: a generic fidelity reminder and automatic feedback taxonomy in the always-on policy. The former did not improve literal or emphasis preservation; the latter tied the 9 / 9 behavior of the smaller policy. Feedback classification stays in the explicit Skill and optional State companion.
 
+## 2026-09-04: let observed behavior set the compact-policy budget
+
+Observed on stable `codex-cli 0.153.0`: the 1,099-byte candidate passed the original 15 development cases but put a user-selected leading priority first in only 1 / 3 targeted runs. Compressing already proven trigger phrases to make room under 1,100 bytes then caused four routing regressions, so that compression was rejected.
+
+Accepted: keep the proven trigger phrases, require the opening sentence to express the selected priority before competing goals, and explicitly prohibit invented facts in bounded samples. The current policy is 1,165 bytes, still 7.1% below the original 1,254 bytes. The new lead-order probe passed 5 / 5; the final stated-facts repetition remains a development gate before candidate freeze.
+
+Boundary: these failure-derived stable-CLI runs may justify implementation changes but cannot authorize publication. A fresh independently authored v6 holdout remains mandatory after the final candidate is frozen.
+
 Boundary: these are failure-derived development trials on `codex-cli 0.153.0-alpha.5`. Stable `0.153.0` regression and a fresh independent holdout are still required; no current efficacy or publication claim exists.
 
 ## 2026-09-03: require independent efficacy evidence and publish its weaknesses

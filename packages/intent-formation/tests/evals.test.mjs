@@ -336,17 +336,17 @@ test("post-failure regressions cover direct evidence, neutrality, missing input,
   assert.ok(scenarios.every((scenario) => Array.isArray(scenario.unacceptable_first)));
 });
 
-test("post-v5 development corpus freezes gate, sample, resolved-delivery, control, and feedback probes", async () => {
+test("post-v5 development corpus freezes gate, sample, resolved-delivery, lead-order, control, and feedback probes", async () => {
   const scenarios = await loadPostV5Development();
-  assert.equal(scenarios.length, 15);
-  assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 15);
+  assert.equal(scenarios.length, 16);
+  assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 16);
   const counts = scenarios.reduce((result, scenario) => {
     result[scenario.class] = (result[scenario.class] ?? 0) + 1;
     return result;
   }, {});
   assert.deepEqual(counts, {
     leading_priority: 4,
-    resolved_delivery: 4,
+    resolved_delivery: 5,
     bounded_sample: 2,
     clear_control: 1,
     comparison_control: 1,
@@ -360,6 +360,11 @@ test("post-v5 development corpus freezes gate, sample, resolved-delivery, contro
       assert.equal(typeof scenario.representative_result, "string");
     }
   }
+  const leadOrder = scenarios.find((scenario) => scenario.id === "pv5-lead-order-01");
+  assert.deepEqual(leadOrder.checks.first_sentence_terms, ["close", "reopening"]);
+  assert.equal(leadOrder.checks.benefit_after_uncertainty, true);
+  const boundedFacts = scenarios.find((scenario) => scenario.id === "pv5-sample-02");
+  assert.equal(boundedFacts.checks.only_stated_facts, true);
 });
 
 test("the paired study freezes exactly eighty unique tasks", async () => {
