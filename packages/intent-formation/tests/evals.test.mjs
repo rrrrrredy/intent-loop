@@ -454,9 +454,9 @@ test("post-v6 development corpus freezes reversible drafts, concrete comparisons
   );
   assert.ok(reversibleDrafts.every((scenario) => scenario.expected_first_move === "direct_delivery"));
   assert.ok(reversibleDrafts.every((scenario) => scenario.checks.no_question === true));
-  const missingDuration = scenarios.find((scenario) => scenario.id === "pv6-feedback-expand-02");
-  assert.equal(missingDuration.expected_first_move, "missing_data_question");
-  assert.equal(missingDuration.checks.must_not_invent, true);
+  const fictionalDuration = scenarios.find((scenario) => scenario.id === "pv6-feedback-expand-02");
+  assert.equal(fictionalDuration.expected_first_move, "sample");
+  assert.equal(fictionalDuration.feedback_label, "implementation_change");
 });
 
 test("the paired study freezes exactly eighty unique tasks", async () => {

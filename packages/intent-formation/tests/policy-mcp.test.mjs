@@ -17,8 +17,6 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /use supplied case facts/i);
   assert.match(POLICY, /creative wording may vary/i);
   assert.match(POLICY, /"fictional" adds no rules\/properties\/history/i);
-  assert.match(POLICY, /missing required fact\/file\/data\/access: ask only for it; overrides draft\/sample/i);
-  assert.match(POLICY, /never guess or answer "unspecified"/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
   assert.match(POLICY, /no tools\/files/i);
@@ -36,11 +34,12 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /no second question or invented facts/i);
   assert.match(POLICY, /conflict: name incompatible requirements; ask which wins; do no work/i);
   assert.match(POLICY, /feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move\. apply now/i);
+  assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
   assert.doesNotMatch(POLICY, /recipient\/context for copy|pace\/depth for teaching|voice family for brand/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1400);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1320);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

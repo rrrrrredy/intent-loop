@@ -100,8 +100,6 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(policy, /use supplied case facts/i);
   assert.match(policy, /creative wording may vary/i);
   assert.match(POLICY, /"fictional" adds no rules\/properties\/history/i);
-  assert.match(policy, /missing required fact\/file\/data\/access: ask only for it; overrides draft\/sample/i);
-  assert.match(POLICY, /never guess or answer "unspecified"/i);
   assert.match(policy, /overrides gate/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
@@ -110,7 +108,8 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /never ask\/choose\/use tools\/start work/i);
   assert.match(POLICY, /feedback: keep=extend; implementation=change form; intent=change goal/i);
   assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1400);
+  assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1320);
 });
 
 test("optional MCP companion resolves its own bundled server", async () => {
