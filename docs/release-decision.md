@@ -15,7 +15,7 @@ Current state: **candidate; do not tag or announce until every remaining gate be
 - Independently authored v6 holdout sealed before execution at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; portable root overlap validation found zero threshold violations.
 - V6 completed 160 / 160 primary conversations and 80 / 80 blind grades, then returned `STOP`; its failure record is preserved without an efficacy claim.
 - Evaluation contract v3 rejects a corpus unless every final requirement is an exact excerpt from a frozen user-visible turn.
-- Current source/package suites: PASS, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0, covering the reduced 1,293-byte policy, corrected development labels, evaluation contract v3, privacy/deletion behavior, generated packages, and simultaneous 100-process writes.
+- Current source/package suites: PASS, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0, covering the 1,315-byte factual-boundary policy, corrected development labels, evaluation contract v3, privacy/deletion behavior, generated packages, and simultaneous 100-process writes.
 
 ## Required before publication
 

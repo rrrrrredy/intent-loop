@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. The first authorized 17-case installed-Hook run then exposed both a development-label defect and eight unnecessary questions. The named-dimension gate has been removed; the current 1,293-byte revision and corrected labels still require a real rerun and component ablation before a new holdout can be sealed.
+Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. A first authorized 17-case installed-Hook run exposed both a development-label defect and eight unnecessary questions. Candidate `d10a920` removed all eight questions on the unchanged prompts, then exposed a narrower fabrication and missing-data failure. The current 1,315-byte revision requires targeted rerun and component ablation before a new holdout can be sealed.
 
 ## Question
 
@@ -100,7 +100,9 @@ Candidate `598f83f` ran the 17 unchanged synthetic prompts through a real instal
 
 The prompts remain byte-for-byte unchanged. Seven `question` labels now require direct delivery because a cheap draft can reveal preference, and the library-card first move now requires asking only for its missing duration. The compact policy is 1,293 bytes after removing five named decision dimensions and restoring the general three-condition gate: at least two plausible directions, a different next action, and material rework, irreversibility, or external impact with no cheap shared step or sample.
 
-Before sealing v7, the corrected 17 cases must rerun through the installed Hook. Separate development probes must cover genuinely costly decision branches. Component-removal runs must test comparison micro-examples, result feedback, the facts-only boundary, exact answer exit, and warm MCP transport. A component stays only when removal causes an observed behavior loss or it enforces a non-negotiable safety or product boundary.
+Candidate `d10a920` reran the same 17 prompts. It delivered every reversible draft and clear control directly, preserved all comparison and follow-up routes, used no tools, and cleaned every task. It still invented card-game rules that were not supplied. On the missing library-card duration it avoided a numerical fabrication but returned an “unspecified” sentence instead of asking for the required fact. The next policy change therefore adds no new intent abstraction: it strengthens the existing factual boundary, states that a fictional case does not license new rules, properties, or history, and lets a required missing fact override direct drafting. The result is 1,315 bytes, still below the earlier 1,317-byte named-dimension variant.
+
+Before sealing v7, the affected fidelity and missing-data cases must pass targeted installed-Hook reruns, followed by the complete corrected 17 cases. Separate development probes must cover genuinely costly decision branches. Component-removal runs must test comparison micro-examples, result feedback, the facts-only boundary, exact answer exit, and warm MCP transport. A component stays only when removal causes an observed behavior loss or it enforces a non-negotiable safety or product boundary.
 
 ## First formal holdout result
 

@@ -142,6 +142,12 @@
 
 **Evidence:** Candidate `598f83f` completed every real Codex turn and cleanup without tools or user-work actions, yet asked eight unnecessary questions and fabricated one missing duration. The original seven question labels contradicted the frozen rule that a cheap reversible sample should precede an interview. The reduced policy is 1,293 UTF-8 bytes and passes 107 / 107 tests on Node 20.19.1 and Node 22.19.0; real behavioral rerun and component ablation remain required.
 
+## D-039 — Make fictional fidelity and required data explicit
+
+**Decision:** Keep the general activation gate and direct bounded-draft exit. Strengthen only the existing factual boundary: `fictional` does not authorize new rules, properties, or history; if a fact is required to answer, ask only for it. Do not restore named content dimensions or a general questionnaire.
+
+**Evidence:** Candidate `d10a920` removed all eight unnecessary questions on the unchanged 17 prompts, but added four unsupplied card-game mechanics and answered a missing library-card duration with “unspecified” instead of requesting the value. The strengthened compact policy is 1,315 bytes, two bytes below the rejected 1,317-byte named-dimension policy. Targeted real-Codex regression remains required.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.
