@@ -65,7 +65,7 @@ Exports are stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<exp
 
 The State companion stores deliberate, atomic statements. It does not store complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Personal information deliberately placed in an atomic statement can still remain; this is not a secret vault or general DLP system. On Unix-like systems, managed directories/files use `0700`/`0600`; Windows relies on the current account's inherited filesystem ACLs.
 
-The trusted short-lived Hook refuses `/intent remember` in private mode because it cannot honestly promise that process-memory data survives after the Hook exits. Private records can still be created through the State MCP tools and last only for that MCP process. Returning to standard mode with `/intent start` restores the reliable slash-command path.
+The trusted short-lived Hook refuses private remember, feedback, show, and correction commands: it cannot retain writes or retrieve another process's private memory. Private records can still be managed through the State MCP tools and last only for that MCP process. Private mode never stores a custom task title or workspace hash. Returning to standard mode with `/intent start` restores the reliable slash-command path.
 
 See the [two-minute Chinese guide](docs/simple-guide.zh-CN.md), [privacy policy](docs/privacy-policy.md), and [threat model](docs/privacy-threat-model.md).
 

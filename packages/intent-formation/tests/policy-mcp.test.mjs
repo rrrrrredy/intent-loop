@@ -10,7 +10,7 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
-  assert.match(POLICY, /when asked for direction options: give the requested count or 2-3 neutral branches/i);
+  assert.match(POLICY, /requested comparisons\/options: give the requested count or 2-3 neutral branches/i);
   assert.match(POLICY, /each with one consequence/i);
   assert.match(POLICY, /fulfill without a prior question/i);
   assert.match(POLICY, /do not choose or implement/i);
@@ -27,7 +27,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /act if a shared step or cheap draft\/sample can reveal it/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
-  assert.match(POLICY, /invite mixes, rejection, or freeform replies in the user's language/i);
+  assert.match(POLICY, /mixes, rejection, or freeform replies in the user's language/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);
   assert.match(POLICY, /incompatible requirements: ask which wins, not for a mix/i);

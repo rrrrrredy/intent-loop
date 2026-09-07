@@ -60,12 +60,12 @@ function collectStrings(value, output) {
   }
 }
 
-function collectErasureTokens(event, output) {
+function collectErasureTokens(event, output, includeTaskId = true) {
   const payload = event.payload ?? {};
   const record = payload.record ?? {};
   // Identity and user content can locate truncated copies; schema enum values cannot.
   collectStrings([
-    event.event_id, event.task_id, record.record_id, record.statement,
+    event.event_id, includeTaskId ? event.task_id : null, record.record_id, record.statement,
     record.source_ref?.ref, record.source_ref?.excerpt, record.scope_ref,
     record.supersedes, record.invalidated_reason, payload.target_record_id,
     payload.reason, payload.label, payload.cwd_hash
@@ -86,6 +86,20 @@ function recoveryTaskId(rawLine) {
 function rawLineContainsToken(rawLine, token) {
   const encoded = JSON.stringify(token);
   return rawLine.includes(encoded) || rawLine.endsWith(encoded.slice(0, -1));
+}
+
+function recoveryRecordId(rawLine) {
+  for (const match of rawLine.matchAll(/"(record_id|target_record_id)"\s*:\s*("(?:[^"\\]|\\.)*")/gu)) {
+    try {
+      const closing = match[1] === "record_id" ? "}}}" : "}}";
+      const prefix = JSON.parse(rawLine.slice(0, match.index) + JSON.stringify(match[1]) + ":" + match[2] + closing);
+      const recordId = match[1] === "record_id"
+        ? prefix.payload?.record?.record_id
+        : prefix.payload?.target_record_id;
+      if (typeof recordId === "string") return recordId;
+    } catch { /* An embedded string cannot establish record ownership. */ }
+  }
+  return null;
 }
 
 function processIsAlive(pid) {
@@ -484,10 +498,10 @@ export class EventStore {
             ((event.event_type === "record_added" &&
               event.payload.record?.record_id === recordId) ||
               (event.event_type === "record_invalidated" &&
-                event.payload.target_record_id === recordId))
+              event.payload.target_record_id === recordId))
           ) {
             removed += 1;
-            collectErasureTokens(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens, false);
             continue;
           }
 
@@ -551,6 +565,12 @@ export class EventStore {
         } catch {
           const owner = recoveryTaskId(rawLine);
           if (owner !== null && owner !== scrub.taskId) {
+            output.push(rawLine);
+            continue;
+          }
+          const recordOwner = recoveryRecordId(rawLine);
+          if (scrub.recordId !== null && recordOwner !== null && recordOwner !== scrub.recordId &&
+              !rawLineContainsToken(rawLine, scrub.recordId)) {
             output.push(rawLine);
             continue;
           }

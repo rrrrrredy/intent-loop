@@ -2,7 +2,7 @@
 
 ## 它有什么用
 
-Intent Formation 会帮 Codex 在开工前发现一个关键问题：你的要求里还有没有会让结果走向完全不同方向的选择。
+Intent Formation 是装在 Codex 里的一个小插件。你一边让 Codex 做事，一边看结果、提意见，它帮助 Codex 跟上你现在想要的方向。
 
 任务很清楚时，Codex 直接做。方向没定，而且猜错会浪费很多时间时，它只问一个有用的问题，或者给你两三个具体方案看。你照平时的方式说话就行。
 
@@ -56,7 +56,7 @@ codex plugin add intent-formation-state@intent-loop
 
 State 只保存有意写入的短句，不会默认保存整段对话。主动写进短句里的个人信息仍会留在本机，所以不要把密码、密钥或敏感原文放进去。
 
-private 模式只保留当前本地 State 助手运行期间的临时内容。执行命令的 Hook 很快就会退出，无法保证临时内容继续存在，所以它会拒绝 `/intent remember`，也不会给成功回执。要用这条简单命令，先输入 `/intent start` 回到 standard 模式。
+private 模式不保存任务标题和工作区信息，临时记录只在当前本地 State 助手运行期间存在。执行命令的 Hook 很快就会退出，也读不到另一个进程的临时记录，所以它会拒绝私密模式下的 remember、feedback、show 和 correct 命令，不给成功回执。要用这些简单命令，先输入 `/intent start` 回到 standard 模式。
 
 ## 怎么卸载
 

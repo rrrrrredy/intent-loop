@@ -374,6 +374,13 @@ function privateMarkerId(taskId, events) {
   return marker;
 }
 
+function needsPrivatePurge(taskId, events) {
+  return events.some((event) => event.task_id === taskId && (
+    event.event_type !== "task_started" || event.payload.mode !== "private" ||
+    event.payload.label != null || event.payload.cwd_hash != null
+  ));
+}
+
 function compactSnapshot(snapshot, maximum = 900, options = {}) {
   if (!snapshot.exists || snapshot.mode !== "standard" || snapshot.active_records.length === 0) {
     return "";
@@ -781,8 +788,9 @@ export class IntentService {
 
   async startTaskLocked(input, taskId, mode) {
     const labelValue = cleanOptionalText(input.label, "label", 120);
-    const label = labelValue ? redactSecrets(labelValue).text : null;
-    const cwdHash = input.cwd ? hashText(boundedText(input.cwd, "cwd", 2000)) : null;
+    const label = mode !== "private" && labelValue ? redactSecrets(labelValue).text : null;
+    const cwdHash = mode !== "private" && input.cwd
+      ? hashText(boundedText(input.cwd, "cwd", 2000)) : null;
     const startEvent = this.event(taskId, "task_started", {
       mode,
       label,
@@ -804,7 +812,7 @@ export class IntentService {
     );
     if (!result.replaced) {
       const currentSnapshot = deriveSnapshot(taskId, result.events, result.recovery);
-      if (currentSnapshot.mode !== mode) {
+      if (currentSnapshot.mode !== mode || mode === "private") {
         return this.setModeLocked({ task_id: taskId, mode }, taskId, mode);
       }
       const stable = await this.store.withLockedEvents(async (current) => {
@@ -847,16 +855,19 @@ export class IntentService {
         return this.startTaskLocked({ task_id: taskId, mode }, taskId, mode);
       }
 
+      let repairPrivateMarker = false;
       if (current.mode === mode) {
         const stable = await this.store.withLockedEvents(async (loaded) => {
           const snapshot = deriveSnapshot(taskId, loaded.events, loaded.recovery);
           if (!snapshot.exists || snapshot.mode !== mode) return false;
+          repairPrivateMarker = mode === "private" && needsPrivatePurge(taskId, loaded.events);
+          if (repairPrivateMarker) return true;
           if (mode === "private") await this.purgeManagedExports(taskId);
           await this.syncOffModeMarker(taskId, mode);
           return true;
         });
         if (!stable) continue;
-        return this.show({ task_id: taskId });
+        if (!repairPrivateMarker) return this.show({ task_id: taskId });
       }
 
       if (mode === "private" || current.mode === "private") {
@@ -870,7 +881,8 @@ export class IntentService {
           [replacementStart],
           (events) => {
             const snapshot = deriveSnapshot(taskId, events, null);
-            return snapshot.exists && snapshot.mode === current.mode;
+            return snapshot.exists && snapshot.mode === current.mode &&
+              (!repairPrivateMarker || needsPrivatePurge(taskId, events));
           },
           {
             afterCommit: async () => {
@@ -1324,7 +1336,7 @@ export class IntentService {
     if (createdTarget) {
       const startEvent = this.event(taskId, "task_started", {
         mode: imported.mode,
-        label: imported.label,
+        label: imported.mode === "private" ? null : imported.label,
         cwd_hash: null
       });
       const replacementEvents = imported.mode === "private"

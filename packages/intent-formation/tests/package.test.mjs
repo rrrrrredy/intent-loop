@@ -105,7 +105,7 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /do not choose or implement/i);
   assert.match(POLICY, /requested research\/files may use tools/i);
-  assert.match(POLICY, /invite mixes, rejection, or freeform replies/i);
+  assert.match(POLICY, /mixes, rejection, or freeform replies/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1200);
 });

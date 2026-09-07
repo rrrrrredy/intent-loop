@@ -1,6 +1,6 @@
 # Privacy policy
 
-Effective date: 2026-09-03
+Effective date: 2026-09-07
 
 Intent Formation is open-source software distributed through GitHub. The project author does not operate a hosted Intent Formation service, user account system, analytics endpoint, or telemetry collector.
 
@@ -17,6 +17,8 @@ State is opt-in. After `/intent start`, it can store deliberately selected atomi
 It does not persist complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Common credential patterns are redacted before a record is written, but redaction is best effort and is not general personal-information detection.
 
 Standard mode persists records locally. On Unix-like systems, managed directories are restricted to mode `0700` and files to `0600`; on Windows, protection depends on the current account's inherited filesystem ACLs. A verified private-mode receipt means the task's managed persisted content and managed exports were purged before new record text is kept only in the current MCP process. If a privacy or deletion command fails, the result reports that change is unknown and tells the user to inspect and retry. Off mode retains existing state but blocks new updates. `/intent forget` purges the task's managed events and managed export files. Copies moved elsewhere, operating-system backups and snapshots, and host conversation logs remain outside the plugin's deletion authority.
+
+Private task markers contain no custom task title or workspace hash. Re-entering private mode also purges these fields from markers written by earlier builds. Private records live only in the long-running State MCP process; the short-lived command Hook refuses private remember, feedback, show, and correction requests rather than claiming to save or retrieve that memory. Use `/intent start` to return to standard mode for the simple chat commands.
 
 ## DeepSeek Harness adapter
 

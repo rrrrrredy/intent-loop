@@ -10,7 +10,7 @@ The core policy plugin is local and state-free. The optional State companion own
 | --- | --- |
 | Core policy | Nothing. The MCP tool accepts no prompt input. |
 | Standard State | Deliberately added atomic records, provenance, mode events, links, hashes, and timestamps. |
-| Private State | A disk marker for mode; new semantic record text stays in MCP-process memory. |
+| Private State | A mode marker without custom title or workspace hash; new semantic record text stays in MCP-process memory. Re-entering private mode purges legacy marker metadata. |
 | Off State | Existing snapshot, an off-mode event, and a hashed lock-independent marker directory; no new semantic updates. |
 | Managed export | Full selected records and provenance in an integrity-checked JSON file. |
 
@@ -24,9 +24,9 @@ The core policy plugin is local and state-free. The optional State companion own
 | Cross-task access | Host-derived task IDs partition state; the DeepSeek adapter strips model-selected task and workspace fields. | Local filesystem access remains stronger than this namespace boundary. |
 | Partial or concurrent writes | Generation-checked directory locks, fsync, atomic replacement, backup restore, migration, corrupt-line quarantine, independent-process stress, and stale-lock ABA tests have regression coverage. A failed mutation reports `changed: unknown` and a recovery step. | Storage or hardware failure can still lose the last operation or its acknowledgement. Inspect state before retrying. |
 | False command success | Manual controls require `ok: true`, a trusted source, and a non-empty receipt. Missing receipts must be reported as failure. | A model can ignore instructions; users should check the receipt. |
-| Private `remember` vanishes with its Hook | The short-lived command Hook refuses private-mode `remember`, makes no change, and returns no receipt. | Private records created through the MCP tools last only for that MCP process. |
+| Private commands claim inaccessible or transient memory | The short-lived command Hook refuses private remember, feedback, show, and correction commands, makes no change, and returns no receipt. | Private records created through the MCP tools last only for that MCP process. |
 | `/intent off` ignored | The trusted Codex State Hook reads a hashed marker without taking the ledger lock and injects a task-specific override on every ordinary prompt. The DeepSeek adapter invalidates its cache from durable ledger generation and omits policy after acknowledged or acknowledgement-lost changes. Both paths have regression tests; the model-only Codex fallback refuses off commands. | Codex users must review the Hook first; model behavior cannot be made cryptographically deterministic. |
-| Deletion leaves copies | Record deletion, forget, and private-mode transition hold the ledger lock while scrubbing matching managed exports; private export is rejected before serialization or write. | External exports, host logs, backups, snapshots, and storage-media remnants remain. |
+| Deletion leaves copies | Record deletion, forget, and private-mode transition hold the ledger lock while scrubbing recovery artifacts and matching managed exports. Recovery cleanup precedes primary replacement so an interrupted purge retains the tokens needed on retry. Identified unrelated task and record fragments remain intact. Private export is rejected before serialization or write. | External exports, host logs, backups, snapshots, and storage-media remnants remain. |
 | Child process receives credentials | DeepSeek adapter uses an environment allowlist and removes model-provider key, token, and secret variables. | The surrounding Harness process remains outside this boundary. |
 | Another local account reads state | Unix directories/files are created as `0700`/`0600`; Windows uses inherited account ACLs. | Administrators, same-account processes, backups, and permissive parent ACLs remain outside the plugin boundary. |
 

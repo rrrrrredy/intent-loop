@@ -23343,12 +23343,12 @@ function collectStrings(value, output) {
     Object.values(value).forEach((item) => collectStrings(item, output));
   }
 }
-function collectErasureTokens(event, output) {
+function collectErasureTokens(event, output, includeTaskId = true) {
   const payload = event.payload ?? {};
   const record2 = payload.record ?? {};
   collectStrings([
     event.event_id,
-    event.task_id,
+    includeTaskId ? event.task_id : null,
     record2.record_id,
     record2.statement,
     record2.source_ref?.ref,
@@ -23375,6 +23375,18 @@ function recoveryTaskId(rawLine) {
 function rawLineContainsToken(rawLine, token) {
   const encoded = JSON.stringify(token);
   return rawLine.includes(encoded) || rawLine.endsWith(encoded.slice(0, -1));
+}
+function recoveryRecordId(rawLine) {
+  for (const match of rawLine.matchAll(/"(record_id|target_record_id)"\s*:\s*("(?:[^"\\]|\\.)*")/gu)) {
+    try {
+      const closing = match[1] === "record_id" ? "}}}" : "}}";
+      const prefix = JSON.parse(rawLine.slice(0, match.index) + JSON.stringify(match[1]) + ":" + match[2] + closing);
+      const recordId2 = match[1] === "record_id" ? prefix.payload?.record?.record_id : prefix.payload?.target_record_id;
+      if (typeof recordId2 === "string") return recordId2;
+    } catch {
+    }
+  }
+  return null;
 }
 function processIsAlive(pid) {
   if (!Number.isInteger(pid) || pid <= 0) {
@@ -23723,7 +23735,7 @@ var EventStore = class {
         for (const event of events) {
           if (event.task_id === taskId2 && (event.event_type === "record_added" && event.payload.record?.record_id === recordId2 || event.event_type === "record_invalidated" && event.payload.target_record_id === recordId2)) {
             removed += 1;
-            collectErasureTokens(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens, false);
             continue;
           }
           kept.push(scrubRecordReferences(event, taskId2, recordId2));
@@ -23776,6 +23788,11 @@ var EventStore = class {
         } catch {
           const owner = recoveryTaskId(rawLine);
           if (owner !== null && owner !== scrub.taskId) {
+            output.push(rawLine);
+            continue;
+          }
+          const recordOwner = recoveryRecordId(rawLine);
+          if (scrub.recordId !== null && recordOwner !== null && recordOwner !== scrub.recordId && !rawLineContainsToken(rawLine, scrub.recordId)) {
             output.push(rawLine);
             continue;
           }
@@ -24419,6 +24436,9 @@ function privateMarkerId(taskId2, events) {
   }
   return marker;
 }
+function needsPrivatePurge(taskId2, events) {
+  return events.some((event) => event.task_id === taskId2 && (event.event_type !== "task_started" || event.payload.mode !== "private" || event.payload.label != null || event.payload.cwd_hash != null));
+}
 function compactSnapshot(snapshot, maximum = 900, options = {}) {
   if (!snapshot.exists || snapshot.mode !== "standard" || snapshot.active_records.length === 0) {
     return "";
@@ -24760,8 +24780,8 @@ var IntentService = class {
   }
   async startTaskLocked(input, taskId2, mode) {
     const labelValue = cleanOptionalText(input.label, "label", 120);
-    const label = labelValue ? redactSecrets(labelValue).text : null;
-    const cwdHash = input.cwd ? hashText(boundedText(input.cwd, "cwd", 2e3)) : null;
+    const label = mode !== "private" && labelValue ? redactSecrets(labelValue).text : null;
+    const cwdHash = mode !== "private" && input.cwd ? hashText(boundedText(input.cwd, "cwd", 2e3)) : null;
     const startEvent = this.event(taskId2, "task_started", {
       mode,
       label,
@@ -24783,7 +24803,7 @@ var IntentService = class {
     );
     if (!result.replaced) {
       const currentSnapshot = deriveSnapshot(taskId2, result.events, result.recovery);
-      if (currentSnapshot.mode !== mode) {
+      if (currentSnapshot.mode !== mode || mode === "private") {
         return this.setModeLocked({ task_id: taskId2, mode }, taskId2, mode);
       }
       const stable = await this.store.withLockedEvents(async (current) => {
@@ -24823,16 +24843,19 @@ var IntentService = class {
       if (!current.exists) {
         return this.startTaskLocked({ task_id: taskId2, mode }, taskId2, mode);
       }
+      let repairPrivateMarker = false;
       if (current.mode === mode) {
         const stable = await this.store.withLockedEvents(async (loaded) => {
           const snapshot = deriveSnapshot(taskId2, loaded.events, loaded.recovery);
           if (!snapshot.exists || snapshot.mode !== mode) return false;
+          repairPrivateMarker = mode === "private" && needsPrivatePurge(taskId2, loaded.events);
+          if (repairPrivateMarker) return true;
           if (mode === "private") await this.purgeManagedExports(taskId2);
           await this.syncOffModeMarker(taskId2, mode);
           return true;
         });
         if (!stable) continue;
-        return this.show({ task_id: taskId2 });
+        if (!repairPrivateMarker) return this.show({ task_id: taskId2 });
       }
       if (mode === "private" || current.mode === "private") {
         const replacementStart = this.event(taskId2, "task_started", {
@@ -24845,7 +24868,7 @@ var IntentService = class {
           [replacementStart],
           (events) => {
             const snapshot = deriveSnapshot(taskId2, events, null);
-            return snapshot.exists && snapshot.mode === current.mode;
+            return snapshot.exists && snapshot.mode === current.mode && (!repairPrivateMarker || needsPrivatePurge(taskId2, events));
           },
           {
             afterCommit: async () => {
@@ -25266,7 +25289,7 @@ var IntentService = class {
     if (createdTarget) {
       const startEvent = this.event(taskId2, "task_started", {
         mode: imported.mode,
-        label: imported.label,
+        label: imported.mode === "private" ? null : imported.label,
         cwd_hash: null
       });
       const replacementEvents = imported.mode === "private" ? [startEvent] : [startEvent, ...importedEvents];

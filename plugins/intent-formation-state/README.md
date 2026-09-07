@@ -22,7 +22,7 @@ In standard mode, `/intent remember <text>` is the reliable beginner path for sa
 
 Review the two packaged local Hooks in an interactive Codex task before using the controls. `/intent off` is never confirmed through the model-only MCP fallback because that path cannot prove suppression on later prompts. Noninteractive release tests use Codex's Hook-trust bypass only after auditing the exact packaged Hook.
 
-Private mode purges persisted task content before keeping new MCP-tool record text in that MCP process only. The short-lived command Hook refuses `/intent remember` in private mode instead of returning a receipt for memory that would disappear as the Hook exits. Off mode supplies a task-specific override on every ordinary prompt. Forget removes the task's managed events and managed export files. Copies outside the managed directory, operating-system backups, and host conversation logs remain outside that deletion boundary.
+Private mode purges persisted task content, including custom titles and workspace hashes, before keeping new MCP-tool record text in that MCP process only. The short-lived command Hook refuses private remember, feedback, show, and correction commands: it cannot retain writes or retrieve another process's private memory. Use `/intent start` to return to standard mode for these simple commands. Off mode supplies a task-specific override on every ordinary prompt. Forget removes the task's managed events and managed export files. Copies outside the managed directory, operating-system backups, and host conversation logs remain outside that deletion boundary.
 
 The local runtime has no outbound network client. Review `.mcp.json`, `hooks/hooks.json`, and the repository privacy documentation before enabling the companion.
 

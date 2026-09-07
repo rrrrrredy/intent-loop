@@ -311,6 +311,23 @@ test("recovery erasure preserves identified unrelated fragments, including ident
   assert.equal((await service.show({ task_id: "retain-task-b" })).records.length, 1);
 });
 
+test("record erasure preserves identified other records within the same task", async (context) => {
+  const { directory, service } = await fixture(context);
+  const taskId = "same-task-records";
+  const target = await service.addExplicit(explicit(taskId, "Shared wording between records"));
+  const retained = await service.addExplicit(explicit(taskId, "Shared wording between records"));
+  const events = (await readFile(service.store.filePath, "utf8")).trim().split("\n").map(JSON.parse);
+  const other = events.find((e) => e.payload.record?.record_id === retained.record.record_id);
+  const reordered = { payload: other.payload, task_id: other.task_id, schema_version: other.schema_version,
+    event_id: other.event_id, event_type: other.event_type, occurred_at: other.occurred_at };
+  const fragments = [other, reordered].map((e) => JSON.stringify(e).slice(0, -1)).join("\n") + "\n";
+  const recoveryPath = path.join(directory, "intent-events-v1.jsonl.corrupt.other-record");
+  await writeFile(recoveryPath, fragments, "utf8");
+  await service.deleteRecord({ task_id: taskId, record_id: target.record.record_id });
+  assert.equal(await readFile(recoveryPath, "utf8"), fragments);
+  assert.deepEqual((await service.show({ task_id: taskId })).records.map((r) => r.record_id), [retained.record.record_id]);
+});
+
 test("short private content is erased without matching arbitrary substrings", async (context) => {
   const { service } = await fixture(context);
   await service.addExplicit(explicit("short-content", "保留隐私"));
@@ -423,6 +440,61 @@ test("private mode keeps intent text in process memory only", async (context) =>
   const afterRestart = await restarted.show({ task_id: "task-private" });
   assert.equal(afterRestart.mode, "private");
   assert.equal(afterRestart.records.length, 0);
+});
+
+test("private creation and reset omit labels and workspace metadata", async (context) => {
+  const { directory, service } = await fixture(context);
+  for (const reset of [false, true]) {
+    const taskId = "private-metadata-" + reset;
+    if (reset) await service.startTask({ task_id: taskId, label: "OLD-PRIVATE-LABEL", cwd: directory });
+    const snapshot = await service.startTask({
+      task_id: taskId, mode: "private", reset, label: "NEW-PRIVATE-LABEL", cwd: directory
+    });
+    assert.equal(snapshot.label, null);
+  }
+  assert.doesNotMatch(await readFile(service.store.filePath, "utf8"), /PRIVATE-LABEL/);
+  const events = (await readFile(service.store.filePath, "utf8")).trim().split("\n").map(JSON.parse);
+  assert.ok(events.every((event) => event.payload.cwd_hash === null));
+  const standard = await service.startTask({ task_id: "standard-metadata", label: "Ordinary title", cwd: directory });
+  assert.equal(standard.label, "Ordinary title");
+  assert.match(await readFile(service.store.filePath, "utf8"), /Ordinary title/);
+});
+
+test("private import keeps records in memory and drops the imported task label", async (context) => {
+  const { service } = await fixture(context);
+  await service.startTask({ task_id: "private-source", mode: "private" });
+  await service.addExplicit(explicit("private-source", "PRIVATE-IMPORT-CONTENT"));
+  const payload = await service.exportTask({ task_id: "private-source" });
+  payload.task.label = "PRIVATE-IMPORT-LABEL";
+  refreshIntegrity(payload);
+  const imported = await service.importTask({ task_id: "private-target", payload, user_confirmed: true });
+  assert.equal(imported.snapshot.label, null);
+  assert.equal(imported.snapshot.records[0].statement, "PRIVATE-IMPORT-CONTENT");
+  assert.doesNotMatch(await readFile(service.store.filePath, "utf8"), /PRIVATE-IMPORT/);
+});
+
+test("reaffirming private mode purges legacy metadata without clearing a clean live session", async (context) => {
+  const { directory } = await fixture(context);
+  for (const operation of ["start", "setMode"]) {
+    const service = new IntentService({ dataDirectory: path.join(directory, operation) });
+    const taskId = "legacy-private";
+    await service.store.append(service.event(taskId, "task_started", {
+      mode: "private", label: "LEGACY-PRIVATE-LABEL", cwd_hash: "LEGACY-WORKSPACE-HASH"
+    }));
+    const recoveryPath = service.store.filePath + ".corrupt.metadata";
+    await writeFile(recoveryPath, 'TRUNCATED {"label":"LEGACY-PRIVATE-LABEL\n', "utf8");
+    const act = () => operation === "start"
+      ? service.startTask({ task_id: taskId, mode: "private" })
+      : service.setMode({ task_id: taskId, mode: "private" });
+    assert.equal((await act()).label, null);
+    for (const name of await readdir(service.store.dataDirectory)) {
+      if (name.startsWith("intent-events-v1.jsonl")) {
+        assert.doesNotMatch(await readFile(path.join(service.store.dataDirectory, name), "utf8"), /LEGACY-/);
+      }
+    }
+    await service.addExplicit(explicit(taskId, "Live private content survives a repeated mode request"));
+    assert.equal((await act()).records.length, 1);
+  }
 });
 
 test("a fresh MCP process can adopt the current private marker for in-memory writes", async (context) => {
