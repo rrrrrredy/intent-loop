@@ -41,3 +41,13 @@ feedback and retain the current direction, not require repeated manual bookkeepi
 
 Windows, Linux/macOS packaging and the existing DeepSeek adapter stay in scope.
 New host expansion, fresh marketing assets and unrelated framework work are deferred.
+
+## Delivery checkpoint
+
+The ordinary-feedback connection, bounded removal experiment and supplementary
+two-case / six-turn host check are complete. Reviewed source and diagnostic evidence
+are public, and the GitHub profile entry has been updated. The six-pair grader
+calibration is complete with its mistakes retained. The remaining evaluation is
+the [one-time final confirmation](../packages/intent-formation/evals/final-confirmation-method.md),
+followed by its honest release decision and final local cleanup. A failed final
+confirmation ends this expansion; it does not trigger another replacement study.

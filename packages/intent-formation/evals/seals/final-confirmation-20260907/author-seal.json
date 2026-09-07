@@ -1,0 +1,43 @@
+{
+  "status": "sealed",
+  "author_revision": 3,
+  "sealed_at_utc": "2026-09-07T10:40:32.1309806Z",
+  "hash_algorithm": "SHA256",
+  "case_set_count": 1,
+  "case_count": 80,
+  "pre_seal_execution_counts": {
+    "scope": "this single 80-case final-confirmation corpus",
+    "product": 0,
+    "model": 0,
+    "scoring": 0
+  },
+  "state_transition": {
+    "from": "prepared_for_seal",
+    "to": "sealed",
+    "fixed_by": "author-seal.json",
+    "note": "This seal formally fixes the byte-exact prepared revision-3 author materials. Their existing prepared status fields remain unchanged."
+  },
+  "original_four_files_modified_by_sealing": false,
+  "files": [
+    {
+      "name": "author-80.jsonl",
+      "bytes": 92995,
+      "sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef"
+    },
+    {
+      "name": "author-method.md",
+      "bytes": 20115,
+      "sha256": "5b7677873dd1fac4ed6d06bb4f3d3106712f29715b2629a5214066c98c0cdbd6"
+    },
+    {
+      "name": "validate-author.mjs",
+      "bytes": 10265,
+      "sha256": "c8faa04d940f724d0a833d25a2a491627e483c40b16675bf4c8202fe7f7859c6"
+    },
+    {
+      "name": "author-manifest.json",
+      "bytes": 6694,
+      "sha256": "855566a4f8b1bace97b705a4f674f462d42df81a374060c29d71e2840155bee3"
+    }
+  ]
+}

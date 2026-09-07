@@ -1,0 +1,258 @@
+{
+  "evidence_class": "pre-seal-local-cross-library-overlap",
+  "generated_at": "2026-09-07T10:42:40.754Z",
+  "sealed": false,
+  "author_revision": 3,
+  "candidate_sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef",
+  "candidate_bytes": 92995,
+  "candidate_count": 80,
+  "checker_source_sha256": "66e034307b2c1f21491644833868b93498b44a311da1a3c6e1edbc7958fca90e",
+  "reused_algorithm_source_sha256": "1ef3f6a2822add5783926768328b535c8c17618a173b21ebc8ad3350b85c1f03",
+  "repository_head": "7ff4ac312741d14f2c5faa8bae0c6e5491635df7",
+  "source_count": 19,
+  "source_record_count": 686,
+  "existing_source_counts": {
+    "retired-v6-holdout": 80,
+    "retired-v5-holdout": 80,
+    "development-study-80": 80,
+    "development-scenarios": 12,
+    "development-semantic-smoke": 8,
+    "development-latency": 10,
+    "development-host-regressions": 8,
+    "development-post-failure": 8,
+    "development-post-v5": 16,
+    "development-post-v6": 17,
+    "development-costly-branches": 7,
+    "ablation-16": 16,
+    "ablation-confirm-16": 16,
+    "retired-holdout-at-bae8e03": 80,
+    "retired-holdout-at-fcba88e": 80,
+    "retired-holdout-v5-at-fca68c5": 80
+  },
+  "existing_source_sha256": {
+    "retired-v6-holdout": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "retired-v5-holdout": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
+    "development-study-80": "9f66af3f968d2df52fac4f0ffb5ea8c12fa9a8f5076a0645ec25ddca0e4f428b",
+    "development-scenarios": "f851c708211dafb664520078a337c08ca429f9fd093d3d2a5a56f1f17ffbf011",
+    "development-semantic-smoke": "cacf38dce8a0978919438f1709c75b2c3cfbe2c112dfa90bac3920f4f026597d",
+    "development-latency": "d40d5889d2197b91058efdfb1704dc0900f9dfe479cd0c36176e887d76fd23a9",
+    "development-host-regressions": "c53729f5d066f647edfe006d4bf27cc9738b18a72067799e36d69c235d1696fb",
+    "development-post-failure": "bc8d795f9c501ce390ff927f4ef0622f324fdb86c00a68cdb010fd89d6845af6",
+    "development-post-v5": "78d3ad07b3db94ca4190a2d5895de062dffd1165c0342c6f59a51ce158780707",
+    "development-post-v6": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+    "development-costly-branches": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+    "ablation-16": "513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72",
+    "ablation-confirm-16": "addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c",
+    "retired-holdout-at-bae8e03": "4009661d845bbeb4bcc8dc2b5b19d20328d51182b426f1ffd37dd858a31500f3",
+    "retired-holdout-at-fcba88e": "252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70",
+    "retired-holdout-v5-at-fca68c5": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905"
+  },
+  "added_sources": [
+    {
+      "label": "current-v7-holdout",
+      "file": "packages/intent-formation/evals/holdout-80.jsonl",
+      "sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+      "case_count": 80,
+      "user_turn_count": null,
+      "compared_pairs": 6400,
+      "maximum": {
+        "token_set_jaccard": 0.2670807453416149,
+        "token_pair": [
+          "fc-co-014",
+          "current-v7-holdout:v7-co-015"
+        ],
+        "character_four_gram_dice": 0.26212590299277605,
+        "gram_pair": [
+          "fc-pr-006",
+          "current-v7-holdout:v7-pr-001"
+        ]
+      },
+      "extraction": "Unchanged existing checker scenarioText over JSONL records."
+    },
+    {
+      "label": "public-user-acceptance-v7-prompts",
+      "file": "evidence/real-user-acceptance-v7/cases.json",
+      "sha256": "c05281bc5a4b4f0049d0602ae565653cb1a98010b2901809bd699d7126366b2f",
+      "case_count": 6,
+      "user_turn_count": 22,
+      "compared_pairs": 480,
+      "maximum": {
+        "token_set_jaccard": 0.23563218390804597,
+        "token_pair": [
+          "fc-pe-012",
+          "public-user-acceptance-v7-prompts:case03"
+        ],
+        "character_four_gram_dice": 0.21174004192872117,
+        "gram_pair": [
+          "fc-pr-007",
+          "public-user-acceptance-v7-prompts:case05"
+        ]
+      },
+      "extraction": "One scenario per case: turns contains only the stored user prompt strings in their original order; all other scenarioText fields absent."
+    },
+    {
+      "label": "public-continuous-intent-prompts",
+      "file": "evidence/continuous-intent-loop-20260907/cases.json",
+      "sha256": "38b1beb71fd6d9e8a90841165c3f80e0535ad9f79c1bcf802510f8ca1870ee05",
+      "case_count": 2,
+      "user_turn_count": 6,
+      "compared_pairs": 160,
+      "maximum": {
+        "token_set_jaccard": 0.14935064935064934,
+        "token_pair": [
+          "fc-pr-011",
+          "public-continuous-intent-prompts:case07"
+        ],
+        "character_four_gram_dice": 0.1888111888111888,
+        "gram_pair": [
+          "fc-pr-011",
+          "public-continuous-intent-prompts:case07"
+        ]
+      },
+      "extraction": "One scenario per case: turns contains only the stored user prompt strings in their original order; all other scenarioText fields absent."
+    }
+  ],
+  "internal_compared_pairs": 3160,
+  "internal_maximum_same_checker_scope": {
+    "token_set_jaccard": 0.3225806451612903,
+    "token_pair": [
+      "fc-pr-012",
+      "fc-pr-015"
+    ],
+    "character_four_gram_dice": 0.2929532858273951,
+    "gram_pair": [
+      "fc-pr-001",
+      "fc-pr-009"
+    ]
+  },
+  "original_cross_corpus_maximum": {
+    "token_set_jaccard": 0.2786885245901639,
+    "token_pair": [
+      "fc-pr-008",
+      "retired-holdout-at-fcba88e:v4-pr-014"
+    ],
+    "character_four_gram_dice": 0.2936936936936937,
+    "gram_pair": [
+      "fc-pr-001",
+      "retired-holdout-at-fcba88e:v4-pr-001"
+    ]
+  },
+  "added_cross_corpus_maximum": {
+    "token_set_jaccard": 0.2670807453416149,
+    "token_pair": [
+      "fc-co-014",
+      "current-v7-holdout:v7-co-015"
+    ],
+    "character_four_gram_dice": 0.26212590299277605,
+    "gram_pair": [
+      "fc-pr-006",
+      "current-v7-holdout:v7-pr-001"
+    ]
+  },
+  "all_cross_corpus_maximum": {
+    "token_set_jaccard": 0.2786885245901639,
+    "token_pair": [
+      "fc-pr-008",
+      "retired-holdout-at-fcba88e:v4-pr-014"
+    ],
+    "character_four_gram_dice": 0.2936936936936937,
+    "gram_pair": [
+      "fc-pr-001",
+      "retired-holdout-at-fcba88e:v4-pr-001"
+    ]
+  },
+  "thresholds": {
+    "token_set_jaccard": 0.65,
+    "character_four_gram_dice": 0.72
+  },
+  "threshold_violations": [],
+  "original_checker_exit_code": 0,
+  "refresh_comparison": {
+    "mode": "metadata_only_exact_previous_file_recovery_and_projection_equivalence",
+    "previous_candidate_sha256": "f12550b32edb78992fca7e344435b9fc71a787122722ed608d74f53d4f4bc75c",
+    "previous_report_sha256": "aaa1ed5546add2dfe66b686d1e56a423051123903e238e0cc7c69b6a1fd4298e",
+    "changed_cases_verified": [
+      "fc-uf-002",
+      "fc-uf-005",
+      "fc-uf-007",
+      "fc-uf-008",
+      "fc-uf-009",
+      "fc-uf-015"
+    ],
+    "added_field": "intent_move_explicitly_requested",
+    "added_value": false,
+    "added_field_count": 6,
+    "recovered_previous_sha256": "f12550b32edb78992fca7e344435b9fc71a787122722ed608d74f53d4f4bc75c",
+    "recovered_previous_bytes": 92749,
+    "unchanged_scenario_text_count": 80,
+    "source_counts_and_all_19_hashes_unchanged": true,
+    "thresholds_unchanged": true,
+    "internal_maximum_unchanged": true,
+    "original_cross_maximum_unchanged": true,
+    "added_cross_maximum_unchanged": true,
+    "all_cross_maximum_unchanged": true,
+    "threshold_violations_unchanged": true,
+    "new_pairwise_computations": 0,
+    "carried_forward_internal_pairs": 3160,
+    "carried_forward_cross_pairs": 54880
+  },
+  "author_internal_method_comparison": {
+    "same_scope_and_tokenization": true,
+    "equivalence_verified_on_current_candidate_count": 80,
+    "per_case_projection_normalization_token_set_and_gram_set_identical": true,
+    "author_reported_and_locally_recomputed_maxima_identical": true,
+    "author_validator_sha256": "c8faa04d940f724d0a833d25a2a491627e483c40b16675bf4c8202fe7f7859c6",
+    "author_manifest_sha256": "855566a4f8b1bace97b705a4f674f462d42df81a374060c29d71e2840155bee3",
+    "author_reported_maxima": {
+      "token_set_jaccard": 0.3225806451612903,
+      "codepoint_4gram_set_dice": 0.2929532858273951
+    },
+    "author_local_recheck": {
+      "exit_code": 0,
+      "case_count": 80,
+      "error_count": 0,
+      "similarities": {
+        "scenario_text": {
+          "cases": 80,
+          "pairs": 3160,
+          "maximum": {
+            "token_set_jaccard": {
+              "score": 0.3225806451612903,
+              "ids": [
+                "fc-pr-012",
+                "fc-pr-015"
+              ]
+            },
+            "codepoint_4gram_set_dice": {
+              "score": 0.2929532858273951,
+              "ids": [
+                "fc-pr-001",
+                "fc-pr-009"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "differences": [
+      "Every current candidate projection, normalized text, token set and gram set matches the existing checker. The six added boolean fields are outside scenarioText.",
+      "The existing checker supports turns and representative_result fields, absent from every current author scenario.",
+      "Author toLowerCase and checker toLocaleLowerCase en-US agree on all current texts; empty/short-text conventions can still differ outside this corpus."
+    ],
+    "author_local_recheck_source_author_revision": 2,
+    "author_local_recheck_note": "Revision-2 full local metrics retained; revision-3 per-case projection, normalization, token and gram sets were reverified without any pairwise recomputation."
+  },
+  "model_api_requests": 0,
+  "product_runs": 0,
+  "grader_runs": 0,
+  "model_output_fields_compared": false,
+  "limitations": [
+    "Lexical overlap does not establish semantic independence or correct task labels; an independent semantic audit is separate.",
+    "Source records can duplicate each other across historical snapshots; source count is not a distinct-task count.",
+    "Public acceptance sources are compared as whole user-message combinations per case, not as isolated individual turns; long multi-turn cases can dilute a local overlap.",
+    "scenarioText includes evaluator-authored metadata for JSONL scenarios but only user prompts for acceptance cases, exactly as the requested adapter specifies.",
+    "Original checker internal_maximum.pair identifies its token maximum only. This wrapper additionally records the distinct gram-maximum pair without changing scores.",
+    "This binds an unsealed preparation draft. Any later author edit requires refreshing affected comparisons before seal."
+  ],
+  "pairwise_comparisons_last_computed_at": "2026-09-07T10:36:41.098Z"
+}

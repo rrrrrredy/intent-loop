@@ -16,7 +16,7 @@ import { createEvidenceSanitizer } from "../evals/evidence-sanitizer.mjs";
 import { gitTreeFingerprint, treeFingerprint } from "../evals/fingerprint.mjs";
 import { createFreshRunDirectories } from "../evals/fresh-run-directories.mjs";
 import { violationRatePercent } from "../evals/metrics.mjs";
-import { validateVisibleFinalRequirements, visibleFinalRequirementSources } from "../evals/scenario-contract.mjs";
+import { intentMoveExplicitlyRequested, validateVisibleFinalRequirements, visibleFinalRequirementSources } from "../evals/scenario-contract.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
@@ -797,6 +797,29 @@ test("formal corpus rejects final requirements hidden from user-visible turns", 
   );
 });
 
+test("explicit intent request overrides do not mistake an open goal for a requested intervention", () => {
+  for (const kind of ["unformed", "preference_after_result"]) {
+    assert.equal(intentMoveExplicitlyRequested({ class: kind }), true);
+    assert.equal(intentMoveExplicitlyRequested({ class: kind, intent_move_explicitly_requested: false }), false);
+  }
+  assert.equal(intentMoveExplicitlyRequested({ class: "clear" }), false);
+  assert.equal(intentMoveExplicitlyRequested({ class: "poorly_expressed", intent_move_explicitly_requested: true }), true);
+  for (const invalid of [null, "false", 0, undefined]) {
+    assert.throws(() => intentMoveExplicitlyRequested({ id: "invalid", intent_move_explicitly_requested: invalid }), /must be boolean/);
+  }
+});
+
+test("explicit intent request projection preserves all existing calibration inputs", async () => {
+  const root = path.resolve(repositoryRoot, "..", "..", "evidence", "grader-calibration-v4-20260907");
+  const scenarios = (await readFile(path.join(root, "scenarios.jsonl"), "utf8")).trim().split(/\r?\n/u).map(JSON.parse);
+  for (const batch of ["batch-controls", "batch-consequences"]) {
+    const input = JSON.parse(await readFile(path.join(root, batch, "batch-001.blind-input.json"), "utf8"));
+    for (const item of input.cases) {
+      assert.equal(intentMoveExplicitlyRequested(scenarios.find((scenario) => scenario.id === item.id)), item.intent_move_explicitly_requested);
+    }
+  }
+});
+
 test("requirement timing preserves later additions instead of presenting them as initial facts", () => {
   const scenario = {
     id: "timing-boundary",
@@ -831,6 +854,7 @@ test("v4 grading prevents hidden facts, temporal hindsight, retroactive credit, 
   assert.match(source, /candidate-bound grading requires a clean tracked worktree/i);
   assert.match(source, /grading_tool_commit/);
   assert.match(source, /final_requirement_sources: visibleFinalRequirementSources/);
+  assert.match(source, /intent_move_explicitly_requested: intentMoveExplicitlyRequested\(scenario\)/);
   assert.match(source, /exclude genuinely new deliverables, format, counts, example numbers or facts first introduced later/);
   assert.match(source, /potentially synonymous wording alone is not a denial/);
 });

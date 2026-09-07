@@ -2,10 +2,20 @@ function invariant(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+export function intentMoveExplicitlyRequested(scenario) {
+  if (Object.hasOwn(scenario, "intent_move_explicitly_requested")) {
+    invariant(typeof scenario.intent_move_explicitly_requested === "boolean",
+      `explicit intent request override must be boolean: ${scenario.id}`);
+    return scenario.intent_move_explicitly_requested;
+  }
+  return scenario.class === "unformed" || scenario.class === "preference_after_result";
+}
+
 export function validateVisibleFinalRequirements(scenarios) {
   invariant(Array.isArray(scenarios) && scenarios.length > 0, "scenario corpus must be non-empty");
   for (const scenario of scenarios) {
     invariant(typeof scenario?.id === "string" && scenario.id.length > 0, "scenario id is required");
+    intentMoveExplicitlyRequested(scenario);
     invariant(
       typeof scenario.initial_prompt === "string" && scenario.initial_prompt.trim().length > 0,
       `initial prompt is required: ${scenario.id}`

@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "evidence_class": "sealed_holdout",
+  "holdout_version": "final-confirmation-20260907",
+  "sealed_before_candidate_run": true,
+  "sealed_date": "2026-09-07",
+  "frozen_at_utc": "2026-09-07T10:44:26.963Z",
+  "corpus": {
+    "path": "packages/intent-formation/evals/seals/final-confirmation-20260907/author-80.jsonl",
+    "sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef",
+    "byte_size": 92995,
+    "scenario_count": 80,
+    "distribution": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    }
+  },
+  "method": {
+    "path": "packages/intent-formation/evals/final-confirmation-method.md",
+    "bytes": 3961,
+    "sha256": "7389539ebe46441983ae62e46f23310888f116aaeda215b4bc696b2690414079"
+  },
+  "authoring": "independent",
+  "author_seal": {
+    "path": "packages/intent-formation/evals/seals/final-confirmation-20260907/author-seal.json",
+    "sha256": "395ab4bc4a2cd12c65ccccb0d32f3b05e5598fd2046bc54d3178b016cd589e71"
+  },
+  "arm_runs_before_seal": 0,
+  "grader_runs_before_seal": 0,
+  "model_runs_before_seal": 0,
+  "cross_corpus_report": {
+    "path": "packages/intent-formation/evals/seals/final-confirmation-20260907/cross-overlap-report.json",
+    "sha256": "fdd498e0687ad0a90aa5cdec8e648ddf11f30c7bf752c485104700cbe5564947",
+    "source_count": 19,
+    "source_record_count": 686
+  },
+  "candidate_product": {
+    "last_product_change_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+    "plugin_tree": {
+      "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+      "file_count": 14,
+      "bytes": 35362
+    },
+    "actual_clean_candidate_commit": "Recorded by the subsequent candidate-bound study; no self-referential Git hash is used."
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "primary_conversations": 160,
+    "maximum_user_turns": 280,
+    "pair_workers": 2,
+    "arms_within_pair": "sequential",
+    "order": "alternating AB/BA",
+    "timeout_ms": 300000,
+    "primary_retries": 0
+  },
+  "grading": {
+    "rubric_version": "intent-formation-blind-v4",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "batch_size": 5,
+    "concurrency": 2,
+    "timeout_ms": 240000,
+    "maximum_attempts_per_batch": 2,
+    "valid_grade_retries": 0,
+    "rubric_prompt_function_sha256": "87b88d91dd591c425c85d73a62e627ed31868076909c18d28a72b945304b110b",
+    "unchanged_since_calibration": [
+      "rubric prompt",
+      "output schema",
+      "scoring definitions",
+      "numerical gates"
+    ],
+    "pre_seal_input_repair": "Six independently reviewed false explicit-request overrides; all six prior calibration inputs unchanged."
+  },
+  "source_sha256": {
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-80.jsonl": {
+      "bytes": 92995,
+      "sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-method.md": {
+      "bytes": 20115,
+      "sha256": "5b7677873dd1fac4ed6d06bb4f3d3106712f29715b2629a5214066c98c0cdbd6"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/validate-author.mjs": {
+      "bytes": 10265,
+      "sha256": "c8faa04d940f724d0a833d25a2a491627e483c40b16675bf4c8202fe7f7859c6"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-manifest.json": {
+      "bytes": 6694,
+      "sha256": "855566a4f8b1bace97b705a4f674f462d42df81a374060c29d71e2840155bee3"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-seal.json": {
+      "bytes": 1272,
+      "sha256": "395ab4bc4a2cd12c65ccccb0d32f3b05e5598fd2046bc54d3178b016cd589e71"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/cross-overlap-report.json": {
+      "bytes": 10784,
+      "sha256": "fdd498e0687ad0a90aa5cdec8e648ddf11f30c7bf752c485104700cbe5564947"
+    },
+    "packages/intent-formation/evals/final-confirmation-method.md": {
+      "bytes": 3961,
+      "sha256": "7389539ebe46441983ae62e46f23310888f116aaeda215b4bc696b2690414079"
+    },
+    "packages/intent-formation/evals/run-study.mjs": {
+      "bytes": 17188,
+      "sha256": "c0320fd1af28f34aa847740dd4ab7bbead18b1a7b138f49431b4ea7d5455d6da"
+    },
+    "packages/intent-formation/evals/grade-study.mjs": {
+      "bytes": 22063,
+      "sha256": "65e9bb1185e030609f0f50b7471ef60d4537b373e818619e413678e0100bc1d2"
+    },
+    "packages/intent-formation/evals/grading-protocol-v4.md": {
+      "bytes": 4693,
+      "sha256": "9034acb7281c35e531521293e85800c3d9585b46d85de5ae3b75354470615c00"
+    },
+    "packages/intent-formation/evals/grading-output-v3.schema.json": {
+      "bytes": 2235,
+      "sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6"
+    },
+    "packages/intent-formation/evals/scenario-contract.mjs": {
+      "bytes": 2049,
+      "sha256": "1ff37d9bed7102662cbdc0941e99347a4e4cef7b3213d900291363e80f483dc3"
+    },
+    "packages/intent-formation/evals/analysis-core.mjs": {
+      "bytes": 20814,
+      "sha256": "2d32dfcc2994b9a48cf29ac679e857807e7a09377703f2b053c5fefb683bb958"
+    },
+    "packages/intent-formation/evals/metrics.mjs": {
+      "bytes": 537,
+      "sha256": "554347c7614bbebaab98f4d49730a8c134fc8a88e0e7ec327713af30b4656f0a"
+    },
+    "packages/intent-formation/evals/fingerprint.mjs": {
+      "bytes": 3209,
+      "sha256": "c595fcf814a875ea52eef889bf493cb124f54c330d9c8e1cb081611f333f3565"
+    },
+    "packages/intent-formation/evals/validate-holdout-overlap.mjs": {
+      "bytes": 7419,
+      "sha256": "66e034307b2c1f21491644833868b93498b44a311da1a3c6e1edbc7958fca90e"
+    },
+    "packages/intent-formation/evals/codex-event-summary.mjs": {
+      "bytes": 1168,
+      "sha256": "5816aed58ea09d7e50b1a9d91c650d4aa1e8675f244a35c33a3d6f393ec6791d"
+    }
+  },
+  "stopping_rule": "One final primary only. Incomplete or failed confirmation is published honestly and ends expansion, not replaced. Unresolved release-affecting semantic review blocks release even if numerical gates pass."
+}

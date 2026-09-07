@@ -1,0 +1,229 @@
+{
+  "status": "prepared_for_seal",
+  "author_revision": 3,
+  "original_set_count": 1,
+  "authored_on": "2026-09-07",
+  "root": "D:\\Codex\\_tmp\\intent-final-confirmation-author-20260907",
+  "case_count": 80,
+  "domain_count": 80,
+  "class_counts": {
+    "poorly_expressed": 15,
+    "unformed": 15,
+    "conflict": 15,
+    "preference_after_result": 15,
+    "clear": 20
+  },
+  "language_counts": {
+    "en": 60,
+    "zh": 20
+  },
+  "chinese_per_class": 4,
+  "fixed_follow_up_count": 60,
+  "null_follow_up_count": 20,
+  "feedback_counts": {
+    "keep": 6,
+    "implementation_change": 4,
+    "intent_change": 4,
+    "uncertain": 1
+  },
+  "expected_first_move_counts": {
+    "direct_delivery": 34,
+    "question": 18,
+    "comparison": 8,
+    "sample": 20
+  },
+  "exact_excerpts": {
+    "total": 266,
+    "initial_prompt": 209,
+    "follow_up_only": 57
+  },
+  "normalization": [
+    "NFKC",
+    "lowercase",
+    "whitespace collapse"
+  ],
+  "tokenization": {
+    "regex": "/\\p{Script=Han}|(?:(?!\\p{Script=Han})[\\p{L}\\p{N}])+/gu",
+    "han": "one Unicode Han code point per token",
+    "non_han": "maximal letter/number runs excluding Han"
+  },
+  "character_grams": "Unicode code point 4-gram sets",
+  "strict_thresholds": {
+    "token_set_jaccard": 0.65,
+    "codepoint_4gram_set_dice": 0.72
+  },
+  "checks": {
+    "validator": "node .\\validate-author.mjs",
+    "result": "pass",
+    "exit_code": 0,
+    "errors": 0,
+    "pair_views": {
+      "scenario_text": 3160
+    },
+    "maximum_token_set_jaccard": 0.3225806451612903,
+    "maximum_codepoint_4gram_set_dice": 0.2929532858273951,
+    "maximum_pairs": {
+      "token_set_jaccard": {
+        "score": 0.3225806451612903,
+        "ids": [
+          "fc-pr-012",
+          "fc-pr-015"
+        ]
+      },
+      "codepoint_4gram_set_dice": {
+        "score": 0.2929532858273951,
+        "ids": [
+          "fc-pr-001",
+          "fc-pr-009"
+        ]
+      }
+    },
+    "checked_author_revision": 3
+  },
+  "manual_audit": {
+    "status": "specified_pre_execution_metadata_corrections_completed",
+    "cases_reviewed": 80,
+    "pre_execution_cases_repaired": 18,
+    "literal_substring_repairs": 22,
+    "log": "author-method.md",
+    "independent_review": "Requesting task reports specification review complete; explicit sealing authorization pending",
+    "revision_1": {
+      "cases_repaired": 10,
+      "literal_substring_repairs": 13
+    },
+    "revision_2": {
+      "case_ids": [
+        "fc-pe-001",
+        "fc-pe-006",
+        "fc-uf-007"
+      ],
+      "evaluator_field_repairs": 9,
+      "user_messages_changed": false,
+      "final_requirements_changed": false,
+      "follow_up_review": "Existing replies resolve visible choices or emphasis and add no new deliverable."
+    },
+    "optional_field_additions": 6,
+    "revision_3": {
+      "case_ids": [
+        "fc-uf-002",
+        "fc-uf-005",
+        "fc-uf-007",
+        "fc-uf-008",
+        "fc-uf-009",
+        "fc-uf-015"
+      ],
+      "optional_field": "intent_move_explicitly_requested",
+      "value": false,
+      "pre_existing_fields_changed": false,
+      "evaluation_standards_changed": false,
+      "product_changed": false,
+      "difficulty_changed": false
+    }
+  },
+  "execution_boundary": {
+    "test_model_api_calls": 0,
+    "product_runs": 0,
+    "grader_runs": 0,
+    "delegations": 0,
+    "external_sources_read": 0,
+    "prior_case_libraries_read": 0,
+    "calibration_contents_read": 0,
+    "credential_access": 0
+  },
+  "seal": {
+    "status": "not_sealed",
+    "sha256": null,
+    "sealed_at": null,
+    "awaits": "Explicit requester confirmation after cross-library similarity and pre-execution specification review"
+  },
+  "files": [
+    "author-80.jsonl",
+    "author-method.md",
+    "validate-author.mjs",
+    "author-manifest.json"
+  ],
+  "limitations": [
+    "Author self-review is not independent semantic validation.",
+    "Lexical checks do not establish global novelty or semantic independence.",
+    "Offline fictional tasks do not measure real-system action risk or professional competence.",
+    "No model or grader output has been used to tune this set."
+  ],
+  "scenario_text": {
+    "fields_in_order": [
+      "initial_prompt",
+      "final_requirements[]",
+      "unacceptable_first[]",
+      "decision_at_risk",
+      "follow_up"
+    ],
+    "join": "single space before normalization; null follow-up omitted"
+  },
+  "superseded_checks": {
+    "author_revision": 1,
+    "status": "superseded_nonconforming_similarity_spec",
+    "reason": "Han runs were not split into individual code points and required evaluator fields were excluded from the scenario projection.",
+    "checks": {
+      "validator": "node .\\validate-author.mjs",
+      "result": "pass",
+      "exit_code": 0,
+      "errors": 0,
+      "pair_views": {
+        "initial_prompt": 3160,
+        "user_messages": 3160,
+        "fixed_follow_up": 1770
+      },
+      "maximum_token_set_jaccard": 0.22857142857142856,
+      "maximum_whitespace_token_set_jaccard": 0.21875,
+      "maximum_codepoint_4gram_set_dice": 0.29357798165137616,
+      "per_view": {
+        "initial_prompt": {
+          "token_set_jaccard": 0.22857142857142856,
+          "whitespace_token_set_jaccard": 0.18691588785046728,
+          "codepoint_4gram_set_dice": 0.2787878787878788
+        },
+        "user_messages": {
+          "token_set_jaccard": 0.225,
+          "whitespace_token_set_jaccard": 0.183206106870229,
+          "codepoint_4gram_set_dice": 0.2926829268292683
+        },
+        "fixed_follow_up": {
+          "token_set_jaccard": 0.22857142857142856,
+          "whitespace_token_set_jaccard": 0.21875,
+          "codepoint_4gram_set_dice": 0.29357798165137616
+        }
+      }
+    }
+  },
+  "intent_request_metadata": {
+    "optional_field": "intent_move_explicitly_requested",
+    "field_type": "boolean",
+    "overrides": {
+      "fc-uf-002": false,
+      "fc-uf-005": false,
+      "fc-uf-007": false,
+      "fc-uf-008": false,
+      "fc-uf-009": false,
+      "fc-uf-015": false
+    },
+    "override_count": 6,
+    "absent_on_other_cases": 74,
+    "scope": "Explicit correction of category-default request metadata only.",
+    "unchanged": [
+      "initial_prompt",
+      "follow_up",
+      "final_requirements",
+      "expected_first_move",
+      "unacceptable_first",
+      "decision_at_risk",
+      "class",
+      "language",
+      "domain",
+      "feedback_kind",
+      "evaluation standards",
+      "task purposes",
+      "task difficulty"
+    ],
+    "fc_uf_012": "No override; retains explicit purpose-selection request without requiring one mandatory action shape.",
+    "preference_after_result": "All 15 retain their explicit sample requests and have no override."
+  }
+}

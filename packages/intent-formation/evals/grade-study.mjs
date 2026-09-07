@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { validateVisibleFinalRequirements, visibleFinalRequirementSources } from "./scenario-contract.mjs";
+import { intentMoveExplicitlyRequested, validateVisibleFinalRequirements, visibleFinalRequirementSources } from "./scenario-contract.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -125,8 +125,7 @@ function anonymizeScenario(scenario) {
       frozen_user_follow_up: scenario.follow_up,
       decision_at_risk: scenario.decision_at_risk,
       expected_first_move: scenario.expected_first_move,
-      intent_move_explicitly_requested:
-        scenario.class === "unformed" || scenario.class === "preference_after_result",
+      intent_move_explicitly_requested: intentMoveExplicitlyRequested(scenario),
       final_requirements: scenario.final_requirements,
       final_requirement_sources: visibleFinalRequirementSources(scenario),
       unacceptable_first_moves: scenario.unacceptable_first,

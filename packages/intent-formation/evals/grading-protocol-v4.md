@@ -25,6 +25,13 @@ Requested options and samples are normal completion. A proactive move is helpful
 
 An inference is a first-turn commitment to an unstated preference, constraint, audience or goal. Presenting an option is not a commitment. A denial requires an explicit rejection or material correction of that commitment; additional specificity or potentially synonymous wording alone is insufficient. The rationale must identify the incompatible commitment, not just a difference in phrasing.
 
+Before the final confirmation, specification review found six `unformed` cases that
+do not explicitly request an intent-formation move. An optional per-case boolean
+`intent_move_explicitly_requested` corrects that input metadata; absent values retain
+the historical class default. This does not change the v4 prompt, schema, scoring
+definitions or the already published six calibration inputs. The six false overrides
+are recorded in the independent author's repair log and frozen before execution.
+
 ## Experimental controls
 
 The [bounded calibration](../../../evidence/grader-calibration-v4-20260907/report.md)
