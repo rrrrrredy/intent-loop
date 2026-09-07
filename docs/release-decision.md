@@ -4,6 +4,23 @@ As of 2026-09-07: **ITERATE / NOT RELEASED.** Reviewed development source and ho
 
 The independent goal audit found that manual state tools were implemented but ordinary feedback was not connected to them. The [re-scoped delivery goals](current-goals.md) prioritize that connection, provenance and recovery before more efficacy testing. Progress is not a passing product evaluation.
 
+## Public development integration
+
+Development commit `c970c28` and the revised GitHub profile entry are public. Its
+[first 18-job CI run](https://github.com/rrrrrredy/intent-loop/actions/runs/34104135229)
+failed overall: the nine Codex source-test steps passed, but six Unix generated-file
+checks found a missing executable Git mode; root evidence checks could not fetch a
+detached historical ablation commit; and the fresh DeepSeek Corepack home selected an
+unpinned newer pnpm. These are integration failures, not failed model conversations.
+
+The follow-up fixes the generated server's Git mode, pins and verifies pnpm 11.7.0
+inside the actual isolated home, and preserves original experiment commits on the
+separate `evidence/history` branch without merging their runtime changes into main.
+The corrected local DeepSeek pack/add/compose/help/remove lifecycle passed without
+an API key and removed its temporary home. The next exact-commit CI run is still
+required. Full-history clones fetch the evidence branch; shallow/single-branch
+clones must also fetch `evidence/history` before verifying historical evidence.
+
 ## Current verified implementation and development evidence
 
 - Repaired candidate `b025222` repeated the 17 authorized controls with five follow-ups and 17 successful native task deletions, no primary retries and no first-turn actions. The 1,496-byte policy retains the observed cheap-draft/comparison/feedback routes; this does not verify costly-branch improvements. A 131-word response to a 130-word request and an unsupplied game mechanism remain visible in the raw outputs. Core source/Git/installed SHA-256 is `7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363`.

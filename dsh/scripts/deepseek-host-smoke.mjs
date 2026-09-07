@@ -18,7 +18,9 @@ const npmCache = path.join(scratch, "npm-cache");
 const runtimeBin = path.dirname(process.execPath);
 const npm = path.join(runtimeBin, process.platform === "win32" ? "npm.cmd" : "npm");
 const npx = path.join(runtimeBin, process.platform === "win32" ? "npx.cmd" : "npx");
+const corepack = path.join(runtimeBin, process.platform === "win32" ? "corepack.cmd" : "corepack");
 const dshPackage = "@deepseek-ai/dsh@0.1.2-rc.1";
+const pnpmPackage = "pnpm@11.7.0";
 
 const cleanEnv = { ...process.env };
 for (const key of Object.keys(cleanEnv)) {
@@ -32,6 +34,9 @@ Object.assign(cleanEnv, {
   NPM_CONFIG_CACHE: npmCache,
   npm_config_cache: npmCache,
   COREPACK_HOME: path.join(scratch, "corepack"),
+  COREPACK_DEFAULT_TO_LATEST: "0",
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: "0",
+  COREPACK_ENABLE_AUTO_PIN: "0",
   XDG_CACHE_HOME: path.join(scratch, "xdg-cache")
 });
 const pathKey = Object.keys(cleanEnv).find((key) => key.toLowerCase() === "path") ?? "PATH";
@@ -102,6 +107,9 @@ function run(command, args, options = {}) {
 
 let primaryError = null;
 try {
+  // This home is deliberately fresh; a runner's global Corepack activation is not inherited.
+  await run(corepack, ["prepare", pnpmPackage, "--activate"]);
+  assert.equal((await run(corepack, ["pnpm", "--version"])).trim(), "11.7.0");
   const packReport = JSON.parse(await run(npm, ["pack", "--json", "--ignore-scripts", "--pack-destination", scratch]));
   assert.equal(packReport.length, 1);
   const archives = (await readdir(scratch)).filter((entry) => entry.endsWith(".tgz"));
@@ -123,6 +131,7 @@ try {
   process.stdout.write(JSON.stringify({
     ok: true,
     dsh: "0.1.2-rc.1",
+    pnpm: "11.7.0",
     lifecycle: "pack-add-compose-boot-help-remove",
     api_key_used: false,
     dsh_home: "temporary-and-removed"
