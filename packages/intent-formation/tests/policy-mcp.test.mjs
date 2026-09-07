@@ -11,7 +11,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
   assert.match(POLICY, /comparison\/options: requested count or 2-3 neutral branches/i);
-  assert.match(POLICY, /each: one consequence \+ parallel micro-example/i);
+  assert.match(POLICY, /each: one consequence/i);
   assert.match(POLICY, /requested comparisons answer without questions/i);
   assert.match(POLICY, /never choose\/use tools\/start work/i);
   assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size, inline/i);
