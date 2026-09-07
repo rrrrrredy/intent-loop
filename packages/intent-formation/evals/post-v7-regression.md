@@ -1,6 +1,6 @@
 # Post-v7 development regression and component removal
 
-Status: planned; not release evidence. Reuse existing authorized synthetic prompts, without changing their initial or follow-up text. V7 is exposed diagnostic material and cannot become a fresh holdout again.
+Status: partial development execution; not release evidence. Candidate `b025222` completed the original 17 authorized post-v6 controls, five follow-ups and 17 native task deletions, with no retries or first-turn actions. The raw responses and exact installed-tree binding are in `evidence/post-v6-development`. The seven costly-branch and three v7 failure probes, clause-removal comparisons and grading calibration remain unexecuted on this candidate. Reuse synthetic prompts only within the explicit external-data authorization, without changing their initial or follow-up text. V7 is exposed diagnostic material and cannot become a fresh holdout again.
 
 ## Positive and boundary probes
 

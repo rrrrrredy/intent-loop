@@ -2,7 +2,7 @@
   "schema_version": 1,
   "evidence_class": "development_regression",
   "current_release_efficacy": false,
-  "generated_at": "2026-09-07T07:01:12.200Z",
+  "generated_at": "2026-09-07T08:10:21.570Z",
   "trials": [
     {
       "id": "d2be057-full",
@@ -751,6 +751,50 @@
       "follow_ups": 4,
       "successful_cleanups": 7,
       "operational_failures": 0
+    },
+    {
+      "id": "b025222-post-v7-controls",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "2fd972bcec26e169fa6ec71699c072ab7c0003c30eeb00adc55fdf5b29e6a7b0",
+      "candidate_commit": "b025222f214768424f35d194fa85a2e19baad412",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "installed_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "git_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Incompatible requirements: ask which wins, not for a mix. Requested comparisons/options: give the requested count or 2-3 neutral branches, each with one consequence; honor placeholders. End that comparison by inviting mixes, rejection, or freeform replies in the user's language. Do not choose or implement. Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Match delivery: definitions/rules stay inline unless files, research or implementation were requested. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. A settled recurring rule commits its effects even when short; it is not a disposable sample. Explicitly delegated choices: state the assumption/tradeoff and proceed. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it when required by this deliverable. 'Compare only' stays neutral.",
+      "policy_bytes": 1496,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
     }
   ],
   "sanitization": {
@@ -761,7 +805,7 @@
     "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step."
   },
   "artifact_sha256": {
-    "runs.jsonl": "52566b0324865c4a264bf0a31d3c6b3836d89974b6a00ce82eb1ab99eca87cb0",
+    "runs.jsonl": "968f00d90ff2604905ad00f327a04ee78de0fcfa9c65bb68e97e7439f4658f6f",
     "dependency-audits.json": "0062e21d53b91b94a029de3d03d55e555e1593ae59cbb0434d941220a8805c2a",
     "interrupted-run.json": "93698d0887df2b604ccf8454211484ef0f8f6d626a562574716ecb7b89ca5419"
   }
