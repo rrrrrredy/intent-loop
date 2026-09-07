@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "evidence_class": "bounded_grader_calibration",
+  "release_efficacy_usable": false,
+  "generated_at": "2026-09-07T10:07:47.008Z",
+  "rubric_version": "intent-formation-blind-v4",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "grader_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+  "grading_source_sha256": {
+    "packages/intent-formation/evals/grade-study.mjs": "f2c06ef6d3dbaeab65de2772dea392202111523ecb9fc9ff7406aa42b07f0a59",
+    "packages/intent-formation/evals/grading-output-v3.schema.json": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+    "packages/intent-formation/evals/scenario-contract.mjs": "dfc6b1e1ad813b5c83e6d54bdb46c1b7e5abc1c50738b488dd12d997e4199536"
+  },
+  "sanitizer_source_sha256": "d05b45d8828a8ae083985be4fb4e88d393f9f17d430f417ca72212757326df4c",
+  "arm_aliases": {
+    "baseline": "full",
+    "plugin": "without-settled"
+  },
+  "design_note": "The existing baseline/plugin fields are interface aliases for full/without-settled ablation outputs. There is no native baseline arm, no new product conversation, and no fourth policy variant. study.candidate_commit binds the full source/common ancestor for the unchanged grader interface, not a claim that the other arm was installed at that commit; both true source commits and installed fingerprints are recorded separately.",
+  "distinct_cases": 6,
+  "existing_product_conversations": 12,
+  "new_product_conversations": 0,
+  "actual_grader_requests": 2,
+  "graded_pairs": 6,
+  "attempts": [
+    {
+      "batch": "batch-controls",
+      "attempts": [
+        {
+          "index": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "code": 0,
+              "signal": null,
+              "timed_out": false,
+              "duration_ms": 45077,
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "batch": "batch-consequences",
+      "attempts": [
+        {
+          "index": 0,
+          "attempts": [
+            {
+              "attempt": 1,
+              "code": 0,
+              "signal": null,
+              "timed_out": false,
+              "duration_ms": 61928,
+              "error": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "expectations_frozen_at": "2026-09-07T09:55:35.954Z",
+  "expectations_sha256": "62d95b4fc80d95411e23b44d4bea458e78336c32cc32dc6d9d41e1eb0a8a51c6",
+  "aggregate_product_benefit_metrics_computed": false,
+  "sanitization": {
+    "control_characters_replaced": 0,
+    "local_paths_replaced": 12,
+    "secret_patterns_replaced": 0,
+    "strings_truncated": 0,
+    "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step.",
+    "native_identifiers_replaced": 2,
+    "extra_note": "The existing sanitizer was reused without changing its source. Native session identifiers were additionally replaced in public CLI logs. Prompt, response and grade text was not truncated. Original local artifact hashes are retained beside public artifact hashes. Remote inventory source/authorization metadata is not copied; the execution preflight records only the disabled plugin IDs.",
+    "line_ending_normalization": "The generated public cleanup.json uses LF; JSON values and the private original bytes/hash are unchanged."
+  },
+  "raw_private_artifact_sha256": {
+    "frozen-manifest.json": "3ad3992f2e0783384e1cfff1decb959d4d62cc493fad93ff91cd5539b28a61c1",
+    "expectations.json": "62d95b4fc80d95411e23b44d4bea458e78336c32cc32dc6d9d41e1eb0a8a51c6",
+    "scenarios.jsonl": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+    "inputs.jsonl": "6d9715299f7a946f5479593f7519b0f09416ce164a65160e5ae2e6111894d4af",
+    "sources.json": "3730dbf708b73f63fda86edafc6ec183cac06596a727c4af0c0b3839d0d03102",
+    "study-adapter.json": "00f83ae8ce931d9ebec846baf669620b121ea2f1cae6d6ad52a9ca9c9f1a9325",
+    "study-runtime-adapter.json": "ed578b91154974d469d3e9924ef1862b5bbefd6ba4dcd7546e443d87dc54a234",
+    "execution-preflight.json": "07cf0c198a5fafcedba1b4ae968a70dcafe325128cfebb1647896eba02acd2d4",
+    "run-outcomes.json": "6e8c47c0ae1956b6e29e68e75668e0a82f50d6be7ee9e40cacd21eeb06de1041",
+    "cleanup.json": "70d1b0927d64686fe2e5789a33207d08519b7dacfcb72a405edd323c55398e32",
+    "report.md": "1b0e95e0b42aa1b9da3b2cc96f7f2594b314f6465e901a4c6c45c5e7775335f5",
+    "batch-controls/batch-001-attempt-1.events.jsonl": "05ec7ce4926cb64ab0a97941d0b4bb5ecf4f5b73de90680beba84380e65f7f96",
+    "batch-controls/batch-001-attempt-1.prompt.txt": "13bb6b886b9ba1a4d9a96cfd1778fe81dc5e358a6542c74eaffbbfbf5719206f",
+    "batch-controls/batch-001-attempt-1.response.json": "aa9da22ee68da6e15ee5ee79f2e4c2f8a04667302ea5ace1a84978377c0c168c",
+    "batch-controls/batch-001-attempt-1.stderr.txt": "623a2c9ec2cc79e303b30c6675296bfe282acb87509d97551cef25add322e00c",
+    "batch-controls/batch-001.blind-input.json": "9c606cf82661c5197fe55969b57e626d50276dedfbebf93d27699fb5ddf9239c",
+    "batch-controls/request-ledger.json": "6ac62ce43b8a4d58ef96a802be4e85f40296ece5b1c495d9cdd96868735959e4",
+    "batch-controls/runner.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "batch-controls/runner.stdout.txt": "75f1a78f4c4450bb853d680e520e8d1ed6f89b199854a984705373edb661d42c",
+    "batch-controls/summary.json": "aad1519aad9807f82259956cf8c7ec61d2f2822d0acb7bdf60cfee8e4993373c",
+    "batch-consequences/batch-001-attempt-1.events.jsonl": "69865c773e8b4298ff5a50dbaf9c7105839a66faf9cfcfb03c8d93b9ac83de3b",
+    "batch-consequences/batch-001-attempt-1.prompt.txt": "2aab4aeed70bbcbe12295f3fd6d6e18be85eadb7c1ae479f540d8272d612135f",
+    "batch-consequences/batch-001-attempt-1.response.json": "3e04688fc10338da41408a97f3acdaf3bd24bdb4bedf992dba02cfcde4109649",
+    "batch-consequences/batch-001-attempt-1.stderr.txt": "cd13b2ad7c9a9adb29257a0372589f9682055dd96ec126cb585acdd53bb65ddc",
+    "batch-consequences/batch-001.blind-input.json": "ed173384e4a23f0d5b312749565685d849079fb3cf67c12253ce2e104ad0dd03",
+    "batch-consequences/request-ledger.json": "ca0ffa26f13c144e4d78a619b3c3677ecf6f7b867f88a8dc40947d8ed4392632",
+    "batch-consequences/runner.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "batch-consequences/runner.stdout.txt": "101edc4ac2f0337dfc3492e2869eb75fdd3d256f29a7356a00637905f5cd4c9f",
+    "batch-consequences/summary.json": "0912fcf22ed7f3134451d0c6266a2aba9a3a62533573b886c9d6abade2e806ce"
+  },
+  "artifact_sha256": {
+    "frozen-manifest.json": "3ad3992f2e0783384e1cfff1decb959d4d62cc493fad93ff91cd5539b28a61c1",
+    "expectations.json": "62d95b4fc80d95411e23b44d4bea458e78336c32cc32dc6d9d41e1eb0a8a51c6",
+    "scenarios.jsonl": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+    "inputs.jsonl": "6d9715299f7a946f5479593f7519b0f09416ce164a65160e5ae2e6111894d4af",
+    "sources.json": "3730dbf708b73f63fda86edafc6ec183cac06596a727c4af0c0b3839d0d03102",
+    "study-adapter.json": "00f83ae8ce931d9ebec846baf669620b121ea2f1cae6d6ad52a9ca9c9f1a9325",
+    "study-runtime-adapter.json": "ed578b91154974d469d3e9924ef1862b5bbefd6ba4dcd7546e443d87dc54a234",
+    "execution-preflight.json": "07cf0c198a5fafcedba1b4ae968a70dcafe325128cfebb1647896eba02acd2d4",
+    "run-outcomes.json": "6e8c47c0ae1956b6e29e68e75668e0a82f50d6be7ee9e40cacd21eeb06de1041",
+    "cleanup.json": "c89acffdcc6978c2ca6e5fd5426d6fe421435d04bf6e566fe4495ce38422b183",
+    "report.md": "1b0e95e0b42aa1b9da3b2cc96f7f2594b314f6465e901a4c6c45c5e7775335f5",
+    "batch-controls/batch-001-attempt-1.events.jsonl": "05ec7ce4926cb64ab0a97941d0b4bb5ecf4f5b73de90680beba84380e65f7f96",
+    "batch-controls/batch-001-attempt-1.prompt.txt": "13bb6b886b9ba1a4d9a96cfd1778fe81dc5e358a6542c74eaffbbfbf5719206f",
+    "batch-controls/batch-001-attempt-1.response.json": "aa9da22ee68da6e15ee5ee79f2e4c2f8a04667302ea5ace1a84978377c0c168c",
+    "batch-controls/batch-001-attempt-1.stderr.txt": "b2ab03a15c3e7037ba797fa857b461038e6986735534a6cd77e3a6675fe8b36e",
+    "batch-controls/batch-001.blind-input.json": "9c606cf82661c5197fe55969b57e626d50276dedfbebf93d27699fb5ddf9239c",
+    "batch-controls/request-ledger.json": "3719b5262587d10faa5089f3b92e86caf8053e2612cfdbafdf04834d6afdb840",
+    "batch-controls/runner.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "batch-controls/runner.stdout.txt": "ffd0264a58e3e1208cf59a64aa667f4a7d92688f8739343b48ecfb80bbae830d",
+    "batch-controls/summary.json": "da07df238dbc6f4af4aeab0e3ecfec05464dd75f69592f81f31ad0fc919f56fa",
+    "batch-consequences/batch-001-attempt-1.events.jsonl": "69865c773e8b4298ff5a50dbaf9c7105839a66faf9cfcfb03c8d93b9ac83de3b",
+    "batch-consequences/batch-001-attempt-1.prompt.txt": "2aab4aeed70bbcbe12295f3fd6d6e18be85eadb7c1ae479f540d8272d612135f",
+    "batch-consequences/batch-001-attempt-1.response.json": "3e04688fc10338da41408a97f3acdaf3bd24bdb4bedf992dba02cfcde4109649",
+    "batch-consequences/batch-001-attempt-1.stderr.txt": "1ac43ac8d171e82fd7248e41c1b42db089615b566ca54fdbe4a507b049741900",
+    "batch-consequences/batch-001.blind-input.json": "ed173384e4a23f0d5b312749565685d849079fb3cf67c12253ce2e104ad0dd03",
+    "batch-consequences/request-ledger.json": "3d37ea99fe1fa662ca87c2c09679df2d47f41ee6478e62c076bfef129e07668e",
+    "batch-consequences/runner.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "batch-consequences/runner.stdout.txt": "12d9cc64fc18c0c59e50a20cbda87a1d01be40079972f45282cf5648308ac2d8",
+    "batch-consequences/summary.json": "af303b1a74ae75ef2865f63163323efac2975c26ecccf04bae1a7ebff51e062e"
+  }
+}

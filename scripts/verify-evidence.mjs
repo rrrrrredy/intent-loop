@@ -216,6 +216,19 @@ for (const tree of liveInstall.trees) {
     sha256: file.installed_sha256 })), reviewedInstall.fingerprints[tree.plugin].source.files);
 }
 
+const continuityReviewRoot = path.join(repositoryRoot, "evidence", "continuous-intent-loop-20260907");
+execFileSync(process.execPath, [path.join(continuityReviewRoot, "build-public-evidence.mjs"), "--verify"], {
+  cwd: repositoryRoot, stdio: "inherit"
+});
+
+const calibrationRoot = path.join(repositoryRoot, "evidence", "grader-calibration-v4-20260907");
+const calibration = await readJson(path.join(calibrationRoot, "manifest.json"));
+assert.equal(calibration.evidence_class, "bounded_grader_calibration");
+assert.equal(calibration.release_efficacy_usable, false);
+assert.equal(calibration.new_product_conversations, 0);
+assert.equal(calibration.actual_grader_requests, 2);
+await verifyArtifactHashes(calibrationRoot, calibration);
+
 if (!(await exists(finalRoot))) {
   if (requireCandidate) {
     throw new Error("candidate holdout evidence is required for a release");

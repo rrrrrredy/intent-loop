@@ -1,6 +1,6 @@
 # Independent candidate reviews
 
-Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six real-use cases are complete; the new continuity connection has a separate delta review below and still requires interaction checks.
+Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six earlier real-use cases and the separate two-case continuity check below are complete.
 
 ## Natural-feedback connection: 2026-09-07 development delta
 
@@ -30,9 +30,24 @@ Exact reviewed source SHA-256:
 The main agent ran 124 source tests before the final size/off tightening, then all
 26 final Hook tests on Node 20.19.1, the root evidence/package suite, and both
 generated-plugin validators. These are implementation checks, not efficacy results.
-The exact installed live `turn_id`, model-mediated updates and recovery interaction
-remain to be observed. The two supplementary cases stay within six user turns;
-ordinary resume retains chat history, so it cannot establish State-only causality.
+The separate [continuous-loop archive](../evidence/continuous-intent-loop-20260907/README.md)
+binds two synthetic cases / six real user turns to `c970c28`, with all 27 installed
+Core/State files matching fixed source. After one start, ordinary feedback produced
+five successful sourced MCP writes: an initial goal, an implementation correction,
+a true goal supersession, an explicit label constraint and an unknown icon choice.
+Actual Hook `turn_id` values matched the native turns and MCP sources. Fresh-process
+resume injected the current records; a separate non-activated opt-out task delivered
+correct files without State writes. Fifteen scoped consistency checks passed.
+
+Ordinary resume retains conversation history; this proves persistence/reload, not
+State-only causality or a time saving. The reviewer retained one failed non-Git
+verification command, one failed no-prompt onboarding-task deletion, installation
+friction and the sparsity question raised by retaining layout-only feedback. Both
+actual model tasks, plugins and marketplace were removed successfully; the exact
+temporary home/authentication, snapshot and synthetic workspace were verified absent.
+No extra grader, compaction request, retry or Hook-trust bypass was used. The later
+`9e9c465` automatic-policy deletion was not part of these six turns; the three
+continuity-source hashes above are unchanged.
 
 The older evidence and review manifests below remain unchanged and bound to their
 original commits. This delta review does not silently approve a new release.

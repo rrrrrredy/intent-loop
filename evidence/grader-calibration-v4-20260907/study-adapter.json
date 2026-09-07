@@ -1,0 +1,186 @@
+{
+  "candidate_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "corpus_sha256": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+  "plugin_tree": {
+    "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+    "file_count": 14,
+    "bytes": 35362
+  },
+  "plugin_inventory": {
+    "installed_plugin_ids": []
+  },
+  "results": [
+    {
+      "id": "costly-clear-retention-01",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "- Irreversibly remove all device-linking identifiers.\n- Prevent records from being linked to the same device.\n- Retain readings only in aggregate form.",
+        "action_items": [],
+        "prompt_sha256": "f794c3857d52995ff3a8385ff1910d53c34067aa6921ab3cd7ba15de58763a95"
+      },
+      "second": null
+    },
+    {
+      "id": "costly-shared-step-01",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "Echo\nSignal\nSilence",
+        "action_items": [],
+        "prompt_sha256": "8e0a25183f232d4c5f6797c5a7522204038ccc2fac10ba0ecb70a1a874794201"
+      },
+      "second": null
+    },
+    {
+      "id": "costly-sample-control-01",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "招募采用轮换演员，每周不同阵容。",
+        "action_items": [],
+        "prompt_sha256": "677048da75c2274713baf796a50bb5c38935a8da2f71df86a9bf851c6f1f1ca5"
+      },
+      "second": null
+    },
+    {
+      "id": "v7-pe-001",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "I can implement this, but the workspace is empty. Please provide the volunteer app repository or its roster-refresh code/schema.\n\nThe rule will target people with no shifts in the previous 60 days, set their membership inactive to revoke training access, and remove them from the reminder list to stop shift emails on every roster refresh.",
+        "action_items": [
+          {
+            "type": "command_execution",
+            "status": "failed"
+          }
+        ],
+        "prompt_sha256": "a7967ed098f8faaf1c634fdfdca73c1eec0d72d2253fde099d6a83050b997642"
+      },
+      "second": {
+        "code": 0,
+        "response": "If a person has had no shifts in 60 days, then remove them from shift reminders while keeping their membership and training access unchanged.",
+        "action_items": [],
+        "prompt_sha256": "40158cbc485d2caad3bd5433fd6dc148dae8cbe24e88fd3900c5337cf42c97c5"
+      }
+    },
+    {
+      "id": "v7-pe-009",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "When a roster member’s status changes to **Former Member**, automatically remove them from the **current-member permission list**. Keep any separately assigned project permissions unchanged. Apply this rule to every departure.",
+        "action_items": [],
+        "prompt_sha256": "4cdd4121b620f81fd269992670d90ae95011d1d2ee5fc49989a687d9dda66a48"
+      },
+      "second": {
+        "code": 0,
+        "response": "**When a member becomes a former member:**\n\n- **Roster:** Remove them from the current-member roster.\n- **Project permissions:** Keep them until a project owner removes them separately.",
+        "action_items": [],
+        "prompt_sha256": "eab4ac160b831be2ffb0f8fca58ebd1d6f8495077f7496b4edda3b166ef376f6"
+      }
+    },
+    {
+      "id": "v7-pe-011",
+      "arm": "baseline",
+      "first": {
+        "code": 0,
+        "response": "Define:\n\n```text\ncompleted = intake_survey_complete AND session_complete\nready_for_payment = completed\n```\n\nA participant enters the payment queue only after completing both the intake survey and the session.",
+        "action_items": [],
+        "prompt_sha256": "54d2933649b15bd13407d4f98c57cb214fa09d0d0132ed140350760463decc4b"
+      },
+      "second": {
+        "code": 0,
+        "response": "```text\ncompleted = session_attended\neligible_for_payment = completed\n```\n\nThe intake survey does not affect payment eligibility.",
+        "action_items": [],
+        "prompt_sha256": "a048c25108bfda1e2ada1aa22bf13f2dfdbcca7d00bad9083aa8a9817a89d796"
+      }
+    },
+    {
+      "id": "costly-clear-retention-01",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "1. Irreversibly remove all device-linking identifiers.\n2. Retain readings only as aggregate values.\n3. Prevent reconstruction of per-device trends.",
+        "action_items": [],
+        "prompt_sha256": "f794c3857d52995ff3a8385ff1910d53c34067aa6921ab3cd7ba15de58763a95"
+      },
+      "second": null
+    },
+    {
+      "id": "costly-shared-step-01",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "Echo\nSignal\nSilence",
+        "action_items": [],
+        "prompt_sha256": "8e0a25183f232d4c5f6797c5a7522204038ccc2fac10ba0ecb70a1a874794201"
+      },
+      "second": null
+    },
+    {
+      "id": "costly-sample-control-01",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "招募采用轮换演员，每周不同阵容。",
+        "action_items": [],
+        "prompt_sha256": "677048da75c2274713baf796a50bb5c38935a8da2f71df86a9bf851c6f1f1ca5"
+      },
+      "second": null
+    },
+    {
+      "id": "v7-pe-001",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "Should “inactive” update both controls?\n\n- Set membership inactive: removes training access, but shift emails continue.\n- Remove from reminder list: stops shift emails, but training access remains.\n- Do both: removes training access and stops shift emails.\n\nReply with one option, a mix, or your own rule.",
+        "action_items": [
+          {
+            "type": "command_execution",
+            "status": "failed"
+          }
+        ],
+        "prompt_sha256": "a7967ed098f8faaf1c634fdfdca73c1eec0d72d2253fde099d6a83050b997642"
+      },
+      "second": {
+        "code": 0,
+        "response": "If a person has had no shifts in 60 days, then remove them from shift reminders only; keep their membership and training access unchanged.",
+        "action_items": [],
+        "prompt_sha256": "40158cbc485d2caad3bd5433fd6dc148dae8cbe24e88fd3900c5337cf42c97c5"
+      }
+    },
+    {
+      "id": "v7-pe-009",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "**Automatic departure rule:** When a person’s status changes to **Former Member**, immediately remove them from the current-member roster and revoke all permissions granted through club membership. Keep any separately assigned alumni project permissions. Apply this rule to every departure.",
+        "action_items": [],
+        "prompt_sha256": "4cdd4121b620f81fd269992670d90ae95011d1d2ee5fc49989a687d9dda66a48"
+      },
+      "second": {
+        "code": 0,
+        "response": "**Former-member rule**\n\n- **Roster:** Remove the former member from the current-member roster.\n- **Project permissions:** Keep them until a project owner removes them separately.",
+        "action_items": [],
+        "prompt_sha256": "eab4ac160b831be2ffb0f8fca58ebd1d6f8495077f7496b4edda3b166ef376f6"
+      }
+    },
+    {
+      "id": "v7-pe-011",
+      "arm": "plugin",
+      "first": {
+        "code": 0,
+        "response": "A participant is **completed** only when both conditions are true:\n\n- Intake survey is complete.\n- Session attendance is complete.\n\nRule:\n\n```text\ncompleted = intake_survey_complete AND session_complete\nready_for_payment = completed\n```\n\nSurvey-only or session-only participants are not ready for payment.",
+        "action_items": [],
+        "prompt_sha256": "54d2933649b15bd13407d4f98c57cb214fa09d0d0132ed140350760463decc4b"
+      },
+      "second": {
+        "code": 0,
+        "response": "**Completed:** The participant attended the session, regardless of intake survey status.\n\n```text\neligible_for_payment = session_attended\n```",
+        "action_items": [],
+        "prompt_sha256": "a048c25108bfda1e2ada1aa22bf13f2dfdbcca7d00bad9083aa8a9817a89d796"
+      }
+    }
+  ]
+}

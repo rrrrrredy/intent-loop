@@ -1,6 +1,6 @@
 # Blind grading protocol v4
 
-Status: prospective, not yet model-calibrated or release evidence. V7's original v3 grades remain unchanged. Numerical release gates and first-cycle response selection are unchanged.
+Status: bounded calibration completed on six existing case pairs with two grader requests; known semantic errors remain. This is not an autonomous release judge or efficacy evidence. V7's original v3 grades remain unchanged. Numerical release gates and first-cycle response selection are unchanged.
 
 ## User-visible requirements and time
 
@@ -26,5 +26,13 @@ Requested options and samples are normal completion. A proactive move is helpful
 An inference is a first-turn commitment to an unstated preference, constraint, audience or goal. Presenting an option is not a commitment. A denial requires an explicit rejection or material correction of that commitment; additional specificity or potentially synonymous wording alone is insufficient. The rationale must identify the incompatible commitment, not just a difference in phrasing.
 
 ## Experimental controls
+
+The [bounded calibration](../../../evidence/grader-calibration-v4-20260907/report.md)
+retains a material target/entity misreading, uncertain inference-denial severity and
+overstated wording about a failed inspection attempt. Do not tune or overwrite those
+raw grades. The final confirmation uses the frozen grader as an inspectable estimate,
+not numeric ground truth. Even if its raw numerical gates pass, the existing
+independent-review gate must resolve release-affecting semantic judgments. Unresolved
+disagreement blocks release; manual rescoring cannot be used to manufacture a pass.
 
 Freeze candidate, corpus, this protocol and grader before execution. Bind the complete installed plugin tree, use identical explicit model/reasoning/timeout settings in both arms, alternate AB/BA and execute arms sequentially within each pair. Disable all non-target plugins and State. Keep the 300,000 ms primary timeout and no primary replacement; retries can supply missing diagnostic text only and must remain disclosed. Use median within-pair clear latency. The JSON output schema remains v3 because its structure did not change; the rubric and deterministic blind-assignment namespace are v4. Historical analysis accepts its original v3 grades, while new release publication requires v4.

@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-09-07T10:06:33.8330401Z",
+  "actual_grader_requests": 2,
+  "primary_requests": 2,
+  "structural_remediation_requests": 0,
+  "new_product_conversations": 0,
+  "official_native_delete_attempts": [
+    {
+      "batch": "batch-controls",
+      "operation": "codex delete exact ephemeral session --force",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: failed to delete session\n"
+    },
+    {
+      "batch": "batch-consequences",
+      "operation": "codex delete exact ephemeral session --force",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: failed to delete session\n"
+    }
+  ],
+  "ephemeral_mode": true,
+  "persisted_session_files_after_official_delete_attempts": 0,
+  "local_plugins_installed_by_this_task": 0,
+  "account_remote_plugins_uninstalled": 0,
+  "note": "Account-level remote/default plugins were disabled through the existing grader invocation, not installed or removed. Ephemeral sessions can already be absent from the native saved-session store; exact official deletion results are retained without changing a nonzero result to success.",
+  "grader_worktree_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+  "grader_worktree_tracked_clean_before_removal": true,
+  "official_git_worktree_remove_exit_code": 0,
+  "isolated_home_and_credential_copy_removed": true,
+  "isolated_workspace_removed": true,
+  "isolated_worktree_removed": true,
+  "all_three_directories_verified_absent": true,
+  "original_authorized_credential_source_touched": false,
+  "forced_process_terminations": 0,
+  "retained": "Synthetic inputs, frozen expectations, all grader prompts/final responses/CLI logs/attempts, source fingerprints, and local execution scripts."
+}

@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "comparison_source": "Recorded pre-cleanup installed bytes rechecked against immutable fixed Git blobs, not the present worktree.",
+  "installed_file_count": 27,
+  "fixed_source_file_count": 28,
+  "descriptor_algorithm": "SHA256 of compact JSON sorted {path,bytes,sha256} descriptors plus LF; not Git tree object or another tree serialization",
+  "git_object_format": "sha1",
+  "trees": [
+    {
+      "name": "intent-formation",
+      "version": "0.3.0-beta.1",
+      "file_count": 14,
+      "bytes": 35535,
+      "installed_descriptor_sha256": "12334b754af6ea095713636699590780b2e07d656bfc867f3bbecdc7f895b34e",
+      "fixed_git_descriptor_sha256": "12334b754af6ea095713636699590780b2e07d656bfc867f3bbecdc7f895b34e",
+      "git_tree_object_id": "0f99e6970c9d42122ca3072243e1a52daf487120",
+      "files": [
+        {
+          "path": ".codex-plugin/plugin.json",
+          "bytes": 1504,
+          "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+        },
+        {
+          "path": ".mcp.json",
+          "bytes": 144,
+          "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 11339,
+          "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+        },
+        {
+          "path": "NOTICE",
+          "bytes": 192,
+          "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+        },
+        {
+          "path": "README.md",
+          "bytes": 1416,
+          "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+        },
+        {
+          "path": "SBOM.cdx.json",
+          "bytes": 640,
+          "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "bytes": 193,
+          "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+        },
+        {
+          "path": "assets/intent-formation.svg",
+          "bytes": 667,
+          "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+        },
+        {
+          "path": "hooks/hooks.json",
+          "bytes": 422,
+          "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+        },
+        {
+          "path": "server/policy.mjs",
+          "bytes": 2955,
+          "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+        },
+        {
+          "path": "skills/intent-formation/SKILL.md",
+          "bytes": 13195,
+          "sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621"
+        },
+        {
+          "path": "skills/intent-formation/agents/openai.yaml",
+          "bytes": 235,
+          "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+        },
+        {
+          "path": "src/constants.mjs",
+          "bytes": 1044,
+          "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+        },
+        {
+          "path": "src/policy.mjs",
+          "bytes": 1589,
+          "sha256": "6d91fbd5d8baae9dd9eebaab644f7010416e7426a9b9b2ce16736aa8cfd3ed84"
+        }
+      ]
+    },
+    {
+      "name": "intent-formation-state",
+      "version": "0.3.0-beta.1",
+      "file_count": 13,
+      "bytes": 1113236,
+      "installed_descriptor_sha256": "d7c0b2cf54ff6907c8addc8981b0469765cd9584f8f337c1103db6bbe5d69fd9",
+      "fixed_git_descriptor_sha256": "d7c0b2cf54ff6907c8addc8981b0469765cd9584f8f337c1103db6bbe5d69fd9",
+      "git_tree_object_id": "2aa1022235ed270804b39b253c55a19fda2233d2",
+      "files": [
+        {
+          "path": ".codex-plugin/plugin.json",
+          "bytes": 1321,
+          "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+        },
+        {
+          "path": ".mcp.json",
+          "bytes": 152,
+          "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 11339,
+          "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+        },
+        {
+          "path": "NOTICE",
+          "bytes": 198,
+          "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+        },
+        {
+          "path": "README.md",
+          "bytes": 2297,
+          "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+        },
+        {
+          "path": "SBOM.cdx.json",
+          "bytes": 4219,
+          "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "bytes": 9629,
+          "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+        },
+        {
+          "path": "dist/intent-command.mjs",
+          "bytes": 96728,
+          "sha256": "b45ad1f72cacbb9167b21d8cad27a7ec5ab5c1d712294977fd221c9e33fa7f50"
+        },
+        {
+          "path": "dist/intent-formation-server.mjs",
+          "bytes": 891289,
+          "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+        },
+        {
+          "path": "dist/intent-resume.mjs",
+          "bytes": 91137,
+          "sha256": "0752794499e9ae1e5880588f1f33a889afe162b63bb1c142425aaf59357b758e"
+        },
+        {
+          "path": "hooks/hooks.json",
+          "bytes": 793,
+          "sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0"
+        },
+        {
+          "path": "skills/intent-state-control/SKILL.md",
+          "bytes": 3940,
+          "sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28"
+        },
+        {
+          "path": "skills/intent-state-control/agents/openai.yaml",
+          "bytes": 194,
+          "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "path": "plugins/intent-formation-state/.codex-plugin/plugin.json",
+      "installed_bytes": 1321,
+      "installed_sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97",
+      "fixed_git_bytes": 1321,
+      "fixed_git_sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/.mcp.json",
+      "installed_bytes": 152,
+      "installed_sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e",
+      "fixed_git_bytes": 152,
+      "fixed_git_sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/LICENSE",
+      "installed_bytes": 11339,
+      "installed_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+      "fixed_git_bytes": 11339,
+      "fixed_git_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/NOTICE",
+      "installed_bytes": 198,
+      "installed_sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2",
+      "fixed_git_bytes": 198,
+      "fixed_git_sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/README.md",
+      "installed_bytes": 2297,
+      "installed_sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1",
+      "fixed_git_bytes": 2297,
+      "fixed_git_sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/SBOM.cdx.json",
+      "installed_bytes": 4219,
+      "installed_sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab",
+      "fixed_git_bytes": 4219,
+      "fixed_git_sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+      "installed_bytes": 9629,
+      "installed_sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850",
+      "fixed_git_bytes": 9629,
+      "fixed_git_sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-command.mjs",
+      "installed_bytes": 96728,
+      "installed_sha256": "b45ad1f72cacbb9167b21d8cad27a7ec5ab5c1d712294977fd221c9e33fa7f50",
+      "fixed_git_bytes": 96728,
+      "fixed_git_sha256": "b45ad1f72cacbb9167b21d8cad27a7ec5ab5c1d712294977fd221c9e33fa7f50",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+      "installed_bytes": 891289,
+      "installed_sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+      "fixed_git_bytes": 891289,
+      "fixed_git_sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-resume.mjs",
+      "installed_bytes": 91137,
+      "installed_sha256": "0752794499e9ae1e5880588f1f33a889afe162b63bb1c142425aaf59357b758e",
+      "fixed_git_bytes": 91137,
+      "fixed_git_sha256": "0752794499e9ae1e5880588f1f33a889afe162b63bb1c142425aaf59357b758e",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/hooks/hooks.json",
+      "installed_bytes": 793,
+      "installed_sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0",
+      "fixed_git_bytes": 793,
+      "fixed_git_sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/skills/intent-state-control/SKILL.md",
+      "installed_bytes": 3940,
+      "installed_sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28",
+      "fixed_git_bytes": 3940,
+      "fixed_git_sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation-state/skills/intent-state-control/agents/openai.yaml",
+      "installed_bytes": 194,
+      "installed_sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d",
+      "fixed_git_bytes": 194,
+      "fixed_git_sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/.codex-plugin/plugin.json",
+      "installed_bytes": 1504,
+      "installed_sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776",
+      "fixed_git_bytes": 1504,
+      "fixed_git_sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/.mcp.json",
+      "installed_bytes": 144,
+      "installed_sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381",
+      "fixed_git_bytes": 144,
+      "fixed_git_sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/LICENSE",
+      "installed_bytes": 11339,
+      "installed_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+      "fixed_git_bytes": 11339,
+      "fixed_git_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/NOTICE",
+      "installed_bytes": 192,
+      "installed_sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9",
+      "fixed_git_bytes": 192,
+      "fixed_git_sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/README.md",
+      "installed_bytes": 1416,
+      "installed_sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea",
+      "fixed_git_bytes": 1416,
+      "fixed_git_sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/SBOM.cdx.json",
+      "installed_bytes": 640,
+      "installed_sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c",
+      "fixed_git_bytes": 640,
+      "fixed_git_sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/THIRD_PARTY_NOTICES.md",
+      "installed_bytes": 193,
+      "installed_sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc",
+      "fixed_git_bytes": 193,
+      "fixed_git_sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/assets/intent-formation.svg",
+      "installed_bytes": 667,
+      "installed_sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896",
+      "fixed_git_bytes": 667,
+      "fixed_git_sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/hooks/hooks.json",
+      "installed_bytes": 422,
+      "installed_sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446",
+      "fixed_git_bytes": 422,
+      "fixed_git_sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/server/policy.mjs",
+      "installed_bytes": 2955,
+      "installed_sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee",
+      "fixed_git_bytes": 2955,
+      "fixed_git_sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/skills/intent-formation/SKILL.md",
+      "installed_bytes": 13195,
+      "installed_sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621",
+      "fixed_git_bytes": 13195,
+      "fixed_git_sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/skills/intent-formation/agents/openai.yaml",
+      "installed_bytes": 235,
+      "installed_sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf",
+      "fixed_git_bytes": 235,
+      "fixed_git_sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/src/constants.mjs",
+      "installed_bytes": 1044,
+      "installed_sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8",
+      "fixed_git_bytes": 1044,
+      "fixed_git_sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8",
+      "match": true
+    },
+    {
+      "path": "plugins/intent-formation/src/policy.mjs",
+      "installed_bytes": 1589,
+      "installed_sha256": "6d91fbd5d8baae9dd9eebaab644f7010416e7426a9b9b2ce16736aa8cfd3ed84",
+      "fixed_git_bytes": 1589,
+      "fixed_git_sha256": "6d91fbd5d8baae9dd9eebaab644f7010416e7426a9b9b2ce16736aa8cfd3ed84",
+      "match": true
+    }
+  ],
+  "fixed_source_files": [
+    {
+      "path": ".agents/plugins/marketplace.json",
+      "bytes": 675,
+      "sha256": "ae62e24fdef75f358d716d9b803b9cfe8ca71068d124560d9042300c7f1a30a3"
+    },
+    {
+      "path": "plugins/intent-formation-state/.codex-plugin/plugin.json",
+      "bytes": 1321,
+      "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+    },
+    {
+      "path": "plugins/intent-formation-state/.mcp.json",
+      "bytes": 152,
+      "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+    },
+    {
+      "path": "plugins/intent-formation-state/LICENSE",
+      "bytes": 11339,
+      "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+    },
+    {
+      "path": "plugins/intent-formation-state/NOTICE",
+      "bytes": 198,
+      "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+    },
+    {
+      "path": "plugins/intent-formation-state/README.md",
+      "bytes": 2297,
+      "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+    },
+    {
+      "path": "plugins/intent-formation-state/SBOM.cdx.json",
+      "bytes": 4219,
+      "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+    },
+    {
+      "path": "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+      "bytes": 9629,
+      "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-command.mjs",
+      "bytes": 96728,
+      "sha256": "b45ad1f72cacbb9167b21d8cad27a7ec5ab5c1d712294977fd221c9e33fa7f50"
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+      "bytes": 891289,
+      "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-resume.mjs",
+      "bytes": 91137,
+      "sha256": "0752794499e9ae1e5880588f1f33a889afe162b63bb1c142425aaf59357b758e"
+    },
+    {
+      "path": "plugins/intent-formation-state/hooks/hooks.json",
+      "bytes": 793,
+      "sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0"
+    },
+    {
+      "path": "plugins/intent-formation-state/skills/intent-state-control/SKILL.md",
+      "bytes": 3940,
+      "sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28"
+    },
+    {
+      "path": "plugins/intent-formation-state/skills/intent-state-control/agents/openai.yaml",
+      "bytes": 194,
+      "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+    },
+    {
+      "path": "plugins/intent-formation/.codex-plugin/plugin.json",
+      "bytes": 1504,
+      "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+    },
+    {
+      "path": "plugins/intent-formation/.mcp.json",
+      "bytes": 144,
+      "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+    },
+    {
+      "path": "plugins/intent-formation/LICENSE",
+      "bytes": 11339,
+      "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+    },
+    {
+      "path": "plugins/intent-formation/NOTICE",
+      "bytes": 192,
+      "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+    },
+    {
+      "path": "plugins/intent-formation/README.md",
+      "bytes": 1416,
+      "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+    },
+    {
+      "path": "plugins/intent-formation/SBOM.cdx.json",
+      "bytes": 640,
+      "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+    },
+    {
+      "path": "plugins/intent-formation/THIRD_PARTY_NOTICES.md",
+      "bytes": 193,
+      "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+    },
+    {
+      "path": "plugins/intent-formation/assets/intent-formation.svg",
+      "bytes": 667,
+      "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+    },
+    {
+      "path": "plugins/intent-formation/hooks/hooks.json",
+      "bytes": 422,
+      "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+    },
+    {
+      "path": "plugins/intent-formation/server/policy.mjs",
+      "bytes": 2955,
+      "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+    },
+    {
+      "path": "plugins/intent-formation/skills/intent-formation/SKILL.md",
+      "bytes": 13195,
+      "sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621"
+    },
+    {
+      "path": "plugins/intent-formation/skills/intent-formation/agents/openai.yaml",
+      "bytes": 235,
+      "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+    },
+    {
+      "path": "plugins/intent-formation/src/constants.mjs",
+      "bytes": 1044,
+      "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+    },
+    {
+      "path": "plugins/intent-formation/src/policy.mjs",
+      "bytes": 1589,
+      "sha256": "6d91fbd5d8baae9dd9eebaab644f7010416e7426a9b9b2ce16736aa8cfd3ed84"
+    }
+  ],
+  "reviewed_owned_sources": [
+    {
+      "path": "packages/intent-formation/hooks/intent-check.mjs",
+      "sha256": "b2db4f04bfa3f4a260ac2e9e397a5a9b225b92d229744aaf0aba6b326b8a3c22"
+    },
+    {
+      "path": "packages/intent-formation/hooks/intent-command.mjs",
+      "sha256": "265793b0c860aef1a320e0fc1d6085a36f8d2c6b7f8a21e21f9c5fa246d5ab0c"
+    },
+    {
+      "path": "packages/intent-formation/src/continuity.mjs",
+      "sha256": "bd72ef6455dcc11567d96d741f9ec64d9f62d65281672de8129c35c211df5720"
+    }
+  ],
+  "reviewed_diff_sha256": "1b61f7061775aca34d579106c5d3a92a35df05fcb6ffd192cbe71bf89f21b40d",
+  "previously_reviewed_unchanged_boundary": [
+    {
+      "path": "packages/intent-formation/scripts/build.mjs",
+      "sha256": "b5a71f7bf402a090b8a561f1d2696f38731185de49755cf3e5b690ed1bd9a621",
+      "unchanged": true
+    },
+    {
+      "path": "packages/intent-formation/package.json",
+      "sha256": "16133738d056e933b249cc83ec95abe08ef9ce6cd5eaeb6e4d59aa28f47147a4",
+      "unchanged": true
+    },
+    {
+      "path": "packages/intent-formation/package-lock.json",
+      "sha256": "e4970014bc4ba1aab9e46c35fc59b2f7db0575c87444699b89c5e0fcff8a73d7",
+      "unchanged": true
+    },
+    {
+      "path": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+      "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+      "unchanged": true
+    }
+  ],
+  "later_policy_bytes_tested": false
+}

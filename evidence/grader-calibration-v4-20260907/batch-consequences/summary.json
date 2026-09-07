@@ -1,0 +1,185 @@
+{
+  "generated_at": "2026-09-07T10:02:07.211Z",
+  "rubric_version": "intent-formation-blind-v4",
+  "study_path": "[local path omitted]",
+  "retry_path": null,
+  "scenarios_path": "[local path omitted]",
+  "schema_path": "[local path omitted]",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "grading_tool_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+  "grading_contract": {
+    "grader_sha256": "f2c06ef6d3dbaeab65de2772dea392202111523ecb9fc9ff7406aa42b07f0a59",
+    "schema_sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+    "rationale_minimum_characters": 40,
+    "rationale_maximum_characters": 520
+  },
+  "candidate_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "corpus_sha256": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+  "plugin_tree": {
+    "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+    "file_count": 14,
+    "bytes": 35362
+  },
+  "plugin_id": "intent-formation@intent-loop",
+  "state_plugin_id": "intent-formation-state@intent-loop",
+  "batch_size": 3,
+  "concurrency": 1,
+  "resume_requested": false,
+  "resumed_batch_count": 0,
+  "scenario_count": 3,
+  "graded_count": 3,
+  "failed_batches": [],
+  "batch_attempts": [
+    {
+      "index": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "code": 0,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 61928,
+          "error": null
+        }
+      ]
+    }
+  ],
+  "grades": [
+    {
+      "id": "v7-pe-001",
+      "mapping": {
+        "id": "v7-pe-001",
+        "A": "baseline",
+        "B": "plugin",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "direct_delivery",
+        "interruption_count": 1,
+        "intervention": "wrong_or_unhelpful",
+        "avoidable_rework": 3,
+        "match_basis": "first_response",
+        "final_match": 0,
+        "agent_inference_made": true,
+        "inference_denied": true,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "The response prematurely inspected an empty workspace and requested repository materials that were unnecessary for defining the rule.",
+          "It settled on changing membership, revoking training access, and removing reminders without first resolving which meaning of inactive was intended."
+        ],
+        "rationale": "A added an unnecessary repository interruption and committed the recurring rule to both controls. The follow-up explicitly rejected its membership and training-access effects, so the initial delivery misses the resolved direction and requires nearly complete replacement."
+      },
+      "plugin": {
+        "first_move": "question",
+        "interruption_count": 1,
+        "intervention": "helpful",
+        "avoidable_rework": 1,
+        "match_basis": "post_followup_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "The failed workspace command was unnecessary because the requested policy clarification did not require repository inspection."
+        ],
+        "rationale": "B exposed the exact membership-versus-reminder decision with one bounded comparison and did not commit to an unstated effect. After clarification, it supplied a short if/then rule preserving membership and training access while removing reminders only."
+      },
+      "preferred_arm": "plugin",
+      "confidence": "high"
+    },
+    {
+      "id": "v7-pe-009",
+      "mapping": {
+        "id": "v7-pe-009",
+        "A": "baseline",
+        "B": "plugin",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 1,
+        "match_basis": "first_response",
+        "final_match": 3,
+        "agent_inference_made": true,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "It assumed project permissions should remain without first resolving whether club departure also ended project participation.",
+          "It called the removal target a current-member permission list rather than the current-member roster named by the user."
+        ],
+        "rationale": "A guessed the permission consequence, but that guess matched the later clarification: project permissions remain. Its main defect is misnaming the roster as a permission list, which requires a small correction but leaves the two intended effects largely intact."
+      },
+      "plugin": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 2,
+        "match_basis": "first_response",
+        "final_match": 2,
+        "agent_inference_made": true,
+        "inference_denied": true,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "It assumed departure should revoke permissions granted through club membership without clarifying how those permissions relate to project access.",
+          "Its permission-revocation rule conflicts with the instruction to retain project permissions until a project owner removes them."
+        ],
+        "rationale": "B correctly removes the person from the roster, but it invents a permission taxonomy and revokes a category of permissions immediately. The follow-up instead requires project permissions to remain until owner action, so the initial recurring rule is only a mixed match."
+      },
+      "preferred_arm": "baseline",
+      "confidence": "high"
+    },
+    {
+      "id": "v7-pe-011",
+      "mapping": {
+        "id": "v7-pe-011",
+        "A": "baseline",
+        "B": "plugin",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 2,
+        "match_basis": "first_response",
+        "final_match": 2,
+        "agent_inference_made": true,
+        "inference_denied": true,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "It made intake-survey completion a payment prerequisite without clarifying which milestone actually earns payment."
+        ],
+        "rationale": "A directly chose a both-events definition despite the unresolved payable milestone. It correctly requires session completion and excludes survey-only participants, but wrongly excludes attended participants lacking a survey; the follow-up materially corrects that committed definition."
+      },
+      "plugin": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 2,
+        "match_basis": "first_response",
+        "final_match": 2,
+        "agent_inference_made": true,
+        "inference_denied": true,
+        "feedback_handling": "not_applicable",
+        "violations": [
+          "It made the survey mandatory and explicitly disqualified session-only participants without clarifying the milestone that earns payment."
+        ],
+        "rationale": "B likewise commits payment eligibility to both events. It supplies a clear definition and condition and correctly rejects survey-only eligibility, but its explicit rejection of session-only participants conflicts with the clarified rule that attendance alone earns payment."
+      },
+      "preferred_arm": "tie",
+      "confidence": "high"
+    }
+  ]
+}

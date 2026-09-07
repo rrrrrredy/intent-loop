@@ -1,0 +1,26 @@
+[
+  {
+    "label": "batch-controls",
+    "ids": [
+      "costly-clear-retention-01",
+      "costly-shared-step-01",
+      "costly-sample-control-01"
+    ],
+    "started_at": "2026-09-07T10:00:19.368Z",
+    "completed_at": "2026-09-07T10:01:04.903Z",
+    "code": 0,
+    "signal": null
+  },
+  {
+    "label": "batch-consequences",
+    "ids": [
+      "v7-pe-001",
+      "v7-pe-009",
+      "v7-pe-011"
+    ],
+    "started_at": "2026-09-07T10:01:04.904Z",
+    "completed_at": "2026-09-07T10:02:07.225Z",
+    "code": 0,
+    "signal": null
+  }
+]

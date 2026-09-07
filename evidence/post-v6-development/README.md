@@ -26,10 +26,33 @@ Candidate `b025222` repeated only the 17 explicitly authorized post-v6 cases on 
 
 Observed routing remained intact: cheap drafts were direct, three requested comparisons preserved neutral alternatives and mix/reject/free-reply invitations, four feedback cases followed the changed request, and one genuinely missing object list prompted only for that list. This does not establish that the newly added costly-decision clauses help, because these 17 controls do not test those failure branches. Nor is it an all-content-pass score: the requested 130-word abstract has 131 whitespace-delimited words, and the card-game explanation still adds an unsupplied ability mechanism. The 110- and 70-word labels meet their exact counts. All original responses are retained.
 
-The seven costly-branch cases, three v7 failure probes, component-removal runs and prospective grader calibration have not been rerun on this candidate. One fresh independent 80-case paired confirmation and blind grading is authorized but has not started; no holdout success is claimed.
+The subsequent bounded removal experiment is recorded below. One fresh independent 80-case paired confirmation and blind grading is authorized; no new holdout result is claimed here.
 
 For this 17-case repair run, official core-plugin and marketplace removal both returned exit zero. On 2026-09-07 at 08:11 UTC, the exact isolated home, its authentication copy and the empty test workspaces were verified absent; raw results and the installation inventory remained present. This cleanup does not assert that all older project-created environments or final build dependencies have been removed.
 
 `dependency-audits.json` preserves the two authorized npm official bulk responses from 2026-09-07. Both returned HTTP 200 with zero advisories for the exact lockfile snapshots. This is a dated advisory snapshot, not a guarantee against future vulnerabilities; release CI must rerun the audits.
+
+## Bounded removal after the goal audit
+
+The archive now contains 24 trials / 210 conversations. Its original 180 JSONL rows
+remain a byte-identical prefix, and the original 18 trial objects are unchanged.
+The six appended groups contain the ten authorized cases on exactly three policy
+variants: full `c970c28`, without delivery scope `f7afa29`, and without the automatic
+settled-rule/delegation clause `c2b3d13`. All 30 conversations / 51 user turns and
+30 native deletions completed, with no primary retry or new product-evaluation case.
+New rows include the unchanged prompts/follow-ups, all responses and all six local
+command items with their outcomes. Paths are substituted; no content is truncated.
+
+First-turn local command counts were 1 / 4 / 1. The three v7 probes exposed the
+consequential distinction in 0 / 0 / 1 cases respectively. This supports retaining
+the delivery-scope reminder and deleting the added automatic clause, without proving
+a general improvement. The permission and payment-condition mistakes in pe-009 and
+pe-011 remain. These are model-effect selection errors; the observed commands were
+local inspection, not permission changes or payments. See the [ablation report](../../docs/ablation-report.md).
+
+`bounded-ablation-cleanup.json` records official removals and absence of the three
+new homes/authentication copies, six workspaces and three temporary worktrees. The
+variant Git objects remain available on `evidence/history` for reproducibility;
+their runtime changes were not merged into main.
 
 No public release gate is cleared by this directory. Run `npm run verify:evidence` at the repository root to reproduce hash, conversation-count, cleanup-count, and candidate-tree binding checks.

@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-09-07T10:00:19.365Z",
+  "initial_preflight_failure": "Fresh isolated Home plugin list returned 9 account-level remote/default entries, not an empty list; stopped before grader startup.",
+  "initial_preflight_grader_requests": 0,
+  "initial_preflight_product_requests": 0,
+  "installed_by_this_task": 0,
+  "remote_entries_disabled_for_every_grader_request": [
+    "build-web-apps@openai-curated-remote",
+    "deep-research-work@openai-curated-remote",
+    "github@openai-curated-remote",
+    "gmail@openai-curated-remote",
+    "hugging-face@openai-curated-remote",
+    "openai-templates@openai-curated-remote",
+    "plugin-management@openai-curated-remote",
+    "product-design@openai-curated-remote",
+    "supabase@openai-curated-remote"
+  ],
+  "source_inventory_sha256": "38378e93cb1c5ca990af49c55608faebbe70faeb5f64543f90b53943670d5610",
+  "runtime_study_sha256": "ed578b91154974d469d3e9924ef1862b5bbefd6ba4dcd7546e443d87dc54a234",
+  "content_unchanged": true,
+  "note": "Only the existing grader disabled-plugin inventory field differs from the frozen adapter. No grading prompt, model, scenario, response, action, or manual expectation changes. No remote account plugin is uninstalled."
+}

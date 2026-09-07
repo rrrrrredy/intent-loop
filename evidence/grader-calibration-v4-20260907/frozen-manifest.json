@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "evidence_class": "bounded_grader_calibration",
+  "release_efficacy_usable": false,
+  "frozen_at": "2026-09-07T09:55:35.954Z",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "rubric_version": "intent-formation-blind-v4",
+  "grader_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+  "grading_source_sha256": {
+    "packages/intent-formation/evals/grade-study.mjs": "f2c06ef6d3dbaeab65de2772dea392202111523ecb9fc9ff7406aa42b07f0a59",
+    "packages/intent-formation/evals/grading-output-v3.schema.json": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+    "packages/intent-formation/evals/scenario-contract.mjs": "dfc6b1e1ad813b5c83e6d54bdb46c1b7e5abc1c50738b488dd12d997e4199536"
+  },
+  "source_ablation_manifest_sha256": "b653e4dd33c9faac528bb17647f8210c3e02f83f0bb192454da3ae9e9a345ea4",
+  "arm_aliases": {
+    "baseline": "full",
+    "plugin": "without-settled"
+  },
+  "design_note": "The existing baseline/plugin fields are interface aliases for full/without-settled ablation outputs. There is no native baseline arm, no new product conversation, and no fourth policy variant. study.candidate_commit binds the full source/common ancestor for the unchanged grader interface, not a claim that the other arm was installed at that commit; both true source commits and installed fingerprints are recorded separately.",
+  "distinct_cases": 6,
+  "existing_product_conversations": 12,
+  "new_product_conversations": 0,
+  "batches": [
+    [
+      "costly-clear-retention-01",
+      "costly-shared-step-01",
+      "costly-sample-control-01"
+    ],
+    [
+      "v7-pe-001",
+      "v7-pe-009",
+      "v7-pe-011"
+    ]
+  ],
+  "maximum_primary_grader_requests": 2,
+  "maximum_grader_requests_including_structure_remediation": 4,
+  "score_retries": 0,
+  "prompt_tuning": false,
+  "manual_expectations_sent_to_grader": false,
+  "artifact_sha256": {
+    "expectations.json": "62d95b4fc80d95411e23b44d4bea458e78336c32cc32dc6d9d41e1eb0a8a51c6",
+    "scenarios.jsonl": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+    "study-adapter.json": "00f83ae8ce931d9ebec846baf669620b121ea2f1cae6d6ad52a9ca9c9f1a9325",
+    "inputs.jsonl": "6d9715299f7a946f5479593f7519b0f09416ce164a65160e5ae2e6111894d4af"
+  }
+}

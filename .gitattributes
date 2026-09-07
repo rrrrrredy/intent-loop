@@ -11,3 +11,5 @@
 LICENSE text eol=lf
 NOTICE text eol=lf
 *.svg text eol=lf
+evidence/continuous-intent-loop-20260907/artifacts/rule-notes.txt text eol=lf
+evidence/grader-calibration-v4-20260907/**/*.txt text eol=lf

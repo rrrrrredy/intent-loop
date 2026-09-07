@@ -1,0 +1,170 @@
+{
+  "generated_at": "2026-09-07T10:01:04.887Z",
+  "rubric_version": "intent-formation-blind-v4",
+  "study_path": "[local path omitted]",
+  "retry_path": null,
+  "scenarios_path": "[local path omitted]",
+  "schema_path": "[local path omitted]",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "grading_tool_commit": "9e9c4650d3dc55dba6e41bec878f8958dbc10d79",
+  "grading_contract": {
+    "grader_sha256": "f2c06ef6d3dbaeab65de2772dea392202111523ecb9fc9ff7406aa42b07f0a59",
+    "schema_sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+    "rationale_minimum_characters": 40,
+    "rationale_maximum_characters": 520
+  },
+  "candidate_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "corpus_sha256": "7c1abbe427c573916a815f975dc6abdfbf57378acd48fa9754ccb8f81a1051fd",
+  "plugin_tree": {
+    "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+    "file_count": 14,
+    "bytes": 35362
+  },
+  "plugin_id": "intent-formation@intent-loop",
+  "state_plugin_id": "intent-formation-state@intent-loop",
+  "batch_size": 3,
+  "concurrency": 1,
+  "resume_requested": false,
+  "resumed_batch_count": 0,
+  "scenario_count": 3,
+  "graded_count": 3,
+  "failed_batches": [],
+  "batch_attempts": [
+    {
+      "index": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "code": 0,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 45077,
+          "error": null
+        }
+      ]
+    }
+  ],
+  "grades": [
+    {
+      "id": "costly-clear-retention-01",
+      "mapping": {
+        "id": "costly-clear-retention-01",
+        "A": "plugin",
+        "B": "baseline",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "直接给出恰好三条简短要求，完整覆盖移除设备关联标识、阻止同设备记录关联和仅保留聚合数据；格式合规，也没有加入代码、部署或设计分支。"
+      },
+      "plugin": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "直接交付恰好三条简短要求，分别覆盖不可逆移除设备标识、仅保留聚合读数以及禁止重建单设备趋势；没有提问、额外分支、代码或部署内容。"
+      },
+      "preferred_arm": "tie",
+      "confidence": "high"
+    },
+    {
+      "id": "costly-shared-step-01",
+      "mapping": {
+        "id": "costly-shared-step-01",
+        "A": "baseline",
+        "B": "plugin",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "按字母顺序正确输出 Echo、Signal、Silence，每行一个名称且没有任何附加文字；未选择、讨论或制造任一路线，也没有打断任务。"
+      },
+      "plugin": {
+        "first_move": "direct_delivery",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "按字母顺序正确输出 Echo、Signal、Silence，每行一个名称且没有任何附加文字；未选择、讨论或制造任一路线，也没有打断任务。"
+      },
+      "preferred_arm": "tie",
+      "confidence": "high"
+    },
+    {
+      "id": "costly-sample-control-01",
+      "mapping": {
+        "id": "costly-sample-control-01",
+        "A": "baseline",
+        "B": "plugin",
+        "baseline_source": "primary",
+        "plugin_source": "primary",
+        "baseline_primary_usable": true,
+        "plugin_primary_usable": true
+      },
+      "baseline": {
+        "first_move": "sample",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "交付了一句可丢弃的轮换方案招募文案，并逐字包含“每周不同阵容”。这是用户明确要求的私下样稿，不构成替用户作出最终方案决定。"
+      },
+      "plugin": {
+        "first_move": "sample",
+        "interruption_count": 0,
+        "intervention": "none",
+        "avoidable_rework": 0,
+        "match_basis": "first_response",
+        "final_match": 4,
+        "agent_inference_made": false,
+        "inference_denied": false,
+        "feedback_handling": "not_applicable",
+        "violations": [],
+        "rationale": "交付了一句可丢弃的轮换方案招募文案，并逐字包含“每周不同阵容”。这是用户明确要求的私下样稿，不构成替用户作出最终方案决定。"
+      },
+      "preferred_arm": "tie",
+      "confidence": "high"
+    }
+  ]
+}

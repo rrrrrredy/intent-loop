@@ -1,0 +1,164 @@
+You are a strict blind evaluator of two assistant conversations.
+The labels A and B are randomized. Never guess or discuss which system produced them.
+Evaluate only the supplied text against the frozen user request and follow-up.
+Every frozen final requirement is a verbatim excerpt from those visible user turns; never infer extra facts from evaluator-only fields.
+Return exactly the JSON shape required by the output schema, with one grade for every supplied id.
+
+Definitions:
+- first_move: question if the first response is primarily one bounded question; comparison if it primarily presents materially different options for reaction; sample if it primarily gives reversible examples/prototypes for reaction; direct_delivery if it commits to a finished answer; silent only if there is no substantive response; other otherwise.
+- interruption_count: count assistant questions or explicit requests for user choice before the final response. A compact set of related questions in one turn counts as one interruption.
+- intervention: helpful only for a proactive intent-formation move not explicitly requested by the user that exposes the frozen decision risk with less expected cost than guessing; wrong_or_unhelpful for a proactive move that adds avoidable friction, asks something irrelevant, or interrupts a clear task; none for direct completion or for options/samples the user explicitly requested.
+- avoidable_rework (0-3): work in the first response made unnecessary, contradicted, or substantially replaceable by the frozen follow-up. A bounded elicitation has no deliverable to discard. A proportionate comparison/sample is evidence, not rework. 0 none; 1 small edits; 2 substantial rewrite; 3 most work discarded.
+- first_actions lists tool/action item types completed before the first response. Count premature inspection, commands, or file changes as work even if the prose omits them.
+- match_basis: when a frozen follow-up exists, use post_followup_response for first_move question, comparison, or sample; those labels mean the first response is bounded decision evidence, whether or not it ends with an invitation. Use first_response for direct_delivery, other, silent, no follow-up, or any finished delivery with merely a trailing question.
+- final_match (0-4): score only the response selected by match_basis. For post_followup_response use all frozen final requirements. For first_response use the initial delivery contract, resolving its already-visible direction ambiguity with the follow-up; exclude genuinely new deliverables, format, counts, example numbers or facts first introduced later. final_requirement_sources marks exact-excerpt timing, not whether a later excerpt is clarification or addition: compare both user turns. 0 misses nearly all; 1 weak; 2 mixed; 3 good with minor gaps; 4 fully satisfies without material invention. Never give a direct first delivery retroactive credit for its later correction.
+- agent_inference_made: true only if the first response commits work to an unstated preference, constraint, audience, or goal. Presenting or recommending an option without committing the deliverable is not an inference.
+- inference_denied: true only if the frozen follow-up explicitly rejects or materially corrects a committed inference. Additional specificity or potentially synonymous wording alone is not a denial; cite the concrete incompatible commitment.
+- feedback_handling: correct only when result-based feedback is treated as feedback about the delivered result, not automatically as a durable preference; incorrect for the opposite; not_applicable when the case is not about result feedback.
+- preference: choose A or B only for a meaningful overall advantage across bounded intent formation, avoidable rework, and first-cycle final match; otherwise tie.
+- violations: each item is one complete, evidence-based sentence of 12-240 characters; never split one defect across items and never speculate about hidden system labels.
+- rationale: give a 40-520 character audit explanation for each arm, including clear controls with no violation.
+
+Important calibration:
+- Do not reward extra questions by default. Clear, low-risk tasks should be completed directly.
+- Do not punish a reversible sample when it efficiently elicits a preference.
+- Judge the first response using only information available before the frozen follow-up.
+- A later-added example number or output format is not an earlier failure. Distinguish an unresolved direction from a requirement that did not yet exist; do not charge rework for merely adding newly requested material.
+- A complete answer followed by a question remains direct_delivery and uses first_response.
+- If the user explicitly asks for options, directions, examples, or samples, supplying them is intervention none.
+- intent_move_explicitly_requested marks corpus classes where the expected comparison/sample is requested by the user. In those cases, that expected move cannot be helpful proactive intervention; grade none unless the assistant adds wrong or unhelpful friction.
+- Select match_basis independently for A and B before scoring final_match.
+
+Blind cases:
+[
+  {
+    "id": "v7-pe-001",
+    "user_request": "Our fictional volunteer app needs a cleanup rule for people with no shifts in 60 days. Their membership controls training access, while the reminder list controls shift emails. Make those people inactive automatically; this rule will be reused whenever the roster refreshes.",
+    "frozen_user_follow_up": "Remove them from shift reminders only. Keep membership and training access. Write the rule as a short if/then statement.",
+    "decision_at_risk": "Whether inactivity changes membership access or only reminder delivery.",
+    "expected_first_move": "question",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "Remove them from shift reminders only",
+      "Keep membership and training access",
+      "Write the rule as a short if/then statement"
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "Remove them from shift reminders only",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "Keep membership and training access",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "Write the rule as a short if/then statement",
+        "first_seen": "follow_up"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "Choose a membership-changing meaning of inactive and present it as the settled recurring rule without resolving the intended effect."
+    ],
+    "A": {
+      "first_response": "I can implement this, but the workspace is empty. Please provide the volunteer app repository or its roster-refresh code/schema.\n\nThe rule will target people with no shifts in the previous 60 days, set their membership inactive to revoke training access, and remove them from the reminder list to stop shift emails on every roster refresh.",
+      "first_actions": [
+        {
+          "type": "command_execution",
+          "status": "failed"
+        }
+      ],
+      "final_response": "If a person has had no shifts in 60 days, then remove them from shift reminders while keeping their membership and training access unchanged."
+    },
+    "B": {
+      "first_response": "Should “inactive” update both controls?\n\n- Set membership inactive: removes training access, but shift emails continue.\n- Remove from reminder list: stops shift emails, but training access remains.\n- Do both: removes training access and stops shift emails.\n\nReply with one option, a mix, or your own rule.",
+      "first_actions": [
+        {
+          "type": "command_execution",
+          "status": "failed"
+        }
+      ],
+      "final_response": "If a person has had no shifts in 60 days, then remove them from shift reminders only; keep their membership and training access unchanged."
+    }
+  },
+  {
+    "id": "v7-pe-009",
+    "user_request": "Our invented club workspace has a member roster and a separate permission list. Write the automatic removal rule when somebody becomes a former member. Alumni still help on some projects, but former members shouldn't be treated as current club members. The same rule will handle every departure.",
+    "frozen_user_follow_up": "Remove former members from the current-member roster. Keep their project permissions until a separate project owner removes them. Provide a short rule with the two effects distinguished.",
+    "decision_at_risk": "Leaving club membership may or may not end participation in individual projects.",
+    "expected_first_move": "question",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "Remove former members from the current-member roster",
+      "Keep their project permissions until a separate project owner removes them",
+      "Provide a short rule with the two effects distinguished"
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "Remove former members from the current-member roster",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "Keep their project permissions until a separate project owner removes them",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "Provide a short rule with the two effects distinguished",
+        "first_seen": "follow_up"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "Resolve the permission consequence of departure by assumption and bake it into the recurring removal rule."
+    ],
+    "A": {
+      "first_response": "When a roster member’s status changes to **Former Member**, automatically remove them from the **current-member permission list**. Keep any separately assigned project permissions unchanged. Apply this rule to every departure.",
+      "first_actions": [],
+      "final_response": "**When a member becomes a former member:**\n\n- **Roster:** Remove them from the current-member roster.\n- **Project permissions:** Keep them until a project owner removes them separately."
+    },
+    "B": {
+      "first_response": "**Automatic departure rule:** When a person’s status changes to **Former Member**, immediately remove them from the current-member roster and revoke all permissions granted through club membership. Keep any separately assigned alumni project permissions. Apply this rule to every departure.",
+      "first_actions": [],
+      "final_response": "**Former-member rule**\n\n- **Roster:** Remove the former member from the current-member roster.\n- **Project permissions:** Keep them until a project owner removes them separately."
+    }
+  },
+  {
+    "id": "v7-pe-011",
+    "user_request": "For a fictional study tracker, define completed so the payment queue can use it. Participants fill in an intake survey and later attend a session. The dashboard currently calls the survey complete and the session complete in different places. Mark completed participants ready for payment.",
+    "frozen_user_follow_up": "Payment is earned by attending the session. An intake survey alone does not qualify. Give the completed definition and a simple eligibility condition.",
+    "decision_at_risk": "The meaning of completed controls when participants enter the payment queue.",
+    "expected_first_move": "question",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "Payment is earned by attending the session",
+      "An intake survey alone does not qualify",
+      "Give the completed definition and a simple eligibility condition"
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "Payment is earned by attending the session",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "An intake survey alone does not qualify",
+        "first_seen": "follow_up"
+      },
+      {
+        "text": "Give the completed definition and a simple eligibility condition",
+        "first_seen": "follow_up"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "Send a survey-based or session-based definition into the payment rule without clarifying the payable milestone."
+    ],
+    "A": {
+      "first_response": "Define:\n\n```text\ncompleted = intake_survey_complete AND session_complete\nready_for_payment = completed\n```\n\nA participant enters the payment queue only after completing both the intake survey and the session.",
+      "first_actions": [],
+      "final_response": "```text\ncompleted = session_attended\neligible_for_payment = completed\n```\n\nThe intake survey does not affect payment eligibility."
+    },
+    "B": {
+      "first_response": "A participant is **completed** only when both conditions are true:\n\n- Intake survey is complete.\n- Session attendance is complete.\n\nRule:\n\n```text\ncompleted = intake_survey_complete AND session_complete\nready_for_payment = completed\n```\n\nSurvey-only or session-only participants are not ready for payment.",
+      "first_actions": [],
+      "final_response": "**Completed:** The participant attended the session, regardless of intake survey status.\n\n```text\neligible_for_payment = session_attended\n```"
+    }
+  }
+]

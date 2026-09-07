@@ -50,7 +50,7 @@ Start a new task, review the two local Hooks, then type:
 /intent start
 ~~~
 
-Once enabled, continue in ordinary language: “Keep the purpose; fix the spacing,” or “I changed my mind; make it for volunteers.” The development Hook supplies existing records and the current turn reference; Codex uses the existing MCP tools to save material changes. You do not need to copy record IDs for normal feedback. This path is under live acceptance testing and is not yet a released capability.
+Once enabled, continue in ordinary language: “Keep the purpose; fix the spacing,” or “I changed my mind; make it for volunteers.” The development Hook supplies existing records and the current turn reference; Codex uses the existing MCP tools to save material changes. You do not need to copy record IDs for normal feedback. Two targeted synthetic cases exercised this path in six real host turns, including a fresh-process resume and a non-activated task. This is implementation evidence, not measured user benefit or a released capability; see the [source-bound observations](evidence/continuous-intent-loop-20260907/README.md).
 
 Use `/intent show` to check what was actually retained and `/intent off` to stop. The remaining controls are optional explicit overrides:
 

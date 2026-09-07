@@ -1,0 +1,126 @@
+{
+  "corpus_sources": [
+    {
+      "commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "file": "packages/intent-formation/evals/costly-branch-development.jsonl",
+      "sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "selected_ids": [
+        "costly-clear-retention-01",
+        "costly-shared-step-01",
+        "costly-sample-control-01"
+      ]
+    },
+    {
+      "commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "file": "packages/intent-formation/evals/holdout-80.jsonl",
+      "sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+      "selected_ids": [
+        "v7-pe-001",
+        "v7-pe-009",
+        "v7-pe-011"
+      ]
+    }
+  ],
+  "output_sources": [
+    {
+      "variant": "full",
+      "relative_source": "full/costly-seven-results/summary.json",
+      "source_summary_sha256": "37f224ca7a2b81d6ab7640d31e0d1effa694e4fe1543b0e09f3d5c373c9ca708",
+      "candidate_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "parent_commit": "57008cdea152699618cc8f9362e3e83b52d24698",
+      "git_tree": "d99f1759c56a2593005da9526bd90bd6009c02e5",
+      "policy_sha256": "2b7363983bdf830dae0df8c10ad01bcd30e70c564cd79ecf22fbeed307908e0b",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "plugin_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "executed_plugin_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "candidate_git_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      }
+    },
+    {
+      "variant": "full",
+      "relative_source": "full/v7-three-results/summary.json",
+      "source_summary_sha256": "f6562202da10187e61ebd486a6d10413111ddfd9e525a26fb906c85ac97cbcba",
+      "candidate_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "parent_commit": "57008cdea152699618cc8f9362e3e83b52d24698",
+      "git_tree": "d99f1759c56a2593005da9526bd90bd6009c02e5",
+      "policy_sha256": "2b7363983bdf830dae0df8c10ad01bcd30e70c564cd79ecf22fbeed307908e0b",
+      "corpus_sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+      "plugin_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "executed_plugin_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      },
+      "candidate_git_tree": {
+        "sha256": "7048d10c8f1f501200967dc00c0bb796b90ff0f275652d768ac4cdbc2dec1363",
+        "file_count": 14,
+        "bytes": 35535
+      }
+    },
+    {
+      "variant": "without-settled",
+      "relative_source": "without-settled/costly-seven-results/summary.json",
+      "source_summary_sha256": "169fbfc08a828db424974431c72137e97646318a4fab92b9319bca67d5530705",
+      "candidate_commit": "c2b3d134a0bf9947a7c7b9b45df3220d7c5adc21",
+      "parent_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "git_tree": "569d64b86edb91b786530fa8a5825010a8323601",
+      "policy_sha256": "d070f3a0ce63734a2216b147e5519bdb8dc179ecae72c7262316ed0b40d1a46f",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "plugin_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      },
+      "executed_plugin_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      },
+      "candidate_git_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      }
+    },
+    {
+      "variant": "without-settled",
+      "relative_source": "without-settled/v7-three-results/summary.json",
+      "source_summary_sha256": "b4d3b933991f86eb3b11faa47e54e0345a3d0f8e3a9b214f2dcec8c1209b2b15",
+      "candidate_commit": "c2b3d134a0bf9947a7c7b9b45df3220d7c5adc21",
+      "parent_commit": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "git_tree": "569d64b86edb91b786530fa8a5825010a8323601",
+      "policy_sha256": "d070f3a0ce63734a2216b147e5519bdb8dc179ecae72c7262316ed0b40d1a46f",
+      "corpus_sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+      "plugin_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      },
+      "executed_plugin_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      },
+      "candidate_git_tree": {
+        "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+        "file_count": 14,
+        "bytes": 35362
+      }
+    }
+  ]
+}

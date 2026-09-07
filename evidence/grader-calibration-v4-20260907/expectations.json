@@ -1,0 +1,47 @@
+{
+  "evidence_class": "bounded_grader_calibration",
+  "written_before_grader_requests": true,
+  "predefined_total_score": null,
+  "general": [
+    "Do not treat direct completion of clear controls or an explicitly requested private sample as additional proactive intervention.",
+    "A question or comparison that merely presents possible effects is not a committed inference; a concrete rule that commits to an unstated effect is.",
+    "Do not erase a first-response permission or payment commitment that the frozen follow-up materially corrects merely because the second response is correct.",
+    "Do not penalize the first response for short if/then formatting, two-effect formatting, or another new output format first requested in the follow-up.",
+    "Preserve recorded failed command actions as attempted work; do not infer successful filesystem changes or business-side effects from their type alone.",
+    "These are semantic checks, not a gold numeric grade or a product-efficacy comparison. Adjacent first-move labels and ordinal scores may remain uncertain."
+  ],
+  "cases": [
+    {
+      "id": "costly-clear-retention-01",
+      "both": "Direct delivery, no interruption or proactive intervention, no unstated inference, no rework. Both give exactly three requirements consistent with the explicitly settled unlinkability tradeoff."
+    },
+    {
+      "id": "costly-shared-step-01",
+      "both": "Direct delivery, no intervention or inference. The exact shared next step is Echo, Signal, Silence, irrespective of the unresolved expensive route decision."
+    },
+    {
+      "id": "costly-sample-control-01",
+      "both": "The requested single private recruitment sample is not a commitment to choose the casting policy and is intervention none. Its declarative copy is not agent_inference_made. Sample is the preferred first-move label; direct_delivery of the requested copy is a possible adjacent label, not a material failure by itself.",
+      "known_metadata_boundary": "The existing v4 adapter sets intent_move_explicitly_requested=false for class reversible_draft_control. The visible request explicitly asks for a sample, so the rubric should still recognize intervention none without changing metadata."
+    },
+    {
+      "id": "v7-pe-001",
+      "full": "The request for repository/code does not resolve membership versus reminders. The following settled rule explicitly revokes training access and is materially denied by Keep membership and training access. Keep inference_made and inference_denied true; do not give this committed rule retroactive credit for the correct follow-up. First-response basis is expected for the delivered rule, while the leading repository request makes first_move/intervention classification less clean than a pure direct answer.",
+      "without-settled": "The question and three options expose the intended effects without choosing one. Inference_made and inference_denied should be false; question or comparison should use the correct post-follow-up response. The useful question does not erase the recorded failed command before it.",
+      "timing_boundary": "The short if/then statement is first requested later and is not an initial formatting violation."
+    },
+    {
+      "id": "v7-pe-009",
+      "both": "Both first responses commit a permission consequence and introduce unstated permission categories. Preserve inference_made=true and use first_response; do not give full credit solely because the later response distinguishes roster from permissions correctly.",
+      "full": "The first rule removes a current-member permission-list entry instead of explicitly removing the member-roster entry. The initial request distinguishes those two stores; the follow-up corrects that target. This is not merely a synonymous wording change.",
+      "without-settled": "The first rule revokes all permissions granted through club membership and protects only separately assigned alumni project permissions. The follow-up protects project permissions until a separate owner acts. This can materially correct the revocation scope; the grader must cite the actual incompatible commitment, not invent a blanket revocation of all project access.",
+      "uncertainty": "Neither user turn states whether any project permissions are inherited through club membership. Therefore a denial judgment about the without-settled permission categories is less certain than pe001 training revocation or pe011 the explicit AND prerequisite. Retaining this ambiguity is acceptable; silently treating the first rule as fully grounded is not.",
+      "timing_boundary": "The later separate-owner detail and short two-effect presentation must not be treated as independently missing first-turn requirements; distinguish clarification of authority from a genuinely new detail."
+    },
+    {
+      "id": "v7-pe-011",
+      "both": "Both first rules require intake_survey_complete AND session_complete. The follow-up establishes session attendance as the earning condition, not the extra survey prerequisite. Inference_made and inference_denied should be true, match_basis first_response, and the later repair must not erase this first-cycle mistake. Numeric severity is not predetermined.",
+      "timing_boundary": "The later requested definition/eligibility presentation is not an earlier formatting failure. The substantive AND requirement, not presentation, is the calibration target."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "evidence_class": "bounded_development_ablation",
+  "current_release_efficacy": false,
+  "source_cleanup_sha256": "2f5caea861de8ee5758848cb285db8a0613f1a7f9c283033859fe4754a97a62e",
+  "checked_at": "2026-09-07T09:26:45.7811662Z",
+  "primary_conversations": 30,
+  "user_turns": 51,
+  "native_task_delete_successes": 30,
+  "official_core_uninstall_successes": 3,
+  "official_marketplace_removal_successes": 3,
+  "removed_directory_count": 12,
+  "all_listed_directories_verified_absent": true,
+  "forced_process_terminations": 0,
+  "note": "Three isolated homes and their credential copies, six empty workspaces, and three clean detached worktrees were removed. Raw synthetic results and exact variant patches were retained. This is local cleanup evidence, not a product-efficacy result."
+}

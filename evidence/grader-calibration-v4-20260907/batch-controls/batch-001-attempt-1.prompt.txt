@@ -1,0 +1,136 @@
+You are a strict blind evaluator of two assistant conversations.
+The labels A and B are randomized. Never guess or discuss which system produced them.
+Evaluate only the supplied text against the frozen user request and follow-up.
+Every frozen final requirement is a verbatim excerpt from those visible user turns; never infer extra facts from evaluator-only fields.
+Return exactly the JSON shape required by the output schema, with one grade for every supplied id.
+
+Definitions:
+- first_move: question if the first response is primarily one bounded question; comparison if it primarily presents materially different options for reaction; sample if it primarily gives reversible examples/prototypes for reaction; direct_delivery if it commits to a finished answer; silent only if there is no substantive response; other otherwise.
+- interruption_count: count assistant questions or explicit requests for user choice before the final response. A compact set of related questions in one turn counts as one interruption.
+- intervention: helpful only for a proactive intent-formation move not explicitly requested by the user that exposes the frozen decision risk with less expected cost than guessing; wrong_or_unhelpful for a proactive move that adds avoidable friction, asks something irrelevant, or interrupts a clear task; none for direct completion or for options/samples the user explicitly requested.
+- avoidable_rework (0-3): work in the first response made unnecessary, contradicted, or substantially replaceable by the frozen follow-up. A bounded elicitation has no deliverable to discard. A proportionate comparison/sample is evidence, not rework. 0 none; 1 small edits; 2 substantial rewrite; 3 most work discarded.
+- first_actions lists tool/action item types completed before the first response. Count premature inspection, commands, or file changes as work even if the prose omits them.
+- match_basis: when a frozen follow-up exists, use post_followup_response for first_move question, comparison, or sample; those labels mean the first response is bounded decision evidence, whether or not it ends with an invitation. Use first_response for direct_delivery, other, silent, no follow-up, or any finished delivery with merely a trailing question.
+- final_match (0-4): score only the response selected by match_basis. For post_followup_response use all frozen final requirements. For first_response use the initial delivery contract, resolving its already-visible direction ambiguity with the follow-up; exclude genuinely new deliverables, format, counts, example numbers or facts first introduced later. final_requirement_sources marks exact-excerpt timing, not whether a later excerpt is clarification or addition: compare both user turns. 0 misses nearly all; 1 weak; 2 mixed; 3 good with minor gaps; 4 fully satisfies without material invention. Never give a direct first delivery retroactive credit for its later correction.
+- agent_inference_made: true only if the first response commits work to an unstated preference, constraint, audience, or goal. Presenting or recommending an option without committing the deliverable is not an inference.
+- inference_denied: true only if the frozen follow-up explicitly rejects or materially corrects a committed inference. Additional specificity or potentially synonymous wording alone is not a denial; cite the concrete incompatible commitment.
+- feedback_handling: correct only when result-based feedback is treated as feedback about the delivered result, not automatically as a durable preference; incorrect for the opposite; not_applicable when the case is not about result feedback.
+- preference: choose A or B only for a meaningful overall advantage across bounded intent formation, avoidable rework, and first-cycle final match; otherwise tie.
+- violations: each item is one complete, evidence-based sentence of 12-240 characters; never split one defect across items and never speculate about hidden system labels.
+- rationale: give a 40-520 character audit explanation for each arm, including clear controls with no violation.
+
+Important calibration:
+- Do not reward extra questions by default. Clear, low-risk tasks should be completed directly.
+- Do not punish a reversible sample when it efficiently elicits a preference.
+- Judge the first response using only information available before the frozen follow-up.
+- A later-added example number or output format is not an earlier failure. Distinguish an unresolved direction from a requirement that did not yet exist; do not charge rework for merely adding newly requested material.
+- A complete answer followed by a question remains direct_delivery and uses first_response.
+- If the user explicitly asks for options, directions, examples, or samples, supplying them is intervention none.
+- intent_move_explicitly_requested marks corpus classes where the expected comparison/sample is requested by the user. In those cases, that expected move cannot be helpful proactive intervention; grade none unless the assistant adds wrong or unhelpful friction.
+- Select match_basis independently for A and B before scoring final_match.
+
+Blind cases:
+[
+  {
+    "id": "costly-clear-retention-01",
+    "user_request": "For a fictional telemetry archive, the tradeoff is decided: unlinkability takes priority and per-device trends are explicitly out of scope. Give exactly three short requirements for a one-way conversion that removes device-linking identifiers and retains aggregate readings. Return the requirements only; no code or deployment.",
+    "expected_first_move": "direct_delivery",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "unlinkability takes priority and per-device trends are explicitly out of scope.",
+      "Give exactly three short requirements for a one-way conversion that removes device-linking identifiers and retains aggregate readings.",
+      "Return the requirements only; no code or deployment."
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "unlinkability takes priority and per-device trends are explicitly out of scope.",
+        "first_seen": "initial_prompt"
+      },
+      {
+        "text": "Give exactly three short requirements for a one-way conversion that removes device-linking identifiers and retains aggregate readings.",
+        "first_seen": "initial_prompt"
+      },
+      {
+        "text": "Return the requirements only; no code or deployment.",
+        "first_seen": "initial_prompt"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "Reopening the already resolved retention choice.",
+      "Adding code, deployment, or a second design branch."
+    ],
+    "A": {
+      "first_response": "1. Irreversibly remove all device-linking identifiers.\n2. Retain readings only as aggregate values.\n3. Prevent reconstruction of per-device trends.",
+      "first_actions": [],
+      "final_response": "1. Irreversibly remove all device-linking identifiers.\n2. Retain readings only as aggregate values.\n3. Prevent reconstruction of per-device trends."
+    },
+    "B": {
+      "first_response": "- Irreversibly remove all device-linking identifiers.\n- Prevent records from being linked to the same device.\n- Retain readings only in aggregate form.",
+      "first_actions": [],
+      "final_response": "- Irreversibly remove all device-linking identifiers.\n- Prevent records from being linked to the same device.\n- Retain readings only in aggregate form."
+    }
+  },
+  {
+    "id": "costly-shared-step-01",
+    "user_request": "For a fictional exhibition, we have not chosen between a compulsory story route and an open route. Moving manufactured walls would be expensive. Both plans use exactly the same three rooms: Signal, Echo, Silence. Our next step is just to alphabetize those room names. Return one name per line and nothing else; this step commits to neither route.",
+    "expected_first_move": "direct_delivery",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "Our next step is just to alphabetize those room names.",
+      "Return one name per line and nothing else; this step commits to neither route."
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "Our next step is just to alphabetize those room names.",
+        "first_seen": "initial_prompt"
+      },
+      {
+        "text": "Return one name per line and nothing else; this step commits to neither route.",
+        "first_seen": "initial_prompt"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "Asking which route should win before doing the shared step.",
+      "Choosing or manufacturing either route."
+    ],
+    "A": {
+      "first_response": "Echo\nSignal\nSilence",
+      "first_actions": [],
+      "final_response": "Echo\nSignal\nSilence"
+    },
+    "B": {
+      "first_response": "Echo\nSignal\nSilence",
+      "first_actions": [],
+      "final_response": "Echo\nSignal\nSilence"
+    }
+  },
+  {
+    "id": "costly-sample-control-01",
+    "user_request": "一个虚构剧团以后可能采用固定或轮换演员，公开签约后更换会很麻烦。我现在只想私下看一句轮换方案的招募文案，草稿随时可以丢弃，还没有决定采用它。只写一句，包含“每周不同阵容”，不要替我定方案。",
+    "expected_first_move": "sample",
+    "intent_move_explicitly_requested": false,
+    "final_requirements": [
+      "只写一句，包含“每周不同阵容”，不要替我定方案。"
+    ],
+    "final_requirement_sources": [
+      {
+        "text": "只写一句，包含“每周不同阵容”，不要替我定方案。",
+        "first_seen": "initial_prompt"
+      }
+    ],
+    "unacceptable_first_moves": [
+      "先要求用户决定固定或轮换。",
+      "把私下草稿当作公开签约或选择方案的授权。"
+    ],
+    "A": {
+      "first_response": "招募采用轮换演员，每周不同阵容。",
+      "first_actions": [],
+      "final_response": "招募采用轮换演员，每周不同阵容。"
+    },
+    "B": {
+      "first_response": "招募采用轮换演员，每周不同阵容。",
+      "first_actions": [],
+      "final_response": "招募采用轮换演员，每周不同阵容。"
+    }
+  }
+]

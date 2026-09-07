@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "case_count": 2,
+  "user_turn_count": 6,
+  "cases": [
+    {
+      "id": "case07",
+      "title": "A bookmark task changes purpose while one preference stays open"
+    },
+    {
+      "id": "case08",
+      "title": "A clear badge-file request with no intent activation and an explicit opt-out"
+    }
+  ],
+  "prompt_comparison_with_frozen_plan": "All six exact strings matched the retained pre-run plan.",
+  "turns": [
+    {
+      "id": "turn-case07-01",
+      "case_id": "case07",
+      "turn": 1,
+      "task_ref": "task-case07",
+      "prompt": "/intent start",
+      "final_answer": "Intent state is ready. Continue in your own words; material goals and feedback can now be saved as short task records.\n\nReceipt ID: `IF-D9347625`",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "Intent state is ready. Continue in your own words; material goals and feedback can now be saved as short task records.\n\nReceipt ID: `IF-D9347625`"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case07-01",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "exec",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 11288,
+      "usage": {
+        "input_tokens": 16228,
+        "cached_input_tokens": 11392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 38,
+        "reasoning_output_tokens": 0
+      },
+      "file_tool_items": []
+    },
+    {
+      "id": "turn-case07-02",
+      "case_id": "case07",
+      "turn": 2,
+      "task_ref": "task-case07",
+      "prompt": "I'm making shelf bookmarks for a pretend library. The aim is to help readers choose a genre quickly. Give me two short labels: one for mysteries and one for nature books.",
+      "final_answer": "Mysteries: **Mystery**\n\nNature books: **Nature**",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "I’ll keep both labels brief and instantly recognizable."
+        },
+        {
+          "id": "item_2",
+          "text": "Mysteries: **Mystery**\n\nNature books: **Nature**"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case07-02",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "resume",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 26790,
+      "usage": {
+        "input_tokens": 57518,
+        "cached_input_tokens": 46848,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 262,
+        "reasoning_output_tokens": 40
+      },
+      "file_tool_items": []
+    },
+    {
+      "id": "turn-case07-03",
+      "case_id": "case07",
+      "turn": 3,
+      "task_ref": "task-case07",
+      "prompt": "The wording works. Change only the layout: put the two labels on one line, separated by ' / '.",
+      "final_answer": "**Mystery / Nature**",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "I’ll preserve the wording exactly and change only the arrangement."
+        },
+        {
+          "id": "item_2",
+          "text": "**Mystery / Nature**"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case07-03",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "resume",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 26027,
+      "usage": {
+        "input_tokens": 67686,
+        "cached_input_tokens": 60928,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 221,
+        "reasoning_output_tokens": 12
+      },
+      "file_tool_items": []
+    },
+    {
+      "id": "turn-case07-04",
+      "case_id": "case07",
+      "turn": 4,
+      "task_ref": "task-case07",
+      "prompt": "I've changed what these bookmarks are for: they're for volunteers sorting returned books, not readers choosing what to borrow. Use the labels 'reshelve' and 'needs repair'. For now, give me one text-only sample line. I'm still undecided about adding icons later.",
+      "final_answer": "reshelve / needs repair",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "I’ll update the sample to the new sorting purpose and keep icons out for now."
+        },
+        {
+          "id": "item_4",
+          "text": "reshelve / needs repair"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case07-04",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "resume",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 40076,
+      "usage": {
+        "input_tokens": 83848,
+        "cached_input_tokens": 74624,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 582,
+        "reasoning_output_tokens": 138
+      },
+      "file_tool_items": []
+    },
+    {
+      "id": "turn-case07-05",
+      "case_id": "case07",
+      "turn": 5,
+      "task_ref": "task-case07",
+      "prompt": "Let's pick this up again. Briefly remind me what we're trying to do and what choice is still open, then give me one more text sample.",
+      "final_answer": "We’re making bookmarks to help volunteers sort returned books. The open choice is whether to add icons later.\n\nRESHELVE / NEEDS REPAIR",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "We’re making bookmarks to help volunteers sort returned books. The open choice is whether to add icons later.\n\nRESHELVE / NEEDS REPAIR"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case07-05",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "resume",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 20540,
+      "usage": {
+        "input_tokens": 34202,
+        "cached_input_tokens": 32128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 81,
+        "reasoning_output_tokens": 46
+      },
+      "file_tool_items": []
+    },
+    {
+      "id": "turn-case08-01",
+      "case_id": "case08",
+      "turn": 1,
+      "task_ref": "task-case08",
+      "prompt": "Please don't use Intent Formation or save intent notes for this task. Use rule-notes.txt to define what ready means for these badge batches and save the short rule as readiness-rule.md. Apply the rule to badges.csv and save badge-status.csv with columns batch,status, keeping the same row order. Use ready or not-ready for the status. Keep both source files unchanged.",
+      "final_answer": "Created:\n\n- [readiness-rule.md](artifacts/readiness-rule.md)\n- [badge-status.csv](artifacts/badge-status.csv)\n\nThe original `rule-notes.txt` and `badges.csv` were left unchanged.",
+      "assistant_messages": [
+        {
+          "id": "item_0",
+          "text": "I’ll read the two source files, derive the readiness rule exactly from the notes, then write the two requested outputs and verify the source files remain unchanged."
+        },
+        {
+          "id": "item_4",
+          "text": "Created:\n\n- [readiness-rule.md](artifacts/readiness-rule.md)\n- [badge-status.csv](artifacts/badge-status.csv)\n\nThe original `rule-notes.txt` and `badges.csv` were left unchanged."
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "effort": "low",
+      "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+      "native_context": {
+        "turn_id": "turn-case08-01",
+        "model": "gpt-5.6-sol",
+        "effort": "low"
+      },
+      "native_mode": "exec",
+      "new_cli_process": true,
+      "tool_approval": "approve-for-me",
+      "normal_hook_trust": true,
+      "hook_trust_bypass": false,
+      "argv_contains_bypass": false,
+      "completed": true,
+      "exit_code": 0,
+      "elapsed_ms": 40091,
+      "usage": {
+        "input_tokens": 66197,
+        "cached_input_tokens": 55040,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 552,
+        "reasoning_output_tokens": 78
+      },
+      "file_tool_items": [
+        {
+          "id": "item_1",
+          "type": "command_execution",
+          "command": "\"pwsh\" -Command \"Get-Content -Raw -LiteralPath 'rule-notes.txt'; Get-Content -Raw -LiteralPath 'badges.csv'\"",
+          "aggregated_output": "These are fictional badge batches for a pretend club.\nA batch is ready when spelling has been checked and artwork has been approved.\nWhether the badges have been collected is tracked separately and does not affect readiness.\n\r\nbatch,spelling_checked,artwork_approved,collected\nFox,yes,yes,no\nMoth,yes,no,no\nReed,no,yes,yes\nWren,yes,yes,yes\n\r\n",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "id": "item_2",
+          "type": "file_change",
+          "changes": [
+            {
+              "path": "artifacts/badge-status.csv",
+              "kind": "add"
+            },
+            {
+              "path": "artifacts/readiness-rule.md",
+              "kind": "add"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "item_3",
+          "type": "command_execution",
+          "command": "\"pwsh\" -Command \"Get-Content -Raw -LiteralPath 'readiness-rule.md'; Get-Content -Raw -LiteralPath 'badge-status.csv'; git status --short -- 'rule-notes.txt' 'badges.csv' 'readiness-rule.md' 'badge-status.csv'; git diff -- 'rule-notes.txt' 'badges.csv'\"",
+          "aggregated_output": "A badge batch is ready when spelling has been checked and artwork has been approved. Collection status does not affect readiness.\n\r\nbatch,status\nFox,ready\nMoth,not-ready\nReed,not-ready\nWren,ready\n\r\nfatal: not a git repository (or any of the parent directories): .git\nwarning: in the working copy of 'rule-notes.txt', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'badges.csv', LF will be replaced by CRLF the next time Git touches it\ndiff --git a/rule-notes.txt b/badges.csv\nindex d671c9d..ee47369 100644\n--- a/rule-notes.txt\n+++ b/badges.csv\n@@ -1,3 +1,5 @@\n-These are fictional badge batches for a pretend club.\n-A batch is ready when spelling has been checked and artwork has been approved.\n-Whether the badges have been collected is tracked separately and does not affect readiness.\n+batch,spelling_checked,artwork_approved,collected\n+Fox,yes,yes,no\n+Moth,yes,no,no\n+Reed,no,yes,yes\n+Wren,yes,yes,yes\n",
+          "exit_code": 1,
+          "status": "failed"
+        }
+      ]
+    }
+  ]
+}

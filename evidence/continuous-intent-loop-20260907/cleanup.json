@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "candidate": "c970c28f208f1055ca5983702ff042eafc9c7669",
+  "all_six_model_requests_exited": true,
+  "commands": [
+    {
+      "kind": "model_task_delete",
+      "argv": [
+        "delete",
+        "--force",
+        "task-case07"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session task-case07.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "kind": "model_task_delete",
+      "argv": [
+        "delete",
+        "--force",
+        "task-case08"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session task-case08.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "kind": "empty_onboarding_delete",
+      "argv": [
+        "delete",
+        "--force",
+        "task-onboarding-01"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: failed to delete session\n",
+      "error": null
+    },
+    {
+      "kind": "plugin_remove",
+      "argv": [
+        "plugin",
+        "remove",
+        "intent-formation-state@intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"pluginId\": \"intent-formation-state@intent-loop\",\n  \"name\": \"intent-formation-state\",\n  \"marketplaceName\": \"intent-loop\"\n}\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "kind": "plugin_remove",
+      "argv": [
+        "plugin",
+        "remove",
+        "intent-formation@intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"pluginId\": \"intent-formation@intent-loop\",\n  \"name\": \"intent-formation\",\n  \"marketplaceName\": \"intent-loop\"\n}\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "kind": "marketplace_remove",
+      "argv": [
+        "plugin",
+        "marketplace",
+        "remove",
+        "intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"marketplaceName\": \"intent-loop\",\n  \"installedRoot\": null\n}\n",
+      "stderr": "",
+      "error": null
+    }
+  ],
+  "session_files_remaining": [],
+  "filesystem": {
+    "targets": [
+      {
+        "target": "live-loop-home",
+        "exists": false
+      },
+      {
+        "target": "fixed-loop-source",
+        "exists": false
+      },
+      {
+        "target": "live-loop-workspace",
+        "exists": false
+      }
+    ],
+    "official_model_task_deletions": 2,
+    "empty_onboarding_deletion_failed": true,
+    "official_plugin_removals": 2,
+    "official_marketplace_removals": 1,
+    "session_files_after_native_delete": 0,
+    "synthetic_runtime_state_removed": true,
+    "removed_only_exact_scoped_directories": true
+  },
+  "boundary": "After closing all model processes, official removals succeeded without a file-in-use error. The failed empty-onboarding deletion is not counted as a success. Exact isolated home/source/workspace removal and absence are recorded; only redacted synthetic evidence remains public."
+}

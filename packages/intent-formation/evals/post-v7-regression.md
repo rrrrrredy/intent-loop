@@ -1,6 +1,6 @@
 # Post-v7 development regression and component removal
 
-Status: partial development execution; not release evidence. Candidate `b025222` completed the original 17 authorized post-v6 controls, five follow-ups and 17 native task deletions, with no retries or first-turn actions. The raw responses and exact installed-tree binding are in `evidence/post-v6-development`. The seven costly-branch and three v7 failure probes, clause-removal comparisons and grading calibration remain unexecuted on this candidate. Reuse synthetic prompts only within the explicit external-data authorization, without changing their initial or follow-up text. V7 is exposed diagnostic material and cannot become a fresh holdout again.
+Status: development regression and bounded removal complete; bounded grader calibration is also complete, with known semantic errors retained. Candidate `b025222` completed the original 17 authorized controls. The later `c970c28` full policy and its two single-clause removals completed the authorized ten probes on all three variants: 30 conversations / 51 user turns, without primary retries. The raw responses and exact installed-tree bindings are in `evidence/post-v6-development`. The automatic settled-rule/delegation addition was removed on main; delivery scope remains. Permission and payment-condition misses in pe-009/011 remain visible. The three-variant allowance is exhausted: do not add another policy run on these ten cases. V7 is exposed diagnostic material and cannot become a fresh holdout again.
 
 ## Positive and boundary probes
 
