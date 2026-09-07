@@ -31,6 +31,7 @@ await Promise.all([
 ]);
 
 const commonBuild = {
+  absWorkingDir: packageRoot,
   bundle: true,
   platform: "node",
   format: "esm",

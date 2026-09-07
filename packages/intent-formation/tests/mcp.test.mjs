@@ -8,7 +8,8 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { createIntentMcpServer, publicFailure } from "../server/index.mjs";
 import { IntentService } from "../src/service.mjs";
 
-const temporaryRoot = path.join(process.cwd(), ".tmp", "mcp-tests");
+const packageRoot = path.resolve(import.meta.dirname, "..");
+const temporaryRoot = path.join(packageRoot, ".tmp", "mcp-tests");
 
 async function connectedClient(context, options = {}) {
   await mkdir(temporaryRoot, { recursive: true });
@@ -24,7 +25,7 @@ async function connectedClient(context, options = {}) {
   if (options.hostTaskId) childEnvironment.CODEX_THREAD_ID = options.hostTaskId;
   const transport = new StdioClientTransport({
     command: process.execPath,
-    args: [path.join(process.cwd(), "dist", "intent-formation-server.mjs")],
+    args: [path.join(packageRoot, "dist", "intent-formation-server.mjs")],
     env: {
       ...childEnvironment,
       INTENT_FORMATION_DATA_DIR: directory

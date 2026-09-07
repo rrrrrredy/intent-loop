@@ -10,16 +10,16 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
-  assert.match(POLICY, /comparison\/options: requested count or 2-3 neutral branches/i);
+  assert.match(POLICY, /requested direction comparison: requested count or 2-3 neutral branches/i);
   assert.match(POLICY, /each: one consequence/i);
-  assert.match(POLICY, /requested comparisons answer without questions/i);
-  assert.match(POLICY, /never choose\/use tools\/start work/i);
-  assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size, inline/i);
+  assert.match(POLICY, /fulfill without a prior question/i);
+  assert.match(POLICY, /no choice or implementation/i);
+  assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size/i);
   assert.match(POLICY, /keep supplied quantities\/rules unchanged/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
-  assert.match(POLICY, /no tools\/files/i);
-  assert.match(POLICY, /overrides gate/i);
+  assert.match(POLICY, /keep unsolicited options\/samples inline/i);
+  assert.match(POLICY, /requested research\/files may use tools/i);
   assert.match(POLICY, /'compare only' stays neutral/i);
   assert.match(POLICY, /ask once only if 2\+ plausible directions remain/i);
   assert.match(POLICY, /the answer changes the next action/i);
@@ -30,7 +30,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /end in the user's language: 'You may mix them, reject all, or answer freely.'/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);
-  assert.match(POLICY, /conflict: name incompatible requirements; ask which wins; no work or mix\/reject exit/i);
+  assert.match(POLICY, /conflict: name incompatible requirements; ask which wins\./i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
