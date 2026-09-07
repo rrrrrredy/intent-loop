@@ -234,6 +234,34 @@ test("validation failures redact secrets, control characters, and absolute paths
   assert.match(report.message, /\[local path\]|\[REDACTED\]/u);
 });
 
+test("MCP forget refuses a success receipt after actual concurrent task recreation", async (context) => {
+  await mkdir(temporaryRoot, { recursive: true });
+  const directory = await mkdtemp(path.join(temporaryRoot, "forget-recreated-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const service = new IntentService({ dataDirectory: directory });
+  const concurrent = new IntentService({ dataDirectory: directory });
+  const taskId = process.env.CODEX_THREAD_ID?.trim() || process.env.CODEX_SESSION_ID?.trim() || "mcp-recreated-task";
+  await service.startTask({ task_id: taskId, mode: "standard" });
+  const purge = service.store.purgeTask.bind(service.store);
+  service.store.purgeTask = async (...args) => {
+    const removed = await purge(...args);
+    await concurrent.startTask({ task_id: taskId, mode: "standard" });
+    return removed;
+  };
+  const { server } = createIntentMcpServer({ service });
+  const client = new Client({ name: "forget-recreation-test", version: "0.1.0" });
+  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+  await server.connect(serverTransport);
+  await client.connect(clientTransport);
+  context.after(async () => { await client.close(); await server.close(); });
+  const result = await client.callTool({ name: "intent_forget", arguments: { task_id: taskId } });
+  assert.equal(result.isError, true);
+  assert.equal(result.structuredContent.ok, false);
+  assert.equal(result.structuredContent.changed, "unknown");
+  assert.equal(Object.hasOwn(result.structuredContent, "receipt_id"), false);
+  assert.equal((await concurrent.show({ task_id: taskId })).exists, true);
+});
+
 test("a post-commit MCP fault is reported as unknown and never exposes its path", async (context) => {
   await mkdir(temporaryRoot, { recursive: true });
   const directory = await mkdtemp(path.join(temporaryRoot, "in-memory-fault-"));

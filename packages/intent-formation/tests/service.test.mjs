@@ -297,6 +297,99 @@ test("record and task deletion physically purge persisted content", async (conte
   }
 });
 
+test("recovery erasure preserves identified unrelated fragments, including identical content", async (context) => {
+  const { directory, service } = await fixture(context);
+  await service.addExplicit(explicit("erase-task-a", "A shared synthetic direction"));
+  await service.addExplicit(explicit("retain-task-b", "A shared synthetic direction"));
+  const events = (await readFile(service.store.filePath, "utf8")).trim().split("\n").map(JSON.parse);
+  const unrelated = events.find((e) => e.task_id === "retain-task-b" && e.event_type === "record_added");
+  const fragment = JSON.stringify(unrelated).slice(0, -1) + "\n";
+  const recoveryPath = path.join(directory, "intent-events-v1.jsonl.corrupt.unrelated");
+  await writeFile(recoveryPath, fragment, "utf8");
+  await service.deleteTask({ task_id: "erase-task-a" });
+  assert.equal(await readFile(recoveryPath, "utf8"), fragment);
+  assert.equal((await service.show({ task_id: "retain-task-b" })).records.length, 1);
+});
+
+test("short private content is erased without matching arbitrary substrings", async (context) => {
+  const { service } = await fixture(context);
+  await service.addExplicit(explicit("short-content", "保留隐私"));
+  await service.addExplicit(explicit("short-content", "y"));
+  const recoveryPath = service.store.filePath + ".corrupt.short";
+  const unrelated = 'TRUNCATED {"statement":"unrelated synthesis';
+  await writeFile(recoveryPath, 'TRUNCATED {"statement":"保留隐私\nTRUNCATED {"statement":"y\n' + unrelated + "\n", "utf8");
+  await service.deleteTask({ task_id: "short-content" });
+  assert.equal(await readFile(recoveryPath, "utf8"), unrelated + "\n");
+});
+
+test("interrupted recovery cleanup retains deletion tokens for task, record, and private retries", async (context) => {
+  const { directory } = await fixture(context);
+  for (const operation of ["task", "record", "private"]) {
+    const service = new IntentService({ dataDirectory: path.join(directory, operation) });
+    const taskId = "retry-" + operation;
+    const canary = "ERASURE-RETRY-CANARY-" + operation;
+    const added = await service.addExplicit(explicit(taskId, canary));
+    const recoveryPath = service.store.filePath + ".corrupt.retry";
+    await writeFile(recoveryPath, 'TRUNCATED {"statement":"' + canary + "\n", "utf8");
+    const scrub = service.store.scrubRecoveryArtifactsUnlocked.bind(service.store);
+    let interrupt = true;
+    service.store.scrubRecoveryArtifactsUnlocked = async (input) => {
+      if (interrupt) { interrupt = false; throw new Error("injected recovery cleanup failure"); }
+      return scrub(input);
+    };
+    const act = () => operation === "task"
+      ? service.deleteTask({ task_id: taskId })
+      : operation === "record"
+        ? service.deleteRecord({ task_id: taskId, record_id: added.record.record_id })
+        : service.setMode({ task_id: taskId, mode: "private" });
+    await assert.rejects(act(), /injected recovery cleanup failure/);
+    assert.match(await readFile(service.store.filePath, "utf8"), new RegExp(canary));
+    await act();
+    assert.equal((await readFile(recoveryPath, "utf8")).includes(canary), false);
+    assert.equal((await readFile(service.store.filePath, "utf8")).includes(canary), false);
+  }
+});
+
+test("erasure retries recover faults around primary and backup replacement", async (context) => {
+  const { directory } = await fixture(context);
+  for (const point of ["afterAtomicBackup", "afterAtomicReplace", "beforeAtomicBackupRemoval"]) {
+    const service = new IntentService({ dataDirectory: path.join(directory, point) });
+    const taskId = "atomic-erasure";
+    const canary = "ATOMIC-ERASURE-CANARY";
+    await service.addExplicit(explicit(taskId, canary));
+    await writeFile(service.store.filePath + ".corrupt.retry", 'TRUNCATED {"statement":"' + canary + "\n", "utf8");
+    let interrupt = true;
+    service.store.lockTestHooks[point] = () => {
+      if (interrupt) { interrupt = false; throw new Error("injected atomic failure"); }
+    };
+    await assert.rejects(service.deleteTask({ task_id: taskId }), /injected atomic failure/);
+    const retried = await service.deleteTask({ task_id: taskId });
+    assert.equal(retried.exists_after, false);
+    for (const file of await readdir(service.store.dataDirectory)) {
+      if (file.startsWith("intent-events-v1.jsonl")) {
+        assert.equal((await readFile(path.join(service.store.dataDirectory, file), "utf8")).includes(canary), false, point + ":" + file);
+      }
+    }
+  }
+});
+
+test("short-lived services reject private writes even when the mode changes before append", async (context) => {
+  const { directory, service } = await fixture(context);
+  const taskId = "private-write-race";
+  await service.startTask({ task_id: taskId, mode: "standard" });
+  const writer = new IntentService({ dataDirectory: directory, retainPrivateState: false });
+  const append = writer.store.appendIf.bind(writer.store);
+  writer.store.appendIf = async (...args) => {
+    await service.setMode({ task_id: taskId, mode: "private" });
+    return append(...args);
+  };
+  await assert.rejects(writer.addFeedback({
+    task_id: taskId, statement: "PRIVATE-RACE-FEEDBACK-CANARY", feedback_class: "keep", scope: "task"
+  }), /short-lived service cannot retain private/);
+  assert.equal(writer.privateEvents.size, 0);
+  assert.doesNotMatch(await readFile(writer.store.filePath, "utf8"), /PRIVATE-RACE-FEEDBACK-CANARY/);
+});
+
 test("private mode keeps intent text in process memory only", async (context) => {
   const { directory, service } = await fixture(context);
   await service.startTask({ task_id: "task-private", mode: "private" });

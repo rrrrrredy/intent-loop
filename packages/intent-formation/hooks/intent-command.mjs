@@ -146,7 +146,11 @@ async function execute(event, command) {
     return;
   }
 
-  const service = new IntentService();
+  if (new Set(["forget", "private", "off", "export"]).has(command.name) && command.argument) {
+    requireInput("Use /intent " + command.name + " alone, without a task selector, condition, or other trailing text.");
+    return;
+  }
+  const service = new IntentService({ retainPrivateState: false });
   let data;
   let summary;
 
@@ -190,6 +194,10 @@ async function execute(event, command) {
     summary = "Saved explicit intent record " + result.record.record_id + ".";
   } else if (command.name === "show") {
     const snapshot = await service.show({ task_id: taskId, maximum: 900 });
+    if (snapshot.mode === "private") {
+      requireInput("/intent show cannot read private records held by the live State MCP process from this short-lived Hook. Use the live State MCP tool to inspect private records.");
+      return;
+    }
     data = showPage(snapshot, command.argument);
     if (!data) {
       requireInput("Use /intent show or /intent show <positive page number> within the available range.");
@@ -257,6 +265,10 @@ async function execute(event, command) {
       return;
     }
     const snapshot = await service.show({ task_id: taskId });
+    if (snapshot.mode === "private") {
+      requireInput("/intent correct is not available from this short-lived Hook in private mode. Private records belong to the live State MCP process.");
+      return;
+    }
     const target = snapshot.records.find((record) => record.record_id === match[1]);
     if (!target) throw new TypeError("Unknown record id " + match[1] + ".");
     const result = await service.addRecord({
@@ -278,6 +290,11 @@ async function execute(event, command) {
     const match = command.argument.match(/^(keep|implementation_change|intent_change|uncertain)\s*:\s*([\s\S]+)$/);
     if (!match) {
       requireInput("Use /intent feedback <keep|implementation_change|intent_change|uncertain>: <feedback>.");
+      return;
+    }
+    const current = await service.show({ task_id: taskId, maximum: 1 });
+    if (current.mode === "private") {
+      requireInput("/intent feedback is not available in private mode because this short-lived Hook cannot retain process-memory state. Use the live State MCP tool for private feedback.");
       return;
     }
     const result = await service.addFeedback({

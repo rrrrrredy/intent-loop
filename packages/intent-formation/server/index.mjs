@@ -510,8 +510,16 @@ export function createIntentMcpServer(options = {}) {
       }
     },
     handler(
-      (input) => service.deleteTask(input),
-      (data) => (data.deleted ? "All task intent state was purged." : "No task state existed.")
+      async (input) => {
+        const result = await service.deleteTask(input);
+        if (result.exists_after) {
+          throw new Error("Task intent state was concurrently recreated before deletion could be verified.");
+        }
+        return result;
+      },
+      (data) => (data.deleted
+        ? "Task intent state present at the deletion point was physically purged."
+        : "No task state existed at the deletion point.")
     )
   );
 

@@ -47,7 +47,7 @@ function validIsoTimestamp(value) {
 }
 
 function collectStrings(value, output) {
-  if (typeof value === "string" && value.length >= 8) {
+  if (typeof value === "string" && value.length > 0) {
     output.add(value);
     return;
   }
@@ -60,10 +60,32 @@ function collectStrings(value, output) {
   }
 }
 
+function collectErasureTokens(event, output) {
+  const payload = event.payload ?? {};
+  const record = payload.record ?? {};
+  // Identity and user content can locate truncated copies; schema enum values cannot.
+  collectStrings([
+    event.event_id, event.task_id, record.record_id, record.statement,
+    record.source_ref?.ref, record.source_ref?.excerpt, record.scope_ref,
+    record.supersedes, record.invalidated_reason, payload.target_record_id,
+    payload.reason, payload.label, payload.cwd_hash
+  ], output);
+}
+
+function recoveryTaskId(rawLine) {
+  for (const match of rawLine.matchAll(/"task_id"\s*:\s*("(?:[^"\\]|\\.)*")/gu)) {
+    try {
+      // Parse only a complete top-level prefix, never a string embedded in content.
+      const prefix = JSON.parse(rawLine.slice(0, match.index) + '"task_id":' + match[1] + '}');
+      if (typeof prefix.task_id === "string") return prefix.task_id;
+    } catch { /* This occurrence does not establish top-level ownership. */ }
+  }
+  return null;
+}
+
 function rawLineContainsToken(rawLine, token) {
   const encoded = JSON.stringify(token);
-  const escaped = encoded.slice(1, -1);
-  return rawLine.includes(token) || rawLine.includes(escaped);
+  return rawLine.includes(encoded) || rawLine.endsWith(encoded.slice(0, -1));
 }
 
 function processIsAlive(pid) {
@@ -354,19 +376,19 @@ export class EventStore {
         for (const event of current.events) {
           if (event.task_id === taskId) {
             removed += 1;
-            collectStrings(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens);
           } else {
             kept.push(event);
           }
         }
         return kept.concat(replacementEvents);
       })();
-      await this.atomicWriteUnlocked(events);
       await this.scrubRecoveryArtifactsUnlocked({
         taskId,
         recordId: null,
         sensitiveTokens
       });
+      await this.atomicWriteUnlocked(events);
       const result = {
         events,
         recovery: current.recovery,
@@ -395,10 +417,10 @@ export class EventStore {
         throw new TypeError("store transformer must return an event array");
       }
       transformed.forEach(validateEvent);
-      await this.atomicWriteUnlocked(transformed);
       if (options.scrubRecovery) {
         await this.scrubRecoveryArtifactsUnlocked(options.scrubRecovery);
       }
+      await this.atomicWriteUnlocked(transformed);
       const result = {
         events: transformed,
         recovery: current.recovery
@@ -434,7 +456,7 @@ export class EventStore {
           const keep = event.task_id !== taskId;
           if (!keep) {
             removed += 1;
-            collectStrings(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens);
           }
           return keep;
         }),
@@ -465,7 +487,7 @@ export class EventStore {
                 event.payload.target_record_id === recordId))
           ) {
             removed += 1;
-            collectStrings(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens);
             continue;
           }
 
@@ -522,6 +544,11 @@ export class EventStore {
           }
           output.push(JSON.stringify(event));
         } catch {
+          const owner = recoveryTaskId(rawLine);
+          if (owner !== null && owner !== scrub.taskId) {
+            output.push(rawLine);
+            continue;
+          }
           const containsSensitiveToken = [...scrub.sensitiveTokens].some(
             (token) => rawLineContainsToken(rawLine, token)
           );
@@ -873,10 +900,13 @@ export class EventStore {
       }
       if (hadCurrent) {
         await rename(this.filePath, this.backupPath);
+        await this.lockTestHooks.afterAtomicBackup?.();
       }
       await rename(temporaryPath, this.filePath);
+      await this.lockTestHooks.afterAtomicReplace?.();
       await restrictFile(this.filePath);
       if (hadCurrent) {
+        await this.lockTestHooks.beforeAtomicBackupRemoval?.();
         await rm(this.backupPath, { force: true });
       }
     } catch (error) {

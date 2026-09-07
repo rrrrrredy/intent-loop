@@ -444,6 +444,60 @@ test("remember refuses a false private-mode receipt from a short-lived Hook", as
   assert.equal(persisted.includes(privateStatement), false);
 });
 
+test("private feedback, correction, and show cannot claim access to another process's memory", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  const taskId = "session-private-live-memory";
+  await service.startTask({ task_id: taskId, mode: "private" });
+  const record = await service.addExplicit({
+    task_id: taskId, statement: "PRIVATE-LIVE-MEMORY-CANARY", role: "desired_outcome", scope: "task"
+  });
+  for (const prompt of [
+    "/intent show",
+    "/intent correct " + record.record.record_id + " => PRIVATE-CORRECTION-CANARY",
+    "/intent feedback keep: PRIVATE-FEEDBACK-CANARY"
+  ]) {
+    const result = await runHook(JSON.stringify({
+      session_id: taskId, hook_event_name: "UserPromptSubmit", prompt
+    }), dataDirectory, commandHookPath);
+    const contextText = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+    assert.match(contextText, /"ok":false/);
+    assert.match(contextText, /"changed":false/);
+    assert.doesNotMatch(contextText, /receipt_id|no saved records/i);
+  }
+  assert.deepEqual((await service.show({ task_id: taskId })).records.map((r) => r.statement), [
+    "PRIVATE-LIVE-MEMORY-CANARY"
+  ]);
+  assert.doesNotMatch(await readFile(path.join(dataDirectory, "intent-events-v1.jsonl"), "utf8"), /PRIVATE-.*-CANARY/);
+});
+
+test("no-argument controls preserve added authorization conditions and task qualifiers", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  const taskId = "session-conditional-control";
+  await service.addExplicit({ task_id: taskId, statement: "Preserve this direction", role: "desired_outcome", scope: "task" });
+  const before = await readFile(path.join(dataDirectory, "intent-events-v1.jsonl"), "utf8");
+  for (const prompt of [
+    "/intent forget after I approve; do not delete yet.",
+    "/intent forget task-other",
+    "/intent private after I approve",
+    "/intent off after I approve",
+    "/intent export after I approve"
+  ]) {
+    const result = await runHook(JSON.stringify({
+      session_id: taskId, hook_event_name: "UserPromptSubmit", prompt
+    }), dataDirectory, commandHookPath);
+    const contextText = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+    assert.match(contextText, /"ok":false/);
+    assert.match(contextText, /"changed":false/);
+    assert.doesNotMatch(contextText, /receipt_id/);
+    assert.equal(await readFile(path.join(dataDirectory, "intent-events-v1.jsonl"), "utf8"), before);
+  }
+  assert.equal((await service.show({ task_id: taskId })).mode, "standard");
+  assert.equal(await service.fastTaskMode({ task_id: taskId }), null);
+  await assert.rejects(readdir(path.join(dataDirectory, "exports")), /ENOENT/);
+});
+
 test("manual export writes a complete file without injecting records and forget purges it", async (context) => {
   const dataDirectory = await hookFixture(context);
   const service = new IntentService({ dataDirectory });

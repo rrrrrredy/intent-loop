@@ -609,6 +609,7 @@ export class IntentService {
   constructor(options = {}) {
     this.clock = options.clock || (() => new Date().toISOString());
     this.idFactory = options.idFactory || makeId;
+    this.retainPrivateState = options.retainPrivateState !== false;
     this.store =
       options.store ||
       new EventStore({
@@ -943,6 +944,9 @@ export class IntentService {
       throw new Error("intent tracking is off for this task");
     }
     if (snapshot.mode === "private") {
+      if (!this.retainPrivateState) {
+        throw new Error("this short-lived service cannot retain private process-memory state");
+      }
       const marker = privateMarkerId(taskId, result.events);
       const ownedMarker = this.privateMarkers.get(taskId);
       if (!marker || (ownedMarker !== undefined && ownedMarker !== marker)) {

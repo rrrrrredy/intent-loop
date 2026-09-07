@@ -23331,7 +23331,7 @@ function validIsoTimestamp(value) {
   return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }
 function collectStrings(value, output) {
-  if (typeof value === "string" && value.length >= 8) {
+  if (typeof value === "string" && value.length > 0) {
     output.add(value);
     return;
   }
@@ -23343,10 +23343,38 @@ function collectStrings(value, output) {
     Object.values(value).forEach((item) => collectStrings(item, output));
   }
 }
+function collectErasureTokens(event, output) {
+  const payload = event.payload ?? {};
+  const record2 = payload.record ?? {};
+  collectStrings([
+    event.event_id,
+    event.task_id,
+    record2.record_id,
+    record2.statement,
+    record2.source_ref?.ref,
+    record2.source_ref?.excerpt,
+    record2.scope_ref,
+    record2.supersedes,
+    record2.invalidated_reason,
+    payload.target_record_id,
+    payload.reason,
+    payload.label,
+    payload.cwd_hash
+  ], output);
+}
+function recoveryTaskId(rawLine) {
+  for (const match of rawLine.matchAll(/"task_id"\s*:\s*("(?:[^"\\]|\\.)*")/gu)) {
+    try {
+      const prefix = JSON.parse(rawLine.slice(0, match.index) + '"task_id":' + match[1] + "}");
+      if (typeof prefix.task_id === "string") return prefix.task_id;
+    } catch {
+    }
+  }
+  return null;
+}
 function rawLineContainsToken(rawLine, token) {
   const encoded = JSON.stringify(token);
-  const escaped = encoded.slice(1, -1);
-  return rawLine.includes(token) || rawLine.includes(escaped);
+  return rawLine.includes(encoded) || rawLine.endsWith(encoded.slice(0, -1));
 }
 function processIsAlive(pid) {
   if (!Number.isInteger(pid) || pid <= 0) {
@@ -23595,19 +23623,19 @@ var EventStore = class {
         for (const event of current.events) {
           if (event.task_id === taskId2) {
             removed += 1;
-            collectStrings(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens);
           } else {
             kept.push(event);
           }
         }
         return kept.concat(replacementEvents);
       })();
-      await this.atomicWriteUnlocked(events);
       await this.scrubRecoveryArtifactsUnlocked({
         taskId: taskId2,
         recordId: null,
         sensitiveTokens
       });
+      await this.atomicWriteUnlocked(events);
       const result2 = {
         events,
         recovery: current.recovery,
@@ -23635,10 +23663,10 @@ var EventStore = class {
         throw new TypeError("store transformer must return an event array");
       }
       transformed.forEach(validateEvent);
-      await this.atomicWriteUnlocked(transformed);
       if (options.scrubRecovery) {
         await this.scrubRecoveryArtifactsUnlocked(options.scrubRecovery);
       }
+      await this.atomicWriteUnlocked(transformed);
       const result = {
         events: transformed,
         recovery: current.recovery
@@ -23671,7 +23699,7 @@ var EventStore = class {
         const keep = event.task_id !== taskId2;
         if (!keep) {
           removed += 1;
-          collectStrings(event, sensitiveTokens);
+          collectErasureTokens(event, sensitiveTokens);
         }
         return keep;
       }),
@@ -23695,7 +23723,7 @@ var EventStore = class {
         for (const event of events) {
           if (event.task_id === taskId2 && (event.event_type === "record_added" && event.payload.record?.record_id === recordId2 || event.event_type === "record_invalidated" && event.payload.target_record_id === recordId2)) {
             removed += 1;
-            collectStrings(event, sensitiveTokens);
+            collectErasureTokens(event, sensitiveTokens);
             continue;
           }
           kept.push(scrubRecordReferences(event, taskId2, recordId2));
@@ -23741,6 +23769,11 @@ var EventStore = class {
           }
           output.push(JSON.stringify(event));
         } catch {
+          const owner = recoveryTaskId(rawLine);
+          if (owner !== null && owner !== scrub.taskId) {
+            output.push(rawLine);
+            continue;
+          }
           const containsSensitiveToken = [...scrub.sensitiveTokens].some(
             (token) => rawLineContainsToken(rawLine, token)
           );
@@ -24028,10 +24061,13 @@ var EventStore = class {
       }
       if (hadCurrent) {
         await rename(this.filePath, this.backupPath);
+        await this.lockTestHooks.afterAtomicBackup?.();
       }
       await rename(temporaryPath, this.filePath);
+      await this.lockTestHooks.afterAtomicReplace?.();
       await restrictFile(this.filePath);
       if (hadCurrent) {
+        await this.lockTestHooks.beforeAtomicBackupRemoval?.();
         await rm(this.backupPath, { force: true });
       }
     } catch (error2) {
@@ -24568,6 +24604,7 @@ var IntentService = class {
   constructor(options = {}) {
     this.clock = options.clock || (() => (/* @__PURE__ */ new Date()).toISOString());
     this.idFactory = options.idFactory || makeId;
+    this.retainPrivateState = options.retainPrivateState !== false;
     this.store = options.store || new EventStore({
       dataDirectory: options.dataDirectory || resolveDataDirectory(options.environment)
     });
@@ -24874,6 +24911,9 @@ var IntentService = class {
       throw new Error("intent tracking is off for this task");
     }
     if (snapshot.mode === "private") {
+      if (!this.retainPrivateState) {
+        throw new Error("this short-lived service cannot retain private process-memory state");
+      }
       const marker = privateMarkerId(taskId2, result.events);
       const ownedMarker = this.privateMarkers.get(taskId2);
       if (!marker || ownedMarker !== void 0 && ownedMarker !== marker) {
@@ -25677,8 +25717,14 @@ function createIntentMcpServer(options = {}) {
       }
     },
     handler(
-      (input) => service.deleteTask(input),
-      (data) => data.deleted ? "All task intent state was purged." : "No task state existed."
+      async (input) => {
+        const result = await service.deleteTask(input);
+        if (result.exists_after) {
+          throw new Error("Task intent state was concurrently recreated before deletion could be verified.");
+        }
+        return result;
+      },
+      (data) => data.deleted ? "Task intent state present at the deletion point was physically purged." : "No task state existed at the deletion point."
     )
   );
   return { server, service };
