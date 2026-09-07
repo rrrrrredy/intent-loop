@@ -178,6 +178,18 @@
 
 **Evidence:** All local v7 checks passed with zero overlap violations. The initial/follow-up/requirement strings are unchanged. The reviewer rejected a new seven-case cloud run, which was not started; the user-perspective agent made zero model requests. Product efficacy and actual chat acceptance remain pending.
 
+## D-045 — Preserve the incomplete v7 primary and separate grading defects
+
+**Decision:** Retain all 160 attempts, five operational failures, 75 complete-pair grades and original failed gates. No primary replacement or favorable subset release claim. Four explicit capacity errors and one timeout produced 155 usable conversations; all native tasks were deleted.
+
+**Reason:** The available-pair diagnosis still exposes real permission/payment-rule assumptions and a misplaced access question. The independent audit also found later-added example numbers unfairly charged to first responses and a disputed denominator denial. These qualifications do not rewrite the original scores or turn the incomplete study into evidence of release efficacy.
+
+## D-046 — Test delivery boundaries and temporal grading without another framework
+
+**Decision:** Add narrow delivery-scope and settled-rule/delegation text, preserve explicit file/research/implementation requests, constrain access requests to the actual deliverable, and make the export Hook preserve its content digest. Prepare removal controls on already sent development and failed v7 cases. The 1,496-byte policy is a candidate for regression and ablation, not a measured improvement.
+
+**Reason:** A short rule can choose consequential effects without any system write; explicit delegation and disposable samples still allow direct progress. Prospective grading v4 records exact-excerpt timing and distinguishes later additions from clarification, while preserving first-cycle selection and numerical gates. Old v3 artifacts bind to their original Git commit and remain unchanged.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

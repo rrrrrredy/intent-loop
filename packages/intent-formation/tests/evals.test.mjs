@@ -16,7 +16,7 @@ import { createEvidenceSanitizer } from "../evals/evidence-sanitizer.mjs";
 import { gitTreeFingerprint, treeFingerprint } from "../evals/fingerprint.mjs";
 import { createFreshRunDirectories } from "../evals/fresh-run-directories.mjs";
 import { violationRatePercent } from "../evals/metrics.mjs";
-import { validateVisibleFinalRequirements } from "../evals/scenario-contract.mjs";
+import { validateVisibleFinalRequirements, visibleFinalRequirementSources } from "../evals/scenario-contract.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
@@ -797,12 +797,28 @@ test("formal corpus rejects final requirements hidden from user-visible turns", 
   );
 });
 
-test("v3 grading prevents hidden facts, retroactive credit, and mislabeled intervention", async () => {
+test("requirement timing preserves later additions instead of presenting them as initial facts", () => {
+  const scenario = {
+    id: "timing-boundary",
+    initial_prompt: "Define coverage as a percentage. Compare time covered and sessions covered.",
+    follow_up: "Use time covered. Include a 50-minute and 10-minute example.",
+    final_requirements: ["as a percentage", "time covered", "50-minute and 10-minute example"]
+  };
+  assert.deepEqual(visibleFinalRequirementSources(scenario), [
+    { text: "as a percentage", first_seen: "initial_prompt" },
+    { text: "time covered", first_seen: "initial_prompt" },
+    { text: "50-minute and 10-minute example", first_seen: "follow_up" }
+  ]);
+  scenario.final_requirements = ["sessions covered.\nUse time covered"];
+  assert.throws(() => visibleFinalRequirementSources(scenario), /not an exact user-visible excerpt/);
+});
+
+test("v4 grading prevents hidden facts, temporal hindsight, retroactive credit, and mislabeled intervention", async () => {
   const source = await readFile(
     path.join(repositoryRoot, "evals", "grade-study.mjs"),
     "utf8"
   );
-  assert.match(source, /intent-formation-blind-v3/);
+  assert.match(source, /intent-formation-blind-v4/);
   assert.match(source, /verbatim excerpt from those visible user turns/i);
   assert.match(source, /Never give a direct first delivery retroactive credit/i);
   assert.match(source, /options\/samples the user explicitly requested/i);
@@ -814,6 +830,9 @@ test("v3 grading prevents hidden facts, retroactive credit, and mislabeled inter
   assert.match(source, /rationale: give a 40-520 character audit explanation/i);
   assert.match(source, /candidate-bound grading requires a clean tracked worktree/i);
   assert.match(source, /grading_tool_commit/);
+  assert.match(source, /final_requirement_sources: visibleFinalRequirementSources/);
+  assert.match(source, /exclude genuinely new deliverables, format, counts, example numbers or facts first introduced later/);
+  assert.match(source, /potentially synonymous wording alone is not a denial/);
 });
 
 test("inference-denial violation rate treats no committed inference as zero violations", () => {

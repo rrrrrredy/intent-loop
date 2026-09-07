@@ -1,6 +1,6 @@
 # Development ablation report
 
-Status: **POST-V6 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 returned `STOP` and a post-run audit invalidated it for efficacy use. A first authorized 17-case installed-Hook run exposed both a development-label defect and eight unnecessary questions. Candidate `d10a920` removed all eight questions, while `6a54622` still guessed a missing duration despite a narrower fact rule. The current 1,362-byte precedence repair requires targeted rerun and component ablation before a new holdout can be sealed.
+Status: **POST-V7 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 failed and was invalidated; v7's primary was incomplete and its available-pair diagnostic retained two raw failed gates. Earlier missing-duration claims were retracted because the prompt requested fiction. The new 1,496-byte policy revision adds delivery-scope and settled-rule boundaries with explicit file/research/implementation and delegation exits; these additions require actual regression and component removal before retention. The 1,500-byte development guard is an implementation ceiling, not a relaxed latency or efficacy gate.
 
 ## Question
 
@@ -111,7 +111,15 @@ Selected repeated runs are published with raw responses and exact policy/tree ha
 
 Candidate `2b9101f` uses 1,193 policy bytes. Its complete 17-case run finished all first turns, five follow-ups, and all task deletions with no first-turn actions. This is not a blanket quality pass: the card-game response still mentions an unsupplied mechanism and a wall label ends with awkward filler. These outputs remain in the archive rather than being silently excluded.
 
-The fresh seven-case costly-branch repeat and v7 efficacy run have not started because they require external-data authorization beyond the existing 17-case approval. Original joint thresholds remain unchanged. None of the component trials or corrected labels supplies independent release evidence.
+The subsequently authorized seven-case run finished all seven first turns, four follow-ups and seven task deletions with no first-turn actions: four costly branches asked for priority, and three controls proceeded. V7 then ran all 160 conversations, but only 155 / 160 were usable. The 75-pair diagnostic is not a complete study. Original joint thresholds remain unchanged. None of these development trials supplies independent release evidence.
+
+## Post-v7 repair and planned removal checks
+
+The [independent case audit](v7-case-audit.md) retains real effect-selection mistakes in `v7-pe-009` and `v7-pe-011`, and the misplaced access question in `v7-pe-001`. The three plugin command items were local inspection, not business-system writes. In `v7-pe-015`, the example numbers were introduced only in the follow-up and its denominator denial is disputed; no frozen grade is rewritten.
+
+The smallest repair candidates are: keep the requested delivery surface (defining an action does not authorize execution); distinguish a settled recurring rule from a disposable sample; honor explicit delegation with a stated assumption/tradeoff. Existing cheap-draft, shared-step, neutral-comparison, incompatible-requirement and missing-input boundaries stay in place. This is a causal hypothesis, not a demonstrated fix.
+
+[Post-v7 regression plan](../packages/intent-formation/evals/post-v7-regression.md) reuses previously sent cases and specifies removal controls. No model results are claimed until those runs finish. The prospective [v4 grading protocol](../packages/intent-formation/evals/grading-protocol-v4.md) records requirement timing and excludes later-added facts/format/counts from earlier-response penalties; it retains first-cycle selection and all original numerical gates. Its source contract has a local regression, but judge behavior still needs model calibration.
 
 ## First formal holdout result
 

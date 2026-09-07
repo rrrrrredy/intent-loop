@@ -1,0 +1,137 @@
+{
+  "attempted_conversations": 160,
+  "usable_conversations": 155,
+  "usable_pairs": 75,
+  "required_pairs": 80,
+  "primary_retries": 0,
+  "native_task_deletions": 160,
+  "failed_conversations": [
+    {
+      "id": "v7-un-004",
+      "arm": "plugin",
+      "first": {
+        "exit_code": 0,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 45812,
+        "response_present": true
+      },
+      "second": {
+        "exit_code": 1,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 50396,
+        "response_present": false
+      },
+      "native_errors": [
+        {
+          "phase": "second",
+          "type": "error",
+          "message": "Selected model is at capacity. Please try a different model."
+        },
+        {
+          "phase": "second",
+          "type": "turn.failed",
+          "message": "Selected model is at capacity. Please try a different model."
+        }
+      ]
+    },
+    {
+      "id": "v7-un-008",
+      "arm": "baseline",
+      "first": {
+        "exit_code": 0,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 88363,
+        "response_present": true
+      },
+      "second": {
+        "exit_code": 1,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 40306,
+        "response_present": false
+      },
+      "native_errors": [
+        {
+          "phase": "second",
+          "type": "error",
+          "message": "Selected model is at capacity. Please try a different model."
+        },
+        {
+          "phase": "second",
+          "type": "turn.failed",
+          "message": "Selected model is at capacity. Please try a different model."
+        }
+      ]
+    },
+    {
+      "id": "v7-un-012",
+      "arm": "baseline",
+      "first": {
+        "exit_code": 0,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 164573,
+        "response_present": true
+      },
+      "second": {
+        "exit_code": null,
+        "signal": "SIGTERM",
+        "timed_out": true,
+        "duration_ms": 300106,
+        "response_present": false
+      },
+      "native_errors": []
+    },
+    {
+      "id": "v7-co-012",
+      "arm": "plugin",
+      "first": {
+        "exit_code": 1,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 6231,
+        "response_present": false
+      },
+      "second": null,
+      "native_errors": [
+        {
+          "phase": "first",
+          "type": "error",
+          "message": "Selected model is at capacity. Please try a different model."
+        },
+        {
+          "phase": "first",
+          "type": "turn.failed",
+          "message": "Selected model is at capacity. Please try a different model."
+        }
+      ]
+    },
+    {
+      "id": "v7-cl-011",
+      "arm": "plugin",
+      "first": {
+        "exit_code": 1,
+        "signal": null,
+        "timed_out": false,
+        "duration_ms": 6071,
+        "response_present": false
+      },
+      "second": null,
+      "native_errors": [
+        {
+          "phase": "first",
+          "type": "error",
+          "message": "Selected model is at capacity. Please try a different model."
+        },
+        {
+          "phase": "first",
+          "type": "turn.failed",
+          "message": "Selected model is at capacity. Please try a different model."
+        }
+      ]
+    }
+  ]
+}

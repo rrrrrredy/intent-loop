@@ -1,0 +1,323 @@
+{
+  "schema_version": 1,
+  "evidence_class": "incomplete_primary_diagnostic",
+  "current_release_efficacy": false,
+  "release_gate_result": "NOT_ELIGIBLE_INCOMPLETE_PRIMARY",
+  "candidate_commit": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "corpus": {
+    "path": "packages/intent-formation/evals/holdout-80.jsonl",
+    "sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+    "byte_size": 70685,
+    "scenario_count": 80,
+    "distribution": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    },
+    "language_distribution": {
+      "en": 60,
+      "zh-CN": 20
+    },
+    "language_allocation_by_class": {
+      "poorly_expressed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "unformed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "conflict": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "preference_after_result": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "clear": {
+        "en": 16,
+        "zh-CN": 4
+      }
+    },
+    "feedback_label_distribution": {
+      "keep": 6,
+      "implementation_change": 4,
+      "intent_change": 4,
+      "uncertain": 1
+    },
+    "minimum_distinct_domains": 40,
+    "actual_distinct_domains": 80,
+    "maximum_cases_per_domain": 2,
+    "actual_maximum_cases_per_domain": 1,
+    "text_encoding": "UTF-8 without BOM",
+    "line_endings": "LF"
+  },
+  "candidate_plugin_tree": {
+    "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+    "file_count": 14,
+    "bytes": 34427
+  },
+  "design": {
+    "pairing": "within-scenario",
+    "pair_order": "alternating AB/BA",
+    "arms_within_pair": "sequential",
+    "pair_worker_concurrency": 4,
+    "turn_timeout_ms": 300000,
+    "primary_run_retry_policy": "none"
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "host": {
+      "platform": "win32",
+      "arch": "x64",
+      "node": "v22.19.0"
+    },
+    "codex_cli_version": "codex-cli 0.153.4",
+    "attempted_conversations": 160,
+    "usable_conversations": 155,
+    "usable_pairs": 75,
+    "primary_retries": 0,
+    "native_task_deletions": 160
+  },
+  "grading": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "rubric_version": "intent-formation-blind-v3",
+    "grading_tool_commit": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+    "grading_contract": {
+      "grader_sha256": "7699237f3cc1cd50b8757d97705f48e15f74a4055f3049d9f1ad3645cba8cb96",
+      "schema_sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+      "rationale_minimum_characters": 40,
+      "rationale_maximum_characters": 520
+    },
+    "graded_pairs": 75,
+    "batch_attempts": [
+      {
+        "index": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 69787,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 86170,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 74186,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 83826,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 79807,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 188500,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 6,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 69786,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 7,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 82776,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 8,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 71028,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 9,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 42725,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 10,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 57642,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 11,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 36115,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 12,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 35872,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 13,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 35982,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 14,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 34626,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "failed_batches": []
+  },
+  "source_summary_sha256": "eaf2ed26c10d4e294e7c3b9b658b58b243e46c009c5b3bc00af97a007dff9cff",
+  "source_grading_summary_sha256": "70679bfa37176367224f28aafbc2e4ba5b1c25df802bcbb5a9cedfab1f7ae52d",
+  "source_sha256": {
+    "packages/intent-formation/evals/holdout-80.jsonl": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+    "packages/intent-formation/evals/holdout-manifest.json": "f04af46af246d319c66ebfdb7a2170a2dd3087207b4c84729445ed1b794613d2",
+    "packages/intent-formation/evals/run-study.mjs": "c0320fd1af28f34aa847740dd4ab7bbead18b1a7b138f49431b4ea7d5455d6da",
+    "packages/intent-formation/evals/grade-study.mjs": "7699237f3cc1cd50b8757d97705f48e15f74a4055f3049d9f1ad3645cba8cb96",
+    "packages/intent-formation/evals/grading-output-v3.schema.json": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+    "packages/intent-formation/evals/grading-protocol-v3.md": "85ec47e8d55f04858b0a717dbd6390433e75ac9274b5f7cd30aa28276a6d255d",
+    "packages/intent-formation/evals/analysis-core.mjs": "0e106fb074ed0ab2c3455a7fb01847d80dd6356edc919c56651479e00a68d88d",
+    "packages/intent-formation/src/policy.mjs": "3fe2dc24d067d819bc373ec6e79eb11ba6800a94c1fdbbc5a41df962762d5c14"
+  },
+  "sanitization": {
+    "control_characters_replaced": 0,
+    "local_paths_replaced": 8,
+    "secret_patterns_replaced": 0,
+    "strings_truncated": 0,
+    "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step."
+  },
+  "artifact_sha256": {
+    "README.md": "af894b0ff71ac8ce033544ebf6a8b26e8a0ce59d3175070bb904d03fb68b966e",
+    "runs.jsonl": "bdf137f5be02a0df80602250bf40b1014309477902de3333747a496fbe47f583",
+    "failures.json": "46bf4e73c72404618f8c3975d841a4a762301a56d3c66b7940fcd27d89237802",
+    "blind-grades.jsonl": "72ce6e6056dd0d0800318b514ac40d12dcf9d9f92ec2e2acd9d2ccb8473d0256",
+    "analysis.json": "ae00a439048a61de4b4906473c037b2509a00659ea7e123e04c495c96c6e925e"
+  }
+}

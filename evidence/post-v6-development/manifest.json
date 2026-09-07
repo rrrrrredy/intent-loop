@@ -2,7 +2,7 @@
   "schema_version": 1,
   "evidence_class": "development_regression",
   "current_release_efficacy": false,
-  "generated_at": "2026-09-07T04:27:10.671Z",
+  "generated_at": "2026-09-07T07:01:12.200Z",
   "trials": [
     {
       "id": "d2be057-full",
@@ -707,6 +707,50 @@
       "follow_ups": 5,
       "successful_cleanups": 17,
       "operational_failures": 0
+    },
+    {
+      "id": "16c4b19-costly-seven",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "ecfb2c369fad4a495e8d4717bb5d6be48309a1096cf5d9fd2c8b2f95db515fdd",
+      "candidate_commit": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 1,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "installed_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "git_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Incompatible requirements: ask which wins, not for a mix. Requested comparisons/options: give the requested count or 2-3 neutral branches, each with one consequence; honor placeholders. End that comparison by inviting mixes, rejection, or freeform replies in the user's language. Do not choose or implement. Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1193,
+      "first_turns": 7,
+      "follow_ups": 4,
+      "successful_cleanups": 7,
+      "operational_failures": 0
     }
   ],
   "sanitization": {
@@ -717,7 +761,7 @@
     "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step."
   },
   "artifact_sha256": {
-    "runs.jsonl": "d62f605c89f8b5d18d5df244c0e52d0f3756acfaee475b1d0cc2f80425b74b9a",
+    "runs.jsonl": "52566b0324865c4a264bf0a31d3c6b3836d89974b6a00ce82eb1ab99eca87cb0",
     "dependency-audits.json": "0062e21d53b91b94a029de3d03d55e555e1593ae59cbb0434d941220a8805c2a",
     "interrupted-run.json": "93698d0887df2b604ccf8454211484ef0f8f6d626a562574716ecb7b89ca5419"
   }

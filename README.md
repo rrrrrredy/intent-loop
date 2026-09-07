@@ -92,7 +92,9 @@ The [development ablation report](docs/ablation-report.md) records which policy 
 
 The independently sealed v6 holdout was run to completion and returned `STOP`: clear-task paired latency, wrong-intervention rate, and inference-denial rate missed their fixed thresholds. A post-run audit also found at least eleven scenarios whose final-match checklist contained facts absent from the user-visible turns, so the run is retained only as a [failed diagnostic](evidence/failed-holdout-v6/README.md), never as efficacy evidence.
 
-The prerelease remains blocked while the failure-derived revision is tested and ablated. Publication requires a newly authored, hash-sealed holdout whose every outcome requirement is an exact excerpt from a user-visible turn, run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and every predeclared gate passing. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
+The [v7 primary run](evidence/failed-holdout-v7/README.md) produced 155 usable conversations out of 160, leaving 75 complete pairs. Four explicit model-capacity failures and one timeout were retained without primary replacement. The available-pair diagnostic is ineligible for release and also retains failed inference-denial and premature-action gates. A separate [case audit](docs/v7-case-audit.md) distinguishes real rule-selection and delivery-scope problems from hindsight grading; original scores remain unchanged.
+
+The prerelease remains blocked while the failure-derived revision is tested and ablated. Publication requires a newly authored, hash-sealed holdout whose every outcome requirement is an exact excerpt from a user-visible turn and whose follow-up does not introduce hidden first-turn delivery obligations, run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and every predeclared gate passing. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
 
 ## Platform boundary
 
@@ -100,13 +102,15 @@ Source and packaging checks run on Windows, Ubuntu, and macOS with supported Nod
 
 ## Uninstall
 
-If State is installed and you want its current task data removed, run `/intent forget` first and keep the receipt. Then:
+If State is installed and you want its current task data removed, run `/intent forget` first and keep the receipt. Close Codex tasks using these plugins, then run:
 
 ~~~shell
 codex plugin remove intent-formation-state@intent-loop
 codex plugin remove intent-formation@intent-loop
 codex plugin marketplace remove intent-loop
 ~~~
+
+On Windows, if removal reports a file in use or `os error 32`, exit the Codex app and retry from a separate terminal. An active MCP process can hold the installed directory open. Do not delete the source checkout or terminate unrelated Node processes.
 
 For DeepSeek Harness:
 

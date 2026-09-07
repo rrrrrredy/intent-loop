@@ -1,0 +1,239 @@
+{
+  "candidate": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "source": "Actual trusted developer-role Hook result messages extracted before private session deletion",
+  "success_count": 10,
+  "unsuccessful_count": 2,
+  "results": [
+    {
+      "turn_id": "case06-turn01",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-568DF3B0",
+        "summary": "Intent state is ready in standard mode.",
+        "data": {
+          "exists": true,
+          "mode": "standard"
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn02",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-92161ED6",
+        "summary": "Saved explicit intent record record-01.",
+        "data": {
+          "record_id": "record-01",
+          "role": "soft_constraint"
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn03",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-CA3B3C61",
+        "summary": "Showing active intent page 1 of 1.",
+        "data": {
+          "exists": true,
+          "mode": "standard",
+          "page": 1,
+          "page_size": 3,
+          "total_active_records": 1,
+          "total_pages": 1,
+          "has_more": false,
+          "records": [
+            {
+              "record_id": "record-01",
+              "statement": "Use short labels on the pretend board-game cards.",
+              "role": "soft_constraint",
+              "epistemic_status": "explicit",
+              "status": "active",
+              "scope": "task",
+              "source": {
+                "kind": "user_turn",
+                "ref": "runtime-01"
+              }
+            }
+          ]
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn04",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-66658708",
+        "summary": "Saved the correction and retained prior history.",
+        "data": {
+          "record_id": "record-02",
+          "supersedes": [
+            "record-01"
+          ]
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn05",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-F1863D9E",
+        "summary": "Showing active intent page 1 of 1.",
+        "data": {
+          "exists": true,
+          "mode": "standard",
+          "page": 1,
+          "page_size": 3,
+          "total_active_records": 1,
+          "total_pages": 1,
+          "has_more": false,
+          "records": [
+            {
+              "record_id": "record-02",
+              "statement": "Use full sentences on the pretend board-game cards.",
+              "role": "soft_constraint",
+              "epistemic_status": "explicit",
+              "status": "active",
+              "scope": "task",
+              "source": {
+                "kind": "user_turn",
+                "ref": "runtime-02"
+              }
+            }
+          ]
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn06",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-2919D5BF",
+        "summary": "Portable intent export saved under id export-01.json. Records: 2. SHA-256: 2596eec2728bf1efc56ba9afd8c3987195034756e4d59e36598ded6ba7fd65cc.",
+        "data": {
+          "export_id": "export-01.json",
+          "bytes": 2133,
+          "record_count": 2,
+          "format": "intent-formation-export",
+          "version": 1,
+          "integrity": {
+            "algorithm": "sha256",
+            "digest": "2596eec2728bf1efc56ba9afd8c3987195034756e4d59e36598ded6ba7fd65cc"
+          }
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn07",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-E4050C17",
+        "summary": "Intent mode is now private.",
+        "data": {
+          "mode": "private"
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn08",
+      "result": {
+        "ok": false,
+        "source": "intent_formation_hook",
+        "changed": false,
+        "error": {
+          "code": "InputRequired",
+          "message": "/intent show cannot read private records held by the live State MCP process from this short-lived Hook. Use the live State MCP tool to inspect private records."
+        }
+      },
+      "exact_success_receipt_matches_answer": null,
+      "success_receipt_absent": true
+    },
+    {
+      "turn_id": "case06-turn09",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-334BEF77",
+        "summary": "Intent mode is now off.",
+        "data": {
+          "mode": "off"
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn11",
+      "result": {
+        "ok": false,
+        "source": "intent_formation_hook",
+        "changed": false,
+        "error": {
+          "code": "InputRequired",
+          "message": "Intent tracking is off. Use /intent start before /intent remember."
+        }
+      },
+      "exact_success_receipt_matches_answer": null,
+      "success_receipt_absent": true
+    },
+    {
+      "turn_id": "case06-turn12",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-843D2E7B",
+        "summary": "Task intent state present at the deletion point was physically purged.",
+        "data": {
+          "deleted": true,
+          "removed_events": 1,
+          "removed_exports": 0,
+          "exists_after": false
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    },
+    {
+      "turn_id": "case06-turn13",
+      "result": {
+        "ok": true,
+        "source": "intent_formation_hook",
+        "receipt_id": "IF-3413B52B",
+        "summary": "No saved intent is active for this task.",
+        "data": {
+          "exists": false,
+          "mode": "standard",
+          "page": 1,
+          "page_size": 3,
+          "total_active_records": 0,
+          "total_pages": 1,
+          "has_more": false,
+          "records": []
+        }
+      },
+      "exact_success_receipt_matches_answer": true,
+      "success_receipt_absent": null
+    }
+  ]
+}

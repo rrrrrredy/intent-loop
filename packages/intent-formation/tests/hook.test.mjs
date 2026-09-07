@@ -525,6 +525,10 @@ test("manual export writes a complete file without injecting records and forget 
   assert.equal(result.ok, true);
   assert.equal(result.data.record_count, 1);
   assert.match(result.data.integrity.digest, /^[a-f0-9]{64}$/);
+  assert.match(contextText, /complete SHA-256 content digest/);
+  assert.match(contextText, /Do not omit the digest/);
+  assert.ok(contextText.includes(result.data.export_id));
+  assert.ok(contextText.includes(result.receipt_id));
   assert.equal(contextText.includes(statement), false);
 
   assert.equal(Object.hasOwn(result.data, "path"), false);
@@ -545,6 +549,7 @@ test("manual export writes a complete file without injecting records and forget 
   );
   const forgottenContext = JSON.parse(forgotten.stdout).hookSpecificOutput.additionalContext;
   assert.match(forgottenContext, /"removed_exports":1/);
+  assert.doesNotMatch(forgottenContext, /complete SHA-256 content digest/);
   await assert.rejects(readFile(exportPath, "utf8"), /ENOENT/);
 });
 

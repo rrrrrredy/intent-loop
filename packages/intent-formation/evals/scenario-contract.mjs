@@ -15,18 +15,25 @@ export function validateVisibleFinalRequirements(scenarios) {
       `final requirements are required: ${scenario.id}`
     );
     const visibleConversation = [scenario.initial_prompt, scenario.follow_up]
-      .filter((value) => typeof value === "string")
-      .join("\n");
+      .filter((value) => typeof value === "string");
     for (const requirement of scenario.final_requirements) {
       invariant(
         typeof requirement === "string" && [...requirement.trim()].length >= 4,
         `final requirement must be a non-trivial string: ${scenario.id}`
       );
       invariant(
-        visibleConversation.includes(requirement),
+        visibleConversation.some((turn) => turn.includes(requirement)),
         `final requirement is not an exact user-visible excerpt: ${scenario.id}`
       );
     }
   }
   return true;
+}
+
+export function visibleFinalRequirementSources(scenario) {
+  validateVisibleFinalRequirements([scenario]);
+  return scenario.final_requirements.map((text) => ({
+    text,
+    first_seen: scenario.initial_prompt.includes(text) ? "initial_prompt" : "follow_up"
+  }));
 }

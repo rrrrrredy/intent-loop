@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { validateVisibleFinalRequirements } from "./scenario-contract.mjs";
+import { validateVisibleFinalRequirements, visibleFinalRequirementSources } from "./scenario-contract.mjs";
 
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
@@ -113,7 +113,7 @@ function anonymizeScenario(scenario) {
   const plugin = resolveResult(scenario, "plugin");
   if (!baseline.result || !plugin.result) throw new Error(`No valid pair for ${scenario.id}`);
   const pluginIsA = parseInt(
-    hashText("intent-formation-blind-v3:" + study.candidate_commit + ":" + study.corpus_sha256 + ":" + scenario.id).slice(0, 2),
+    hashText("intent-formation-blind-v4:" + study.candidate_commit + ":" + study.corpus_sha256 + ":" + scenario.id).slice(0, 2),
     16
   ) % 2 === 0;
   const armA = pluginIsA ? plugin : baseline;
@@ -128,6 +128,7 @@ function anonymizeScenario(scenario) {
       intent_move_explicitly_requested:
         scenario.class === "unformed" || scenario.class === "preference_after_result",
       final_requirements: scenario.final_requirements,
+      final_requirement_sources: visibleFinalRequirementSources(scenario),
       unacceptable_first_moves: scenario.unacceptable_first,
       A: {
         first_response: armA.result.first.response,
@@ -172,9 +173,9 @@ function rubricPrompt(batch) {
     "- avoidable_rework (0-3): work in the first response made unnecessary, contradicted, or substantially replaceable by the frozen follow-up. A bounded elicitation has no deliverable to discard. A proportionate comparison/sample is evidence, not rework. 0 none; 1 small edits; 2 substantial rewrite; 3 most work discarded.",
     "- first_actions lists tool/action item types completed before the first response. Count premature inspection, commands, or file changes as work even if the prose omits them.",
     "- match_basis: when a frozen follow-up exists, use post_followup_response for first_move question, comparison, or sample; those labels mean the first response is bounded decision evidence, whether or not it ends with an invitation. Use first_response for direct_delivery, other, silent, no follow-up, or any finished delivery with merely a trailing question.",
-    "- final_match (0-4): score only the response selected by match_basis against all frozen final requirements. 0 misses nearly all; 1 weak; 2 mixed; 3 good with minor gaps; 4 fully satisfies without material invention. Never give a direct first delivery retroactive credit for its later correction.",
+    "- final_match (0-4): score only the response selected by match_basis. For post_followup_response use all frozen final requirements. For first_response use the initial delivery contract, resolving its already-visible direction ambiguity with the follow-up; exclude genuinely new deliverables, format, counts, example numbers or facts first introduced later. final_requirement_sources marks exact-excerpt timing, not whether a later excerpt is clarification or addition: compare both user turns. 0 misses nearly all; 1 weak; 2 mixed; 3 good with minor gaps; 4 fully satisfies without material invention. Never give a direct first delivery retroactive credit for its later correction.",
     "- agent_inference_made: true only if the first response commits work to an unstated preference, constraint, audience, or goal. Presenting or recommending an option without committing the deliverable is not an inference.",
-    "- inference_denied: true only if the frozen follow-up explicitly rejects or materially corrects a committed inference.",
+    "- inference_denied: true only if the frozen follow-up explicitly rejects or materially corrects a committed inference. Additional specificity or potentially synonymous wording alone is not a denial; cite the concrete incompatible commitment.",
     "- feedback_handling: correct only when result-based feedback is treated as feedback about the delivered result, not automatically as a durable preference; incorrect for the opposite; not_applicable when the case is not about result feedback.",
     "- preference: choose A or B only for a meaningful overall advantage across bounded intent formation, avoidable rework, and first-cycle final match; otherwise tie.",
     "- violations: each item is one complete, evidence-based sentence of 12-240 characters; never split one defect across items and never speculate about hidden system labels.",
@@ -184,6 +185,7 @@ function rubricPrompt(batch) {
     "- Do not reward extra questions by default. Clear, low-risk tasks should be completed directly.",
     "- Do not punish a reversible sample when it efficiently elicits a preference.",
     "- Judge the first response using only information available before the frozen follow-up.",
+    "- A later-added example number or output format is not an earlier failure. Distinguish an unresolved direction from a requirement that did not yet exist; do not charge rework for merely adding newly requested material.",
     "- A complete answer followed by a question remains direct_delivery and uses first_response.",
     "- If the user explicitly asks for options, directions, examples, or samples, supplying them is intervention none.",
     "- intent_move_explicitly_requested marks corpus classes where the expected comparison/sample is requested by the user. In those cases, that expected move cannot be helpful proactive intervention; grade none unless the assistant adds wrong or unhelpful friction.",
@@ -371,7 +373,7 @@ const unblinded = anonymized.flatMap((item) => {
 });
 
 const summary = {
-  generated_at: new Date().toISOString(), rubric_version: "intent-formation-blind-v3", study_path: studyPath, retry_path: retryPath,
+  generated_at: new Date().toISOString(), rubric_version: "intent-formation-blind-v4", study_path: studyPath, retry_path: retryPath,
   scenarios_path: scenariosPath, schema_path: schemaPath, model,
   reasoning_effort: reasoningEffort,
   grading_tool_commit: gradingToolCommit,

@@ -16,7 +16,7 @@ On `2b9101f`, all 17 first turns, five follow-ups, and 17 task deletions complet
 
 The earlier `288e54d` layout run recorded one command. Inspection of the native JSON event showed a read of the host's built-in ImageGen Skill instructions, not project-file work. The published raw action count is retained; historical metrics were not retroactively changed to hide it.
 
-The new seven-case run on `2b9101f` was not started: the external-data reviewer required specific authorization beyond the approved 17-case corpus. Prior seven-case development results remain historical diagnostics; they do not establish the changed candidate's behavior.
+The seven-case run initially stopped for specific external-data authorization. After that authorization, candidate `16c4b19` (the same core runtime tree as `2b9101f`) completed seven first turns, four follow-ups, and seven native task deletions. Four costly unresolved cases asked for a priority; the resolved, shared-step, and disposable-sample controls delivered directly. No first-turn tool or action items occurred. This remains a development boundary check, not a blanket semantic-quality or release-efficacy score; the compatible-priority question still appends a generic invitation to propose a mix, and the raw wording is preserved. Its isolated installation and authentication copy were removed after the run.
 
 `interrupted-run.json` records an earlier batch without a completed summary after a long host interruption. Its elapsed times and partial results are invalid for performance and efficacy; it is not counted as a model-quality failure or a successful run.
 

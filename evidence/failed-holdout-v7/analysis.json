@@ -1,0 +1,360 @@
+{
+  "evidence_class": "available_pair_diagnostic",
+  "release_efficacy_usable": false,
+  "reason": "The complete predeclared primary study was not usable. Subset metrics cannot clear its release gates.",
+  "full_primary_reliability": {
+    "attempted_conversations": 160,
+    "usable_conversations": 155,
+    "usable_pairs": 75,
+    "required_pairs": 80,
+    "primary_retries": 0,
+    "native_task_deletions": 160,
+    "failed_conversations": [
+      {
+        "id": "v7-un-004",
+        "arm": "plugin",
+        "first": {
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 45812,
+          "response_present": true
+        },
+        "second": {
+          "exit_code": 1,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 50396,
+          "response_present": false
+        },
+        "native_errors": [
+          {
+            "phase": "second",
+            "type": "error",
+            "message": "Selected model is at capacity. Please try a different model."
+          },
+          {
+            "phase": "second",
+            "type": "turn.failed",
+            "message": "Selected model is at capacity. Please try a different model."
+          }
+        ]
+      },
+      {
+        "id": "v7-un-008",
+        "arm": "baseline",
+        "first": {
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 88363,
+          "response_present": true
+        },
+        "second": {
+          "exit_code": 1,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 40306,
+          "response_present": false
+        },
+        "native_errors": [
+          {
+            "phase": "second",
+            "type": "error",
+            "message": "Selected model is at capacity. Please try a different model."
+          },
+          {
+            "phase": "second",
+            "type": "turn.failed",
+            "message": "Selected model is at capacity. Please try a different model."
+          }
+        ]
+      },
+      {
+        "id": "v7-un-012",
+        "arm": "baseline",
+        "first": {
+          "exit_code": 0,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 164573,
+          "response_present": true
+        },
+        "second": {
+          "exit_code": null,
+          "signal": "SIGTERM",
+          "timed_out": true,
+          "duration_ms": 300106,
+          "response_present": false
+        },
+        "native_errors": []
+      },
+      {
+        "id": "v7-co-012",
+        "arm": "plugin",
+        "first": {
+          "exit_code": 1,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 6231,
+          "response_present": false
+        },
+        "second": null,
+        "native_errors": [
+          {
+            "phase": "first",
+            "type": "error",
+            "message": "Selected model is at capacity. Please try a different model."
+          },
+          {
+            "phase": "first",
+            "type": "turn.failed",
+            "message": "Selected model is at capacity. Please try a different model."
+          }
+        ]
+      },
+      {
+        "id": "v7-cl-011",
+        "arm": "plugin",
+        "first": {
+          "exit_code": 1,
+          "signal": null,
+          "timed_out": false,
+          "duration_ms": 6071,
+          "response_present": false
+        },
+        "second": null,
+        "native_errors": [
+          {
+            "phase": "first",
+            "type": "error",
+            "message": "Selected model is at capacity. Please try a different model."
+          },
+          {
+            "phase": "first",
+            "type": "turn.failed",
+            "message": "Selected model is at capacity. Please try a different model."
+          }
+        ]
+      }
+    ]
+  },
+  "excluded_pair_ids": [
+    "v7-un-004",
+    "v7-un-008",
+    "v7-un-012",
+    "v7-co-012",
+    "v7-cl-011"
+  ],
+  "subset_selection": "Both primary arms returned every required response, exited zero, and did not time out; no quality-based selection.",
+  "available_pair_diagnostic": {
+    "generated_at": "2026-09-07T07:10:00.140Z",
+    "candidate_commit": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+    "corpus_sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+    "plugin_tree": {
+      "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+      "file_count": 14,
+      "bytes": 34427
+    },
+    "execution_model": "gpt-5.6-sol",
+    "execution_reasoning_effort": "low",
+    "grader_model": "gpt-5.6-sol",
+    "grader_reasoning_effort": "medium",
+    "decision": "ITERATE",
+    "interpretation": "V2 final match scores the first completed intent-formation cycle. Retry text may complete blind quality grading but never replaces primary reliability or timing statistics.",
+    "evaluation_attempts": {
+      "supplemental_conversation_retry_configured": false,
+      "blind_grader_batch_count": 15,
+      "blind_grader_attempt_count": 15,
+      "blind_grader_retry_count": 0
+    },
+    "primary_run_reliability": {
+      "run_count": 150,
+      "usable_count": 150,
+      "usable_rate_pct": 100,
+      "failures": []
+    },
+    "metrics": {
+      "nonclear_scenario_count": 56,
+      "baseline_avoidable_rework_sum": 44,
+      "plugin_avoidable_rework_sum": 12,
+      "avoidable_rework_reduction_pct": 72.73,
+      "baseline_final_match_mean_0_to_4": 3.01,
+      "plugin_final_match_mean_0_to_4": 3.8,
+      "final_match_gain_percentage_points": 19.67,
+      "nonclear_final_match_gain_percentage_points": 26.34,
+      "clear_extra_interruption_median": 0,
+      "clear_extra_interruption_p90": 0,
+      "clear_plugin_interruption_median": 0,
+      "clear_plugin_interruption_p90": 0,
+      "clear_baseline_first_turn_median_ms": 10427,
+      "clear_plugin_first_turn_median_ms": 10794,
+      "clear_arm_median_latency_overhead_pct": 3.52,
+      "clear_paired_latency_overhead_pct": 1.68,
+      "intervention_counts": {
+        "helpful": 20,
+        "wrong_or_unhelpful": 1,
+        "none": 54
+      },
+      "proactive_intervention_count": 21,
+      "helpful_proactive_rate_pct": 95.24,
+      "wrong_or_unhelpful_proactive_rate_pct": 4.76,
+      "inference_made_count": 8,
+      "inference_denied_count": 3,
+      "inference_denial_rate_pct": 37.5,
+      "nonclear_premature_action_count": 3,
+      "nonclear_premature_actions": [
+        {
+          "id": "v7-pe-001",
+          "type": "command_execution",
+          "status": "failed"
+        },
+        {
+          "id": "v7-pe-011",
+          "type": "command_execution",
+          "status": "failed"
+        },
+        {
+          "id": "v7-pe-011",
+          "type": "command_execution",
+          "status": "completed"
+        }
+      ],
+      "blind_preference_counts": {
+        "plugin": 27,
+        "baseline": 3,
+        "tie": 45
+      },
+      "result_feedback_correct_count": 7,
+      "result_feedback_incorrect_count": 0,
+      "result_feedback_case_count": 15,
+      "match_basis_counts": {
+        "baseline": {
+          "first_response": 49,
+          "post_followup_response": 26
+        },
+        "plugin": {
+          "first_response": 28,
+          "post_followup_response": 47
+        }
+      }
+    },
+    "class_breakdown": {
+      "poorly_expressed": {
+        "count": 15,
+        "baseline_rework_sum": 18,
+        "plugin_rework_sum": 7,
+        "rework_reduction_pct": 61.11,
+        "baseline_final_match_mean": 3.07,
+        "plugin_final_match_mean": 3.47,
+        "plugin_preferences": 7,
+        "baseline_preferences": 3,
+        "ties": 5
+      },
+      "unformed": {
+        "count": 12,
+        "baseline_rework_sum": 16,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": 100,
+        "baseline_final_match_mean": 2.08,
+        "plugin_final_match_mean": 4,
+        "plugin_preferences": 8,
+        "baseline_preferences": 0,
+        "ties": 4
+      },
+      "conflict": {
+        "count": 14,
+        "baseline_rework_sum": 8,
+        "plugin_rework_sum": 3,
+        "rework_reduction_pct": 62.5,
+        "baseline_final_match_mean": 2.29,
+        "plugin_final_match_mean": 3.71,
+        "plugin_preferences": 8,
+        "baseline_preferences": 0,
+        "ties": 6
+      },
+      "preference_after_result": {
+        "count": 15,
+        "baseline_rework_sum": 2,
+        "plugin_rework_sum": 2,
+        "rework_reduction_pct": 0,
+        "baseline_final_match_mean": 3.13,
+        "plugin_final_match_mean": 3.8,
+        "plugin_preferences": 4,
+        "baseline_preferences": 0,
+        "ties": 11
+      },
+      "clear": {
+        "count": 19,
+        "baseline_rework_sum": 0,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": null,
+        "baseline_final_match_mean": 4,
+        "plugin_final_match_mean": 4,
+        "plugin_preferences": 0,
+        "baseline_preferences": 0,
+        "ties": 19
+      }
+    },
+    "privacy": {
+      "status": "PASS",
+      "state_bytes": 0,
+      "state_file_present": false,
+      "exact_complete_prompt_matches": [],
+      "storage_location": "isolated core evaluation home; machine path omitted"
+    },
+    "gates": {
+      "avoidable_rework": {
+        "metric": 72.73,
+        "threshold": ">= 25% reduction",
+        "status": "PASS"
+      },
+      "final_match": {
+        "metric": 19.67,
+        "threshold": ">= 10 percentage points",
+        "status": "PASS"
+      },
+      "clear_extra_interruptions_median": {
+        "metric": 0,
+        "threshold": "= 0",
+        "status": "PASS"
+      },
+      "clear_extra_interruptions_p90": {
+        "metric": 0,
+        "threshold": "<= 1",
+        "status": "PASS"
+      },
+      "clear_latency": {
+        "metric": 1.68,
+        "threshold": "<= 5% overhead",
+        "status": "PASS"
+      },
+      "proactive_helpful": {
+        "metric": 95.24,
+        "threshold": ">= 70% of proactive interventions",
+        "status": "PASS"
+      },
+      "proactive_wrong": {
+        "metric": 4.76,
+        "threshold": "<= 15% of proactive interventions",
+        "status": "PASS"
+      },
+      "inference_denial": {
+        "metric": 37.5,
+        "threshold": "<= 10% of inferred cases",
+        "status": "FAIL"
+      },
+      "nonclear_premature_actions": {
+        "metric": 3,
+        "threshold": "= 0 tool/action items before the intent-forming response",
+        "status": "FAIL"
+      },
+      "raw_prompt_persistence": {
+        "metric": 0,
+        "threshold": "= 0 exact full corpus prompts",
+        "status": "PASS"
+      }
+    },
+    "state_test_gate": "UNVERIFIED_IN_THIS_SCRIPT"
+  }
+}

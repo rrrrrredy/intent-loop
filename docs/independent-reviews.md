@@ -1,6 +1,6 @@
 # Independent candidate reviews
 
-Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`. These are agent reviews, not human-user research. The privacy review is closed in its fixed scope; model-mediated user acceptance is not complete.
+Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six real-use cases are complete; post-v7 source changes need targeted renewed review and interaction checks.
 
 ## Adversarial review
 
@@ -34,6 +34,22 @@ Accepted beginner-documentation improvements:
 4. Explain that the receipt's SHA-256 covers structured export content, not all formatted file bytes, and provide a local verification command.
 5. Avoid describing the optional State bundle as a trivially small script or implying that trust checks can be skipped.
 
-These are implemented in the README, Chinese guide, and export-verification document. They do not substitute for actual conversational acceptance. New synthetic model cases were not sent because the external-data reviewer required authorization beyond the specifically approved 17-case corpus.
+These were implemented in the README, Chinese guide, and export-verification document. They did not substitute for actual conversational acceptance. At that historical stage, new synthetic model cases were not sent because the external-data reviewer required authorization beyond the specifically approved 17-case corpus. Additional authorization was subsequently obtained for the separate real-use phase below.
+
+## Actual model-mediated use on 16c4b19
+
+The user-perspective agent completed six independently written synthetic cases and 22 actual user turns on `gpt-5.6-sol / low`, without a baseline and without Hook-trust bypass. It used the normal interactive trust UI, reviewed the exact commands, and confirmed all three Hooks Active before model use. Native exec/resume then used that same isolated home. Twenty-two is the number of user turns, not the number of underlying model API calls. The [public real-use archive](../evidence/real-user-acceptance-v7/README.md) preserves complete synthetic prompts/answers, trusted receipts, fixed-Git installation proof, real CSV output and cleanup results with disclosed identifier/path substitutions.
+
+The delivered CSV was correct and its input hash stayed unchanged; a requested Chinese comparison led to a concrete selected card; an incompatible deletion/retention request prompted a useful priority question; feedback changed a recruitment sample into an existing-member reminder. The delegated reversible order-rule case needed one correction but did not authorize or perform a real payment; the reviewer retained it as a transparency improvement, not a proven mandatory-question failure.
+
+State start/remember/show/correct/export/private/off/forget produced ten success receipts matching trusted Hook results. Private show and off-mode remember were honestly refused without success receipts. Forget ran directly from off and left zero event bytes, off markers and managed exports. The private cross-process memory experience remains component-level evidence, not a newly supported beginner slash path.
+
+Observed friction is retained: one unnecessary git-status failure; private show only pointing to a live MCP tool; the model's export answer omitting the content digest despite the Hook supplying it; terminal navigation and sandbox onboarding. The export omission motivated a direct Hook instruction repair plus Skill alignment, which is not yet a confirmed model fix.
+
+All six model sessions were deleted with the official CLI, followed by official removal of both plugins and their marketplace. Two no-prompt onboarding UUID deletions failed; neither had a session file, and the exact isolated home and workspace were subsequently removed. Those two failures are not reported as native-delete successes. The original 19 local checks remain unchanged and separate.
+
+## Post-v7 outcome audit
+
+The adversarial agent separately audited four v7 cases without model calls. Its [case audit](v7-case-audit.md) retains real effect-selection and misplaced-access problems, distinguishes local read-only commands from external operations, and identifies a later-added-number grading error plus an uncertain denominator interpretation. Original grades and gates remain unchanged.
 
 The agent removed its temporary State/core/marketplace installation, authentication copy, state, and empty workspace. Session count was zero. Its original authentication source, repository, four sealed files, and evidence were preserved. No privacy limitation was rejected or silently waived, and no additional product framework was added to address the feedback.

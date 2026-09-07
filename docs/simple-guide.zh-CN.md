@@ -29,7 +29,7 @@ codex plugin add intent-formation@intent-loop
 
 > 帮我做一个产品首页，要显得专业。
 
-“专业”可能有几种差别很大的方向。如果这个选择会影响接下来的设计，Codex 会问一个具体问题，或者给出少量可比较的样例。你可以选一个、混合几个，也可以说都不对。
+“专业”有几种理解，也不一定需要先问你。如果一个小草稿就能让你判断，Codex 会先做。只有没定的方向会明显改变接下来的工作、猜错的代价又高时，它才会问一个具体问题，或者给出少量可比较的样例。你可以选一个、混合兼容的方向，也可以说都不对。
 
 如果你说：
 
@@ -83,7 +83,7 @@ private 模式不保存任务标题和工作区信息，临时记录只在当前
 
 ## 怎么卸载
 
-装过 State，并且想删掉当前任务数据，先输入 `/intent forget`，确认拿到回执。然后在终端执行：
+装过 State，并且想删掉当前任务数据，先输入 `/intent forget`，确认拿到回执。然后关闭正在使用插件的 Codex 任务，在终端执行：
 
 ~~~shell
 codex plugin remove intent-formation-state@intent-loop
@@ -91,4 +91,8 @@ codex plugin remove intent-formation@intent-loop
 codex plugin marketplace remove intent-loop
 ~~~
 
+Windows 如果提示“文件正在使用”或 `os error 32`，先退出 Codex 应用，再打开独立的 PowerShell 重试卸载。不要删除项目源码，也不要结束所有 Node 进程；其他程序也可能在用 Node。
+
 复制到其他目录的导出文件、系统备份和 Codex 自己保存的对话不归这个插件管理，需要你单独处理。
+
+如果进入 private 后只想恢复常规保存、查看，输入 `/intent start`。之后新保存的记录会重新写入本地；已经清除的旧记录不会恢复。private 目前没有同样便捷的 slash 保存、查看入口，技术小白可以先用标准模式。

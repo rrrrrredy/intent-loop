@@ -1,0 +1,264 @@
+{
+  "candidate": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "run_date": "2026-09-07",
+  "evidence_type": "Small uncontrolled real-host synthetic user exercise; not comparative efficacy evidence",
+  "baseline": false,
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "low",
+  "checks": {
+    "synthetic_case_count": 6,
+    "user_turn_count": 22,
+    "completed_turn_count": 22,
+    "normal_hook_success_receipts": 10,
+    "normal_hook_errors_without_success_receipts": 2,
+    "hook_trust_bypass_invocations": 0,
+    "input_file_unchanged": true,
+    "input_sha256": "f9246b5d0a53f836a80881f09dd44664a207bb5c56a7eee070fb4c6c5e01d583",
+    "totals_csv": "item,quantity\nbadge,5\nribbon,5\n",
+    "correction_replaces_exact_old_id": true,
+    "correction_preserves_role_scope": true,
+    "off_control_context_count": 4,
+    "after_forget": {
+      "event_file_bytes": 0,
+      "off_marker_count": 0,
+      "export_file_count": 0
+    }
+  },
+  "actual_turn_contexts": [
+    {
+      "case_id": "case01",
+      "turn_count": 1,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    },
+    {
+      "case_id": "case02",
+      "turn_count": 2,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    },
+    {
+      "case_id": "case03",
+      "turn_count": 2,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    },
+    {
+      "case_id": "case04",
+      "turn_count": 2,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    },
+    {
+      "case_id": "case05",
+      "turn_count": 2,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    },
+    {
+      "case_id": "case06",
+      "turn_count": 13,
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reasoning_efforts": [
+        "low"
+      ],
+      "exact_core_policy_context_present": true
+    }
+  ],
+  "file_artifacts": [
+    {
+      "path": "artifacts/inventory.csv",
+      "bytes": 48,
+      "sha256": "f9246b5d0a53f836a80881f09dd44664a207bb5c56a7eee070fb4c6c5e01d583",
+      "role": "Synthetic input; before/after source hash matched"
+    },
+    {
+      "path": "artifacts/totals.csv",
+      "bytes": 31,
+      "sha256": "6056d1ef88fa0bf66f7458669302c328916dcf01910e10b44c0bb505808328aa",
+      "role": "Actual model-created output"
+    }
+  ],
+  "normal_trust": {
+    "method": "Actual interactive Codex CLI PTY, normal per-Hook trust; no hook-trust bypass; no private configuration edits.",
+    "hook_trust_bypass_invocations": 0,
+    "manual_private_trust_config_edits": 0,
+    "final_ui": {
+      "SessionStart": {
+        "installed": 1,
+        "active": 1
+      },
+      "UserPromptSubmit": {
+        "installed": 2,
+        "active": 2
+      }
+    },
+    "terminal_caveat": "TERM=dumb warning accepted. One combined Esc/arrow/Enter input accidentally toggled SessionStart off; separately returned and re-enabled it before any user prompt. Final overview verifies 1/1 SessionStart and 2/2 UserPromptSubmit active.",
+    "sandbox": "Normal UI non-administrator setup; unelevated; no administrator installation",
+    "automatic_command_approval": "approve-for-me; distinct from normal Hook trust",
+    "host_versions": {
+      "codex_cli": "0.153.4",
+      "node": "22.19.0"
+    }
+  },
+  "off_control_contexts": [
+    {
+      "case_id": "case06",
+      "text": "Intent Formation is off for this task. Do not perform implicit intent intervention or state updates."
+    },
+    {
+      "case_id": "case06",
+      "text": "Verified user control: Intent Formation is off for this task. This task-specific setting overrides any general Intent Formation policy or Skill context. Do not perform implicit intent intervention or update intent state. Respond to the user's ordinary request normally. Verified local result: {\"ok\":true,\"source\":\"intent_formation_mode\",\"mode\":\"off\"}"
+    },
+    {
+      "case_id": "case06",
+      "text": "Intent Formation is off for this task. Do not perform implicit intent intervention or state updates."
+    },
+    {
+      "case_id": "case06",
+      "text": "Intent Formation is off for this task. Do not perform implicit intent intervention or state updates."
+    }
+  ],
+  "host_warnings": {
+    "powershell_shell_snapshot_unsupported": 22,
+    "rollout_flush_thread_not_found": 2
+  },
+  "historical_offline_components": {
+    "candidate": "2b9101f9fc99ab0874f05a5d1e80b03b070de6a0",
+    "model_interactions": 0,
+    "separate_from_live_chat": true,
+    "checks": [
+      {
+        "index": 1,
+        "name": "Local source is the fixed candidate",
+        "passed": true
+      },
+      {
+        "index": 2,
+        "name": "Installed bytes equal source bytes for intent-formation",
+        "passed": true
+      },
+      {
+        "index": 3,
+        "name": "Installed bytes equal source bytes for intent-formation-state",
+        "passed": true
+      },
+      {
+        "index": 4,
+        "name": "A saved explicit goal is visible with provenance",
+        "passed": true
+      },
+      {
+        "index": 5,
+        "name": "Incomplete correction receives syntax guidance without success receipt",
+        "passed": true
+      },
+      {
+        "index": 6,
+        "name": "After seeing the record, a correction changes the active goal",
+        "passed": true
+      },
+      {
+        "index": 7,
+        "name": "Export produces a real parseable local JSON file with matching byte count",
+        "passed": true
+      },
+      {
+        "index": 8,
+        "name": "The real export preserves revised intent and correction history",
+        "passed": true
+      },
+      {
+        "index": 9,
+        "name": "Switching private removes prior persisted statement content and managed export",
+        "passed": true
+      },
+      {
+        "index": 10,
+        "name": "Private slash remember and show refuse without a success receipt",
+        "passed": true
+      },
+      {
+        "index": 11,
+        "name": "Live MCP process can save and show private state",
+        "passed": true
+      },
+      {
+        "index": 12,
+        "name": "Private statement is absent from every managed disk file",
+        "passed": true
+      },
+      {
+        "index": 13,
+        "name": "Private content is unavailable after the MCP process restarts",
+        "passed": true
+      },
+      {
+        "index": 14,
+        "name": "Off marker is returned by the next packaged command Hook invocation",
+        "passed": true
+      },
+      {
+        "index": 15,
+        "name": "Off mode rejects a subsequent state update without a success receipt",
+        "passed": true
+      },
+      {
+        "index": 16,
+        "name": "Packaged resume Hook also observes off mode",
+        "passed": true
+      },
+      {
+        "index": 17,
+        "name": "Export produces a real parseable local JSON file with matching byte count",
+        "passed": true
+      },
+      {
+        "index": 18,
+        "name": "Forget reports absent state and physically removes managed export and statement",
+        "passed": true
+      },
+      {
+        "index": 19,
+        "name": "Forget also removes the off marker",
+        "passed": true,
+        "scope_caveat": "The task had already returned to standard before forget. This old assertion alone does not prove removal of an active off marker."
+      }
+    ]
+  },
+  "limitations": [
+    "No baseline, causal efficacy attribution or grading API; no transfer to later policy.",
+    "The live reviewer read implementation for safety; this phase was not implementation-blind.",
+    "Frozen 80-case contents/results were not read or run in these cases.",
+    "Public tag installation was not tested; only pre-release local source installation was used.",
+    "Private slash show remains unsupported; earlier process-local MCP tests are not new live chat evidence.",
+    "Native empty-onboarding deletion errors remain failures despite whole-home cleanup."
+  ]
+}

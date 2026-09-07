@@ -1,0 +1,262 @@
+{
+  "candidate": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "redaction": "Only disclosed consistent machine-path and opaque-ID substitutions; no user or final-answer prose omitted.",
+  "cases": [
+    {
+      "id": "case01",
+      "title": "Real CSV aggregation",
+      "turns": [
+        {
+          "id": "case01-turn01",
+          "turn": 1,
+          "prompt": "Read inventory.csv and combine repeated items by adding their quantities. Write totals.csv with the same column names, sorted alphabetically by item. Leave inventory.csv unchanged.",
+          "answer": "Created [totals.csv](artifacts/totals.csv) with combined quantities sorted alphabetically. `inventory.csv` remains unchanged.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "id": "case02",
+      "title": "Reusable order/payment rule",
+      "turns": [
+        {
+          "id": "case02-turn01",
+          "turn": 1,
+          "prompt": "I'm making the order rules for a pretend craft stall. Sellers pack the goods, then buyers collect them later. I want a short rule for when an order counts as finished; that event will trigger paying the seller. Please settle the rule so I can reuse it in the stall app.",
+          "answer": "**An order is finished when the buyer collects it and the collection is recorded in the stall app. Seller payment is triggered at that time.**",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case02-turn02",
+          "turn": 2,
+          "prompt": "That would make sellers wait if a buyer is late. I actually want to pay as soon as packing is verified; collection should stay as a separate status. Rewrite the rule in two short sentences.",
+          "answer": "An order is finished when packing is verified, triggering payment to the seller. Buyer collection is tracked as a separate status.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "id": "case03",
+      "title": "Unformed paper-model tool direction",
+      "turns": [
+        {
+          "id": "case03-turn01",
+          "turn": 1,
+          "prompt": "我想做个给自己用的纸模型小工具，但还没想明白它应该解决什么。我的材料和零件经常混在一起，有时也会忘记做到哪一步。先帮我看看有哪些不同的做法，别急着写代码。",
+          "answer": "可以把这个小工具往三种不同方向想：\n\n1. **材料与零件库存**\n   - 记录纸张、板材、连接件、工具分别放在哪里，以及剩余数量。\n   - 适合解决“东西混在一起、需要时找不到”的问题。\n   - 代价是每次取用或补充后都要顺手更新，否则记录容易失真。\n\n2. **制作步骤与进度**\n   - 每个模型建立步骤清单，标记“未开始、进行中、已完成”，并记录当前做到哪里。\n   - 适合经常中断制作、隔一段时间再继续的情况。\n   - 它能记住进度，但不会直接改善材料收纳。\n\n3. **项目工作台**\n   - 以“一个纸模型项目”为中心，同时放入所需零件、材料位置、制作步骤和临时备注。\n   - 重新打开项目时，马上能看到“做到哪一步、接下来做什么、零件在哪里”。\n   - 信息最完整，但录入和维护也最多，早期可能显得偏重。\n\n还可以混合，例如先做一个很轻的“项目工作台”，只保留**当前步骤 + 零件位置**两项。你可以任选一种、组合几种、全部否掉，或者直接描述你理想中打开工具后最想看到什么。",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case03-turn02",
+          "turn": 2,
+          "prompt": "我选第二种，最烦的是重新开工时想不起下一步。给我一个能放在手机首页的文字卡片示例：项目叫小灯塔，目前折好了底座，下一步粘塔身；只保留再次开工时需要的信息。",
+          "answer": "**小灯塔**\n\n已完成：折好底座  \n下一步：粘塔身",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "id": "case04",
+      "title": "Incompatible deletion requirements",
+      "turns": [
+        {
+          "id": "case04-turn01",
+          "turn": 1,
+          "prompt": "For a fictional shared sketch board, write a deletion rule. I want Delete to permanently remove a sketch and every copy of it, but the board must also retain the full original sketch forever so I can settle authorship disputes. Both requirements matter to me.",
+          "answer": "These requirements are incompatible because permanent deletion and permanent retention of the same sketch cannot both occur.\n\n- **Deletion wins:** Delete permanently removes the original sketch and every copy; it cannot later support authorship disputes.\n- **Retention wins:** Delete removes the sketch and its copies from the shared board, but the original remains permanently stored for authorship disputes—so it is not permanently deleted.\n\nWhich requirement should take priority? You may also reject both options or reply freeform.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case04-turn02",
+          "turn": 2,
+          "prompt": "Deletion takes priority. Write the short user-facing rule, and be clear that we will no longer have the sketch for authorship disputes.",
+          "answer": "**Deletion rule:** Deleting a sketch permanently removes the original and every copy. We will no longer have the sketch available to settle authorship disputes.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "id": "case05",
+      "title": "Goal change after a small sample",
+      "turns": [
+        {
+          "id": "case05-turn01",
+          "turn": 1,
+          "prompt": "Draft one short invitation for a pretend local puzzle club to attract new members. Let me see a small version first; I want to react to something concrete before making a whole page.",
+          "answer": "🧩 **Like puzzles? Join your local puzzle club!** Meet fellow puzzle fans, solve challenges together, and welcome new members.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case05-turn02",
+          "turn": 2,
+          "prompt": "Reading that made me realize I do not need a recruitment invitation. This is for people who have already joined: I need a reminder to bring one puzzle they can explain in five minutes. Give me just the reminder, without asking them to sign up.",
+          "answer": "Reminder: Please bring one puzzle you can explain in five minutes.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "id": "case06",
+      "title": "Receipt-backed State lifecycle",
+      "turns": [
+        {
+          "id": "case06-turn01",
+          "turn": 1,
+          "prompt": "/intent start",
+          "answer": "Intent state is ready in standard mode.\n\nReceipt ID: `IF-568DF3B0`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn02",
+          "turn": 2,
+          "prompt": "/intent remember preference: Use short labels on the pretend board-game cards.",
+          "answer": "Saved explicit intent record `record-01`.\n\nReceipt ID: `IF-92161ED6`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn03",
+          "turn": 3,
+          "prompt": "/intent show",
+          "answer": "Intent state: standard mode, 1 active record.\n\n- Preference: “Use short labels on the pretend board-game cards.”\n- Scope: task\n- Record: `record-01`\n\nReceipt ID: `IF-CA3B3C61`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn04",
+          "turn": 4,
+          "prompt": "/intent correct record-01 => Use full sentences on the pretend board-game cards.",
+          "answer": "Saved the correction and retained prior history.\n\nReceipt ID: `IF-66658708`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn05",
+          "turn": 5,
+          "prompt": "/intent show",
+          "answer": "Intent state: standard mode, 1 active record.\n\n- Preference: “Use full sentences on the pretend board-game cards.”\n- Scope: task\n- Record: `record-02`\n\nReceipt ID: `IF-F1863D9E`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn06",
+          "turn": 6,
+          "prompt": "/intent export",
+          "answer": "Portable intent export saved as `export-01.json`. Records: 2.\n\nReceipt ID: `IF-2919D5BF`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn07",
+          "turn": 7,
+          "prompt": "/intent private",
+          "answer": "Intent mode is now private.\n\nReceipt ID: `IF-E4050C17`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn08",
+          "turn": 8,
+          "prompt": "/intent show",
+          "answer": "`/intent show` cannot read private records here; use the live State MCP tool to inspect them.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn09",
+          "turn": 9,
+          "prompt": "/intent off",
+          "answer": "Intent mode is now off.\n\nReceipt ID: `IF-334BEF77`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn10",
+          "turn": 10,
+          "prompt": "Write a playful one-line instruction for a pretend board-game card: swap seats with the person to your left.",
+          "answer": "Seat shuffle! Swap seats with the person to your left.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn11",
+          "turn": 11,
+          "prompt": "/intent remember goal: Add a pretend comet card.",
+          "answer": "Intent tracking is off; use `/intent start` before `/intent remember`.",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn12",
+          "turn": 12,
+          "prompt": "/intent forget",
+          "answer": "Task intent state was physically purged.\n\nReceipt ID: `IF-843D2E7B`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        },
+        {
+          "id": "case06-turn13",
+          "turn": 13,
+          "prompt": "/intent show",
+          "answer": "No saved intent is active for this task.\n\nReceipt ID: `IF-3413B52B`",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "low",
+          "completed": true,
+          "exit_code": 0
+        }
+      ]
+    }
+  ]
+}

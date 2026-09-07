@@ -36,7 +36,9 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
   assert.doesNotMatch(POLICY, /recipient\/context for copy|pace\/depth for teaching|voice family for brand/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1200);
+  // Transport/scope guards, not an assertion of semantic efficacy. The added
+  // post-v7 clauses still require installed-model regression and removal tests.
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1500);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {

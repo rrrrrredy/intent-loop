@@ -11,6 +11,8 @@ Handle one exact `/intent` control without inspecting the workspace, memories, c
 
 If current trusted local context already contains a result with `source: intent_formation_hook`, `ok: true`, and a non-empty `receipt_id`, do not call another tool. Report its summary and exact receipt in one short answer.
 
+For a verified export, preserve the opaque export id, record count, complete SHA-256 content digest, and exact receipt. This applies equally to Hook and MCP results; do not omit the digest when shortening a Hook summary. Never paste exported records into the conversation. The file is stored under the documented managed directory `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`; the tool deliberately does not expose an absolute path.
+
 If the Hook result says `ok: false`, or any success field is missing, report that the command is unconfirmed. Do not reconstruct state from conversation history and do not retry through shell or web tools.
 
 ## MCP fallback when the command Hook was not trusted
@@ -35,5 +37,3 @@ For `/intent correct <record-id> => <replacement>`, call `intent_show` first and
 Do not call a state tool for incomplete syntax. Explain the required syntax in one sentence.
 
 Success requires `structuredContent.ok: true`, `source: intent_formation_mcp`, and a non-empty `receipt_id`. Include the exact receipt in the answer. Missing fields or a tool error means failure; never imitate a receipt.
-
-For export, report only the opaque export id, record count, SHA-256 digest, and receipt returned by the tool. The file is stored under the documented managed directory `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`; the tool deliberately does not expose an absolute path. Never paste exported records into the conversation.

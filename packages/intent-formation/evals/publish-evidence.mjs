@@ -219,7 +219,7 @@ assert.equal(study.plugin_tree?.sha256, grading.plugin_tree?.sha256);
 assert.equal(sourceAnalysis.plugin_tree?.sha256, study.plugin_tree?.sha256);
 assert.deepEqual(study.executed_plugin_tree, study.plugin_tree);
 assert.equal(study.results?.length, scenarios.length * 2);
-assert.equal(grading.rubric_version, "intent-formation-blind-v3");
+assert.equal(grading.rubric_version, "intent-formation-blind-v4");
 assert.equal(grading.graded_count, scenarios.length);
 assert.equal(grading.grades?.length, scenarios.length);
 assert.equal(sourceAnalysis.primary_run_reliability?.run_count, scenarios.length * 2);
@@ -371,7 +371,7 @@ const sourceFiles = [
   "evals/fresh-run-directories.mjs",
   "evals/run-study.mjs",
   "evals/grade-study.mjs",
-  "evals/grading-protocol-v3.md",
+  "evals/grading-protocol-v4.md",
   "evals/grading-output-v3.schema.json",
   "evals/scenario-contract.mjs",
   "evals/analysis-core.mjs",

@@ -51,7 +51,7 @@ export function validateStudyStructure(study, grading, scenarios, options = {}) 
   invariant(Array.isArray(scenarios) && scenarios.length > 0, "study scenarios are required");
   invariant(Array.isArray(study?.results), "study results must be an array");
   invariant(Array.isArray(grading?.grades), "blind grades must be an array");
-  invariant(grading.rubric_version === "intent-formation-blind-v3", "unexpected blind rubric");
+  invariant(["intent-formation-blind-v3", "intent-formation-blind-v4"].includes(grading.rubric_version), "unexpected blind rubric");
   invariant(
     study.candidate_commit === grading.candidate_commit &&
       study.corpus_sha256 === grading.corpus_sha256 &&

@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "candidate": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "source_preservation": "Private sources were read-only and matched original recorded hashes; original paths and reversible identifier mappings are not published.",
+  "source_hashes": [
+    {
+      "source_id": "live-verified-live-results.json",
+      "file_name": "verified-live-results.json",
+      "bytes": 50394,
+      "sha256": "5651016d8f2cf9c3a4ab2e2f35e63941cb18245f3b4558ce25ce4f56b3aa8114",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-installed-fingerprints.json",
+      "file_name": "installed-fingerprints.json",
+      "bytes": 5247,
+      "sha256": "13d4d3cada2a1034afeeecb68ef51d4ea79f74b4456b12badbb194e44786ccee",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-native-cleanup-results.json",
+      "file_name": "native-cleanup-results.json",
+      "bytes": 3307,
+      "sha256": "6627dfd2908ccb0fbe630dc2ae720b5a6df7f2052b650150cee153a3a0468ebd",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-cleanup-filesystem.json",
+      "file_name": "cleanup-filesystem.json",
+      "bytes": 1870,
+      "sha256": "d7a54b5542f6693704344b1473669526b37beb6b7948e2446c7631b328dcc1a5",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-normal-trust-ui.json",
+      "file_name": "normal-trust-ui.json",
+      "bytes": 6728,
+      "sha256": "04479f2226a4b783076bb8122ce5e47c9c228375df74239c2261971038646e5e",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-sandbox-onboarding.json",
+      "file_name": "sandbox-onboarding.json",
+      "bytes": 3057,
+      "sha256": "ffce8b5bf2dc386d010f59c8a820092e605ae600d1a8579c500362dbbeb34a00",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-user-feedback-live-v7.md",
+      "file_name": "user-feedback-live-v7.md",
+      "bytes": 15261,
+      "sha256": "c0e88c7afec44f4361e570e3eb04bbd0050f8e1384fff422d093785f414e05d0",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-inventory.before.csv",
+      "file_name": "inventory.before.csv",
+      "bytes": 48,
+      "sha256": "f9246b5d0a53f836a80881f09dd44664a207bb5c56a7eee070fb4c6c5e01d583",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-totals.actual.csv",
+      "file_name": "totals.actual.csv",
+      "bytes": 31,
+      "sha256": "6056d1ef88fa0bf66f7458669302c328916dcf01910e10b44c0bb505808328aa",
+      "private_manifest_match": true
+    },
+    {
+      "source_id": "live-evidence-manifest.json",
+      "file_name": "evidence-manifest.json",
+      "bytes": 16901,
+      "sha256": "92de6eb792b2bee56a0151684855adb644a69b1e0ac610803b1a971aa52f80a4",
+      "private_manifest_match": false
+    },
+    {
+      "source_id": "earlier-offline-components",
+      "file_name": "local-acceptance-results-v7.json",
+      "bytes": 29310,
+      "sha256": "851987392a1ff54f9b255f7f7aae71e1b8fd7f2751e45d19fe301e62381d984e",
+      "original_recorded_hash_match": true
+    }
+  ],
+  "redactions": {
+    "machine_output_link": "Replaced with relative artifacts/totals.csv",
+    "runtime_ids": "Omitted or consistently labeled; no reversible mapping published",
+    "state_record_ids": "Stable record-NN labels",
+    "opaque_export_id": "Stable export-NN.json label",
+    "receipt_ids": "All ten success receipt IDs retained exactly",
+    "unrelated_context": "Not published"
+  },
+  "validation": {
+    "fixed_commit_file_matches": 27,
+    "synthetic_cases": 6,
+    "user_turns": 22,
+    "success_hook_results": 10,
+    "unsuccessful_hook_results": 2,
+    "hook_trust_bypass": 0,
+    "baseline": false,
+    "grading_api_runs": 0,
+    "source_hashes_verified": true,
+    "public_text_scan": "No absolute machine paths, runtime UUIDs, original opaque State IDs or listed common secret patterns; limited pattern scan is not a universal secrecy proof."
+  },
+  "artifact_hash_algorithm": "SHA256 of actual bytes; manifest excludes itself to avoid a self-hash cycle",
+  "artifacts": [
+    {
+      "path": "README.md",
+      "bytes": 11739,
+      "sha256": "3492607cdc201a4976df95e1e0376c4351167b0dd12e147770719a9ada74733d"
+    },
+    {
+      "path": "artifacts/inventory.csv",
+      "bytes": 48,
+      "sha256": "f9246b5d0a53f836a80881f09dd44664a207bb5c56a7eee070fb4c6c5e01d583"
+    },
+    {
+      "path": "artifacts/totals.csv",
+      "bytes": 31,
+      "sha256": "6056d1ef88fa0bf66f7458669302c328916dcf01910e10b44c0bb505808328aa"
+    },
+    {
+      "path": "build-public-evidence.mjs",
+      "bytes": 20392,
+      "sha256": "119d3ae0a640ca167e11f038fae23768f47e56a7a82933a207a22d939b48604c"
+    },
+    {
+      "path": "cases.json",
+      "bytes": 12359,
+      "sha256": "c05281bc5a4b4f0049d0602ae565653cb1a98010b2901809bd699d7126366b2f"
+    },
+    {
+      "path": "cleanup.json",
+      "bytes": 3777,
+      "sha256": "0644bc6fbb7c1876978f8b223c02cc7f5c4a827276fec83e69093bf16828ef8e"
+    },
+    {
+      "path": "hook-evidence.json",
+      "bytes": 7024,
+      "sha256": "181fe64aa0d0a93bc0167d326feec65f63cf6786aecd7ca76628d8d38a3bf9dc"
+    },
+    {
+      "path": "installation-verification.json",
+      "bytes": 10765,
+      "sha256": "f1a679b32943b00dbe3cf862c144342292cf35dfc1a1cfa17e007203d8b4fefc"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 8278,
+      "sha256": "f25f968f02fb239ac83095d4d9a200beb3d4b6e81df597db7f399d119ed4d195"
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "all_model_invocations_already_exited": true,
+  "native_commands": [
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case01"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case01.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case02"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case02.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case03"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case03.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case04"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case04.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case05"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case05.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "session-case06"
+      ],
+      "exit_code": 0,
+      "stdout": "Deleted session session-case06.\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "onboarding-01"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: failed to delete session\n",
+      "error": null
+    },
+    {
+      "argv": [
+        "delete",
+        "--force",
+        "onboarding-02"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Error: failed to delete session\n",
+      "error": null
+    },
+    {
+      "argv": [
+        "plugin",
+        "remove",
+        "intent-formation-state@intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"pluginId\": \"intent-formation-state@intent-loop\",\n  \"name\": \"intent-formation-state\",\n  \"marketplaceName\": \"intent-loop\"\n}\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "plugin",
+        "remove",
+        "intent-formation@intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"pluginId\": \"intent-formation@intent-loop\",\n  \"name\": \"intent-formation\",\n  \"marketplaceName\": \"intent-loop\"\n}\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "argv": [
+        "plugin",
+        "marketplace",
+        "remove",
+        "intent-loop",
+        "--json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"marketplaceName\": \"intent-loop\",\n  \"installedRoot\": null\n}\n",
+      "stderr": "",
+      "error": null
+    }
+  ],
+  "model_session_deletions": {
+    "succeeded": 6,
+    "failed": 0
+  },
+  "no_prompt_onboarding_deletions": {
+    "succeeded": 0,
+    "failed": 2,
+    "session_files_observed": 0,
+    "failure_reason": "Native command returned only a generic failure; no more specific cause is inferred."
+  },
+  "session_files_remaining_after_native_cleanup": 0,
+  "official_uninstalls": {
+    "intent-formation-state@intent-loop": "success",
+    "intent-formation@intent-loop": "success",
+    "marketplace_intent-loop": "success"
+  },
+  "local_windows_file_in_use_error": false,
+  "final_cleanup": {
+    "temporary_home_absent": true,
+    "synthetic_workspace_absent": true,
+    "original_authorized_authentication_source_preserved": true,
+    "temporary_authentication_copy_removed_with_home": true,
+    "evidence_preserved": true,
+    "method": "Exact resolved child targets checked for containment before native PowerShell literal-path removal."
+  },
+  "sealed_holdout_files_unchanged": true
+}

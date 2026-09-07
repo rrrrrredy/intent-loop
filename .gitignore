@@ -1,6 +1,10 @@
 node_modules/
 coverage/
 artifacts/
+!evidence/real-user-acceptance-v7/artifacts/
+evidence/real-user-acceptance-v7/artifacts/*
+!evidence/real-user-acceptance-v7/artifacts/inventory.csv
+!evidence/real-user-acceptance-v7/artifacts/totals.csv
 *.tgz
 packages/intent-formation/dist/
 packages/intent-formation/companion/dist/

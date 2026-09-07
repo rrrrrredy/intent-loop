@@ -1,0 +1,246 @@
+{
+  "candidate": "16c4b199cda677b9cb19898096d1bcc161b7215c",
+  "comparison_source": "Immutable Git objects at this exact commit, not the worktree",
+  "descriptor_tree_algorithm": "SHA256(UTF8(compact JSON of path-sorted objects with keys path, bytes, sha256 in that order) + LF)",
+  "git_object_format": "sha1",
+  "tree_ids_are_not_descriptor_sha256": true,
+  "matched_file_count": 27,
+  "trees": [
+    {
+      "plugin": "intent-formation",
+      "version": "0.3.0-beta.1",
+      "file_count": 14,
+      "installed_descriptor_tree_sha256": "758f1a97bac112c57b2e726879da51f1e01c636883973de6b5b27744304d5ff3",
+      "fixed_commit_descriptor_tree_sha256": "758f1a97bac112c57b2e726879da51f1e01c636883973de6b5b27744304d5ff3",
+      "git_tree_object_id": "607b274d827770ec7de7f3234a55e79f04e79bd6",
+      "files": [
+        {
+          "path": ".codex-plugin/plugin.json",
+          "installed_bytes": 1504,
+          "fixed_git_bytes": 1504,
+          "installed_sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776",
+          "fixed_git_sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776",
+          "match": true
+        },
+        {
+          "path": ".mcp.json",
+          "installed_bytes": 144,
+          "fixed_git_bytes": 144,
+          "installed_sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381",
+          "fixed_git_sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381",
+          "match": true
+        },
+        {
+          "path": "LICENSE",
+          "installed_bytes": 11339,
+          "fixed_git_bytes": 11339,
+          "installed_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+          "fixed_git_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+          "match": true
+        },
+        {
+          "path": "NOTICE",
+          "installed_bytes": 192,
+          "fixed_git_bytes": 192,
+          "installed_sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9",
+          "fixed_git_sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9",
+          "match": true
+        },
+        {
+          "path": "README.md",
+          "installed_bytes": 1416,
+          "fixed_git_bytes": 1416,
+          "installed_sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea",
+          "fixed_git_sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea",
+          "match": true
+        },
+        {
+          "path": "SBOM.cdx.json",
+          "installed_bytes": 640,
+          "fixed_git_bytes": 640,
+          "installed_sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c",
+          "fixed_git_sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c",
+          "match": true
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "installed_bytes": 193,
+          "fixed_git_bytes": 193,
+          "installed_sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc",
+          "fixed_git_sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc",
+          "match": true
+        },
+        {
+          "path": "assets/intent-formation.svg",
+          "installed_bytes": 667,
+          "fixed_git_bytes": 667,
+          "installed_sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896",
+          "fixed_git_sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896",
+          "match": true
+        },
+        {
+          "path": "hooks/hooks.json",
+          "installed_bytes": 422,
+          "fixed_git_bytes": 422,
+          "installed_sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446",
+          "fixed_git_sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446",
+          "match": true
+        },
+        {
+          "path": "server/policy.mjs",
+          "installed_bytes": 2955,
+          "fixed_git_bytes": 2955,
+          "installed_sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee",
+          "fixed_git_sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee",
+          "match": true
+        },
+        {
+          "path": "skills/intent-formation/SKILL.md",
+          "installed_bytes": 12404,
+          "fixed_git_bytes": 12404,
+          "installed_sha256": "9c7c54d99ea7b66217dce6ce1738e756f61d49b421f59327b9198edfe331f8ad",
+          "fixed_git_sha256": "9c7c54d99ea7b66217dce6ce1738e756f61d49b421f59327b9198edfe331f8ad",
+          "match": true
+        },
+        {
+          "path": "skills/intent-formation/agents/openai.yaml",
+          "installed_bytes": 235,
+          "fixed_git_bytes": 235,
+          "installed_sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf",
+          "fixed_git_sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf",
+          "match": true
+        },
+        {
+          "path": "src/constants.mjs",
+          "installed_bytes": 1044,
+          "fixed_git_bytes": 1044,
+          "installed_sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8",
+          "fixed_git_sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8",
+          "match": true
+        },
+        {
+          "path": "src/policy.mjs",
+          "installed_bytes": 1272,
+          "fixed_git_bytes": 1272,
+          "installed_sha256": "3fe2dc24d067d819bc373ec6e79eb11ba6800a94c1fdbbc5a41df962762d5c14",
+          "fixed_git_sha256": "3fe2dc24d067d819bc373ec6e79eb11ba6800a94c1fdbbc5a41df962762d5c14",
+          "match": true
+        }
+      ]
+    },
+    {
+      "plugin": "intent-formation-state",
+      "version": "0.3.0-beta.1",
+      "file_count": 13,
+      "installed_descriptor_tree_sha256": "2eaa0c60325904e1555fcfe7cdaafbd6548df4bbb4240b9a91d087601917548f",
+      "fixed_commit_descriptor_tree_sha256": "2eaa0c60325904e1555fcfe7cdaafbd6548df4bbb4240b9a91d087601917548f",
+      "git_tree_object_id": "06f58ef96dc17310e3158c837e047e9e4e7b2f8e",
+      "files": [
+        {
+          "path": ".codex-plugin/plugin.json",
+          "installed_bytes": 1321,
+          "fixed_git_bytes": 1321,
+          "installed_sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97",
+          "fixed_git_sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97",
+          "match": true
+        },
+        {
+          "path": ".mcp.json",
+          "installed_bytes": 152,
+          "fixed_git_bytes": 152,
+          "installed_sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e",
+          "fixed_git_sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e",
+          "match": true
+        },
+        {
+          "path": "LICENSE",
+          "installed_bytes": 11339,
+          "fixed_git_bytes": 11339,
+          "installed_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+          "fixed_git_sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74",
+          "match": true
+        },
+        {
+          "path": "NOTICE",
+          "installed_bytes": 198,
+          "fixed_git_bytes": 198,
+          "installed_sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2",
+          "fixed_git_sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2",
+          "match": true
+        },
+        {
+          "path": "README.md",
+          "installed_bytes": 2297,
+          "fixed_git_bytes": 2297,
+          "installed_sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1",
+          "fixed_git_sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1",
+          "match": true
+        },
+        {
+          "path": "SBOM.cdx.json",
+          "installed_bytes": 4219,
+          "fixed_git_bytes": 4219,
+          "installed_sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab",
+          "fixed_git_sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab",
+          "match": true
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "installed_bytes": 9629,
+          "fixed_git_bytes": 9629,
+          "installed_sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850",
+          "fixed_git_sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850",
+          "match": true
+        },
+        {
+          "path": "dist/intent-command.mjs",
+          "installed_bytes": 93094,
+          "fixed_git_bytes": 93094,
+          "installed_sha256": "cd04915c0fb155f2d4b0916c85fadc0489ddb508cc7ab528ec072596190e8f07",
+          "fixed_git_sha256": "cd04915c0fb155f2d4b0916c85fadc0489ddb508cc7ab528ec072596190e8f07",
+          "match": true
+        },
+        {
+          "path": "dist/intent-formation-server.mjs",
+          "installed_bytes": 891289,
+          "fixed_git_bytes": 891289,
+          "installed_sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+          "fixed_git_sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+          "match": true
+        },
+        {
+          "path": "dist/intent-resume.mjs",
+          "installed_bytes": 88284,
+          "fixed_git_bytes": 88284,
+          "installed_sha256": "2abac6cbdead71cbb27bbae2c52ff700e02c4d610a31bdaf38978fafd70bcbd8",
+          "fixed_git_sha256": "2abac6cbdead71cbb27bbae2c52ff700e02c4d610a31bdaf38978fafd70bcbd8",
+          "match": true
+        },
+        {
+          "path": "hooks/hooks.json",
+          "installed_bytes": 721,
+          "fixed_git_bytes": 721,
+          "installed_sha256": "24f4856afb3b579de6f45095690f2a0228d643dab6716b74a9995a47e3a3761f",
+          "fixed_git_sha256": "24f4856afb3b579de6f45095690f2a0228d643dab6716b74a9995a47e3a3761f",
+          "match": true
+        },
+        {
+          "path": "skills/intent-state-control/SKILL.md",
+          "installed_bytes": 3829,
+          "fixed_git_bytes": 3829,
+          "installed_sha256": "c9d3440dffde87e657057cdf2ae8bada2caf5fa72b5d7831f16dcd31e00593a3",
+          "fixed_git_sha256": "c9d3440dffde87e657057cdf2ae8bada2caf5fa72b5d7831f16dcd31e00593a3",
+          "match": true
+        },
+        {
+          "path": "skills/intent-state-control/agents/openai.yaml",
+          "installed_bytes": 194,
+          "fixed_git_bytes": 194,
+          "installed_sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d",
+          "fixed_git_sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d",
+          "match": true
+        }
+      ]
+    }
+  ]
+}

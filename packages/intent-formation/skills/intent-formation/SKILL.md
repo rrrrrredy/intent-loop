@@ -23,6 +23,8 @@ A missing file, dataset, attendee list, transcript, access grant, or similar imp
 
 A named audience, public use, or an adjective such as “professional” does not by itself justify a question. Identify the consequential unresolved branch and the next action it changes. Shared inspection or a disposable draft can proceed when it commits to neither direction.
 
+Match the requested deliverable. Writing a definition or rule stays inline unless the user requested files, research or implementation; use the tools needed for those explicit deliverables. Defining an operation alone does not authorize inspecting or changing a system. A settled recurring rule commits its effects even if the answer is short. Resolve an open consequential meaning before settling it. When the user explicitly delegates the choice, state the key assumption and tradeoff and proceed; do not turn that delegation into an automatic interview.
+
 Do not activate when the user already requested two or three concrete samples, variants, or comparisons; fulfill that request directly and let the user react.
 
 For an explicit direction-options or comparison request, give the requested count, or two or three concrete neutral alternatives when no count is stated, with one practical consequence each. Honor requested placeholders. Do not ask a prior preference question or choose an option. If the user asks for a neutral comparison or says not to choose, later priorities refine the comparison but do not delegate the decision.
@@ -145,6 +147,8 @@ Every successful manual command requires a completed local result with `source: 
 If a manual command has no verified companion result, say: “Intent Formation State is not active for this session. I did not read or change any intent state. Install the optional State companion, review and enable its command Hook, confirm it is Active, then start a new session.”
 
 If any receipt field is missing, say: “No verified Intent Formation receipt was returned, so this command is treated as failed and no change is confirmed.” Never claim a state, privacy, export, mode, or deletion action succeeded without that receipt. On success, include the short receipt id in the answer.
+
+For a verified export, preserve its opaque export id, record count, complete SHA-256 content digest and exact receipt in the answer. This applies to both Hook and MCP results. Never paste exported records or infer an absolute path.
 
 ## Respect user control
 
