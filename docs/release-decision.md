@@ -14,7 +14,7 @@ As of 2026-09-07: **ITERATE / NOT RELEASED.** Do not tag, push the candidate as 
 
 ## Remaining gates
 
-- Diagnose the retained v7 failures, fix reproducible product defects, and repair any prospective evaluation defects without rewriting original grades. A repaired policy requires a new independent sealed confirmation; v7 is now exposed development material. Additional external confirmation authorization is pending.
+- Diagnose the retained v7 failures, fix reproducible product defects, and repair any prospective evaluation defects without rewriting original grades. A repaired policy requires a new independent sealed confirmation; v7 is now exposed development material. The user authorized one new independent 80-case OpenAI gpt-5.6-sol paired confirmation and blind grading after clarification on 2026-09-07. Regression, component removal and prospective grader calibration must precede its seal.
 - All original joint efficacy thresholds must pass on a clean candidate bound to the complete installed plugin tree. Do not change thresholds or present selected pairs, retries or a tuned corpus as the original complete study.
 - User-perspective review has completed six synthetic cases / 22 actual model turns using normally reviewed Hooks; finish auditing its source-bound evidence, cleanup and accepted usability findings. Preserve the earlier zero-model local-component snapshot separately.
 - Final exact-candidate source/package/secret checks, real Codex State lifecycle, current DeepSeek host lifecycle, and generated/SBOM/notice consistency.
