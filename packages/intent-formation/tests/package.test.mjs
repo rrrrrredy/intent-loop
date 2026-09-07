@@ -103,9 +103,9 @@ test("core avoids implicit Skill loading and keeps its policy state-free", async
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
   assert.match(POLICY, /'compare only' stays neutral/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
-  assert.match(POLICY, /no choice or implementation/i);
+  assert.match(POLICY, /do not choose or implement/i);
   assert.match(POLICY, /requested research\/files may use tools/i);
-  assert.match(POLICY, /you may mix them, reject all, or answer freely/i);
+  assert.match(POLICY, /invite mixes, rejection, or freeform replies/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1200);
 });

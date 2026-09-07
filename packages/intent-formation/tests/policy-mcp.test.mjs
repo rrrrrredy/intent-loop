@@ -10,10 +10,10 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /newer turns control/i);
   assert.match(POLICY, /turn-scoped limits expire when later expanded/i);
-  assert.match(POLICY, /requested direction comparison: requested count or 2-3 neutral branches/i);
-  assert.match(POLICY, /each: one consequence/i);
+  assert.match(POLICY, /when asked for direction options: give the requested count or 2-3 neutral branches/i);
+  assert.match(POLICY, /each with one consequence/i);
   assert.match(POLICY, /fulfill without a prior question/i);
-  assert.match(POLICY, /no choice or implementation/i);
+  assert.match(POLICY, /do not choose or implement/i);
   assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size/i);
   assert.match(POLICY, /keep supplied quantities\/rules unchanged/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
@@ -27,10 +27,10 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /act if a shared step or cheap draft\/sample can reveal it/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
-  assert.match(POLICY, /end in the user's language: 'You may mix them, reject all, or answer freely.'/i);
+  assert.match(POLICY, /invite mixes, rejection, or freeform replies in the user's language/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);
-  assert.match(POLICY, /conflict: name incompatible requirements; ask which wins\./i);
+  assert.match(POLICY, /incompatible requirements: ask which wins, not for a mix/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
