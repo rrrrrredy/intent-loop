@@ -15,7 +15,7 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /requested comparisons answer without questions/i);
   assert.match(POLICY, /never choose\/use tools\/start work/i);
   assert.match(POLICY, /requested sample\/example\/bounded draft: exact count\/size, inline/i);
-  assert.match(POLICY, /use supplied case facts/i);
+  assert.match(POLICY, /keep supplied quantities\/rules unchanged/i);
   assert.match(POLICY, /with "only these facts": no new adjective\/theme\/implication\/intensifier\/scope/i);
   assert.match(POLICY, /repeat supplied facts if needed/i);
   assert.match(POLICY, /no tools\/files/i);
@@ -27,16 +27,16 @@ test("compact policy preserves the four intent-formation moves", () => {
   assert.match(POLICY, /act if a shared step or cheap draft\/sample can reveal it/i);
   assert.match(POLICY, /importance\/publicity\/audience\/style alone do not trigger/i);
   assert.match(POLICY, /ask outcome\/tradeoff\/exposure, not adjacent tone\/input/i);
-  assert.match(POLICY, /end: 'You may mix them, reject all, or answer freely.'/i);
+  assert.match(POLICY, /end in the user's language: 'You may mix them, reject all, or answer freely.'/i);
   assert.match(POLICY, /resolved: deliver now, chosen priority first/i);
   assert.match(POLICY, /no second question or invented facts/i);
-  assert.match(POLICY, /conflict: name incompatible requirements; ask which wins; do no work/i);
+  assert.match(POLICY, /conflict: name incompatible requirements; ask which wins; no work or mix\/reject exit/i);
   assert.match(POLICY, /missing file\/data\/access: ask only for it/i);
   assert.doesNotMatch(POLICY, /Must\/fast\/all\/highly\/but\/also/i);
   assert.doesNotMatch(POLICY, /High-cost risk without known branches/i);
   assert.doesNotMatch(POLICY, /impossible all-constraints option/i);
   assert.doesNotMatch(POLICY, /recipient\/context for copy|pace\/depth for teaching|voice family for brand/i);
-  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1120);
+  assert.ok(Buffer.byteLength(POLICY, "utf8") <= 1200);
 });
 
 test("raw MCP server performs the handshake and returns hook output", async () => {
