@@ -1,6 +1,41 @@
 # Independent candidate reviews
 
-Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six real-use cases are complete; post-v7 source changes need targeted renewed review and interaction checks.
+Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six real-use cases are complete; the new continuity connection has a separate delta review below and still requires interaction checks.
+
+## Natural-feedback connection: 2026-09-07 development delta
+
+The independent goal audit found a missing connection between ordinary user feedback
+and the otherwise functional State tools. The [current goals](current-goals.md) put
+that connection ahead of further evaluation tuning. The implementation reuses the
+existing host, tools and store; it adds a small shared context formatter, not a new
+semantic Hook or record abstraction.
+
+The adversarial reviewer tested this delta on Node 20.19.1, without model requests.
+It found a late off-mode check missing from recovery, a full-JSON size overshoot,
+and missing record scope in the recovery projection. All three were fixed. Final
+targeted rechecks observed off overrides in ordinary/resume/compact paths; a valid
+360-quote record produced 2,917-byte ordinary output and 2,827-byte recovery output.
+Recovery omitted the complete oversized record with `omitted: true`, not broken JSON.
+Ordinary prompts did not alter ledger bytes; unstarted/private tasks stayed quiet.
+The reviewer's synthetic temporary state was deleted. No blocker remained in scope.
+
+Exact reviewed source SHA-256:
+
+| File under packages/intent-formation | SHA-256 |
+| --- | --- |
+| src/continuity.mjs | bd72ef6455dcc11567d96d741f9ec64d9f62d65281672de8129c35c211df5720 |
+| hooks/intent-command.mjs | 265793b0c860aef1a320e0fc1d6085a36f8d2c6b7f8a21e21f9c5fa246d5ab0c |
+| hooks/intent-check.mjs | b2db4f04bfa3f4a260ac2e9e397a5a9b225b92d229744aaf0aba6b326b8a3c22 |
+
+The main agent ran 124 source tests before the final size/off tightening, then all
+26 final Hook tests on Node 20.19.1, the root evidence/package suite, and both
+generated-plugin validators. These are implementation checks, not efficacy results.
+The exact installed live `turn_id`, model-mediated updates and recovery interaction
+remain to be observed. The two supplementary cases stay within six user turns;
+ordinary resume retains chat history, so it cannot establish State-only causality.
+
+The older evidence and review manifests below remain unchanged and bound to their
+original commits. This delta review does not silently approve a new release.
 
 ## Adversarial review
 

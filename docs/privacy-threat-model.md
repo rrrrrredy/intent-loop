@@ -9,7 +9,7 @@ The core policy plugin is local and state-free. The optional State companion own
 | Surface | Stored by Intent Formation |
 | --- | --- |
 | Core policy | Nothing. The MCP tool accepts no prompt input. |
-| Standard State | Deliberately added atomic records, provenance, mode events, links, hashes, and timestamps. |
+| Standard State | Atomic records selected by the host after opt-in or by manual controls, provenance, mode events, links, hashes, and timestamps. |
 | Private State | A mode marker without custom title or workspace hash; new semantic record text stays in MCP-process memory. Re-entering private mode purges legacy marker metadata. |
 | Off State | Existing snapshot, an off-mode event, and a hashed lock-independent marker directory; no new semantic updates. |
 | Managed export | Full selected records and provenance in an integrity-checked JSON file. |
@@ -20,7 +20,8 @@ The core policy plugin is local and state-free. The optional State companion own
 | --- | --- | --- |
 | Accidental transcript retention | Hooks do not write prompts; record statements and excerpts are bounded; full outputs are outside the state contract. `/intent show` returns three bounded records per page and the complete command output is capped at 3,000 UTF-8 bytes, below its 4,000-token Hook limit. | A model can still misuse a state tool. Host conversation storage and any future host spill behavior are separate; the real-host gate checks that current valid outputs create no `hook_outputs` spill. |
 | Secrets in a record | Common key, token, bearer, password, and credential-label patterns are redacted. | Pattern matching is incomplete. Never use State as a vault. |
-| Prompt injection through saved data | Automatic resume includes only quoted user-origin explicit, unknown, or disputed data and labels it as data. Evidence and inferences are excluded. | Host provenance is behavioral rather than cryptographically signed. |
+| Prompt injection through saved data | Opted-in ordinary turns and recovery include only complete quoted user-origin explicit, unknown, or disputed records, labeled as data with IDs and sources. Evidence and inferences are excluded. Oversize records are omitted and flagged, not cut into broken quotes. | Host provenance is behavioral rather than cryptographically signed. |
+| Local storage mistaken for local-only processing | The privacy policy states that saved records enter host/model context after opt-in. The plugin has no direct upload client. | Host and configured model-provider processing remains outside plugin control. |
 | Cross-task access | Host-derived task IDs partition state; the DeepSeek adapter strips model-selected task and workspace fields. | Local filesystem access remains stronger than this namespace boundary. |
 | Partial or concurrent writes | Generation-checked directory locks, fsync, atomic replacement, backup restore, migration, corrupt-line quarantine, independent-process stress, and stale-lock ABA tests have regression coverage. A failed mutation reports `changed: unknown` and a recovery step. | Storage or hardware failure can still lose the last operation or its acknowledgement. Inspect state before retrying. |
 | False command success | Manual controls require `ok: true`, a trusted source, and a non-empty receipt. Missing receipts must be reported as failure. | A model can ignore instructions; users should check the receipt. |

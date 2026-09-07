@@ -1,6 +1,8 @@
 # v0.3.0-beta.1 release decision
 
-As of 2026-09-07: **ITERATE / NOT RELEASED.** Do not tag, push the candidate as a release, or announce v0.3 until every applicable gate passes. Existing v0.2 public artifacts are separate.
+As of 2026-09-07: **ITERATE / NOT RELEASED.** Reviewed development source and honest diagnostic evidence may be pushed to main. Do not tag or announce v0.3 as a release until every applicable gate passes. Existing v0.2 public artifacts are separate.
+
+The independent goal audit found that manual state tools were implemented but ordinary feedback was not connected to them. The [re-scoped delivery goals](current-goals.md) prioritize that connection, provenance and recovery before more efficacy testing. Progress is not a passing product evaluation.
 
 ## Current verified implementation and development evidence
 

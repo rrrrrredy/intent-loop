@@ -1,6 +1,8 @@
 import { randomBytes } from "node:crypto";
+import { lstat } from "node:fs/promises";
 import process from "node:process";
 import { IntentService } from "../src/service.mjs";
+import { continuityContext } from "../src/continuity.mjs";
 
 const chunks = [];
 const MAX_COMMAND_OUTPUT_BYTES = 3000;
@@ -166,7 +168,9 @@ async function execute(event, command) {
       cwd: typeof event.cwd === "string" ? event.cwd : undefined
     });
     data = { exists: result.exists, mode: result.mode };
-    summary = "Intent state is ready in " + result.mode + " mode.";
+    summary = result.mode === "standard"
+      ? "Intent state is ready. Continue in your own words; material goals and feedback can now be saved as short task records."
+      : "Intent state is ready in " + result.mode + " mode.";
   } else if (command.name === "remember") {
     const remembered = parseRemember(command.argument);
     if (!remembered?.statement) {
@@ -330,11 +334,7 @@ async function execute(event, command) {
   outputContext(payload, instruction);
 }
 
-async function applyTaskMode(event) {
-  const taskId = taskIdFor(event);
-  if (!taskId) return;
-  const service = new IntentService();
-  if (await service.fastTaskMode({ task_id: taskId }) !== "off") return;
+function outputOffMode() {
   outputContext(
     {
       ok: true,
@@ -343,6 +343,30 @@ async function applyTaskMode(event) {
     },
     "Verified user control: Intent Formation is off for this task. This task-specific setting overrides any general Intent Formation policy or Skill context. Do not perform implicit intent intervention or update intent state. Respond to the user's ordinary request normally."
   );
+}
+
+async function applyTaskContext(event) {
+  const taskId = taskIdFor(event);
+  if (!taskId) return;
+  const service = new IntentService();
+  if (await service.fastTaskMode({ task_id: taskId }) === "off") {
+    outputOffMode();
+    return;
+  }
+  // No ledger means no saved opt-in; do not create one to inspect an ordinary turn.
+  if (!(await lstat(service.store.filePath).catch(() => null))?.isFile()) return;
+  const snapshot = await service.show({ task_id: taskId });
+  if (snapshot.mode === "off") {
+    outputOffMode();
+    return;
+  }
+  const context = continuityContext(snapshot, { turnId: event.turn_id });
+  if (!context) return;
+  process.stdout.write(JSON.stringify({
+    continue: true,
+    suppressOutput: true,
+    hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context }
+  }));
 }
 
 process.stdin.setEncoding("utf8");
@@ -358,9 +382,9 @@ process.stdin.on("end", async () => {
   const command = parseCommand(event.prompt);
   if (!command) {
     try {
-      await applyTaskMode(event);
+      await applyTaskContext(event);
     } catch {
-      // Mode lookup is advisory and must fail open without blocking the prompt.
+      // State lookup is advisory and must fail open without blocking the prompt.
     }
     return;
   }

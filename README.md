@@ -4,9 +4,11 @@
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Prerelease](https://img.shields.io/github/v/release/rrrrrredy/intent-loop?include_prereleases&label=prerelease)](https://github.com/rrrrrredy/intent-loop/releases)
 
-Intent Formation helps Codex notice the one undecided choice that could send expensive work in the wrong direction. Clear tasks continue normally. When a choice genuinely changes the next useful action, Codex asks one focused question, shows two or three concrete directions, or makes a tiny sample you can react to.
+Intent Formation helps Codex follow what you want as you see results and change your mind. Clear tasks continue normally. When a choice genuinely changes the next useful action, Codex asks one focused question, shows two or three concrete directions, or makes a tiny sample you can react to. With local state enabled, short sourced records retain the current goal and distinguish fixing the work from changing the goal.
 
 There is no form to fill in and no separate chat app. Talk to Codex as usual.
+
+**Development status:** main contains the unreleased v0.3 candidate, including an experimental natural-feedback/state connection. Earlier independent studies did not pass the release gates. Public source and green implementation tests do not establish efficacy; see the [current goals](docs/current-goals.md) and [release decision](docs/release-decision.md).
 
 ## What it feels like
 
@@ -32,7 +34,7 @@ codex plugin add intent-formation@intent-loop
 
 Start a new Codex task. Review the plugin Hook when Codex asks. The core plugin receives no prompt text through its MCP tool and writes no intent records.
 
-That is all most people need. Give Codex a task in your own words.
+This core-only mode supplies interaction guidance without persistent continuity. Give Codex a task in your own words. To retain the evolving goal across processes, enable State below.
 
 ## Optional local memory and controls
 
@@ -48,7 +50,9 @@ Start a new task, review the two local Hooks, then type:
 /intent start
 ~~~
 
-Useful controls:
+Once enabled, continue in ordinary language: “Keep the purpose; fix the spacing,” or “I changed my mind; make it for volunteers.” The development Hook supplies existing records and the current turn reference; Codex uses the existing MCP tools to save material changes. You do not need to copy record IDs for normal feedback. This path is under live acceptance testing and is not yet a released capability.
+
+Use `/intent show` to check what was actually retained and `/intent off` to stop. The remaining controls are optional explicit overrides:
 
 | Message | Effect |
 | --- | --- |
@@ -68,15 +72,19 @@ Exports are stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<exp
 
 The reported SHA-256 is the structured content digest, not the hash of the complete formatted file. Import verifies it automatically; see [export verification](docs/export-verification.md) for the exact calculation.
 
-The State companion stores deliberate, atomic statements. It does not store complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Personal information deliberately placed in an atomic statement can still remain; this is not a secret vault or general DLP system. On Unix-like systems, managed directories/files use `0700`/`0600`; Windows relies on the current account's inherited filesystem ACLs.
+After `/intent start`, Codex may save short atomic paraphrases of material user goals and feedback; the ordinary-prompt Hook only reads existing state and does not parse or persist the prompt. Complete prompts, transcripts, assistant responses, workspace files, and tool output must not be copied into records. This content-minimization rule relies on the host for semantic writes; personal information deliberately placed in a statement can still remain. This is not a secret vault or general DLP system. On Unix-like systems, managed directories/files use `0700`/`0600`; Windows relies on the current account's inherited filesystem ACLs.
+
+Local storage is not local-only processing: enabled State supplies selected records to Codex as context, where the host and configured model provider may process them. The plugin has no direct upload or telemetry client.
 
 The trusted short-lived Hook refuses private remember, feedback, show, and correction commands: it cannot retain writes or retrieve another process's private memory. Private records can still be managed through the State MCP tools and last only for that MCP process. Private mode never stores a custom task title or workspace hash. Returning to standard mode with `/intent start` restores the reliable slash-command path.
 
-See the [two-minute Chinese guide](docs/simple-guide.zh-CN.md), [privacy policy](docs/privacy-policy.md), and [threat model](docs/privacy-threat-model.md).
+See the [plain-language Chinese guide](docs/simple-guide.zh-CN.md), [privacy policy](docs/privacy-policy.md), and [threat model](docs/privacy-threat-model.md).
 
 ## DeepSeek Harness
 
 The repository also contains `dsh-intent-formation`, a thin adapter for the official DeepSeek Harness developer preview. It shares the exact interaction policy and exposes the optional state tools through a session-bound local MCP process. Setting a session to `off` removes the policy on the next Harness system-prompt assembly, including after adapter restart.
+
+The new Codex UserPromptSubmit continuity connection is not a claim of equivalent natural-feedback behavior in DeepSeek. The adapter's current claim remains compatibility and local tool lifecycle.
 
 ~~~shell
 dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1

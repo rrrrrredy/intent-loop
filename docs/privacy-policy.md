@@ -12,7 +12,7 @@ Codex supplies the UserPromptSubmit event and may retain conversations under its
 
 ## Optional State companion
 
-State is opt-in. After `/intent start`, it can store deliberately selected atomic statements, semantic labels, minimal provenance, timestamps, task identifiers, record links, and integrity hashes in the local Codex plugin-data directory.
+State is opt-in. After `/intent start`, Codex may use ordinary goals and material feedback to select short atomic records without a separate remember command. These records, semantic labels, minimal provenance, timestamps, task identifiers, record links, and integrity hashes are stored in the local Codex plugin-data directory. The ordinary-prompt Hook reads existing records; it does not parse or save the prompt itself.
 
 It does not persist complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Common credential patterns are redacted before a record is written, but redaction is best effort and is not general personal-information detection.
 
@@ -26,7 +26,7 @@ The adapter runs the same state server locally. It derives task identity from th
 
 ## Network access and sharing
 
-The product runtime does not send intent state to the project author or third parties. Installing from GitHub, installing dependencies for development, checking for updates, and using Codex, DeepSeek Harness, or a model provider can involve those services independently.
+The product has no direct outbound state-upload client and does not send records to the project author. Local storage does not mean local-only model processing: while State is enabled, selected saved user-origin records are supplied to Codex as task context on ordinary turns and recovery, and MCP results are also visible to the host. Codex or a configured model provider may therefore process that content under its own terms. Installing from GitHub, installing dependencies for development, and checking for updates also involve those services independently.
 
 ## Security and questions
 

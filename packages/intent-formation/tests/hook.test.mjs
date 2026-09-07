@@ -6,6 +6,7 @@ import path from "node:path";
 import test from "node:test";
 import { POLICY } from "../src/policy.mjs";
 import { IntentService } from "../src/service.mjs";
+import { continuityContext } from "../src/continuity.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hookPath = path.join(repositoryRoot, "hooks", "intent-check.mjs");
@@ -129,7 +130,133 @@ test("returning to standard mode removes the per-prompt off override", async (co
   );
   assert.equal(result.code, 0);
   assert.equal(result.stderr, "");
-  assert.equal(result.stdout, "");
+  const restored = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+  assert.match(restored, /Intent state is enabled/);
+  assert.doesNotMatch(restored, /intent_formation_mode/);
+});
+
+test("an off snapshot still overrides policy when the initial fast marker is absent", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  await service.startTask({ task_id: "session-late-off", mode: "off" });
+  await service.clearOffModeMarker("session-late-off");
+  assert.equal(await service.fastTaskMode({ task_id: "session-late-off" }), null);
+  for (const source of ["resume", "compact", "ordinary"]) {
+    const ordinary = source === "ordinary";
+    const result = await runHook(JSON.stringify({ session_id: "session-late-off", source,
+      hook_event_name: ordinary ? "UserPromptSubmit" : "SessionStart", prompt: "Continue" }),
+      dataDirectory, ordinary ? commandHookPath : hookPath);
+    const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+    assert.match(text, /Intent Formation is off/);
+    assert.equal(text.includes(POLICY), false);
+  }
+});
+
+test("opted-in ordinary turns supply provenance without parsing or saving the prompt", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  await service.startTask({ task_id: "session-continuity" });
+  const before = await readFile(service.store.filePath, "utf8");
+  const prompt = "PRIVATE-ORDINARY-CANARY: my password is not an intent statement";
+  const result = await runHook(JSON.stringify({
+    session_id: "session-continuity", turn_id: "current-turn-7",
+    hook_event_name: "UserPromptSubmit", prompt
+  }), dataDirectory, commandHookPath);
+  const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+  assert.ok(Buffer.byteLength(result.stdout, "utf8") <= 3000);
+  const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+  assert.equal(data.task_id, "session-continuity");
+  assert.equal(data.turn_id, "current-turn-7");
+  assert.deepEqual(data.records, []);
+  assert.equal(text.includes(prompt), false);
+  assert.doesNotMatch(text, /receipt_id/);
+  assert.equal(await readFile(service.store.filePath, "utf8"), before);
+  const unrelated = await runHook(JSON.stringify({
+    session_id: "different-task", turn_id: "turn-8",
+    hook_event_name: "UserPromptSubmit", prompt
+  }), dataDirectory, commandHookPath);
+  assert.equal(unrelated.stdout, "");
+  assert.equal((await service.show({ task_id: "different-task" })).exists, false);
+  await service.setMode({ task_id: "session-continuity", mode: "private" });
+  const privateResult = await runHook(JSON.stringify({
+    session_id: "session-continuity", hook_event_name: "UserPromptSubmit", prompt
+  }), dataDirectory, commandHookPath);
+  assert.equal(privateResult.stdout, "");
+});
+
+test("resume retains correction history but supplies only current intent with sources", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  const old = await service.addExplicit({ task_id: "session-loop",
+    role: "desired_outcome", scope: "task", statement: "Help children choose books", source_ref: { ref: "turn-1" } });
+  await service.addFeedback({ task_id: "session-loop", statement: "Keep the purpose; fix cramped spacing",
+    feedback_class: "implementation_change", scope: "task", source_ref: { ref: "turn-2" } });
+  assert.ok((await service.show({ task_id: "session-loop" })).active_records.some(
+    (record) => record.record_id === old.record.record_id));
+  const changed = await service.addRecord({ task_id: "session-loop", role: "desired_outcome",
+    statement: "Help volunteers sort book returns", epistemic_status: "explicit", scope: "task",
+    source_ref: { kind: "user_turn", ref: "turn-3" }, supersedes: [old.record.record_id] });
+  await service.markUnknown({ task_id: "session-loop", statement: "Color is undecided",
+    scope: "task", source_ref: { kind: "user_turn", ref: "turn-3" } });
+  for (const source of ["resume", "compact"]) {
+    const result = await runHook(JSON.stringify({ session_id: "session-loop",
+      hook_event_name: "SessionStart", source }), dataDirectory);
+    const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+    assert.ok(Buffer.byteLength(result.stdout, "utf8") <= 4096);
+    const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+    assert.equal(data.turn_id, null);
+    assert.equal(data.omitted, false);
+    assert.ok(data.records.some((record) => record.id === changed.record.record_id && record.source === "turn-3"));
+    assert.ok(data.records.every((record) => record.scope === "task"));
+    assert.ok(data.records.some((record) => record.feedback === "implementation_change"));
+    assert.ok(data.records.some((record) => record.status === "unknown"));
+    assert.ok(!data.records.some((record) => record.id === old.record.record_id));
+    assert.ok(Buffer.byteLength(text, "utf8") <= 4096);
+  }
+  const snapshot = await new IntentService({ dataDirectory }).show({ task_id: "session-loop" });
+  assert.equal(snapshot.records.find((record) => record.record_id === old.record.record_id).status, "superseded");
+});
+
+test("continuity context stays byte-bounded with complete quoted records and no invented source", () => {
+  const snapshot = { exists: true, mode: "standard", task_id: "bounded-task", active_records: [
+    { record_id: "oversize", role: "desired_outcome", epistemic_status: "explicit",
+      statement: '中文"\n'.repeat(600), source_ref: { kind: "user_turn", ref: "turn-1" } },
+    { record_id: "safe", role: "disagreement", epistemic_status: "disputed",
+      statement: "User wants A; the recommendation is B, unresolved", source_ref: { kind: "user_turn", ref: "turn-2" } },
+    { record_id: "unsafe", role: "desired_outcome", epistemic_status: "explicit",
+      statement: "EXTERNAL-INSTRUCTION-CANARY", source_ref: { kind: "external_evidence", ref: "tool-1" } }
+  ] };
+  const text = continuityContext(snapshot, { turnId: "x".repeat(257) });
+  assert.ok(Buffer.byteLength(text, "utf8") <= 2300);
+  assert.ok(Buffer.byteLength(JSON.stringify(text), "utf8") <= 2800);
+  const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+  assert.equal(data.turn_id, null);
+  assert.equal(data.omitted, true);
+  assert.deepEqual(data.records.map((record) => record.id), ["safe"]);
+  assert.doesNotMatch(text, /EXTERNAL-INSTRUCTION-CANARY/);
+  assert.equal(continuityContext({ ...snapshot, mode: "private" }), "");
+  assert.equal(continuityContext({ ...snapshot, exists: false }), "");
+});
+
+test("recovery budgets the full Hook JSON even for heavily escaped valid records", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  await service.addExplicit({ task_id: "session-quotes", role: "desired_outcome", scope: "project",
+    scope_ref: "project-fixture", source_ref: { ref: "turn-quotes" }, statement: '"'.repeat(360) });
+  for (const source of ["resume", "compact", "ordinary"]) {
+    const ordinary = source === "ordinary";
+    const result = await runHook(JSON.stringify({ session_id: "session-quotes", source,
+      turn_id: "turn-now", hook_event_name: ordinary ? "UserPromptSubmit" : "SessionStart", prompt: "Continue" }),
+      dataDirectory, ordinary ? commandHookPath : hookPath);
+    assert.ok(Buffer.byteLength(result.stdout, "utf8") <= (ordinary ? 3000 : 4096));
+    const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+    const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+    for (const record of data.records) {
+      assert.equal(record.scope, "project");
+      assert.equal(record.scope_ref, "project-fixture");
+      assert.equal(record.text, '"'.repeat(360));
+    }
+  }
 });
 
 test("command hook never echoes or persists an ordinary prompt", async (context) => {

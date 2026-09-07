@@ -1,5 +1,5 @@
 {
-  "description": "Exact, receipt-backed local /intent state controls. Ordinary prompts are never stored or echoed.",
+  "description": "Receipt-backed /intent controls and opt-in intent continuity. Hooks never store or echo ordinary prompts; the host maintains atomic records only after state is started.",
   "hooks": {
     "SessionStart": [
       {
