@@ -1,0 +1,724 @@
+{
+  "schema_version": 1,
+  "evidence_class": "development_regression",
+  "current_release_efficacy": false,
+  "generated_at": "2026-09-07T04:27:10.671Z",
+  "trials": [
+    {
+      "id": "d2be057-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "e6f6f7bf522e15143520f349675ff6457ce4fcb2927dd27193188503bd41ace2",
+      "candidate_commit": "d2be057ae18062015777adc0060c5ff786140d53",
+      "corpus_sha256": "421275229cf14eb7b49fc7a4684447a6d1f6bcaaf50bc2eea3fcded36049e570",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.0",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "78ccd6e5b84928f9dad66ae96433a56746c724319694bd301298bbc233d3200d",
+        "file_count": 14,
+        "bytes": 35066
+      },
+      "installed_tree": {
+        "sha256": "78ccd6e5b84928f9dad66ae96433a56746c724319694bd301298bbc233d3200d",
+        "file_count": 14,
+        "bytes": 35066
+      },
+      "git_tree": {
+        "sha256": "78ccd6e5b84928f9dad66ae96433a56746c724319694bd301298bbc233d3200d",
+        "file_count": 14,
+        "bytes": 35066
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Requested comparison/options: exact count; each branch gets one consequence + parallel micro-example; never ask/choose/use tools/start work. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. Creative wording may vary; \"fictional\" adds no rules/properties/history. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Helpful choices: 2-3 neutral branches; end: 'You may mix them, reject all, or answer freely.' Resolved: deliver now, chosen priority first; no second question or invented facts. Feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move. Apply now. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1287,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    },
+    {
+      "id": "c9aaaaf-targeted",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "f1a15966d3ec37a98eb2b5125da7868dc65fbce5bb95ec3cc61bc2b5dcabb929",
+      "candidate_commit": "c9aaaaf1952aeac788de4dbb42ce3b26c20693b3",
+      "corpus_sha256": "d9e5b50b6a1d29a2f1094eb2927939c2c707ccecbb8ca996181983d2d3df76c1",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.0",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "f842e246cfad840366f18ea123f9818059f0ca1bf39250d0a764309bd7ac4af3",
+        "file_count": 14,
+        "bytes": 35088
+      },
+      "installed_tree": {
+        "sha256": "f842e246cfad840366f18ea123f9818059f0ca1bf39250d0a764309bd7ac4af3",
+        "file_count": 14,
+        "bytes": 35088
+      },
+      "git_tree": {
+        "sha256": "f842e246cfad840366f18ea123f9818059f0ca1bf39250d0a764309bd7ac4af3",
+        "file_count": 14,
+        "bytes": 35088
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence + parallel micro-example; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. Fictional: invent only asked-for content; no extra facts/rules/properties/history/evidence. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move. Apply now. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1318,
+      "first_turns": 6,
+      "follow_ups": 1,
+      "successful_cleanups": 6,
+      "operational_failures": 0
+    },
+    {
+      "id": "b83534a-fact-policing",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "e5926921eac70cb65627c79d22a9c04912b7d123a7ee6418eb0a4f43f9818741",
+      "candidate_commit": "b83534a6b2fe800019130b007974527b60cfb0f9",
+      "corpus_sha256": "d9e5b50b6a1d29a2f1094eb2927939c2c707ccecbb8ca996181983d2d3df76c1",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.0",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "6009cf637343edbd24fb2306f2846068a62f446ab32613c459a503ef12a31ebf",
+        "file_count": 14,
+        "bytes": 35166
+      },
+      "installed_tree": {
+        "sha256": "6009cf637343edbd24fb2306f2846068a62f446ab32613c459a503ef12a31ebf",
+        "file_count": 14,
+        "bytes": 35166
+      },
+      "git_tree": {
+        "sha256": "6009cf637343edbd24fb2306f2846068a62f446ab32613c459a503ef12a31ebf",
+        "file_count": 14,
+        "bytes": 35166
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence + parallel micro-example; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. Fictional fact claims: supplied case facts only; meet length by framing/repeating, not new details. Invent a value/property/rule only when that exact thing is requested. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move. Apply now. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1396,
+      "first_turns": 6,
+      "follow_ups": 1,
+      "successful_cleanups": 6,
+      "operational_failures": 0
+    },
+    {
+      "id": "841050a-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "14dd0a84f6a663913c47bad14b38d40854e11385963d2feceab502ffc82273c0",
+      "candidate_commit": "841050aa61f3a70d89352c6e591f622197eb9517",
+      "corpus_sha256": "20b86024b5e16b113cf490edff1268aa36ea468bf2287feb833a22b54372595f",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.0",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "9be1326e59a2fd0d47f34b98f8d9a82e9884496b6875c3571a29eb14ed0385e2",
+        "file_count": 14,
+        "bytes": 34996
+      },
+      "installed_tree": {
+        "sha256": "9be1326e59a2fd0d47f34b98f8d9a82e9884496b6875c3571a29eb14ed0385e2",
+        "file_count": 14,
+        "bytes": 34996
+      },
+      "git_tree": {
+        "sha256": "9be1326e59a2fd0d47f34b98f8d9a82e9884496b6875c3571a29eb14ed0385e2",
+        "file_count": 14,
+        "bytes": 34996
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence + parallel micro-example; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Feedback: keep=extend; implementation=change form; intent=change goal; uncertain=do requested next move. Apply now. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1226,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    },
+    {
+      "id": "50f2b51-feedback-removal",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "2e5f7379dbbc6337331fd130d3915e0287bb4e09706638d3c371ed03dc07c5b9",
+      "candidate_commit": "50f2b51bc4d37a6874ffdd19feb74da0d347ec62",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.0",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "installed_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "git_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence + parallel micro-example; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1110,
+      "first_turns": 5,
+      "follow_ups": 5,
+      "successful_cleanups": 5,
+      "operational_failures": 0
+    },
+    {
+      "id": "50f2b51-fresh-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "28e1f5432b75452ed5c2170a6ffa720354fd9693c6ef990d1495c4f714147102",
+      "candidate_commit": "50f2b51bc4d37a6874ffdd19feb74da0d347ec62",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 3,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "installed_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "git_tree": {
+        "sha256": "5e9a37560ea2efe651f21b61343199ded553955f41d0f9c7343ea2958812edd0",
+        "file_count": 14,
+        "bytes": 34873
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence + parallel micro-example; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1110,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    },
+    {
+      "id": "8fe96aa-micro-example-removal",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "180ee43e80b31b90571c6536a957309d498895cdb6137f40a11bad80e5cc3736",
+      "candidate_commit": "8fe96aa304d0aadd4ee569e8e18d86d265fba00c",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 3,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "82860a5702354cb16b26b2acdae0b9223597ab440e87de5b66c2411bf777d43c",
+        "file_count": 14,
+        "bytes": 34848
+      },
+      "installed_tree": {
+        "sha256": "82860a5702354cb16b26b2acdae0b9223597ab440e87de5b66c2411bf777d43c",
+        "file_count": 14,
+        "bytes": 34848
+      },
+      "git_tree": {
+        "sha256": "82860a5702354cb16b26b2acdae0b9223597ab440e87de5b66c2411bf777d43c",
+        "file_count": 14,
+        "bytes": 34848
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; use supplied case facts. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1085,
+      "first_turns": 3,
+      "follow_ups": 0,
+      "successful_cleanups": 3,
+      "operational_failures": 0
+    },
+    {
+      "id": "ab20bc7-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "d6ea5fd005d86ac6e8428ee4f0f6ab6d76a2db8c92a9110f6adcb4db188b595a",
+      "candidate_commit": "ab20bc7585572d05ee0ad11d1bcfdf640a232204",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 3,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "installed_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "git_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence; honor requested placeholders; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1132,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    },
+    {
+      "id": "ab20bc7-costly-six",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "a1f19cfa170a357baadf12365d114bc87190f982629e65d236cdded34f09137e",
+      "candidate_commit": "ab20bc7585572d05ee0ad11d1bcfdf640a232204",
+      "corpus_sha256": "e9a0d786b2da19a7c9d5ee358afeba3f0ce3116e291181e8ddc1385b3170c5ed",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "installed_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "git_tree": {
+        "sha256": "663ee64a1704e0d60e2bfd3cb79b6a63c0e9261f5e23134c07e088d7cfb46803",
+        "file_count": 14,
+        "bytes": 34895
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; do no work. Comparison/options: requested count or 2-3 neutral branches; each: one consequence; honor requested placeholders; end: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1132,
+      "first_turns": 6,
+      "follow_ups": 3,
+      "successful_cleanups": 6,
+      "operational_failures": 0
+    },
+    {
+      "id": "3c833bb-costly-seven",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "cfe0976b2bb219ee272d9c7cb3a66fb61a2b847fabf5e12f35ab9dcad3e08d14",
+      "candidate_commit": "3c833bb86bef9a2de8604dd25fe6b8783eb6ac73",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 3,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "installed_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "git_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; no work or mix/reject exit. Comparison/options: requested count or 2-3 neutral branches; each: one consequence; honor requested placeholders; end in the user's language: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1171,
+      "first_turns": 7,
+      "follow_ups": 4,
+      "successful_cleanups": 7,
+      "operational_failures": 0
+    },
+    {
+      "id": "3c833bb-comparisons",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "2d96ea78faa59691d269949f981d2e94ff330a3e77aedcd9a432db551265b2c5",
+      "candidate_commit": "3c833bb86bef9a2de8604dd25fe6b8783eb6ac73",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v20.19.1"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 3,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "installed_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "git_tree": {
+        "sha256": "eca069d02e8dfa5258e7c241c4b2a706e133dc485279696b9bd3027a2edcc784",
+        "file_count": 14,
+        "bytes": 34934
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins; no work or mix/reject exit. Comparison/options: requested count or 2-3 neutral branches; each: one consequence; honor requested placeholders; end in the user's language: 'You may mix them, reject all, or answer freely.' Never choose/use tools/start work; requested comparisons answer without questions. Requested sample/example/bounded draft: exact count/size, inline; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. No tools/files; overrides gate. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1171,
+      "first_turns": 3,
+      "follow_ups": 0,
+      "successful_cleanups": 3,
+      "operational_failures": 0
+    },
+    {
+      "id": "16af897-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "9cbdff44f88b47caa19c9c48b0870e2c9af22554486b748f8586d8ea4586da30",
+      "candidate_commit": "16af8979462c42d1763981aae24474881de97d0d",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "installed_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "git_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins. Requested direction comparison: requested count or 2-3 neutral branches; each: one consequence; honor placeholders; no choice or implementation. End in the user's language: 'You may mix them, reject all, or answer freely.' Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1166,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    },
+    {
+      "id": "16af897-costly-seven",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "360d658cda85cb0e500f55997929277c902704084f630bd1772561d03eaf1bd8",
+      "candidate_commit": "16af8979462c42d1763981aae24474881de97d0d",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "installed_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "git_tree": {
+        "sha256": "20daf74f013aaaddb5eb731bbbe33a25a6edde227de9683bdd1ea94ffe898ada",
+        "file_count": 14,
+        "bytes": 34400
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Conflict: name incompatible requirements; ask which wins. Requested direction comparison: requested count or 2-3 neutral branches; each: one consequence; honor placeholders; no choice or implementation. End in the user's language: 'You may mix them, reject all, or answer freely.' Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1166,
+      "first_turns": 7,
+      "follow_ups": 4,
+      "successful_cleanups": 7,
+      "operational_failures": 0
+    },
+    {
+      "id": "288e54d-conditional-exit",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "e97b4acbe9c29277b9809020ed7762fc8d94add9ebb4ebb6498395925ae73234",
+      "candidate_commit": "288e54d301dd580cb1943bbff90ba21f20d7d967",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "installed_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "git_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Incompatible requirements: ask which wins, not for a mix. When asked for direction options: give the requested count or 2-3 neutral branches, each with one consequence; honor placeholders; invite mixes, rejection, or freeform replies in the user's language. Do not choose or implement. Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1171,
+      "first_turns": 4,
+      "follow_ups": 0,
+      "successful_cleanups": 4,
+      "operational_failures": 0
+    },
+    {
+      "id": "288e54d-costly-seven",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "bdbd3d03b079ce4243223981d621cdf3980afd1dabbfceba24f084eed78a60e0",
+      "candidate_commit": "288e54d301dd580cb1943bbff90ba21f20d7d967",
+      "corpus_sha256": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 2,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "installed_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "git_tree": {
+        "sha256": "d14986dc81bd42cde5ab0bfd99a4f18ab3ddfb714ef3a1a64bb833176cd5e5b3",
+        "file_count": 14,
+        "bytes": 34405
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Incompatible requirements: ask which wins, not for a mix. When asked for direction options: give the requested count or 2-3 neutral branches, each with one consequence; honor placeholders; invite mixes, rejection, or freeform replies in the user's language. Do not choose or implement. Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1171,
+      "first_turns": 7,
+      "follow_ups": 4,
+      "successful_cleanups": 7,
+      "operational_failures": 0
+    },
+    {
+      "id": "2b9101f-full",
+      "evidence_class": "development_regression",
+      "source_summary_sha256": "f02de061b3732fe594195c81cc13b049004ddff7370617f6c8c8a5c4d11bc7e3",
+      "candidate_commit": "2b9101f9fc99ab0874f05a5d1e80b03b070de6a0",
+      "corpus_sha256": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "low",
+      "codex_cli_version": "codex-cli 0.153.4",
+      "host": {
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v22.19.0"
+      },
+      "design": {
+        "pairing": "single-arm",
+        "pair_order": null,
+        "arms_within_pair": "sequential",
+        "pair_worker_concurrency": 1,
+        "turn_timeout_ms": 300000,
+        "primary_run_retry_policy": "none"
+      },
+      "plugin_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "installed_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "git_tree": {
+        "sha256": "581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567",
+        "file_count": 14,
+        "bytes": 34427
+      },
+      "policy": "Newer turns control; turn-scoped limits expire when later expanded. Incompatible requirements: ask which wins, not for a mix. Requested comparisons/options: give the requested count or 2-3 neutral branches, each with one consequence; honor placeholders. End that comparison by inviting mixes, rejection, or freeform replies in the user's language. Do not choose or implement. Requested sample/example/bounded draft: exact count/size; keep supplied quantities/rules unchanged. With \"only these facts\": no new adjective/theme/implication/intensifier/scope; repeat supplied facts if needed. Fulfill without a prior question. Keep unsolicited options/samples inline. Requested research/files may use tools. Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. Resolved: deliver now, chosen priority first; no second question or invented facts. Missing file/data/access: ask only for it. 'Compare only' stays neutral.",
+      "policy_bytes": 1193,
+      "first_turns": 17,
+      "follow_ups": 5,
+      "successful_cleanups": 17,
+      "operational_failures": 0
+    }
+  ],
+  "sanitization": {
+    "control_characters_replaced": 0,
+    "local_paths_replaced": 0,
+    "secret_patterns_replaced": 0,
+    "strings_truncated": 0,
+    "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step."
+  },
+  "artifact_sha256": {
+    "runs.jsonl": "d62f605c89f8b5d18d5df244c0e52d0f3756acfaee475b1d0cc2f80425b74b9a",
+    "dependency-audits.json": "0062e21d53b91b94a029de3d03d55e555e1593ae59cbb0434d941220a8805c2a",
+    "interrupted-run.json": "93698d0887df2b604ccf8454211484ef0f8f6d626a562574716ecb7b89ca5419"
+  }
+}

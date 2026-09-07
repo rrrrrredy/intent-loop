@@ -2,7 +2,7 @@
 
 All notable changes are documented here. This project follows Semantic Versioning.
 
-## 0.3.0-beta.1 - 2026-09-03
+## 0.3.0-beta.1 - Unreleased
 
 ### Changed
 
@@ -13,11 +13,11 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Generalized the costly-divergence rule around missing success criteria and materially different outcomes; the shipped policy no longer enumerates lexical trigger words or a memorized website example.
 - Ran two independently authored 80-scenario paired studies to `ITERATE`, attributed each failed gate, and retired both corpora after their results informed later policy revisions.
 - Ran the independently authored v5 candidate to 160 / 160 primary completions and 80 / 80 clean blind grades; retained `STOP` after final-match, clear paired-latency, and inference-denial gates failed, and retired the corpus before further revision.
-- Ran a four-variant installed-Hook ablation and removed the automatic feedback taxonomy and generic constraint reminder from the v6 policy; v6 later exposed broader feedback failures, so the current revision restores a smaller feedback rule for fresh component testing.
+- Ran a four-variant installed-Hook ablation and removed the automatic feedback taxonomy and generic constraint reminder. V6 reopened that conclusion; a later five-case feedback removal retained the observed expected moves, so the current policy again omits the automatic taxonomy and keeps later-turn control.
 - Compared warm MCP with a minimal command Hook on ten matched clear-prompt pairs; kept MCP after the command variant's median paired latency rose 12.61%, and rejected generic fidelity and automatic-feedback policy text that showed no behavioral gain.
-- Retained the exact mix/reject/free-answer exit after relaxed wording omitted complete answer rights, and prohibited tools or project work during an explicit intent-forming comparison after a real regression searched the web.
+- Kept mix/reject/free-answer rights while replacing a universal fixed closing sentence with guidance scoped to requested comparisons/options. Requested research and files remain host-owned and permitted; unsolicited comparison/sample work stays inline.
 - Revised the v6 interaction policy to 1,253 UTF-8 bytes, one byte below the original 1,254 bytes, with failure-derived leading-goal, explicit facts-only, and mechanically testable chosen-lead delivery rules; smaller variants that regressed behavior were rejected.
-- After v6, tried five observable decision dimensions, then removed them after a real 17-case installed-Hook run produced eight unnecessary questions. Later runs removed all eight questions but twice failed the missing-duration boundary and still implied an unsupplied card-game rule. The current 1,362-byte development policy puts missing required facts ahead of drafting, distinguishes creative wording from supplied case facts, keeps the general three-condition gate, and retains comparison and result-feedback behavior.
+- After v6, removed five decision dimensions that caused unnecessary questions, retracted the mistaken fictional-duration missing-data label, and removed broad factual-precedence policing, automatic micro-examples, and the universal closing sentence. Candidate `2b9101f` uses 1,193 policy bytes; its 17 first turns, five follow-ups, and 17 task deletions completed with no first-turn actions. Remaining prose/rule-following imperfections are preserved in the raw development outputs.
 
 ### Added
 
@@ -26,7 +26,9 @@ All notable changes are documented here. This project follows Semantic Versionin
 - Sealed the independent v5 release corpus at SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905` before either arm ran; root validation found zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
 - Sealed independent v6 at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` after zero model, arm, or grader runs; archived v5, preserved both frozen ablation corpora, and added a portable validator that reproduces zero cross-corpus threshold violations.
 - Added evaluation contract v3, which requires every final outcome requirement to be an exact excerpt from a frozen user-visible turn and enforces that rule in execution, grading, analysis, and evidence publication.
-- Added a 17-case post-v6 development corpus for reversible drafts, concrete comparisons, result-feedback updates, missing-data control, and clear-task silence. Its prompts remain unchanged after a label audit corrected seven over-intervention expectations and one fabrication-permitting expectation.
+- Added a 17-case post-v6 development corpus for reversible drafts, concrete comparisons, result-feedback updates, missing-data control, and clear-task silence. Prompt strings remain unchanged after correcting seven over-intervention labels and restoring a fictional sample label that an earlier audit had wrongly changed to missing-data questioning.
+- Preserved 16 selected post-v6 trials / 156 conversations with candidate, policy, installed-tree, and artifact hashes. Added the independent v7 author seal, mechanical visible-requirement validation and historical overlap checks; v7 model arms and grading have not run.
+- Added commit-bound independent adversarial and local user-component review artifacts, beginner correction/mode examples, and an exact export-content checksum explanation.
 - Added `/intent remember <one short goal>` as a deterministic, receipt-backed standard-mode control with optional goal, constraint, preference, success, and tradeoff roles.
 - Added deterministic evidence verification to the root test suite.
 - Added exact core and State distribution allowlists, per-package CycloneDX SBOMs and notices, and seven-asset release verification with provenance and SBOM attestations.
@@ -34,6 +36,8 @@ All notable changes are documented here. This project follows Semantic Versionin
 
 ### Fixed
 
+- Closed conditional-control, private false-receipt, private metadata, interrupted recovery erasure, unrelated-record preservation, and concurrent-deletion acknowledgement failures. The independent adversarial agent reran its fixed 14 cases without a remaining blocker in that scope.
+- Made bundle builds and MCP tests resolve their package root independently of the caller's working directory.
 - Aligned the blind-grader JSON Schema, rubric, and runtime validator on a 40-520 character per-arm audit rationale after an invalid grading run exposed the mismatch; grading now records its clean Git tooling commit and contract hashes.
 - Removed redundant DeepSeek adapter assertions tied to one policy phrase; the adapter tests still require its guidance to begin with the exact imported shared policy and retain the host/state boundaries.
 - Kept the 100-process lock stress test inside its 180-second outer safety bound while allowing 120 seconds for a heavily scheduled worker to observe progress; a separate regression still proves that a live owner with no progress times out at the configured product boundary.
@@ -63,7 +67,7 @@ All notable changes are documented here. This project follows Semantic Versionin
 - V5 reduced avoidable rework 69.70% but failed final match (+5.94 percentage points), clear paired latency (+5.36%), and inference denial (75%, 6 / 8). No efficacy claim is active, and another release attempt requires a new sealed holdout.
 - Post-v5 policy and transport trials remain failure-derived development evidence. Stable `codex-cli 0.153.0` facts-only and lead-order probes each passed 5 / 5, and the full 16-case corpus passed 16 / 16 under the audited Hook-trust path; three no-bypass repetition sets are excluded. Those trials supported the later failed v6 candidate and are not release evidence.
 - V6 completed 160 / 160 primary conversations and 80 / 80 blind grades, then returned `STOP`: clear paired latency was +6.89%, wrong proactive interventions were 24.14%, and inference denial was 62.5%. A post-run audit also found at least eleven hidden final requirements, independently invalidating the run for efficacy. Its exact hashes and defect list are retained as failed diagnostic evidence.
-- The failed 1,317-byte run, corrected 17-case labels, 1,293-byte routing repair, 1,315-byte factual repair, and current 1,362-byte precedence repair are development material only. No v7 holdout has been authored or run, and no efficacy claim is active.
+- All post-v6 policy variants and corrected development labels remain development material only. V7 is independently authored and locally validated but has zero model/arm/grader runs. New model cases require specific external-data authorization beyond the approved 17-case corpus. Nineteen user-agent local component checks are not a completed conversational acceptance test.
 - Even a passing holdout remains limited by a synthetic corpus, automated grading, one Windows execution host, and model or judge drift. These constraints keep the release at beta.
 - DeepSeek tests establish adapter, isolation, packaging, and host-lifecycle behavior only. They do not transfer the Codex efficacy result to DeepSeek.
 

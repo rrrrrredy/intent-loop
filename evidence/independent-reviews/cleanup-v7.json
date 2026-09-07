@@ -1,0 +1,32 @@
+{
+  "result": "CLEANUP_COMPLETE",
+  "auth_copy_removed_before_component_tests": true,
+  "uninstall_actions": [
+    {"command": "codex plugin remove intent-formation-state@intent-loop --json", "exit_code": 0},
+    {"command": "codex plugin remove intent-formation@intent-loop --json", "exit_code": 0},
+    {"command": "codex plugin marketplace remove intent-loop --json", "exit_code": 0}
+  ],
+  "model_requests": 0,
+  "codex_resume_requests": 0,
+  "session_files_before_cleanup": 0,
+  "isolated_home_exists": false,
+  "live_workspace_exists": false,
+  "original_repository_exists": true,
+  "deleted_targets": [
+    "isolated-home",
+    "live-workspace"
+  ],
+  "deletion_method": "PowerShell Resolve-Path, exact acceptance-parent containment check, reject root reparse points, then Remove-Item -LiteralPath -Recurse -Force",
+  "preserved": [
+    "the four sealed v7 holdout files",
+    "usage-evidence",
+    "the original repository",
+    "the original authentication file"
+  ],
+  "holdout_sha256_unchanged": {
+    "holdout-80-v7.jsonl": "f2c25b9f251d8dcfb145132b4628dab853b7e0d20ed82271c91313f30e9dedec",
+    "holdout-manifest-v7.json": "17ebf860efa31de2128f1f070712a669aa652c5cf5c44e5a1914a8a8bfc8415a",
+    "holdout-method-v7.md": "7f09efa5a438389d44b093732c232905af047799236a5e24df81a169bec88d10",
+    "validate-holdout-v7.mjs": "9268f4c451f56789006ceef0c41f9482d276ad7de39f47f6cf8201ce2abd1b11"
+  }
+}

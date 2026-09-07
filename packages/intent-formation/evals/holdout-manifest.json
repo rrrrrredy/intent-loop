@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "evidence_class": "sealed_holdout",
-  "holdout_version": 6,
+  "holdout_version": 7,
   "sealed_before_candidate_run": true,
-  "sealed_date": "2026-09-04",
+  "sealed_date": "2026-09-07",
   "corpus": {
     "path": "packages/intent-formation/evals/holdout-80.jsonl",
-    "sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
-    "byte_size": 69746,
+    "sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+    "byte_size": 70685,
     "scenario_count": 80,
     "distribution": {
       "poorly_expressed": 15,
@@ -21,11 +21,26 @@
       "zh-CN": 20
     },
     "language_allocation_by_class": {
-      "poorly_expressed": { "en": 11, "zh-CN": 4 },
-      "unformed": { "en": 11, "zh-CN": 4 },
-      "conflict": { "en": 11, "zh-CN": 4 },
-      "preference_after_result": { "en": 11, "zh-CN": 4 },
-      "clear": { "en": 16, "zh-CN": 4 }
+      "poorly_expressed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "unformed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "conflict": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "preference_after_result": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "clear": {
+        "en": 16,
+        "zh-CN": 4
+      }
     },
     "feedback_label_distribution": {
       "keep": 6,
@@ -42,11 +57,11 @@
   },
   "method": {
     "path": "packages/intent-formation/evals/holdout-method.md",
-    "sha256": "7c87d4ce51fa168a233fbe891f50fb24fb48f6dddce47bac67230c628c5f08e7",
-    "byte_size": 4023
+    "sha256": "07a4866575743a870049533895d990769129ab848e7b4e6a7bbeda8125c4fca7",
+    "byte_size": 3399
   },
   "authoring": "independent",
-  "authoring_description": "The v6 author worked from the evaluation specification alone in a new isolated directory, did not inspect the repository, Git history, policy, prior corpora, experiment output, conversation, memory, or internet sources, and ran no model, arm, or grader.",
+  "authoring_description": "Independent v7 author used the blind specification only and performed zero product, arm, model-evaluation, or grader runs before sealing. Original artifacts are preserved byte-for-byte under evals/seals/v7.",
   "arm_runs_before_seal": 0,
   "grader_runs_before_seal": 0,
   "model_runs_before_seal": 0,
@@ -55,44 +70,65 @@
   "cross_corpus_validation_performed_by_author": false,
   "cross_corpus_overlap_check_owner": "root evaluator after author seal and before candidate run",
   "author_seal": {
-    "corpus_sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
-    "corpus_byte_size": 69746,
-    "manifest_sha256": "fd47fabbb895048aa44dcd675ef73d3a1d3e8ab9758404c8bc3154873c64b1f9",
-    "method_sha256": "6fb5581a7386180c0c25d921be9b4d88fa7509df6024041f73598bf43ea08c2a",
-    "validator_sha256": "8819ca27e46595e6663259fb1c67a88f6f42a3326ced55d83428f674748bf1de"
+    "directory": "packages/intent-formation/evals/seals/v7",
+    "corpus_sha256": "f2c25b9f251d8dcfb145132b4628dab853b7e0d20ed82271c91313f30e9dedec",
+    "corpus_byte_size": 70525,
+    "manifest_sha256": "17ebf860efa31de2128f1f070712a669aa652c5cf5c44e5a1914a8a8bfc8415a",
+    "method_sha256": "7f09efa5a438389d44b093732c232905af047799236a5e24df81a169bec88d10",
+    "validator_sha256": "9268f4c451f56789006ceef0c41f9482d276ad7de39f47f6cf8201ce2abd1b11",
+    "canonicalization": "Wrap unacceptable_first string in a singleton array; every other field value, including all user prompts, follow-ups, and final requirements, is unchanged."
   },
   "near_duplicate_thresholds": {
     "token_set_jaccard": 0.65,
     "character_four_gram_dice": 0.72
   },
   "observed_internal_near_duplicate_maxima": {
-    "token_set_jaccard": 0.3050847457627119,
-    "character_four_gram_dice": 0.34944237918215615
+    "token_set_jaccard": 0.26282051282051283,
+    "character_four_gram_dice": 0.3133159268929504
   },
   "root_overlap_validation": {
     "compared_with_all_retired_holdouts": true,
     "compared_with_all_development_corpora": true,
     "compared_with_ablation_corpora": true,
     "threshold_violations": 0,
-    "maximum_token_set_jaccard": 0.45614035087719296,
-    "maximum_character_four_gram_dice": 0.5330882352941176,
+    "maximum_token_set_jaccard": 0.2721518987341772,
+    "maximum_character_four_gram_dice": 0.3095652173913043,
     "validator": {
       "path": "packages/intent-formation/evals/validate-holdout-overlap.mjs",
-      "sha256": "87e22d227c1636122ad2576d5e6c6bdd8e66170d2f64c41d3ef7c087ac678717",
-      "byte_size": 7088
+      "sha256": "66e034307b2c1f21491644833868b93498b44a311da1a3c6e1edbc7958fca90e",
+      "byte_size": 7419
+    },
+    "report": {
+      "path": "packages/intent-formation/evals/holdout-overlap-v7.json",
+      "sha256": "9b3888b9c90f33dbf2bd839f7518209965735f14b9a2de753cb1cb0a9be6a224",
+      "byte_size": 2899
     },
     "frozen_ablation_sha256": {
       "ablation-16": "513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72",
       "ablation-confirm-16": "addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c"
     },
-    "pre_canonical_crlf_sha256": {
-      "ablation-16": "c5c3c889c302fbc1f8f11ced67c1f78125c8a2c768aae4081100f07d34b5b0b7",
-      "ablation-confirm-16": "87252f02f62461e27ba881044db139e3199af2520180268c25edb4cf072aca03"
+    "source_sha256": {
+      "retired-v6-holdout": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+      "retired-v5-holdout": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
+      "development-study-80": "9f66af3f968d2df52fac4f0ffb5ea8c12fa9a8f5076a0645ec25ddca0e4f428b",
+      "development-scenarios": "f851c708211dafb664520078a337c08ca429f9fd093d3d2a5a56f1f17ffbf011",
+      "development-semantic-smoke": "cacf38dce8a0978919438f1709c75b2c3cfbe2c112dfa90bac3920f4f026597d",
+      "development-latency": "d40d5889d2197b91058efdfb1704dc0900f9dfe479cd0c36176e887d76fd23a9",
+      "development-host-regressions": "c53729f5d066f647edfe006d4bf27cc9738b18a72067799e36d69c235d1696fb",
+      "development-post-failure": "bc8d795f9c501ce390ff927f4ef0622f324fdb86c00a68cdb010fd89d6845af6",
+      "development-post-v5": "78d3ad07b3db94ca4190a2d5895de062dffd1165c0342c6f59a51ce158780707",
+      "development-post-v6": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+      "development-costly-branches": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+      "ablation-16": "513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72",
+      "ablation-confirm-16": "addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c",
+      "retired-holdout-at-bae8e03": "4009661d845bbeb4bcc8dc2b5b19d20328d51182b426f1ffd37dd858a31500f3",
+      "retired-holdout-at-fcba88e": "252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70",
+      "retired-holdout-v5-at-fca68c5": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905"
     }
   },
   "retired_predecessor": {
-    "path": "packages/intent-formation/evals/retired/holdout-80-v5.jsonl",
-    "sha256": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
-    "reason": "Its results informed the candidate, so it cannot be reused as release evidence."
+    "path": "packages/intent-formation/evals/retired/holdout-80-v6.jsonl",
+    "sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "reason": "The run failed declared gates and included hidden final requirements. It is invalid for efficacy and informed subsequent development."
   }
 }

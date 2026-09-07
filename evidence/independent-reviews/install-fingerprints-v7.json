@@ -1,0 +1,304 @@
+{
+  "candidate": "2b9101f9fc99ab0874f05a5d1e80b03b070de6a0",
+  "algorithm": "SHA-256 of compact JSON sorted relative path/bytes/SHA-256 entries plus LF",
+  "fingerprints": {
+    "intent-formation": {
+      "source": {
+        "sha256": "758f1a97bac112c57b2e726879da51f1e01c636883973de6b5b27744304d5ff3",
+        "file_count": 14,
+        "files": [
+          {
+            "path": ".codex-plugin/plugin.json",
+            "bytes": 1504,
+            "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+          },
+          {
+            "path": ".mcp.json",
+            "bytes": 144,
+            "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+          },
+          {
+            "path": "LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "NOTICE",
+            "bytes": 192,
+            "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+          },
+          {
+            "path": "README.md",
+            "bytes": 1416,
+            "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+          },
+          {
+            "path": "SBOM.cdx.json",
+            "bytes": 640,
+            "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+          },
+          {
+            "path": "THIRD_PARTY_NOTICES.md",
+            "bytes": 193,
+            "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+          },
+          {
+            "path": "assets/intent-formation.svg",
+            "bytes": 667,
+            "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+          },
+          {
+            "path": "hooks/hooks.json",
+            "bytes": 422,
+            "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+          },
+          {
+            "path": "server/policy.mjs",
+            "bytes": 2955,
+            "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+          },
+          {
+            "path": "skills/intent-formation/SKILL.md",
+            "bytes": 12404,
+            "sha256": "9c7c54d99ea7b66217dce6ce1738e756f61d49b421f59327b9198edfe331f8ad"
+          },
+          {
+            "path": "skills/intent-formation/agents/openai.yaml",
+            "bytes": 235,
+            "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+          },
+          {
+            "path": "src/constants.mjs",
+            "bytes": 1044,
+            "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+          },
+          {
+            "path": "src/policy.mjs",
+            "bytes": 1272,
+            "sha256": "3fe2dc24d067d819bc373ec6e79eb11ba6800a94c1fdbbc5a41df962762d5c14"
+          }
+        ]
+      },
+      "installed": {
+        "sha256": "758f1a97bac112c57b2e726879da51f1e01c636883973de6b5b27744304d5ff3",
+        "file_count": 14,
+        "files": [
+          {
+            "path": ".codex-plugin/plugin.json",
+            "bytes": 1504,
+            "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+          },
+          {
+            "path": ".mcp.json",
+            "bytes": 144,
+            "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+          },
+          {
+            "path": "LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "NOTICE",
+            "bytes": 192,
+            "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+          },
+          {
+            "path": "README.md",
+            "bytes": 1416,
+            "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+          },
+          {
+            "path": "SBOM.cdx.json",
+            "bytes": 640,
+            "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+          },
+          {
+            "path": "THIRD_PARTY_NOTICES.md",
+            "bytes": 193,
+            "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+          },
+          {
+            "path": "assets/intent-formation.svg",
+            "bytes": 667,
+            "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+          },
+          {
+            "path": "hooks/hooks.json",
+            "bytes": 422,
+            "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+          },
+          {
+            "path": "server/policy.mjs",
+            "bytes": 2955,
+            "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+          },
+          {
+            "path": "skills/intent-formation/SKILL.md",
+            "bytes": 12404,
+            "sha256": "9c7c54d99ea7b66217dce6ce1738e756f61d49b421f59327b9198edfe331f8ad"
+          },
+          {
+            "path": "skills/intent-formation/agents/openai.yaml",
+            "bytes": 235,
+            "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+          },
+          {
+            "path": "src/constants.mjs",
+            "bytes": 1044,
+            "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+          },
+          {
+            "path": "src/policy.mjs",
+            "bytes": 1272,
+            "sha256": "3fe2dc24d067d819bc373ec6e79eb11ba6800a94c1fdbbc5a41df962762d5c14"
+          }
+        ]
+      }
+    },
+    "intent-formation-state": {
+      "source": {
+        "sha256": "2eaa0c60325904e1555fcfe7cdaafbd6548df4bbb4240b9a91d087601917548f",
+        "file_count": 13,
+        "files": [
+          {
+            "path": ".codex-plugin/plugin.json",
+            "bytes": 1321,
+            "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+          },
+          {
+            "path": ".mcp.json",
+            "bytes": 152,
+            "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+          },
+          {
+            "path": "LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "NOTICE",
+            "bytes": 198,
+            "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+          },
+          {
+            "path": "README.md",
+            "bytes": 2297,
+            "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+          },
+          {
+            "path": "SBOM.cdx.json",
+            "bytes": 4219,
+            "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+          },
+          {
+            "path": "THIRD_PARTY_NOTICES.md",
+            "bytes": 9629,
+            "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+          },
+          {
+            "path": "dist/intent-command.mjs",
+            "bytes": 93094,
+            "sha256": "cd04915c0fb155f2d4b0916c85fadc0489ddb508cc7ab528ec072596190e8f07"
+          },
+          {
+            "path": "dist/intent-formation-server.mjs",
+            "bytes": 891289,
+            "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+          },
+          {
+            "path": "dist/intent-resume.mjs",
+            "bytes": 88284,
+            "sha256": "2abac6cbdead71cbb27bbae2c52ff700e02c4d610a31bdaf38978fafd70bcbd8"
+          },
+          {
+            "path": "hooks/hooks.json",
+            "bytes": 721,
+            "sha256": "24f4856afb3b579de6f45095690f2a0228d643dab6716b74a9995a47e3a3761f"
+          },
+          {
+            "path": "skills/intent-state-control/SKILL.md",
+            "bytes": 3829,
+            "sha256": "c9d3440dffde87e657057cdf2ae8bada2caf5fa72b5d7831f16dcd31e00593a3"
+          },
+          {
+            "path": "skills/intent-state-control/agents/openai.yaml",
+            "bytes": 194,
+            "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+          }
+        ]
+      },
+      "installed": {
+        "sha256": "2eaa0c60325904e1555fcfe7cdaafbd6548df4bbb4240b9a91d087601917548f",
+        "file_count": 13,
+        "files": [
+          {
+            "path": ".codex-plugin/plugin.json",
+            "bytes": 1321,
+            "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+          },
+          {
+            "path": ".mcp.json",
+            "bytes": 152,
+            "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+          },
+          {
+            "path": "LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "NOTICE",
+            "bytes": 198,
+            "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+          },
+          {
+            "path": "README.md",
+            "bytes": 2297,
+            "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+          },
+          {
+            "path": "SBOM.cdx.json",
+            "bytes": 4219,
+            "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+          },
+          {
+            "path": "THIRD_PARTY_NOTICES.md",
+            "bytes": 9629,
+            "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+          },
+          {
+            "path": "dist/intent-command.mjs",
+            "bytes": 93094,
+            "sha256": "cd04915c0fb155f2d4b0916c85fadc0489ddb508cc7ab528ec072596190e8f07"
+          },
+          {
+            "path": "dist/intent-formation-server.mjs",
+            "bytes": 891289,
+            "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+          },
+          {
+            "path": "dist/intent-resume.mjs",
+            "bytes": 88284,
+            "sha256": "2abac6cbdead71cbb27bbae2c52ff700e02c4d610a31bdaf38978fafd70bcbd8"
+          },
+          {
+            "path": "hooks/hooks.json",
+            "bytes": 721,
+            "sha256": "24f4856afb3b579de6f45095690f2a0228d643dab6716b74a9995a47e3a3761f"
+          },
+          {
+            "path": "skills/intent-state-control/SKILL.md",
+            "bytes": 3829,
+            "sha256": "c9d3440dffde87e657057cdf2ae8bada2caf5fa72b5d7831f16dcd31e00593a3"
+          },
+          {
+            "path": "skills/intent-state-control/agents/openai.yaml",
+            "bytes": 194,
+            "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+          }
+        ]
+      }
+    }
+  }
+}

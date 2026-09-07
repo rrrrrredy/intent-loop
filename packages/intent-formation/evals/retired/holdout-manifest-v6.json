@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "evidence_class": "sealed_holdout",
+  "holdout_version": 6,
+  "sealed_before_candidate_run": true,
+  "sealed_date": "2026-09-04",
+  "corpus": {
+    "path": "packages/intent-formation/evals/holdout-80.jsonl",
+    "sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "byte_size": 69746,
+    "scenario_count": 80,
+    "distribution": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    },
+    "language_distribution": {
+      "en": 60,
+      "zh-CN": 20
+    },
+    "language_allocation_by_class": {
+      "poorly_expressed": { "en": 11, "zh-CN": 4 },
+      "unformed": { "en": 11, "zh-CN": 4 },
+      "conflict": { "en": 11, "zh-CN": 4 },
+      "preference_after_result": { "en": 11, "zh-CN": 4 },
+      "clear": { "en": 16, "zh-CN": 4 }
+    },
+    "feedback_label_distribution": {
+      "keep": 6,
+      "implementation_change": 4,
+      "intent_change": 4,
+      "uncertain": 1
+    },
+    "minimum_distinct_domains": 40,
+    "actual_distinct_domains": 80,
+    "maximum_cases_per_domain": 2,
+    "actual_maximum_cases_per_domain": 1,
+    "text_encoding": "UTF-8 without BOM",
+    "line_endings": "LF"
+  },
+  "method": {
+    "path": "packages/intent-formation/evals/holdout-method.md",
+    "sha256": "7c87d4ce51fa168a233fbe891f50fb24fb48f6dddce47bac67230c628c5f08e7",
+    "byte_size": 4023
+  },
+  "authoring": "independent",
+  "authoring_description": "The v6 author worked from the evaluation specification alone in a new isolated directory, did not inspect the repository, Git history, policy, prior corpora, experiment output, conversation, memory, or internet sources, and ran no model, arm, or grader.",
+  "arm_runs_before_seal": 0,
+  "grader_runs_before_seal": 0,
+  "model_runs_before_seal": 0,
+  "product_policy_opened_by_author": false,
+  "old_corpus_opened_by_author": false,
+  "cross_corpus_validation_performed_by_author": false,
+  "cross_corpus_overlap_check_owner": "root evaluator after author seal and before candidate run",
+  "author_seal": {
+    "corpus_sha256": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "corpus_byte_size": 69746,
+    "manifest_sha256": "fd47fabbb895048aa44dcd675ef73d3a1d3e8ab9758404c8bc3154873c64b1f9",
+    "method_sha256": "6fb5581a7386180c0c25d921be9b4d88fa7509df6024041f73598bf43ea08c2a",
+    "validator_sha256": "8819ca27e46595e6663259fb1c67a88f6f42a3326ced55d83428f674748bf1de"
+  },
+  "near_duplicate_thresholds": {
+    "token_set_jaccard": 0.65,
+    "character_four_gram_dice": 0.72
+  },
+  "observed_internal_near_duplicate_maxima": {
+    "token_set_jaccard": 0.3050847457627119,
+    "character_four_gram_dice": 0.34944237918215615
+  },
+  "root_overlap_validation": {
+    "compared_with_all_retired_holdouts": true,
+    "compared_with_all_development_corpora": true,
+    "compared_with_ablation_corpora": true,
+    "threshold_violations": 0,
+    "maximum_token_set_jaccard": 0.45614035087719296,
+    "maximum_character_four_gram_dice": 0.5330882352941176,
+    "validator": {
+      "path": "packages/intent-formation/evals/validate-holdout-overlap.mjs",
+      "sha256": "87e22d227c1636122ad2576d5e6c6bdd8e66170d2f64c41d3ef7c087ac678717",
+      "byte_size": 7088
+    },
+    "frozen_ablation_sha256": {
+      "ablation-16": "513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72",
+      "ablation-confirm-16": "addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c"
+    },
+    "pre_canonical_crlf_sha256": {
+      "ablation-16": "c5c3c889c302fbc1f8f11ced67c1f78125c8a2c768aae4081100f07d34b5b0b7",
+      "ablation-confirm-16": "87252f02f62461e27ba881044db139e3199af2520180268c25edb4cf072aca03"
+    }
+  },
+  "retired_predecessor": {
+    "path": "packages/intent-formation/evals/retired/holdout-80-v5.jsonl",
+    "sha256": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
+    "reason": "Its results informed the candidate, so it cannot be reused as release evidence."
+  }
+}

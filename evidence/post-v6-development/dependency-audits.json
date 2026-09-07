@@ -1,0 +1,28 @@
+[
+  {
+    "checked_at": "2026-09-07T03:00:37.575Z",
+    "lockfile": "package-lock.json",
+    "lock_sha256": "36d83acceb612ae92ca2cc0f475de0579fb49a0ce029f7fd0cc0d0fd3d7b206e",
+    "endpoint": "https://registry.npmjs.org/-/npm/v1/security/advisories/bulk",
+    "submitted_fields": "dependency names and versions only",
+    "package_count": 16,
+    "http_status": 200,
+    "response_body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "advisories": {},
+    "advisory_count": 0,
+    "status": "PASS_NO_ADVISORIES"
+  },
+  {
+    "checked_at": "2026-09-07T03:00:38.586Z",
+    "lockfile": "packages/intent-formation/package-lock.json",
+    "lock_sha256": "e4970014bc4ba1aab9e46c35fc59b2f7db0575c87444699b89c5e0fcff8a73d7",
+    "endpoint": "https://registry.npmjs.org/-/npm/v1/security/advisories/bulk",
+    "submitted_fields": "dependency names and versions only",
+    "package_count": 118,
+    "http_status": 200,
+    "response_body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "advisories": {},
+    "advisory_count": 0,
+    "status": "PASS_NO_ADVISORIES"
+  }
+]

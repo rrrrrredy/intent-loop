@@ -7,7 +7,6 @@ const repositoryRoot = path.resolve(import.meta.dirname, "..", "..", "..");
 const holdoutPath = "packages/intent-formation/evals/holdout-80.jsonl";
 const candidatePath = path.resolve(repositoryRoot, process.argv[2] ?? holdoutPath);
 const fileSources = [
-  ["retired-v6-holdout", "packages/intent-formation/evals/retired/holdout-80-v6.jsonl"],
   ["retired-v5-holdout", "packages/intent-formation/evals/retired/holdout-80-v5.jsonl"],
   ["development-study-80", "packages/intent-formation/evals/study-80.jsonl"],
   ["development-scenarios", "packages/intent-formation/evals/scenarios.jsonl"],
@@ -16,8 +15,6 @@ const fileSources = [
   ["development-host-regressions", "packages/intent-formation/evals/host-regressions.jsonl"],
   ["development-post-failure", "packages/intent-formation/evals/post-failure-regressions.jsonl"],
   ["development-post-v5", "packages/intent-formation/evals/post-v5-development.jsonl"],
-  ["development-post-v6", "packages/intent-formation/evals/post-v6-development.jsonl"],
-  ["development-costly-branches", "packages/intent-formation/evals/costly-branch-development.jsonl"],
   ["ablation-16", "packages/intent-formation/evals/retired/ablation-16.jsonl"],
   ["ablation-confirm-16", "packages/intent-formation/evals/retired/ablation-confirm-16.jsonl"]
 ];
@@ -55,18 +52,18 @@ function scenarioText(scenario) {
 }
 
 function tokenSet(value) {
-  return new Set(normalize(value).match(/\p{Script=Han}|(?:(?!\p{Script=Han})[\p{L}\p{N}])+/gu) ?? []);
+  return new Set(normalize(value).match(/\p{Script=Han}|[\p{L}\p{N}]+/gu) ?? []);
 }
 
 function gramSet(value) {
-  const normalized = Array.from(normalize(value));
+  const normalized = normalize(value);
   const result = new Set();
   if (normalized.length < 4) {
-    if (normalized.length > 0) result.add(normalized.join(""));
+    if (normalized.length > 0) result.add(normalized);
     return result;
   }
   for (let index = 0; index <= normalized.length - 4; index += 1) {
-    result.add(normalized.slice(index, index + 4).join(""));
+    result.add(normalized.slice(index, index + 4));
   }
   return result;
 }
@@ -119,7 +116,7 @@ function loadHistoricalSource(label, commit) {
 }
 
 const candidateRaw = await readFile(candidatePath, "utf8");
-const candidate = parseJsonl(candidateRaw, "candidate-v7");
+const candidate = parseJsonl(candidateRaw, "candidate-v6");
 const sources = [];
 for (const [label, sourcePath] of fileSources) sources.push(await loadFileSource(label, sourcePath));
 for (const [label, commit] of historicalSources) sources.push(loadHistoricalSource(label, commit));
@@ -161,7 +158,7 @@ function consider(left, right, sourceLabel, internal) {
 
 for (let left = 0; left < candidate.length; left += 1) {
   for (let right = left + 1; right < candidate.length; right += 1) {
-    consider(candidate[left], candidate[right], "candidate-v7", true);
+    consider(candidate[left], candidate[right], "candidate-v6", true);
   }
   for (const source of sources) {
     for (const prior of source.records) consider(candidate[left], prior, source.label, false);

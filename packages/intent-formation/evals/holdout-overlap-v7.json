@@ -1,0 +1,66 @@
+{
+  "candidate_sha256": "12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851",
+  "candidate_bytes": 70685,
+  "candidate_count": 80,
+  "source_counts": {
+    "retired-v6-holdout": 80,
+    "retired-v5-holdout": 80,
+    "development-study-80": 80,
+    "development-scenarios": 12,
+    "development-semantic-smoke": 8,
+    "development-latency": 10,
+    "development-host-regressions": 8,
+    "development-post-failure": 8,
+    "development-post-v5": 16,
+    "development-post-v6": 17,
+    "development-costly-branches": 7,
+    "ablation-16": 16,
+    "ablation-confirm-16": 16,
+    "retired-holdout-at-bae8e03": 80,
+    "retired-holdout-at-fcba88e": 80,
+    "retired-holdout-v5-at-fca68c5": 80
+  },
+  "source_sha256": {
+    "retired-v6-holdout": "359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897",
+    "retired-v5-holdout": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905",
+    "development-study-80": "9f66af3f968d2df52fac4f0ffb5ea8c12fa9a8f5076a0645ec25ddca0e4f428b",
+    "development-scenarios": "f851c708211dafb664520078a337c08ca429f9fd093d3d2a5a56f1f17ffbf011",
+    "development-semantic-smoke": "cacf38dce8a0978919438f1709c75b2c3cfbe2c112dfa90bac3920f4f026597d",
+    "development-latency": "d40d5889d2197b91058efdfb1704dc0900f9dfe479cd0c36176e887d76fd23a9",
+    "development-host-regressions": "c53729f5d066f647edfe006d4bf27cc9738b18a72067799e36d69c235d1696fb",
+    "development-post-failure": "bc8d795f9c501ce390ff927f4ef0622f324fdb86c00a68cdb010fd89d6845af6",
+    "development-post-v5": "78d3ad07b3db94ca4190a2d5895de062dffd1165c0342c6f59a51ce158780707",
+    "development-post-v6": "e751f6f669cdd6bfd5846a490e7a8932baef6ee4a65cfde5cce31d0f8fe63ca5",
+    "development-costly-branches": "7f7609e1cc2dde93d3a946b863482e39573566daedeae6253f1d8826d9ce7d91",
+    "ablation-16": "513fd7f6b9e433914ae29991cd7a0b5859d3be4289ffdd2360f7adbbe91eed72",
+    "ablation-confirm-16": "addb1a418036d3b03b011367cae9ea1a7797669127fa8a9d012c34885bf38c2c",
+    "retired-holdout-at-bae8e03": "4009661d845bbeb4bcc8dc2b5b19d20328d51182b426f1ffd37dd858a31500f3",
+    "retired-holdout-at-fcba88e": "252f3b057ab263c98f9439b69e216b3227736997cf641fbce0529cc4be5dda70",
+    "retired-holdout-v5-at-fca68c5": "d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905"
+  },
+  "internal_maximum": {
+    "token_set_jaccard": 0.26282051282051283,
+    "character_four_gram_dice": 0.3133159268929504,
+    "pair": [
+      "v7-co-012",
+      "v7-co-013"
+    ]
+  },
+  "cross_corpus_maximum": {
+    "token_set_jaccard": 0.2721518987341772,
+    "token_pair": [
+      "v7-co-015",
+      "retired-v6-holdout:v6-cf-013"
+    ],
+    "character_four_gram_dice": 0.3095652173913043,
+    "gram_pair": [
+      "v7-cl-010",
+      "retired-v5-holdout:v5-cl-007"
+    ]
+  },
+  "thresholds": {
+    "token_set_jaccard": 0.65,
+    "character_four_gram_dice": 0.72
+  },
+  "threshold_violations": []
+}

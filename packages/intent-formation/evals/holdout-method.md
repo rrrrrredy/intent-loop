@@ -1,27 +1,23 @@
-# Sealed Holdout V6 Authorship and Root Validation Method
+# Sealed Holdout V7 Authorship and Root Validation
 
-## Independence and scope
+The independent author's four original files are preserved byte-for-byte under `evals/seals/v7`. The author saw the evaluation specification only, not the product, old corpora, policy, experiment output, task history, memory, or web sources. The authoring assistant did not run the product, either arm, a model evaluation, or a grader before sealing. See the preserved author method and manifest for the complete procedure and original hashes.
 
-This corpus was written from scratch inside the designated target directory, using only the evaluation specification supplied to the independent author. During authorship, the author did not list, open, search, or inspect any repository, Git history, product policy, generated plugin, prior holdout, development corpus, prior staging directory, experiment output, conversation history, memory file, or internet source. The author did not run Codex, any model, either evaluation arm, or a grader.
+## Corpus and visible requirements
 
-## Construction procedure
+There are 80 synthetic, offline-answerable cases across 80 domains: 15 poorly expressed, 15 unformed, 15 conflict, 15 preference-after-result, and 20 clear. Each class contains four Chinese cases, giving 60 English and 20 Chinese cases. Feedback labels are six keep, four implementation changes, four intent changes, and one uncertain.
 
-The author first allocated the required identifiers, languages, class totals, feedback labels, and 80 distinct domain slugs. Each scenario was then written independently around a concrete, offline-safe task that can be handled in an empty workspace without accounts, network access, or real personal data. Non-clear cases freeze both the consequential decision and the resolving or reacting follow-up before any evaluation arm is run. Preference-after-result first turns ask for exactly one tiny inline sample and no project work.
+Every final requirement must occur verbatim in the initial prompt or frozen follow-up. Evaluator notes cannot introduce extra facts, a universal facts-only restriction, or a prohibition on harmless reversible work. The final-delivery contract is checked before execution, grading, analysis, and publication.
 
-The corpus contains exactly 80 scenarios: 15 `poorly_expressed`, 15 `unformed`, 15 `conflict`, 15 `preference_after_result`, and 20 `clear`. It contains 60 English and 20 Simplified Chinese scenarios. Every class has four `zh-CN` scenarios; the four 15-case classes each have eleven `en` scenarios, and `clear` has sixteen. Preference feedback labels are frozen at six `keep`, four `implementation_change`, four `intent_change`, and one `uncertain`.
+## Mechanical canonicalization
 
-## Mechanical validation
+The author represented `unacceptable_first` as one string. The existing evaluator consumes an array. The root wrapped that field in a one-element array in the canonical JSONL; no other field value changed. In particular, all initial prompts, follow-ups, and final requirements remain identical. The original seal is not rewritten. Tests compare every canonical object to the corresponding original object with exactly this one structural transformation.
 
-In the isolated authoring directory, `validate-holdout-v6.mjs` checks the exact four-file directory surface; UTF-8 decoding without BOM; LF-only endings and a final LF; JSONL parsing; exact property order, presence, and omission by class; identifier sequences; allowed class, language, and first-move values; nonempty strings and arrays; unique lowercase ASCII kebab-case domains; all required class, language, and feedback-label distributions; and the declared zero arm-run count.
+The manifest separately records the original author hash and the canonical corpus hash. This conversion and all validation occur before any v7 model, arm, or grader run. The root has inspected only schema checks, hashes, counts, overlap scores, and pair identifiers, not the new prompt text. V6 corpus, manifest, method, and overlap-validator bytes remain under `evals/retired` and cannot support a new release claim.
 
-For internal overlap, scenario text is concatenated from `initial_prompt`, `final_requirements`, `unacceptable_first`, and, when present, `decision_at_risk` and `follow_up`. It is normalized with Unicode NFKC, lowercased, and whitespace-collapsed. Token sets contain individual Han characters plus contiguous non-Han Unicode letter/number tokens. Character similarity uses sets of distinct Unicode-character four-grams. Validation rejects any internal pair with token-set Jaccard similarity at or above 0.65 or character four-gram Dice similarity at or above 0.72, and reports the observed maxima, SHA-256 hashes, byte sizes, counts, and zero arm runs.
+## Cross-corpus validation
 
-Cross-corpus overlap is intentionally not checked by this author. It is left to the root evaluator after the authored corpus is sealed.
+`node evals/validate-holdout-overlap.mjs` compares all normalized scenario text internally and against retired v6/v5, earlier Git holdouts, every tracked development corpus including post-v6 and the seven costly-branch cases, and both preserved ablation corpora. It rejects token-set Jaccard at or above 0.65 or set-based character-four-gram Dice at or above 0.72.
 
-## Canonicalization and root validation
+Normalization is NFKC, lowercase, collapsed whitespace, and trim. Tokens are individual Han code points or runs of non-Han Unicode letters and numbers. Four-grams are Unicode code points including normalized spaces and punctuation. For v7 the portable code makes the Han boundary and code-point treatment explicit; the unmodified v6 implementation remains archived with its original results. The root checks that its internal maxima reproduce the independent author's primary set-based maxima before accepting cross-corpus results.
 
-The author sealed `holdout-80-v6.jsonl` at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897` and 69,746 bytes. The root evaluator copied those bytes unchanged to `packages/intent-formation/evals/holdout-80.jsonl` without opening the scenario text. The used v5 corpus remains byte-identical under `evals/retired/holdout-80-v5.jsonl` and cannot be reused as release evidence.
-
-Before either v6 arm ran, the root evaluator mechanically compared full normalized scenario text with v6 itself, v5, every tracked development corpus, two frozen ablation corpora, and the earlier v3, v4, and v5 holdouts recovered from Git. The maximum token-set Jaccard was `0.45614035087719296`; the maximum character four-gram Dice was `0.5330882352941176`. Both are below the predeclared rejection thresholds, with zero violations. Only aggregate counts, hashes, scores, and pair identifiers were inspected.
-
-The candidate Git commit binds the canonical corpus, this method, the root validation result, the product policy, and the generated plugin tree before any v6 arm or grader run.
+The canonical manifest binds the source sets, validator, method, original seal, and canonical corpus. Validation is local and mechanical: it does not send any prompt or model output to a provider. A clean candidate commit and exact installed plugin tree must still be bound before the paired model evaluation. No v7 efficacy result exists until that evaluation and blind grading finish.

@@ -216,7 +216,7 @@ function normalizedText(value) {
 
 function tokenJaccard(left, right) {
   const tokens = (value) => new Set(
-    normalizedText(value).match(/\p{Script=Han}|[\p{L}\p{N}]+/gu) ?? []
+    normalizedText(value).match(/\p{Script=Han}|(?:(?!\p{Script=Han})[\p{L}\p{N}])+/gu) ?? []
   );
   const a = tokens(left);
   const b = tokens(right);
@@ -227,14 +227,14 @@ function tokenJaccard(left, right) {
 
 function fourGramDice(left, right) {
   const grams = (value) => {
-    const compact = normalizedText(value);
+    const compact = Array.from(normalizedText(value));
     const result = new Set();
     if (compact.length < 4) {
-      if (compact.length > 0) result.add(compact);
+      if (compact.length > 0) result.add(compact.join(""));
       return result;
     }
     for (let index = 0; index <= compact.length - 4; index += 1) {
-      result.add(compact.slice(index, index + 4));
+      result.add(compact.slice(index, index + 4).join(""));
     }
     return result;
   };
@@ -528,7 +528,7 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   const method = await readFile(path.join(repositoryRoot, "evals", "holdout-method.md"), "utf8");
 
   assert.equal(manifest.evidence_class, "sealed_holdout");
-  assert.equal(manifest.holdout_version, 6);
+  assert.equal(manifest.holdout_version, 7);
   assert.equal(manifest.sealed_before_candidate_run, true);
   assert.equal(manifest.arm_runs_before_seal, 0);
   assert.equal(manifest.grader_runs_before_seal, 0);
@@ -550,7 +550,13 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   );
   assert.equal(createHash("sha256").update(raw, "utf8").digest("hex"), manifest.corpus.sha256);
   assert.equal(createHash("sha256").update(method, "utf8").digest("hex"), manifest.method.sha256);
-  assert.equal(manifest.author_seal.corpus_sha256, manifest.corpus.sha256);
+  const authoredRaw = await readFile(path.join(repositoryRoot, "evals", "seals", "v7", "holdout-80-v7.jsonl"));
+  assert.equal(digest(authoredRaw), manifest.author_seal.corpus_sha256);
+  const authored = authoredRaw.toString("utf8").trim().split("\n").map(JSON.parse);
+  assert.deepEqual(scenarios, authored.map((scenario) => ({
+    ...scenario, unacceptable_first: [scenario.unacceptable_first]
+  })));
+  assert.doesNotThrow(() => validateVisibleFinalRequirements(scenarios));
   assert.equal(scenarios.length, 80);
   assert.equal(new Set(scenarios.map((scenario) => scenario.id)).size, 80);
 
@@ -630,10 +636,14 @@ test("sealed holdout is hash-bound, independent, and has the frozen 80-task cont
   assert.doesNotMatch(raw, /\b(?:sk-(?:proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/u);
 });
 
-test("sealed v6 holdout has no exact or threshold near-duplicate scenario in tracked pre-seal corpora", async () => {
+test("sealed v7 holdout has no exact or threshold near-duplicate scenario in tracked pre-seal corpora", async () => {
   const { scenarios: holdout } = await loadHoldout();
   const { scenarios: study } = await loadStudy();
   const { scenarios: retiredV5 } = await loadRetiredV5Holdout();
+  const newerCorpora = await Promise.all([
+    "retired/holdout-80-v6.jsonl", "costly-branch-development.jsonl"
+  ].map(async (name) => (await readFile(path.join(repositoryRoot, "evals", name), "utf8"))
+    .trim().split("\n").map(JSON.parse)));
   const development = [
     ...study,
     ...(await loadScenarios()),
@@ -642,6 +652,8 @@ test("sealed v6 holdout has no exact or threshold near-duplicate scenario in tra
     ...(await loadHostRegressions()),
     ...(await loadPostFailureRegressions()),
     ...(await loadPostV5Development()),
+    ...(await loadPostV6Development()),
+    ...newerCorpora.flat(),
     ...(await loadRetiredAblations()),
     ...retiredV5
   ];
@@ -660,7 +672,7 @@ test("sealed v6 holdout has no exact or threshold near-duplicate scenario in tra
   }
 });
 
-test("portable v6 overlap validator reproduces the sealed root result", async () => {
+test("portable v7 overlap validator reproduces the sealed root result", async () => {
   const manifest = JSON.parse(
     await readFile(path.join(repositoryRoot, "evals", "holdout-manifest.json"), "utf8")
   );
@@ -683,7 +695,7 @@ test("portable v6 overlap validator reproduces the sealed root result", async ()
     manifest.root_overlap_validation.maximum_character_four_gram_dice
   );
   assert.equal(
-    report.source_sha256["retired-v5-holdout"],
+    report.source_sha256["retired-v6-holdout"],
     manifest.retired_predecessor.sha256
   );
   assert.equal(

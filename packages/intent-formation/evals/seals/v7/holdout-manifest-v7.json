@@ -1,0 +1,208 @@
+{
+  "schema_version": "v7",
+  "status": "sealed",
+  "corpus": "holdout-80-v7.jsonl",
+  "case_count": 80,
+  "distributions": {
+    "class": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    },
+    "language": {
+      "en": 60,
+      "zh-CN": 20
+    },
+    "language_by_class": {
+      "poorly_expressed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "unformed": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "conflict": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "preference_after_result": {
+        "en": 11,
+        "zh-CN": 4
+      },
+      "clear": {
+        "en": 16,
+        "zh-CN": 4
+      }
+    },
+    "feedback_label": {
+      "keep": 6,
+      "implementation_change": 4,
+      "intent_change": 4,
+      "uncertain": 1
+    }
+  },
+  "domains": {
+    "distinct": 80,
+    "max_cases_per_domain": 1,
+    "counts": {
+      "alumni-directory-welcome": 1,
+      "api-pagination-examples": 1,
+      "api-retirement": 1,
+      "aquaculture-logs": 1,
+      "archive-transcription": 1,
+      "astronomy-learning": 1,
+      "audiobook-playback": 1,
+      "bicycle-setup-journal": 1,
+      "bird-window-observations": 1,
+      "bonsai-logs": 1,
+      "bookbinding-orders": 1,
+      "cartography-legends": 1,
+      "ceramic-inventory": 1,
+      "chess-coaching": 1,
+      "classroom-leaderboards": 1,
+      "code-review-language": 1,
+      "cold-storage": 1,
+      "community-gardens": 1,
+      "compost-tracking": 1,
+      "consent-interface-copy": 1,
+      "crop-loss-reporting": 1,
+      "donation-acknowledgments": 1,
+      "drone-training-simulations": 1,
+      "exam-feedback": 1,
+      "expense-rounding": 1,
+      "fabric-remnants": 1,
+      "factory-maintenance": 1,
+      "family-recipes": 1,
+      "festival-wayfinding": 1,
+      "folklore-archive": 1,
+      "freight-routing": 1,
+      "grant-progress-summaries": 1,
+      "historical-audio-tours": 1,
+      "home-automation-copy": 1,
+      "interpreting-coverage": 1,
+      "invented-language-practice": 1,
+      "library-circulation": 1,
+      "meal-sharing": 1,
+      "meditation-timers": 1,
+      "mineral-collections": 1,
+      "model-railway": 1,
+      "museum-admissions": 1,
+      "neighborhood-walks": 1,
+      "orbital-simulators": 1,
+      "orchestra-seating": 1,
+      "parking-permits": 1,
+      "percussion-patterns": 1,
+      "picnic-supply-lists": 1,
+      "playground-game-names": 1,
+      "pottery-workshops": 1,
+      "printmaking-catalogs": 1,
+      "puzzle-onboarding": 1,
+      "rail-punctuality": 1,
+      "reef-survey": 1,
+      "rehearsal-booking": 1,
+      "repair-cafe": 1,
+      "repair-warranty": 1,
+      "research-recruitment": 1,
+      "reservoir-operations": 1,
+      "robotics-club-scores": 1,
+      "seed-exchange": 1,
+      "service-queue-dispatch": 1,
+      "shared-equipment-locations": 1,
+      "spool-length-conversion": 1,
+      "sports-drafts": 1,
+      "station-announcement-training": 1,
+      "subscription-button-copy": 1,
+      "tabletop-rule-tooltips": 1,
+      "tea-tasting": 1,
+      "theater-lighting": 1,
+      "tidepool-exhibits": 1,
+      "transit-notifications": 1,
+      "translation-glossaries": 1,
+      "travel-phrasebooks": 1,
+      "tutoring-balances": 1,
+      "volunteer-coordination": 1,
+      "volunteer-raffles": 1,
+      "weather-journals": 1,
+      "woodshop-container-labels": 1,
+      "workspace-membership": 1
+    }
+  },
+  "internal_similarity": {
+    "pair_count": 3160,
+    "content_fields": [
+      "initial_prompt",
+      "final_requirements",
+      "unacceptable_first",
+      "decision_at_risk",
+      "follow_up"
+    ],
+    "normalization": "NFKC, lowercase, whitespace collapsed to one space, trim; fields joined with one space",
+    "tokenization": "Individual Han code points; contiguous non-Han Unicode letter/number runs; token sets",
+    "character_4grams": "Four consecutive Unicode code points including spaces and punctuation; set Dice primary, multiset Dice additionally checked",
+    "thresholds": {
+      "token_set_jaccard": 0.65,
+      "character_4gram_dice": 0.72,
+      "character_4gram_multiset_dice": 0.72
+    },
+    "maxima": {
+      "token_set_jaccard": {
+        "value": 0.26282051282051283,
+        "pair": [
+          "v7-co-012",
+          "v7-co-013"
+        ]
+      },
+      "character_4gram_dice": {
+        "value": 0.3133159268929504,
+        "pair": [
+          "v7-pr-001",
+          "v7-pr-004"
+        ]
+      },
+      "character_4gram_multiset_dice": {
+        "value": 0.282312925170068,
+        "pair": [
+          "v7-pr-001",
+          "v7-pr-004"
+        ]
+      }
+    }
+  },
+  "authoring": {
+    "independent": true,
+    "basis": "Blind assignment and its manifest self-hash clarification only",
+    "synthetic_only": true,
+    "product_implementation_read": false,
+    "old_corpus_read": false,
+    "other_context_read": false,
+    "product_evaluation_started": false,
+    "arm_runs_before_seal": 0,
+    "grader_runs_before_seal": 0,
+    "model_eval_runs_before_seal": 0
+  },
+  "validation": {
+    "mode": "Mechanical internal checks only; no product, arm, grader, or model calls",
+    "command": "node validate-holdout-v7.mjs",
+    "final_requirements_are_visible_verbatim_excerpts": true,
+    "all_pairwise_similarity_thresholds_satisfied": true,
+    "encoding": "UTF-8 without BOM, LF only, terminal LF"
+  },
+  "files": {
+    "holdout-80-v7.jsonl": {
+      "sha256": "f2c25b9f251d8dcfb145132b4628dab853b7e0d20ed82271c91313f30e9dedec",
+      "bytes": 70525
+    },
+    "holdout-method-v7.md": {
+      "sha256": "7f09efa5a438389d44b093732c232905af047799236a5e24df81a169bec88d10",
+      "bytes": 6833
+    },
+    "validate-holdout-v7.mjs": {
+      "sha256": "9268f4c451f56789006ceef0c41f9482d276ad7de39f47f6cf8201ce2abd1b11",
+      "bytes": 13539
+    }
+  },
+  "manifest_hash_policy": "Coordinator clarification: manifest embeds hashes for the other three files only. The final report supplies ordinary byte hashes and byte lengths for all four files."
+}

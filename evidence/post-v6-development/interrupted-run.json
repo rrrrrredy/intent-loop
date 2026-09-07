@@ -1,0 +1,137 @@
+{
+  "status": "INVALID_HOST_INTERRUPTED",
+  "expected_cases": 17,
+  "completed_summary_present": false,
+  "efficacy_usable": false,
+  "operational_timing_usable": false,
+  "observed_results": [
+    {
+      "id": "pv6-boundary-missing-data-01",
+      "raw_sha256": "c27a1c036b49f1fc55a46073ca828e84f4d8b739327f29bbe22a7dc5819c8d45",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 13587,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-clear-copy-01",
+      "raw_sha256": "9062e6bbdfb768a1d1f784f689b79e63e05e0c1fa205d917280b697fbb2e63ff",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 18386,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-comparison-layout-01",
+      "raw_sha256": "2d7a25e5c29b1d882241f609e46322fea4a897a3e670bfe1f6ecdbe949dfbe41",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 42660,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-comparison-names-01",
+      "raw_sha256": "f1e06d532c9ee0e1951a698aa825e226e54b8dd4afc7382d1bc9d6d056a3932a",
+      "first_exit_code": null,
+      "first_timed_out": true,
+      "first_duration_ms": 226471124,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-comparison-scoring-01",
+      "raw_sha256": "a598126f585c547de94d7e4b6535bda7aad0676dddf765a3c08e4a8dd2cf39bd",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 49892,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-feedback-expand-01",
+      "raw_sha256": "b539b7381bc2ae412fe2c975aca46e80ad662a65927c5b9cbe59afc9e52bcd49",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 16802,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-feedback-expand-02",
+      "raw_sha256": "054ed738b91c83da31c709027718fd7dc62b8dba6019b6339c6439de189c8a9f",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 19209,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-feedback-intent-01",
+      "raw_sha256": "b7898f142026fb504e1c638203b93b27e931054edff8aa00aecffc1fe194ad6c",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 22662,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-feedback-uncertain-01",
+      "raw_sha256": "01a464acbbbe8dacdfe118706fa354bcfdd611457f6301ce648c8b59026dc4a4",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 18597,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-audience-01",
+      "raw_sha256": "0ea4abbff9d7b529f61c790149a4c22f437829d246890e7c9bb4a470ecdef9e6",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 18562,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-audience-02",
+      "raw_sha256": "9228e85979854aea249b501b51708a1fef001c7adb1ef53144f32e35a3dac7c9",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 10299,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-autonomy-01",
+      "raw_sha256": "07c2a4096adee285c207f2b7c83bcf505f35f3e18f3dfd40656ccf4a19f3f301",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 13007,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-leading-value-01",
+      "raw_sha256": "299df166f303ca95419fcf1edbcc4481a556a8c1888a692e2e1e52aa79bd57c0",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 27275,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-learning-01",
+      "raw_sha256": "104de4458e11a75120a9cc1f97e007ce0d46bb30e3e3888648842d4f9fd26594",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 9483,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-missing-decision-01",
+      "raw_sha256": "ee6abb807a16b47ac932cdfd26f90563411137ce7faadc2e910e4cc0ac4acb3d",
+      "first_exit_code": null,
+      "first_timed_out": true,
+      "first_duration_ms": 226471133,
+      "recorded_cleanup": null
+    },
+    {
+      "id": "pv6-gate-style-01",
+      "raw_sha256": "b828191e57c618801504a4cef745bfd21d6e56e163ed76b1c46f5960b94693ed",
+      "first_exit_code": 0,
+      "first_timed_out": false,
+      "first_duration_ms": 13048,
+      "recorded_cleanup": null
+    }
+  ]
+}

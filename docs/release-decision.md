@@ -1,33 +1,29 @@
 # v0.3.0-beta.1 release decision
 
-Current state: **candidate; do not tag or announce until every remaining gate below is recorded as PASS.**
+As of 2026-09-07: **ITERATE / NOT RELEASED.** Do not tag, push the candidate as a release, or announce v0.3 until every applicable gate passes. Existing v0.2 public artifacts are separate.
 
-## Passed
+## Current verified implementation and development evidence
 
-- Historical 80-scenario development regression completed, preserved for audit, and explicitly excluded from release-efficacy claims because the policy was tuned against it.
-- Source-level State privacy, export, private-mode, off-mode, recovery, and deletion regressions.
-- Real development-plugin State lifecycle, including receipt-backed start/show/export/private/off/forget and absence of private text on disk.
-- Full local source/package suites on Node 20.19 and Node 22.19, plus ten 100-writer lock stress rounds.
-- Fresh exact-candidate install with receipt-backed `remember`/show/export/private/off/forget, digest verification, private false-receipt prevention, and managed-data deletion.
-- Real `/intent off` follow-up on a frozen ambiguous prompt, with direct delivery and no intent interruption.
-- DeepSeek Harness `0.1.2-rc.1` package/add/compose/boot-help/remove on Node 22.19 using a temporary cleaned profile and no model API key.
-- Post-v5 stable-CLI development regression: facts-only sample 5 / 5, chosen-lead order 5 / 5, and the complete 16-case corpus 16 / 16 with zero tools or user-work actions under the formal runner's audited Hook-trust path. These results describe the retired v6 candidate, not the current revision.
-- Independently authored v6 holdout sealed before execution at SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; portable root overlap validation found zero threshold violations.
-- V6 completed 160 / 160 primary conversations and 80 / 80 blind grades, then returned `STOP`; its failure record is preserved without an efficacy claim.
-- Evaluation contract v3 rejects a corpus unless every final requirement is an exact excerpt from a frozen user-visible turn.
-- Source/package suites: PASS on the 1,315-byte candidate, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0. The current 1,362-byte precedence repair has passed 12 / 12 targeted policy/package tests and must repeat both full suites before freeze.
+- Candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`: privacy fixes cover conditional controls, private false receipts and metadata, interrupted erasure, unrelated recovery records, and concurrent recreation. The adversarial agent reran its fixed 14-case set with no remaining blocker in that scope.
+- Complete Codex source suites: 120 / 120 on Node 20.19.1; 120 / 120 on Node 22.19.0, including the current v7 local validation. These prove implementation behavior, not product value.
+- Fresh installed core: 17 first turns, five follow-ups, and 17 task deletions completed with no first-turn actions. Three requested comparisons include mix/reject/free-reply invitations. Raw outputs retain remaining prose/rule-following imperfections; this is not an all-content-pass score.
+- Selected post-v6 development evidence is preserved as 16 trials / 156 conversations and is explicitly excluded from efficacy claims. The invalid long-interrupted batch is excluded from timing and quality metrics.
+- Independent v7 author artifacts are sealed and preserved. Canonicalization only wraps `unacceptable_first` in a one-element array; all prompt/follow-up/requirement values remain identical. Local validation found zero internal or cross-corpus overlap violations. No v7 arm or grader has run.
+- Both exact lockfile snapshots returned HTTP 200 / zero advisories from the authorized npm official bulk endpoint on 2026-09-07. Release CI must still obtain a fresh advisory result.
+- Root checks passed for evidence hashes, 8 / 8 DeepSeek adapter tests, legal inventory, and the 18-file DeepSeek package. X and Xiaohongshu drafts still satisfy their local length checks, with four image assets present.
 
-## Required before publication
+## Remaining gates
 
-- Corrected installed-Hook regression, genuinely costly decision-gate probes, and component ablation for the post-v6 revision; remove any rule that does not show necessary behavior.
-- A newly and independently authored v7 holdout with no hidden final requirements, sealed before any arm runs.
-- A verbatim, candidate-commit-bound v7 evaluation with explicit model settings, isolated Codex Home, full plugin-tree fingerprint, complete sanitized outputs, and all predeclared gates passing.
-- Independent adversarial review with accepted blockers fixed.
-- Independent beginner/user-perspective use with accepted blockers fixed.
-- Clean repository, version identity, generated-distribution, SBOM, notice, secret-scan, and package-allowlist checks.
-- Successful live npm advisory audits for both production dependency manifests. Authorized requests reached npm: the retiring quick endpoint returned HTTP 500 and the official bulk endpoint timed out, so no current live result is claimed.
-- Commit and push, then all 18 main CI jobs.
-- Annotated `v0.3.0-beta.1` tag, all 18 exact-tag CI jobs, verified release assets, attestations, immutable prerelease, and fresh public installs.
-- GitHub profile placement and final local installation/state/cache/dependency cleanup.
+- Authorization and execution of the new seven costly-branch development cases, the independent v7 paired evaluation and blind grading, and actual model-mediated user-perspective cases. The external-data reviewer rejected expansion beyond the specifically authorized 17-case corpus; no workaround was attempted.
+- All original joint efficacy thresholds must pass on a clean candidate bound to the complete installed plugin tree. Do not change thresholds or tune the policy against v7 after seeing its results.
+- User-perspective review currently verifies local installed components, not the real Codex chat/Hook trust chain. Complete the actual-user interaction gate and address any accepted blocker.
+- Final exact-candidate source/package/secret checks, real Codex State lifecycle, current DeepSeek host lifecycle, and generated/SBOM/notice consistency.
+- Push the verified candidate and obtain all 18 main CI jobs, including real Linux/macOS runners; then an annotated exact tag, all 18 tag CI jobs, verified assets and attestations, prerelease, and fresh public installs.
+- Refresh the existing Research and applied systems profile entry for the new public version. It currently links v0.2.0-beta.5.
+- Delete all task-created local installations, state, caches, and dependencies after the work is complete, retaining the source and sanitized evidence.
 
-V6 cannot authorize publication for two independent reasons: clear paired latency was +6.89%, wrong proactive interventions were 24.14%, and inference denial was 62.5%; additionally, at least eleven final-match checklists contained facts absent from the user-visible conversation. The release remains a beta even if v7 passes because the holdout is synthetic, automated grading can be wrong, model behavior can drift, and DeepSeek Harness is a developer preview.
+## Evidence limits
+
+V5 failed final-match gain, clear latency, and inference denial. V6 also returned STOP: clear paired latency +6.89%, wrong interventions 24.14%, and inference denial 62.5%. At least eleven v6 final requirements were invisible to the user-facing model, independently invalidating its efficacy result. Neither run authorizes publication.
+
+Even a passing v7 remains a synthetic, automated evaluation on one model/host configuration. Real users may behave differently, models and graders can drift, and DeepSeek compatibility does not inherit a Codex efficacy result. No new platform adapter beyond the existing requested DeepSeek/Linux/macOS scope is authorized by these local checks.

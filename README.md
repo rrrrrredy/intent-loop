@@ -19,6 +19,8 @@ The product stays inside the current task. Codex still owns planning, tools, per
 
 ## Install the simplest version
 
+These instructions target `v0.3.0-beta.1`. Check [Releases](https://github.com/rrrrrredy/intent-loop/releases) first: if that version is not listed, these commands are not yet a usable public installation path. Follow the instructions attached to an available release instead.
+
 Prerequisites: [Codex CLI](https://developers.openai.com/codex/cli) and Node.js 20 or newer on `PATH`.
 
 Copy these two commands into a terminal:
@@ -52,6 +54,7 @@ Useful controls:
 | --- | --- |
 | `/intent remember <one short goal>` | In standard mode, save one explicit goal with a receipt; `constraint:`, `preference:`, `success:`, and `tradeoff:` prefixes are optional. |
 | `/intent show` | Show the active task records and their source. |
+| `/intent correct <record-id> => <replacement>` | After `show`, copy the record ID and replace its current statement; the old record remains auditable. |
 | `/intent export` | Write an integrity-checked JSON export and report its opaque export ID and SHA-256. |
 | `/intent private` | Purge persisted task content; new record text lives only in the current MCP process. |
 | `/intent off` | Stop implicit intent intervention and state updates for this task. |
@@ -62,6 +65,8 @@ Useful controls:
 Successful controls return a short receipt such as `IF-12AB34CD`. No receipt means no success claim.
 
 Exports are stored under `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`. The plugin does not place an absolute local path into model context.
+
+The reported SHA-256 is the structured content digest, not the hash of the complete formatted file. Import verifies it automatically; see [export verification](docs/export-verification.md) for the exact calculation.
 
 The State companion stores deliberate, atomic statements. It does not store complete prompts, transcripts, assistant responses, workspace files, or tool output by default. Personal information deliberately placed in an atomic statement can still remain; this is not a secret vault or general DLP system. On Unix-like systems, managed directories/files use `0700`/`0600`; Windows relies on the current account's inherited filesystem ACLs.
 

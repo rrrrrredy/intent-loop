@@ -12,6 +12,7 @@ import {
 const repositoryRoot = path.resolve(import.meta.dirname, "..");
 const developmentRoot = path.join(repositoryRoot, "evidence", "development-regression-v8");
 const failedV6Root = path.join(repositoryRoot, "evidence", "failed-holdout-v6");
+const postV6Root = path.join(repositoryRoot, "evidence", "post-v6-development");
 const finalRoot = path.join(repositoryRoot, "evidence", "v0.3.0-beta.1");
 const requireCandidate = process.argv.includes("--require-candidate");
 
@@ -78,12 +79,64 @@ assert.equal(failedV6Audit.minimum_defect_count, 11);
 assert.equal(failedV6Audit.defects.length, 11);
 assert.equal(new Set(failedV6Audit.defects.map(({ id }) => id)).size, 11);
 
+const postV6 = await readJson(path.join(postV6Root, "manifest.json"));
+assert.equal(postV6.evidence_class, "development_regression");
+assert.equal(postV6.current_release_efficacy, false);
+await verifyArtifactHashes(postV6Root, postV6);
+const postV6Runs = (await readFile(path.join(postV6Root, "runs.jsonl"), "utf8"))
+  .trim().split("\n").map(JSON.parse);
+assert.equal(postV6Runs.length, postV6.trials.reduce((sum, trial) => sum + trial.first_turns, 0));
+assert.equal(new Set(postV6.trials.map((trial) => trial.id)).size, postV6.trials.length);
+for (const trial of postV6.trials) {
+  const rows = postV6Runs.filter((row) => row.trial === trial.id);
+  assert.equal(rows.length, trial.first_turns);
+  assert.equal(new Set(rows.map((row) => row.id)).size, rows.length);
+  assert.equal(rows.filter((row) => row.second).length, trial.follow_ups);
+  assert.equal(rows.filter((row) => row.thread_cleanup.exit_code === 0).length, trial.successful_cleanups);
+  assert.equal(rows.filter((row) => row.first.exit_code !== 0 ||
+    (row.second && row.second.exit_code !== 0) || row.thread_cleanup.exit_code !== 0).length, trial.operational_failures);
+  assert.equal(Buffer.byteLength(trial.policy), trial.policy_bytes);
+  assert.deepEqual(trial.installed_tree, trial.plugin_tree);
+  assert.deepEqual(trial.git_tree, trial.plugin_tree);
+  assert.deepEqual(gitTreeFingerprint(repositoryRoot, trial.candidate_commit, "plugins/intent-formation"), trial.plugin_tree);
+}
+const interruptedPostV6 = await readJson(path.join(postV6Root, "interrupted-run.json"));
+assert.equal(interruptedPostV6.status, "INVALID_HOST_INTERRUPTED");
+assert.equal(interruptedPostV6.efficacy_usable, false);
+assert.equal(interruptedPostV6.operational_timing_usable, false);
+
+const reviewRoot = path.join(repositoryRoot, "evidence", "independent-reviews");
+const review = await readJson(path.join(reviewRoot, "manifest.json"));
+assert.equal(review.current_release_efficacy, false);
+assert.equal(review.chat_acceptance_completed, false);
+await verifyArtifactHashes(reviewRoot, review);
+for (const [relativePath, expected] of Object.entries(review.adversarial.source_and_generated_sha256)) {
+  assert.equal(sha256(await readFile(path.join(repositoryRoot, relativePath))), expected, `reviewed file drifted: ${relativePath}`);
+}
+const localAcceptance = await readJson(path.join(reviewRoot, "local-acceptance-results-v7.json"));
+assert.equal(localAcceptance.model_requests, 0);
+assert.equal(localAcceptance.hook_trust_bypass_used, false);
+assert.equal(localAcceptance.checks.length, 19);
+assert.ok(localAcceptance.checks.every((check) => check.passed));
+const reviewedInstall = await readJson(path.join(reviewRoot, "install-fingerprints-v7.json"));
+for (const [plugin, fingerprints] of Object.entries(reviewedInstall.fingerprints)) {
+  assert.deepEqual(fingerprints.source, fingerprints.installed);
+  for (const file of fingerprints.source.files) {
+    const bytes = await readFile(path.join(repositoryRoot, "plugins", plugin, file.path));
+    assert.equal(bytes.length, file.bytes);
+    assert.equal(sha256(bytes), file.sha256);
+  }
+}
+const reviewCleanup = await readJson(path.join(reviewRoot, "cleanup-v7.json"));
+assert.equal(reviewCleanup.isolated_home_exists, false);
+assert.equal(reviewCleanup.live_workspace_exists, false);
+
 if (!(await exists(finalRoot))) {
   if (requireCandidate) {
     throw new Error("candidate holdout evidence is required for a release");
   }
   process.stdout.write(
-    "verified development regression and failed v6 diagnostic; candidate holdout evidence pending\n"
+    "verified historical development, failed v6, and post-v6 artifact hashes; candidate holdout evidence pending\n"
   );
   process.exit(0);
 }

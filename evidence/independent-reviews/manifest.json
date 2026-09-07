@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "evidence_class": "independent_agent_component_review",
+  "candidate_commit": "2b9101f9fc99ab0874f05a5d1e80b03b070de6a0",
+  "current_release_efficacy": false,
+  "chat_acceptance_completed": false,
+  "adversarial": {
+    "fixed_cases": 14,
+    "passed": 14,
+    "node": "v20.19.1",
+    "scope": "Conditional controls, private receipts and metadata, erasure retries, unrelated recovery isolation, and concurrent deletion acknowledgements",
+    "remaining_blockers_in_scope": 0,
+    "source_and_generated_sha256": {
+      "packages/intent-formation/src/service.mjs": "87f847d41e8429cdf53d76770ca191b8ca39225839a0d65487802dc9fc9485e7",
+      "packages/intent-formation/src/store.mjs": "99a1dc03b086b447dd31cd3e16364f58672dd181772483409e3651944df2e527",
+      "packages/intent-formation/server/index.mjs": "f49d0ee2aeba2f41f287e1619e874b9abac3a939fbecae8b57cde8dfaaf62ad1",
+      "plugins/intent-formation-state/dist/intent-formation-server.mjs": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7",
+      "packages/intent-formation/hooks/intent-command.mjs": "2c9d20e8b0d8b4b18fad7f813887531f6b29fafe2a1747bb5dd37080dbfb57a8",
+      "plugins/intent-formation-state/dist/intent-command.mjs": "cd04915c0fb155f2d4b0916c85fadc0489ddb508cc7ab528ec072596190e8f07"
+    }
+  },
+  "user_components": {
+    "assertions_passed": 19,
+    "model_requests": 0,
+    "codex_resume_requests": 0,
+    "hook_trust_bypass_used": false,
+    "node": "v22.19.0",
+    "codex_cli": "0.153.4",
+    "raw_assertion_19_limit": "The task was standard before forget, so this check does not independently establish removal of an actively off marker.",
+    "original_feedback_sha256": "17ebd00b050f66a2c2de8fc9b370c95ba9bf4e238c136abd94d463f0e8ab0e32"
+  },
+  "artifact_sha256": {
+    "local-acceptance-results-v7.json": "851987392a1ff54f9b255f7f7aae71e1b8fd7f2751e45d19fe301e62381d984e",
+    "install-fingerprints-v7.json": "ffe7ab1cd8f24ac04c12ac3cc35950feda3e7a77003db04e1e5527a1ee47afc5",
+    "cleanup-v7.json": "d9828b680838ed634099fe9a3e3cf3f35bef1f11fd1e4ef1d27bf2c8c31e5ecb"
+  }
+}

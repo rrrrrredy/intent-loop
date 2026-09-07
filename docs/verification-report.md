@@ -1,64 +1,50 @@
 # v0.3.0-beta.1 verification report
 
-This report is intentionally incomplete while the candidate is being prepared. A green source test alone does not authorize publication.
+Status on 2026-09-07: candidate, not released. Implementation results, development observations, independent efficacy, and public release are separate gates.
 
-## Product evidence
+## Current implementation and development
 
-- Historical v8 development regression: preserved and hash-verified, but excluded from release-efficacy claims because the policy was tuned against its corpus.
-- First independently sealed holdout on candidate `bae8e03`: 160 / 160 usable conversations, but `ITERATE` because intervention-quality and premature-action gates failed. It is retired from release-gate use after informing the revision.
-- Second independently sealed holdout on candidate `fcba88e`: 160 / 160 usable primary conversations, but `ITERATE` because final-match, inference-denial, and premature-action gates failed. It is also retired after informing the reduced policy.
-- Independently authored v5 holdout: SEALED before either arm ran, SHA-256 `d172f3d47a1f67b73b5dd182d07b1bf6a7551d8fdf98ab34ee42498434374905`; 80 scenarios, 60 English / 20 Chinese, 80 distinct domains, and zero threshold violations against both retired holdouts, every development corpus, and both ablation corpora.
-- Candidate `fca68c5489d9698ad4894096818469aad3f5520b`: 160 / 160 primary conversations completed without timeout, prompt drift, MCP calls, or cleanup failure; source, Git, and executed plugin trees match SHA-256 `dba53218e6b4b7feab0e1c0d1e86d69177b38c75508b8e4898332643a670f7a8`.
-- First grader run: INVALID before score inspection. It produced 70 / 80 grades, but two batches exhausted their two allowed attempts because the runtime required a 40-character rationale that the output Schema and rubric had not declared. Invalid summary SHA-256: `4ab5df8d454ef15e624c86b518f70bf72f565a2eaf8920129bbbc26d8f422125`.
-- Clean blind-grader rerun: PASS operationally, 80 / 80 unique grades with one declared grader-only retry and no primary retry. Summary SHA-256: `10e995aa6f923f094fbcc27b9f4578e686fec9962f0b0269fc22dad3a553bb27`.
-- Canonical v5 decision: **STOP**. Rework reduction (69.70%), clear interruptions, proactive-intervention rates, premature-action, and persistence gates passed. Final-match gain (+5.94 points), clear paired latency (+5.36%), and inference denial (75%, 6 / 8) failed. Analysis JSON SHA-256: `2566f3c2a07e2b2fb060b5e583c911b710c73427b21c880754a59ab7dadb084e`.
-- Sanitized public release evidence: BLOCKED. V5 is retired after informing the next revision.
-- Post-v5 stable-CLI regression: the 1,099-byte candidate passed the original 15 cases but failed strict chosen-lead order in two of three targeted runs. An over-compressed intermediate variant caused four routing regressions and was rejected. The 1,145-byte correction passed a new lead-order case 5 / 5 and retained the other routes, but one bounded sample invented unsupported details.
-- Retired v6 candidate: 1,253 policy bytes, one byte below the original 1,254 bytes. The 1,165-byte `never invent facts` rule failed a valid Hook-enabled scope check; the explicit facts-only fallback passed 5 / 5, chosen-lead order passed 5 / 5, and the complete 16-case corpus passed 16 / 16 with zero tool calls or user-work actions. Three no-bypass runs are excluded as invalid transport diagnostics. Warm MCP remained; the command Hook and generic fidelity reminder stayed removed.
-- Independently authored v6 holdout: SEALED before any model, arm, or grader run, SHA-256 `359220c857d36ff2ad25ba036c70fcae52b3b055240bf5f2229a2dcc4f63a897`; 80 scenarios, 60 English / 20 Chinese, and 80 distinct domains.
-- Portable overlap checker: aligned before v6 inspection with the published whole-scenario, individual-Han-token, normalized four-gram method. It reproduced maximum Jaccard `0.45614035087719296` and four-gram Dice `0.5330882352941176` against historical holdouts, all development corpora, and both preserved ablation corpora, with zero violations.
-- V6 execution: 160 / 160 usable primary conversations, zero primary timeout, zero cleanup failure, 80 / 80 blind grades, and one allowed grader-only retry. Candidate `a67148e7eb55db1bc92593829661c31b9929fb32`; executed plugin-tree SHA-256 `a26fb3ef63390701c13f7ff81e969a0dfb898b47a5b4ad9ff7760bb4d26f8897`.
-- V6 point-estimate decision: **STOP**. Avoidable rework reduction (65.96%), final-match gain (+13.75 points), clear interruptions, helpful interventions, premature action, and persistence passed. Clear paired latency (+6.89%), wrong proactive interventions (24.14%), and inference denial (62.5%, 5 / 8) failed.
-- V6 validity audit: **INVALID FOR EFFICACY**. At least eleven scenarios placed concrete expected facts only in evaluator fields, outside both user-visible turns. The aggregate run remains a failure diagnostic, not a product claim; exact artifact hashes and the defect list are preserved under `evidence/failed-holdout-v6`.
-- First post-v6 installed-Hook run: candidate `598f83f` completed all 17 first turns, five follow-ups, and 17 task cleanups with no user-work or domain-tool action. Manual transcript review found eight unnecessary questions and one fabricated library-card duration. A corpus audit corrected seven reversible-draft labels and the missing-duration label without changing any prompt text; this run is development evidence only.
-- Corrected-label installed-Hook rerun: candidate `d10a920` completed all 17 first turns, five follow-ups, and 17 cleanups with no actions. It removed all eight previously unnecessary questions and preserved the comparison and feedback routes. It still invented unsupplied card-game rules and failed to ask for the missing library-card duration.
-- Third targeted installed-Hook run: candidate `6a54622` delivered all seven reversible drafts directly and completed the library-card follow-up, but again guessed “three business days” and still implied an unsupplied card-game mechanic. No action or cleanup failed.
-- Current post-v6 revision: 1,362 policy bytes. It moves missing required facts, files, data, or access before draft handling, explicitly makes them override a draft/sample request, and distinguishes creative wording from supplied case facts. Targeted and complete installed-Hook reruns, genuine costly-branch probes, and component ablation are pending.
-- Evaluation contract v3: every final requirement must be an exact excerpt from the initial prompt or frozen follow-up; the runner, grader, analyzer, and publisher all fail closed on hidden requirements. No v7 holdout has been authored or run.
+- Runtime candidate: `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`. The compact core policy is 1,193 UTF-8 bytes. Source/Git/fresh-installed core tree SHA-256: `581f12c654f45caeca4fac65ff13bbd012434e9da8a3719f842e13ff60bca567` (14 files, 34,427 bytes).
+- Real Codex CLI `0.153.4`, `gpt-5.6-sol`, low reasoning: 17 / 17 first turns, 5 / 5 follow-ups, and 17 / 17 task deletions completed with exit zero. No first-turn action or domain-tool items occurred. All three comparisons retained neutral examples/placeholders and mix/reject/free-reply invitations. These are development observations, not an efficacy result or an all-content-pass score.
+- [Selected post-v6 archive](../evidence/post-v6-development/README.md): 16 trials / 156 conversations with source, policy, installed-tree and artifact binding. A long host-interrupted batch remains invalid for both quality and timing. Older raw action counts are not retroactively removed.
+- Evaluation-label correction: seven cheap-draft question labels were corrected; the later library-duration missing-data label was itself retracted because the initial prompt explicitly requested fiction. Broad factual-precedence policing, automatic feedback taxonomy, automatic micro-example text, named dimensions, and universal closing text were removed. See [ablation results](ablation-report.md).
+- Complete source suites, including current v7 validation: 120 / 120 on Node 20.19.1 and 120 / 120 on Node 22.19.0. The 100-independent-writer regression passed without missing events or lock residue. Product lock timeouts were not relaxed.
+- Root suite: evidence hashes, four release-planning/tag tests, 8 / 8 DeepSeek adapter tests, legal inventory and the exact 18-file DeepSeek package passed on Node 22.19.0.
+- Fresh DeepSeek Harness 0.1.2-rc.1 lifecycle on Node 22.19.0: pack, add, compose, boot/help and remove passed on the current runtime. No model API key was used; its temporary home, installation and caches were removed automatically.
+- Dated npm audits: both lockfiles returned HTTP 200 and zero advisories from the official bulk endpoint at 2026-09-07 03:00 UTC. Only dependency names/versions were sent. Exact hashes and responses are in [dependency audits](../evidence/post-v6-development/dependency-audits.json). These successful responses supersede the earlier timeout; CI/tag jobs must rerun the audit.
+- X draft: 257 weighted characters, with Chinese translation. Xiaohongshu body: 600 characters, five titles and four hash-checked 1086 by 1448 images. These are prepared drafts, not evidence that the product is ready to announce.
 
-## State lifecycle
+## State privacy and reviews
 
-- Sealed-v6 source regression suite: PASS, 105 / 105 on Node 20.19.1 and 105 / 105 on explicitly invoked Node 22.19.0, including the portable v6 overlap reproduction, 100-writer lock regression, and package-scratch exclusion.
-- Last full source/package regression: PASS, 107 / 107 on Node 20.19.1 and 107 / 107 on Node 22.19.0 for the 1,315-byte candidate. The current 1,362-byte precedence repair has passed 12 / 12 targeted tests and still requires both full suites.
-- Lock pressure: 10 additional rounds of 100 simultaneous appends completed without event loss after repairing the owner-publication race exposed by a real failed run.
-- Pressure-test validity repair: two full-suite attempts failed after process-launch scheduling paused a live owner for the worker's 120-second boundary, while an isolated 100-process run completed in 10.3 seconds. The fixture now waits until all 100 runtimes publish ready markers before opening one contention barrier, separating launch pressure from lock behavior. Full-suite barrier runs completed in 12.0 seconds on Node 20 and 14.4 seconds on Node 22 with every event and no lock residue; product timeouts were not relaxed.
-- Development-plugin real host: PASS for receipt-backed start, atomic save, show, file export plus digest verification, private purge, fresh-process private write, off, and forget.
-- Fresh candidate marketplace real host: PASS for direct `remember`, `show`, export plus independently recomputed digest, managed-export purge on private transition, private `remember` refusal without a receipt, `off`, and physical `forget`.
-- Real-host off override: PASS. After receipt `IF-0A5DC13F`, the frozen ambiguous landing-page prompt produced a finished headline and subheading with no intent-formation interruption.
-- Plugin-managed disk checks: PASS. The ordinary prompt and private canary were absent; the managed export disappeared on private transition; the task ID was absent after `forget` receipt `IF-C04D0DA6`.
+Accepted adversarial fixes reject conditions appended to no-argument controls, refuse short-lived private-memory receipts, retain erasure tokens until recovery cleanup completes, preserve unrelated recovery records, reject deletion success after concurrent recreation, and remove private titles/workspace hashes across new/reset/import/legacy paths.
 
-## DeepSeek Harness
+The adversarial agent reran its fixed 14 cases on `2b9101f` with no remaining blocker in that scope. Source and generated-file hashes stayed unchanged before and after. The user-perspective agent has verified 19 local installed-component checks; it made zero model requests and has not verified the real Codex chat/Hook trust chain. See [independent reviews](independent-reviews.md) for exact limits.
 
-- Adapter and exact 18-file package suite: PASS on Node 20.19.1 and an explicitly verified Node 22.19.0 PATH; 8 / 8 adapter tests passed on each runtime. Package bytes and digests come from the generated pack manifest rather than a hand-maintained number.
-- Real temporary package/add/compose/boot-help/remove lifecycle: PASS against `@deepseek-ai/dsh` `0.1.2-rc.1` on Node 22.19.0, with no model API key and automatic profile cleanup.
-- Node 22.19 real host lifecycle: PASS for pack/add/compose/boot-help/remove with a temporary `DSH_HOME`, no model API key, and complete cleanup.
-- Current Codex source-package dry run: PASS with 92 expected entries, 2,739,569 unpacked bytes, and zero `.tmp` or `node_modules` paths. The separate DeepSeek pack remains exactly 18 files.
-- Previous DeepSeek/root production dependency audit: PASS against the then-current live npm advisory endpoint with zero vulnerabilities; a current-manifest rerun is required.
-- Current production dependency audits: PENDING. Authorized requests reached npm, but `audits/quick` returned HTTP 500 with a retirement notice and `advisories/bulk` timed out. Neither response is a vulnerability result; both CI and exact-tag release workflows must rerun the live audit.
-- Node 24 local run: not available on this host; covered by the required CI matrix before release.
-- Windows, Ubuntu, macOS CI: PENDING.
+The documented export-check command was executed against a newly generated synthetic export: it accepted the valid content digest and rejected a deliberately corrupted digest. Its temporary fixture was removed. The main evaluator also removed its completed 17-case run's isolated core installation and authentication copy after native deletion of all 17 sessions. The original source repository and sanitized evidence remain; earlier task environments and final dependency cleanup are still outstanding.
 
-## Independent reviews
+Historical real Codex State lifecycle tests established receipt-backed save/show/export/private/off/forget and ordinary/private prompt absence for earlier candidates. They do not replace a new exact-candidate conversational acceptance run. Local component success cannot stand in for that host-mediated gate.
 
-- Adversarial review: PENDING final candidate.
-- Beginner/user-perspective review: PENDING final candidate.
+## Independent v7 preparation
 
-## Public release
+- Independent author's original four files remain byte-identical under `packages/intent-formation/evals/seals/v7`. Original corpus SHA-256: `f2c25b9f251d8dcfb145132b4628dab853b7e0d20ed82271c91313f30e9dedec`.
+- Canonical corpus SHA-256: `12c2a0658b9de2af0f5e3e3461fd0b88f028a92bd68c0937fa7f7c6c2252e851`. Only `unacceptable_first` was wrapped from one string to a one-element array; tests prove every other field value is identical. All 80 initial prompts and frozen follow-ups remain unseen by the root evaluator during preparation.
+- Distribution: 15 / 15 / 15 / 15 / 20; 60 English / 20 Chinese; 80 domains. Every final requirement occurs verbatim in a user-visible turn.
+- Local root overlap validation: zero violations against internal pairs, retired v6/v5, earlier Git holdouts, all tracked development corpora and both ablation corpora. Cross-corpus maxima: Jaccard `0.2721518987341772`, four-gram Dice `0.3095652173913043`. Internal maxima reproduce the author's results. See the [canonical method](../packages/intent-formation/evals/holdout-method.md).
+- Model arms and blind grading: **NOT RUN**. The external-data reviewer rejected a new seven-case request as outside the user's specific 17-case consent. The new seven cases, v7 paired run, and model-mediated user-perspective cases require additional authorization. No alternate route or provider was used.
 
-- Main-branch CI: PENDING.
-- Exact-tag CI: PENDING.
-- Release assets and attestations: PENDING.
-- Immutable GitHub prerelease: PENDING.
-- Fresh public Codex and DeepSeek installs: PENDING.
-- GitHub profile update: PENDING.
-- Local cleanup: PENDING.
+## Historical efficacy failures remain failures
+
+| Holdout | Execution | Decision and failed gates |
+| --- | --- | --- |
+| Candidate `bae8e03` | 160 usable conversations | ITERATE: intervention quality and premature action. |
+| Candidate `fcba88e` | 160 usable conversations | ITERATE: final match, inference denial, premature action. |
+| V5, `fca68c5` | 160 conversations, 80 clean grades; an earlier invalid grader attempt remains excluded | STOP: +5.94-point final-match gain, +5.36% clear latency, 75% inference denial. |
+| V6, `a67148e` | 160 conversations, 80 grades | STOP: +6.89% clear latency, 24.14% wrong interventions, 62.5% inference denial. At least eleven hidden final requirements independently invalidate efficacy. |
+
+The tuned historical v8 corpus and all post-failure development trials remain excluded from release-efficacy claims. The v6 failure, invalidity audit, raw-grade analysis and hashes are preserved in [failed v6 evidence](../evidence/failed-holdout-v6/manifest.json).
+
+## Remaining release gates
+
+Actual candidate-bound model efficacy and user acceptance, fresh real-host checks, Linux/macOS and Node 24 CI, all 18 main jobs, all 18 annotated exact-tag jobs, verified release assets/attestations, prerelease and fresh public installations remain required. DeepSeek host compatibility never inherits a Codex efficacy result.
+
+The public GitHub profile was checked through GitHub's API on 2026-09-07: Intent Formation is already under Research and applied systems, but links the old v0.2.0-beta.5 prerelease (profile README blob `52a4504ba2d7f1d66db1e13d88fa00376b301584`). The new release/profile refresh and final removal of all task-created local installations, state, caches, and dependencies are not complete.

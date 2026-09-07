@@ -154,6 +154,30 @@
 
 **Evidence:** In the targeted real-Codex run, candidate `6a54622` again invented a three-business-day duration even though its draft rule said to ask for required facts, and it retained one unsupplied card-game implication. The missing-data and direct-draft instructions were adjacent without explicit priority. The revised policy is 1,362 bytes; targeted behavior and both full suites remain required.
 
+## D-041 — Retract the fictional-duration label and remove broad factual policing
+
+**Decision:** Supersede the library-duration interpretation in D-038 through D-040. The initial request explicitly permits a fictional one-sentence sample, so no real duration must be requested. Keep prompt bytes unchanged, restore the sample label, and remove the required-fact-before-draft rule. Evaluator-only flags cannot add a facts-only instruction. Preserve the explicit user-supplied quantities/rules and explicit facts-only boundary.
+
+**Evidence:** Broad fictional-fact policing produced repetitive prose, while the original sample request did not justify the supposed missing-duration failure. The genuinely missing five-object list remains a separate boundary regression. The full audit and unabridged selected development outputs are preserved rather than counted as efficacy.
+
+## D-042 — Retain only behavior-supported interaction clauses
+
+**Decision:** Keep warm MCP, the three-condition question gate, cheap shared-step/sample exit, neutral requested comparisons, scope-aware later-turn control, quantities/placeholders, and explicit facts-only handling. Remove the automatic feedback taxonomy, automatic micro-example clause, named decision dimensions, and universal closing sentence. Scope the mix/reject/free-reply invitation to requested comparisons/options; requested file/research work remains host-owned and permitted.
+
+**Evidence:** Five feedback cases and three comparison cases retained their expected moves after the respective clause removals. A literal closing sentence leaked into clear work and incompatible tradeoffs; semantic wording stopped that spill but omitted invitations in two comparisons. Candidate `2b9101f` includes the invitation in all three repeated comparisons. Its 1,193-byte policy is backed by development observations only; fresh costly-branch and independent efficacy tests remain required.
+
+## D-043 — Close adversarial privacy and receipt defects
+
+**Decision:** Reject extra conditions on no-argument controls, refuse private-memory claims from short-lived Hooks, purge recovery artifacts before losing erasure tokens, preserve identified unrelated fragments, reject false concurrent-deletion success, and keep private markers free of titles/workspace hashes across creation, reset, import, and legacy repair.
+
+**Evidence:** The independent adversarial agent reran its fixed 14-case set against `2b9101f` on Node 20.19.1 with no remaining blocker in that bounded scope. Permanent source regressions cover the accepted failures. The State companion remains optional; no new storage framework was introduced.
+
+## D-044 — Preserve the v7 author seal and enforce external-data scope
+
+**Decision:** Archive v6 bytes, preserve the independent v7 author's four original files, and mechanically wrap only the evaluator annotation field into the existing array schema. Compare every canonical field to the original, bind both hashes, and validate exact visible requirements and historical overlap before any model run. Do not send new cases outside the user's explicit 17-case authorization until further approval.
+
+**Evidence:** All local v7 checks passed with zero overlap violations. The initial/follow-up/requirement strings are unchanged. The reviewer rejected a new seven-case cloud run, which was not started; the user-perspective agent made zero model requests. Product efficacy and actual chat acceptance remain pending.
+
 ## D-001 — Start a new product repository
 
 **Decision:** Build `intent-formation` from a clean product baseline instead of extending `intent-loop`.

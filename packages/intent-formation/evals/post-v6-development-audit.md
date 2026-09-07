@@ -1,17 +1,21 @@
 # Post-v6 development corpus audit
 
-Status: corrected development data; never release evidence.
+Status: corrected development data; never release evidence. All initial-prompt and follow-up strings remain unchanged.
 
-Candidate `598f83f` ran all 17 prompts through a real installed Codex Hook. Transcript review then found a labeling defect in the development corpus itself:
+## Corrections and retractions
 
-- Seven prompts requested bounded, cheap, reversible drafts. Their original `question` labels contradicted the frozen product rule that a cheap sample should expose preference before an interview. The prompts are unchanged; their labels now require direct delivery.
-- The library-card prompt supplied no processing duration. Its original `sample` label rewarded fabrication. The prompt is unchanged; the corrected label requires a question only for that missing value.
-- The other nine scenarios retain their original routing labels.
+Seven requests for cheap, reversible drafts were originally labeled `question`. Those labels contradicted the product's shared-step/sample exit and were corrected to direct delivery. The 1,317-byte named-dimension candidate had asked eight unnecessary questions, including a bounded perfume sentence and a fully specified clear control. Removing the dimension list removed those unnecessary interviews in the observed rerun.
 
-The run is diagnostic evidence against the 1,317-byte named-dimension policy: it asked unnecessary direction questions on six of the seven reversible drafts, on one explicitly bounded perfume sentence, and on one fully specified clear control. The policy was reduced to the general three-condition activation gate and a bounded-draft exit before any rerun.
+The first audit made a second error: it changed the library-card case from `sample` to a missing-duration question. Its initial prompt explicitly requested one fictional sentence. The absence of a real processing duration did not justify requiring a question. The later audit restored `sample`; the follow-up's concrete duration still controls once supplied. Earlier descriptions of this case as a fabrication failure are retracted. D-038 through D-040 document that superseded interpretation; D-041 records the correction.
 
-Candidate `d10a920` reran the same prompt bytes after that reduction. All eight unnecessary questions disappeared, all comparison and feedback routes remained usable, no action was taken, and every task cleanup succeeded. The run still failed two explicit boundaries: the card-game tutorial invented unsupplied rules, and the library-card response marked its duration unspecified instead of asking only for the required value. Those failures motivated a narrower factual-boundary revision; they do not reopen the removed decision-dimension list.
+The required missing-input case is the separate request to describe five objects that have not been supplied. It should ask for those objects only, without inventing a conflict or interpreting absent data as unresolved intent.
 
-Candidate `6a54622` ran the seven reversible drafts and the library-card case after that factual wording changed. It preserved zero unnecessary intent questions, but again guessed “three business days” for the missing duration and still implied one unsupplied game mechanic. The next revision moves required-data handling ahead of draft handling and makes the precedence explicit. This remains failure-derived development work.
+Some development `checks` contain evaluator shorthand such as `facts_only`. They do not add an unstated user requirement. A fictional writing request can permit invention; supplied rules and quantities must still be preserved, and an explicit `only these facts` boundary must be honored. This distinction is required in the v3 grading contract and the new independently authored holdout.
 
-Because the audit used observed candidate output to repair development labels, neither the original run nor a rerun on these prompts can serve as an independent holdout or efficacy claim.
+## Observed development results
+
+The broader factual-precedence policy produced repetitive fictional descriptions and was removed. Removing the automatic feedback taxonomy retained the expected moves in five observed feedback cases; removing an automatic micro-example clause retained requested examples in three comparisons. The compact policy keeps the costly-divergence gate, requested sample/comparison behavior, later-turn control, and explicit facts-only boundary.
+
+Candidate `2b9101f` completed the unchanged 17 first turns, five follow-ups, and 17 task deletions in a fresh installed Codex environment. All commands exited zero, with no first-turn domain-tool or action items. All three requested comparisons retained neutral branches and mix/reject/free-reply invitations. This is not a perfect-content claim: the card-game explanation still adds an unsupplied ability mechanism, and the wall label contains awkward count-filling words. Raw responses are preserved for inspection.
+
+See `evidence/post-v6-development` for 16 selected runs and 156 complete response records, exact candidate/policy/tree hashes, the invalid host-interrupted batch, and the dated npm audit responses. No result from this repeatedly inspected development corpus can establish independent product efficacy.
