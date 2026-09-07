@@ -588,7 +588,12 @@ var init_store = __esm({
               continue;
             }
             try {
-              const event = JSON.parse(rawLine);
+              const parsed = JSON.parse(rawLine);
+              if (typeof parsed?.task_id === "string" && parsed.task_id !== scrub.taskId) {
+                output.push(rawLine);
+                continue;
+              }
+              const { event } = migrateEvent(parsed);
               if (scrub.recordId === null && event?.task_id === scrub.taskId) {
                 continue;
               }

@@ -322,6 +322,25 @@ test("short private content is erased without matching arbitrary substrings", as
   assert.equal(await readFile(recoveryPath, "utf8"), unrelated + "\n");
 });
 
+test("parseable non-event recovery fragments undergo the same content erasure", async (context) => {
+  const { directory, service } = await fixture(context);
+  const taskId = "parseable-fragments";
+  const canary = "PARSEABLE-ERASURE-CANARY";
+  await service.addExplicit(explicit(taskId, canary));
+  const original = await readFile(service.store.filePath, "utf8");
+  const fragments = [canary, { statement: canary }, { payload: { record: { statement: canary } } }];
+  await writeFile(service.store.filePath, original + fragments.map(JSON.stringify).join("\n") + "\n", "utf8");
+  const repaired = await service.show({ task_id: taskId });
+  assert.equal(repaired.recovery.invalid_lines.length, 3);
+  const deleted = await service.deleteTask({ task_id: taskId });
+  assert.equal(deleted.exists_after, false);
+  for (const name of await readdir(directory)) {
+    if (name.startsWith("intent-events-v1.jsonl")) {
+      assert.equal((await readFile(path.join(directory, name), "utf8")).includes(canary), false, name);
+    }
+  }
+});
+
 test("interrupted recovery cleanup retains deletion tokens for task, record, and private retries", async (context) => {
   const { directory } = await fixture(context);
   for (const operation of ["task", "record", "private"]) {
