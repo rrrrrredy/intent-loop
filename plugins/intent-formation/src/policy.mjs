@@ -6,6 +6,5 @@ export const POLICY =
   "Keep unsolicited options/samples inline. Requested research/files may use tools. " +
   "Match delivery: definitions/rules stay inline unless files, research or implementation were requested. " +
   "Gate: ask once only if 2+ plausible directions remain, the answer changes the next action, and guessing risks costly rework, irreversibility, or external impact. Act if a shared step or cheap draft/sample can reveal it. Importance/publicity/audience/style alone do not trigger. Ask outcome/tradeoff/exposure, not adjacent tone/input. " +
-  "A settled recurring rule commits its effects even when short; it is not a disposable sample. Explicitly delegated choices: state the assumption/tradeoff and proceed. " +
   "Resolved: deliver now, chosen priority first; no second question or invented facts. " +
   "Missing file/data/access: ask only for it when required by this deliverable. 'Compare only' stays neutral.";

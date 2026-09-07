@@ -1,6 +1,35 @@
 # Development ablation report
 
-Status: **POST-V7 DEVELOPMENT REVISION; NOT RELEASE EVIDENCE.** V6 failed and was invalidated; v7's primary was incomplete and its available-pair diagnostic retained two raw failed gates. Earlier missing-duration claims were retracted because the prompt requested fiction. The new 1,496-byte policy revision adds delivery-scope and settled-rule boundaries with explicit file/research/implementation and delegation exits; these additions require actual regression and component removal before retention. The 1,500-byte development guard is an implementation ceiling, not a relaxed latency or efficacy gate.
+Status: **POST-V7 DEVELOPMENT ABLATION; NOT RELEASE EVIDENCE.** V6 failed and was invalidated; v7's primary was incomplete and its available-pair diagnostic retained two raw failed gates. Earlier missing-duration claims were retracted because the prompt requested fiction. The 1,500-byte development guard is an implementation ceiling, not a relaxed latency or efficacy gate.
+
+## Bounded three-version comparison, 2026-09-07
+
+The approved ten old cases (seven costly-branch/control cases and v7 pe-001, pe-009,
+pe-011) ran verbatim in three independently installed Core versions. This used
+gpt-5.6-sol / low, sequential versions and at most two concurrent cases: 30 usable
+conversations, 51 original user turns, no content retry, timeout, capacity failure,
+or new grader request. All 30 native tasks were deleted. This is an exposed,
+single-sample development comparison, not randomized efficacy evidence.
+
+| Installed version | First-turn local command items | Key consequence clarified in the three v7 probes |
+| --- | ---: | ---: |
+| Full, c970c28 | 1 | 0 / 3 |
+| Remove delivery-scope sentence, f7afa29 | 4 | 0 / 3 |
+| Remove settled-rule/delegation sentence, c2b3d13 | 1 | 1 / 3 |
+
+Retain the short delivery-scope sentence: its removal accompanied more unneeded
+local inspection, with no observed semantic gain. Remove the automatic Core's
+settled-rule/delegation sentence: its addition did not resolve the intended errors;
+removal kept the seven cases' main routes and improved the observed pe-001 question.
+These observations do not prove a stable population effect or separate the two
+parts of that removed sentence. One list response still invited compromise, and
+pe-009 and pe-011 still invented permission/payment conditions. Those failures are
+retained; successful execution is not evidence that every response is correct.
+
+The removal is synchronized through the normal build, including State recovery's
+shared policy. It adds no tool, storage format, parser, or evaluation framework.
+Original experiment commits remain reachable through the separate evidence history;
+their runtime changes are not merged into the product branch wholesale.
 
 ## Question
 
