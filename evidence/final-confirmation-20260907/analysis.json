@@ -1,0 +1,224 @@
+{
+  "evidence_class": "incomplete_primary_diagnostic",
+  "release_efficacy_usable": false,
+  "candidate_commit": "3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce",
+  "full_primary_reliability": {
+    "attempted_conversations": 160,
+    "attempted_user_turns": 279,
+    "usable_conversations": 159,
+    "usable_pairs": 79,
+    "required_pairs": 80,
+    "primary_retries": 0,
+    "native_task_deletions": 160,
+    "failed_conversations": [
+      {
+        "id": "fc-co-013",
+        "arm": "baseline",
+        "first": {
+          "exit_code": null,
+          "signal": "SIGTERM",
+          "timed_out": true,
+          "duration_ms": 300120,
+          "response_present": false
+        },
+        "second": null,
+        "native_errors": []
+      }
+    ],
+    "cleanup_failures": []
+  },
+  "available_pair_diagnostic": {
+    "generated_at": "2026-09-07T11:34:25.465Z",
+    "candidate_commit": "3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce",
+    "corpus_sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef",
+    "plugin_tree": {
+      "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+      "file_count": 14,
+      "bytes": 35362
+    },
+    "execution_model": "gpt-5.6-sol",
+    "execution_reasoning_effort": "low",
+    "grader_model": "gpt-5.6-sol",
+    "grader_reasoning_effort": "low",
+    "decision": "ITERATE",
+    "interpretation": "V2 final match scores the first completed intent-formation cycle. Retry text may complete blind quality grading but never replaces primary reliability or timing statistics.",
+    "evaluation_attempts": {
+      "supplemental_conversation_retry_configured": false,
+      "blind_grader_batch_count": 16,
+      "blind_grader_attempt_count": 16,
+      "blind_grader_retry_count": 0
+    },
+    "primary_run_reliability": {
+      "run_count": 158,
+      "usable_count": 158,
+      "usable_rate_pct": 100,
+      "failures": []
+    },
+    "metrics": {
+      "nonclear_scenario_count": 59,
+      "baseline_avoidable_rework_sum": 6,
+      "plugin_avoidable_rework_sum": 2,
+      "avoidable_rework_reduction_pct": 66.67,
+      "baseline_final_match_mean_0_to_4": 3.82,
+      "plugin_final_match_mean_0_to_4": 3.89,
+      "final_match_gain_percentage_points": 1.58,
+      "nonclear_final_match_gain_percentage_points": 2.54,
+      "clear_extra_interruption_median": 0,
+      "clear_extra_interruption_p90": 0,
+      "clear_plugin_interruption_median": 0,
+      "clear_plugin_interruption_p90": 0,
+      "clear_baseline_first_turn_median_ms": 10800,
+      "clear_plugin_first_turn_median_ms": 10464,
+      "clear_arm_median_latency_overhead_pct": -3.11,
+      "clear_paired_latency_overhead_pct": -3.54,
+      "intervention_counts": {
+        "helpful": 19,
+        "wrong_or_unhelpful": 1,
+        "none": 59
+      },
+      "proactive_intervention_count": 20,
+      "helpful_proactive_rate_pct": 95,
+      "wrong_or_unhelpful_proactive_rate_pct": 5,
+      "inference_made_count": 1,
+      "inference_denied_count": 0,
+      "inference_denial_rate_pct": 0,
+      "nonclear_premature_action_count": 0,
+      "nonclear_premature_actions": [],
+      "blind_preference_counts": {
+        "plugin": 13,
+        "baseline": 9,
+        "tie": 57
+      },
+      "result_feedback_correct_count": 6,
+      "result_feedback_incorrect_count": 0,
+      "result_feedback_case_count": 15,
+      "match_basis_counts": {
+        "baseline": {
+          "first_response": 35,
+          "post_followup_response": 44
+        },
+        "plugin": {
+          "first_response": 32,
+          "post_followup_response": 47
+        }
+      }
+    },
+    "class_breakdown": {
+      "poorly_expressed": {
+        "count": 15,
+        "baseline_rework_sum": 2,
+        "plugin_rework_sum": 2,
+        "rework_reduction_pct": 0,
+        "baseline_final_match_mean": 3.8,
+        "plugin_final_match_mean": 3.8,
+        "plugin_preferences": 3,
+        "baseline_preferences": 4,
+        "ties": 8
+      },
+      "unformed": {
+        "count": 15,
+        "baseline_rework_sum": 2,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": 100,
+        "baseline_final_match_mean": 3.53,
+        "plugin_final_match_mean": 3.87,
+        "plugin_preferences": 6,
+        "baseline_preferences": 1,
+        "ties": 8
+      },
+      "conflict": {
+        "count": 14,
+        "baseline_rework_sum": 2,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": 100,
+        "baseline_final_match_mean": 3.86,
+        "plugin_final_match_mean": 4,
+        "plugin_preferences": 3,
+        "baseline_preferences": 1,
+        "ties": 10
+      },
+      "preference_after_result": {
+        "count": 15,
+        "baseline_rework_sum": 0,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": null,
+        "baseline_final_match_mean": 3.93,
+        "plugin_final_match_mean": 3.87,
+        "plugin_preferences": 1,
+        "baseline_preferences": 2,
+        "ties": 12
+      },
+      "clear": {
+        "count": 20,
+        "baseline_rework_sum": 0,
+        "plugin_rework_sum": 0,
+        "rework_reduction_pct": null,
+        "baseline_final_match_mean": 3.95,
+        "plugin_final_match_mean": 3.9,
+        "plugin_preferences": 0,
+        "baseline_preferences": 1,
+        "ties": 19
+      }
+    },
+    "privacy": {
+      "status": "PASS",
+      "state_path": "[local path omitted]",
+      "state_bytes": 0,
+      "state_file_present": false,
+      "exact_complete_prompt_matches": []
+    },
+    "gates": {
+      "avoidable_rework": {
+        "metric": 66.67,
+        "threshold": ">= 25% reduction",
+        "status": "PASS"
+      },
+      "final_match": {
+        "metric": 1.58,
+        "threshold": ">= 10 percentage points",
+        "status": "FAIL"
+      },
+      "clear_extra_interruptions_median": {
+        "metric": 0,
+        "threshold": "= 0",
+        "status": "PASS"
+      },
+      "clear_extra_interruptions_p90": {
+        "metric": 0,
+        "threshold": "<= 1",
+        "status": "PASS"
+      },
+      "clear_latency": {
+        "metric": -3.54,
+        "threshold": "<= 5% overhead",
+        "status": "PASS"
+      },
+      "proactive_helpful": {
+        "metric": 95,
+        "threshold": ">= 70% of proactive interventions",
+        "status": "PASS"
+      },
+      "proactive_wrong": {
+        "metric": 5,
+        "threshold": "<= 15% of proactive interventions",
+        "status": "PASS"
+      },
+      "inference_denial": {
+        "metric": 0,
+        "threshold": "<= 10% of inferred cases",
+        "status": "PASS"
+      },
+      "nonclear_premature_actions": {
+        "metric": 0,
+        "threshold": "= 0 tool/action items before the intent-forming response",
+        "status": "PASS"
+      },
+      "raw_prompt_persistence": {
+        "metric": 0,
+        "threshold": "= 0 exact full corpus prompts",
+        "status": "PASS"
+      }
+    },
+    "state_test_gate": "UNVERIFIED_IN_THIS_SCRIPT"
+  }
+}

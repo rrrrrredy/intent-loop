@@ -1,8 +1,51 @@
 # v0.3.0-beta.1 release decision
 
-As of 2026-09-07: **ITERATE / NOT RELEASED.** Reviewed development source and honest diagnostic evidence may be pushed to main. Do not tag or announce v0.3 as a release until every applicable gate passes. Existing v0.2 public artifacts are separate.
+As of 2026-09-07: **FINAL CONFIRMATION INCOMPLETE / PUBLIC RESEARCH SNAPSHOT ONLY.** This development round is closed. Reviewed source and all diagnostic evidence are public; no v0.3 tag, prerelease or installer is justified. Do not start another model/corpus round or relax gates to manufacture a release. Existing v0.2 public artifacts are separate.
 
 The independent goal audit found that manual state tools were implemented but ordinary feedback was not connected to them. The [re-scoped delivery goals](current-goals.md) prioritize that connection, provenance and recovery before more efficacy testing. Progress is not a passing product evaluation.
+
+## Final confirmation and decision
+
+The frozen candidate `3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce` passed all 18 jobs
+in its [exact CI run](https://github.com/rrrrrredy/intent-loop/actions/runs/34113187891).
+The one final independent study attempted all 160 conversations / 279 user turns.
+The baseline first turn for `fc-co-013` timed out at 300,120 ms without a substantive
+answer or an explicit capacity error. Its underlying cause is not established.
+No failure was replaced. There were 159 usable conversations, 79 complete pairs,
+and 160 successful native task deletions.
+
+All 79 operationally complete pairs were blind-graded in 16 successful first attempts
+under the frozen v4 prompt. These are subset diagnostics, never the required full
+80-pair confirmation. [Every result and failure is preserved](../evidence/final-confirmation-20260907/README.md).
+
+| Diagnostic on the 79 available pairs | Observed | Original gate |
+| --- | --- | --- |
+| First-cycle final-match gain | 1.58 percentage points | At least 10: **FAIL** |
+| Non-clear ordinal rework sum | 6 to 2 (66.67% reduction) | At least 25% reduction |
+| Clear extra interruptions | Median 0; P90 0 | Median 0; P90 at most 1 |
+| Clear paired median latency overhead | -3.54% | At most 5% |
+| Helpful / wrong proactive moves | 19 / 1 out of 20 | At least 70% / at most 15% |
+| Denied committed inferences | 0 of 1 | At most 10% |
+| Non-clear premature actions / complete persisted prompts | 0 / 0 | 0 / 0 |
+
+Final-match scores totaled 302/316 baseline and 307/316 plugin, or 95.57% and
+97.15% of the scale maximum. These are ordinal scores, not user success rates.
+The baseline already scored 4/4 in 67 of 79 pairs. Even a perfect plugin could
+gain at most 4.43 percentage points on this observed baseline, below the frozen
+10-point gate. This ceiling is a measurement limitation, not a reason to lower
+the gate after observing results or replace the corpus.
+
+Rework was only six ordinal points before the plugin, so its large percentage
+reduction must not be called human time saved. Blind preferences were plugin 13,
+baseline 9, tie 57. The [independent review](independent-reviews.md#final-confirmation-and-goal-review)
+also retained unnecessary choice invitations and possible grading asymmetries;
+it did not rescore the archive. The implemented continuity path and compatible
+packages are useful inspectable work; these observations do not establish a
+market-ready product or meaningful average improvement on real projects.
+
+The conservative archive sanitizer also redacted one fictional color after `token:`;
+its generic secret pattern matched benign synthetic text, not a runtime credential.
+No supplied DeepSeek or Kimi API key was used for this confirmation.
 
 ## Public development integration
 
@@ -35,15 +78,15 @@ clones must also fetch `evidence/history` before verifying historical evidence.
 - Both exact lockfile snapshots returned HTTP 200 / zero advisories from the authorized npm official bulk endpoint on 2026-09-07. Release CI must still obtain a fresh advisory result.
 - Root checks passed for evidence hashes, 8 / 8 DeepSeek adapter tests, legal inventory, and the 18-file DeepSeek package. X and Xiaohongshu drafts still satisfy their local length checks, with four image assets present.
 
-## Remaining gates
+## Unmet release conditions and closed scope
 
-- Diagnose the retained v7 failures, fix reproducible product defects, and repair any prospective evaluation defects without rewriting original grades. A repaired policy requires a new independent sealed confirmation; v7 is now exposed development material. The user authorized one new independent 80-case OpenAI gpt-5.6-sol paired confirmation and blind grading after clarification on 2026-09-07. Regression, component removal and prospective grader calibration must precede its seal.
+- The authorized regressions, three-variant removal, grader calibration and one final independent confirmation have finished. They are not a standing authorization for another replacement holdout, alternate model or policy-tuning round.
 - All original joint efficacy thresholds must pass on a clean candidate bound to the complete installed plugin tree. Do not change thresholds or present selected pairs, retries or a tuned corpus as the original complete study.
 - The earlier six-case / 22-turn user-perspective archive and the supplementary two-case / six-turn continuity archive remain separate and source-bound. Neither replaces final exact-package checks or a human-user study.
-- Final exact-candidate source/package/secret checks, real Codex State lifecycle, current DeepSeek host lifecycle, and generated/SBOM/notice consistency.
-- Main is public and its 18-job CI passed. A passing final confirmation is still required before an annotated exact tag, all 18 tag CI jobs, verified assets and attestations, prerelease, and fresh public installs.
-- The Research and applied systems profile entry was updated publicly at profile commit `e79d4951e819a13f8bae48ddc17dd2150ab1c15d`. It describes the current experimental goal, links current development status and does not present v0.2 as the new product. Change it again only if the release status changes.
-- Finish deleting task-created isolated installations, state, caches, and dependencies after the work is complete, retaining source and sanitized evidence. Everyday Codex core/State installations and the intent-loop marketplace entry have already been removed and verified absent.
+- Source/package checks, State observations and Windows/Linux/macOS DeepSeek host lifecycles remain implementation evidence. The exact final candidate passed its 18-job CI matrix.
+- No passing final confirmation exists, so annotated tag, tag CI, release assets, prerelease and fresh public installs were not initiated. This is an intentionally unmet release gate, not unfinished publishing work to bypass.
+- The Research and applied systems entry on the [GitHub profile](https://github.com/rrrrrredy) was updated at profile commit `93dd68048778b9e1849bf653062db3689990cdcf`. It describes the intent-formation goal, links the current development status and discloses the incomplete final confirmation. It does not present v0.2 as the new product or imply that v0.3 is installable.
+- Local cleanup is complete within the task-owned scope. The final check found zero daily Intent plugins, preserved all 14 other daily plugins, and verified the retired homes, final test homes, dependencies, caches and empty daily remnants absent. Source, historical worktrees and raw study/grading evidence were retained. See the [cleanup receipt](../evidence/local-cleanup-20260907.json); it is a local observation, not a claim that CI can inspect this computer.
 
 ## Evidence limits
 

@@ -44,10 +44,16 @@ New host expansion, fresh marketing assets and unrelated framework work are defe
 
 ## Delivery checkpoint
 
-The ordinary-feedback connection, bounded removal experiment and supplementary
-two-case / six-turn host check are complete. Reviewed source and diagnostic evidence
-are public, and the GitHub profile entry has been updated. The six-pair grader
-calibration is complete with its mistakes retained. The remaining evaluation is
-the [one-time final confirmation](../packages/intent-formation/evals/final-confirmation-method.md),
-followed by its honest release decision and final local cleanup. A failed final
-confirmation ends this expansion; it does not trigger another replacement study.
+The ordinary-feedback connection, bounded removal experiment, supplementary
+two-case / six-turn host check and six-pair grader calibration are complete. Reviewed
+source and diagnostic evidence are public, and the GitHub profile entry is updated.
+The [one-time final confirmation](../evidence/final-confirmation-20260907/README.md)
+is complete as an attempted experiment: 160 attempts, 159 usable conversations,
+79/80 complete pairs, no primary retry and 160 successful native task deletions.
+The subset final-match gain was 1.58 percentage points, below the unchanged 10-point threshold.
+This expansion is closed as a public research snapshot, without a v0.3 release or
+another model/corpus round. All five re-scoped delivery items are closed; the
+original market-effectiveness requirement remains unmet. Task-created installations,
+state, dependencies and caches were removed and their absence checked. Source and
+raw evidence remain intact. The [local cleanup receipt](../evidence/local-cleanup-20260907.json)
+records the scope and preservation checks; cleanup does not erase the failed result.

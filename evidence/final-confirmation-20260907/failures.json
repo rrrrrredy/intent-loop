@@ -1,0 +1,25 @@
+{
+  "attempted_conversations": 160,
+  "attempted_user_turns": 279,
+  "usable_conversations": 159,
+  "usable_pairs": 79,
+  "required_pairs": 80,
+  "primary_retries": 0,
+  "native_task_deletions": 160,
+  "failed_conversations": [
+    {
+      "id": "fc-co-013",
+      "arm": "baseline",
+      "first": {
+        "exit_code": null,
+        "signal": "SIGTERM",
+        "timed_out": true,
+        "duration_ms": 300120,
+        "response_present": false
+      },
+      "second": null,
+      "native_errors": []
+    }
+  ],
+  "cleanup_failures": []
+}

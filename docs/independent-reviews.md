@@ -2,6 +2,41 @@
 
 Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six earlier real-use cases and the separate two-case continuity check below are complete.
 
+## Final confirmation and goal review
+
+On 2026-09-07, the adversarial agent independently checked the final six-file
+archive against the raw runs, grades, frozen sources and candidate `3dd8ab2`.
+It confirmed 160 attempts, 159 usable conversations, 79 complete pairs, 279 user
+turns, one unreplaced baseline timeout and 160 successful native task deletions.
+All 16 grading batches succeeded on their first attempt. Public runs and grades
+match their original records after the disclosed sanitization. Hash bindings and
+privacy scans passed; the one secret-pattern redaction was a fictional color,
+not a credential. No public-archive blocker remained. This is not product-release
+approval. The reviewed archive manifest SHA-256 is
+`0c4b84ded946216534780ce509e05981a778a46178f9e7f7b193f80b60835e8f`.
+
+The independent goal reviewer recomputed the 79-pair scores and read six selected
+cases in detail, without new model calls, rescoring, or overwriting original grades.
+Baseline/plugin final-match totals were 302/307 out of 316: a 1.58-percentage-point
+gain, below the frozen 10-point gate. With 67 baseline full scores, even a perfect
+plugin could gain only 4.43 points. Ordinal rework fell from six to two points;
+this is not measured human time. Most blind preferences were ties (57 of 79).
+
+The local case review found both value and friction. In `fc-uf-015`, the plugin
+delivered the requested table in chat rather than creating an unrequested file.
+In `fc-pe-006` and `fc-cl-005`, extra choice invitations added avoidable friction.
+`fc-pe-001` raised a possible hindsight penalty for a priority introduced later;
+`fc-uf-006` raised doubt that a procedural rework penalty represented actual
+rewriting. These are bounded review observations, not replacement scores.
+
+Both reviews support publishing the inspectable implementation and unchanged
+negative evidence, finishing cleanup, and stopping this round. No extra model,
+replacement case or new grader is needed. The Core-only final confirmation does
+not establish State-only benefit or human market demand. The separately observed
+ordinary-feedback State path is described below. Final physical cleanup happened
+after these reviews and is recorded separately in the
+[root cleanup receipt](../evidence/local-cleanup-20260907.json).
+
 ## Natural-feedback connection: 2026-09-07 development delta
 
 The independent goal audit found a missing connection between ordinary user feedback

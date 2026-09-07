@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "evidence_class": "incomplete_primary_diagnostic",
+  "current_release_efficacy": false,
+  "release_gate_result": "NOT_ELIGIBLE_INCOMPLETE_FINAL_CONFIRMATION",
+  "candidate_commit": "3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce",
+  "corpus": {
+    "path": "packages/intent-formation/evals/seals/final-confirmation-20260907/author-80.jsonl",
+    "sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef",
+    "byte_size": 92995,
+    "scenario_count": 80,
+    "distribution": {
+      "poorly_expressed": 15,
+      "unformed": 15,
+      "conflict": 15,
+      "preference_after_result": 15,
+      "clear": 20
+    }
+  },
+  "candidate_plugin_tree": {
+    "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+    "file_count": 14,
+    "bytes": 35362
+  },
+  "executed_plugin_tree": {
+    "sha256": "a06dd3489f58a1bdc1c7a7e52cd540486c31242f98f59e98dec00c6bdb95cd8a",
+    "file_count": 14,
+    "bytes": 35362
+  },
+  "design": {
+    "pairing": "within-scenario",
+    "pair_order": "alternating AB/BA",
+    "arms_within_pair": "sequential",
+    "pair_worker_concurrency": 2,
+    "turn_timeout_ms": 300000,
+    "primary_run_retry_policy": "none"
+  },
+  "execution": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "host": {
+      "platform": "win32",
+      "arch": "x64",
+      "node": "v22.19.0"
+    },
+    "codex_cli_version": "codex-cli 0.153.4",
+    "attempted_conversations": 160,
+    "attempted_user_turns": 279,
+    "usable_conversations": 159,
+    "usable_pairs": 79,
+    "required_pairs": 80,
+    "primary_retries": 0,
+    "native_task_deletions": 160,
+    "failed_conversations": [
+      {
+        "id": "fc-co-013",
+        "arm": "baseline",
+        "first": {
+          "exit_code": null,
+          "signal": "SIGTERM",
+          "timed_out": true,
+          "duration_ms": 300120,
+          "response_present": false
+        },
+        "second": null,
+        "native_errors": []
+      }
+    ],
+    "cleanup_failures": []
+  },
+  "grading": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "rubric_version": "intent-formation-blind-v4",
+    "grading_tool_commit": "3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce",
+    "grading_contract": {
+      "grader_sha256": "65e9bb1185e030609f0f50b7471ef60d4537b373e818619e413678e0100bc1d2",
+      "schema_sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6",
+      "rationale_minimum_characters": 40,
+      "rationale_maximum_characters": 520
+    },
+    "graded_pairs": 79,
+    "batch_attempts": [
+      {
+        "index": 0,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 74060,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 80806,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 86587,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 71393,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 80160,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 82728,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 6,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 71579,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 7,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 71213,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 8,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 61939,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 9,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 90397,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 10,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 81002,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 11,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 72030,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 12,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 48517,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 13,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 60216,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 14,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 56888,
+            "error": null
+          }
+        ]
+      },
+      {
+        "index": 15,
+        "attempts": [
+          {
+            "attempt": 1,
+            "code": 0,
+            "signal": null,
+            "timed_out": false,
+            "duration_ms": 43042,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "failed_batches": []
+  },
+  "source_summary_sha256": "bfa9857f50357079ca13aeb77933c6c5a08f8c136447c07c597567f44403ed28",
+  "source_grading_summary_sha256": "c186316392cac3d2a6311a89b762e600416a8d4aa989f038a480ee0b3e879015",
+  "definition_sha256": "d879a7b77b5fde154676a2bdda51263c899c7367a08bedc55dabe2d5fd2f73af",
+  "source_sha256": {
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-80.jsonl": {
+      "bytes": 92995,
+      "sha256": "837f3b935627be3d7b2a5b29da6ab3dc69e7c18b9157e4a7445301c4ec9a42ef"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-method.md": {
+      "bytes": 20115,
+      "sha256": "5b7677873dd1fac4ed6d06bb4f3d3106712f29715b2629a5214066c98c0cdbd6"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/validate-author.mjs": {
+      "bytes": 10265,
+      "sha256": "c8faa04d940f724d0a833d25a2a491627e483c40b16675bf4c8202fe7f7859c6"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-manifest.json": {
+      "bytes": 6694,
+      "sha256": "855566a4f8b1bace97b705a4f674f462d42df81a374060c29d71e2840155bee3"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/author-seal.json": {
+      "bytes": 1272,
+      "sha256": "395ab4bc4a2cd12c65ccccb0d32f3b05e5598fd2046bc54d3178b016cd589e71"
+    },
+    "packages/intent-formation/evals/seals/final-confirmation-20260907/cross-overlap-report.json": {
+      "bytes": 10784,
+      "sha256": "fdd498e0687ad0a90aa5cdec8e648ddf11f30c7bf752c485104700cbe5564947"
+    },
+    "packages/intent-formation/evals/final-confirmation-method.md": {
+      "bytes": 3961,
+      "sha256": "7389539ebe46441983ae62e46f23310888f116aaeda215b4bc696b2690414079"
+    },
+    "packages/intent-formation/evals/run-study.mjs": {
+      "bytes": 17188,
+      "sha256": "c0320fd1af28f34aa847740dd4ab7bbead18b1a7b138f49431b4ea7d5455d6da"
+    },
+    "packages/intent-formation/evals/grade-study.mjs": {
+      "bytes": 22063,
+      "sha256": "65e9bb1185e030609f0f50b7471ef60d4537b373e818619e413678e0100bc1d2"
+    },
+    "packages/intent-formation/evals/grading-protocol-v4.md": {
+      "bytes": 4693,
+      "sha256": "9034acb7281c35e531521293e85800c3d9585b46d85de5ae3b75354470615c00"
+    },
+    "packages/intent-formation/evals/grading-output-v3.schema.json": {
+      "bytes": 2235,
+      "sha256": "e60edc7b333329de793feab3749fc54b3fd9b8efa1d6fc81c6572a00849094d6"
+    },
+    "packages/intent-formation/evals/scenario-contract.mjs": {
+      "bytes": 2049,
+      "sha256": "1ff37d9bed7102662cbdc0941e99347a4e4cef7b3213d900291363e80f483dc3"
+    },
+    "packages/intent-formation/evals/analysis-core.mjs": {
+      "bytes": 20814,
+      "sha256": "2d32dfcc2994b9a48cf29ac679e857807e7a09377703f2b053c5fefb683bb958"
+    },
+    "packages/intent-formation/evals/metrics.mjs": {
+      "bytes": 537,
+      "sha256": "554347c7614bbebaab98f4d49730a8c134fc8a88e0e7ec327713af30b4656f0a"
+    },
+    "packages/intent-formation/evals/fingerprint.mjs": {
+      "bytes": 3209,
+      "sha256": "c595fcf814a875ea52eef889bf493cb124f54c330d9c8e1cb081611f333f3565"
+    },
+    "packages/intent-formation/evals/validate-holdout-overlap.mjs": {
+      "bytes": 7419,
+      "sha256": "66e034307b2c1f21491644833868b93498b44a311da1a3c6e1edbc7958fca90e"
+    },
+    "packages/intent-formation/evals/codex-event-summary.mjs": {
+      "bytes": 1168,
+      "sha256": "5816aed58ea09d7e50b1a9d91c650d4aa1e8675f244a35c33a3d6f393ec6791d"
+    }
+  },
+  "archive_script_sha256": "1adbbc58942b8df0e3515ffa98c793f933d5c592229c23c1f4aa09770b065ca6",
+  "sanitization": {
+    "control_characters_replaced": 0,
+    "local_paths_replaced": 3,
+    "secret_patterns_replaced": 1,
+    "strings_truncated": 0,
+    "note": "Published response and grade strings are not length-truncated. Control characters, machine-local paths, and common credential patterns are replaced and counted. Grader rationale and violation lengths are bounded by the published output schema before this step."
+  },
+  "artifact_sha256": {
+    "README.md": "fa36df23d72c18aa85d397e872293391d85bce78a843695257958488fa79b9b1",
+    "runs.jsonl": "0cf1378bfe7b8b6d2ea21f0559e96ba5170ed2a596610c084eaf2cb9602a31b6",
+    "failures.json": "a1f1fd769fd7276179fc0cda4e786f474c90006e2e459f458fb8648eac3cb56b",
+    "blind-grades.jsonl": "277941bd631f07b9a470dd6979a3cdf502c827a33321d87c3e8b02b2bdeaf6b0",
+    "analysis.json": "fc9f378eaecf595a5c4f359c0ab768bf46c345aa3a5457b67d59f0cb3be9ecf4"
+  }
+}

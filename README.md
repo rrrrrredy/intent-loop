@@ -8,7 +8,7 @@ Intent Formation helps Codex follow what you want as you see results and change 
 
 There is no form to fill in and no separate chat app. Talk to Codex as usual.
 
-**Development status:** main contains the unreleased v0.3 candidate, including an experimental natural-feedback/state connection. Earlier independent studies did not pass the release gates. Public source and green implementation tests do not establish efficacy; see the [current goals](docs/current-goals.md) and [release decision](docs/release-decision.md).
+**Research snapshot, not a v0.3 release:** the natural-feedback/state connection is implemented and the candidate passed all 18 cross-platform CI jobs. The final confirmation attempted 160 conversations but produced only 79/80 usable pairs; its diagnostic final-match gain was 1.58 percentage points against the unchanged 10-point gate. This development round is closed without another replacement study or a v0.3 prerelease. Public source is available; efficacy is not established. See the [complete results](evidence/final-confirmation-20260907/README.md), [current goals](docs/current-goals.md) and [release decision](docs/release-decision.md).
 
 ## What it feels like
 
@@ -19,9 +19,9 @@ There is no form to fill in and no separate chat app. Talk to Codex as usual.
 
 The product stays inside the current task. Codex still owns planning, tools, permissions, implementation, testing, and delivery.
 
-## Install the simplest version
+## Installation status
 
-These instructions target `v0.3.0-beta.1`. Check [Releases](https://github.com/rrrrrredy/intent-loop/releases) first: if that version is not listed, these commands are not yet a usable public installation path. Follow the instructions attached to an available release instead.
+The commands below are a future `v0.3.0-beta.1` release reference, not a current quick-install path. No v0.3 tag or installer was published after the failed confirmation. The existing v0.2 downloads belong to the earlier product and do not provide this complete capability. Check [Releases](https://github.com/rrrrrredy/intent-loop/releases) before installing anything.
 
 Prerequisites: [Codex CLI](https://developers.openai.com/codex/cli) and Node.js 20 or newer on `PATH`.
 

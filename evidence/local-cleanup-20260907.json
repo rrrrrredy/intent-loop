@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "evidence_class": "task_owned_local_cleanup_observation",
+  "checked_at_utc": "2026-09-07T11:54:28.1756142Z",
+  "candidate_commit": "3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce",
+  "scope": "Task-created installations and runtime state only; source, historical worktrees and raw study evidence retained.",
+  "daily_home": {
+    "intent_plugins_installed": 0,
+    "other_plugins_installed": 14,
+    "other_plugin_inventory_unchanged": true,
+    "removed_empty_roots": [
+      "plugins/cache/intent-loop",
+      "plugin-data/intent-formation"
+    ],
+    "state_before_removal": {
+      "ledger_bytes": 0,
+      "export_file_count": 0
+    },
+    "both_roots_verified_absent": true
+  },
+  "retired_temporary_homes": {
+    "previously_removed": 63,
+    "verified_absent_again": 63
+  },
+  "final_temporary_cleanup": {
+    "completed_at_utc": "2026-09-07T11:45:21.7643229Z",
+    "official_core_plugin_uninstalls": 2,
+    "official_marketplace_removals": 2,
+    "intent_plugins_remaining_in_each_home_before_deletion": 0,
+    "unrelated_plugin_ids_unchanged_in_each_isolated_inventory": 9,
+    "temporary_homes_removed": 2,
+    "temporary_authentication_copies_removed_with_homes": 2,
+    "repository_dependency_directories_removed": 2,
+    "task_package_cache_roots_removed": 2,
+    "task_downloaded_node_runtime_root_removed": 1,
+    "total_exact_roots_removed": 7,
+    "all_seven_roots_verified_absent_again": true
+  },
+  "matching_active_intent_runtime_processes": 0,
+  "forced_process_terminations": 0,
+  "credential_contents_read_during_cleanup": false,
+  "daily_authentication_source_preserved": true,
+  "source_and_raw_evidence_preserved": true,
+  "preserved_evidence_sha256": {
+    "private_primary_summary": "bfa9857f50357079ca13aeb77933c6c5a08f8c136447c07c597567f44403ed28",
+    "private_grading_summary": "c186316392cac3d2a6311a89b762e600416a8d4aa989f038a480ee0b3e879015",
+    "final_confirmation_public_manifest": "0c4b84ded946216534780ce509e05981a778a46178f9e7f7b193f80b60835e8f"
+  },
+  "supplied_deepseek_or_kimi_keys_used": false,
+  "recovery_note": "Removed runtime directories have no task backup; dependencies and caches are rebuildable. No source or archived study result was deleted.",
+  "limitation": "This receipt records local checks at the stated time. Repository CI cannot independently inspect the user's computer. Unrelated installations and retained source trees were outside deletion scope."
+}

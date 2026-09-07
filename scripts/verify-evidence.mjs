@@ -229,12 +229,49 @@ assert.equal(calibration.new_product_conversations, 0);
 assert.equal(calibration.actual_grader_requests, 2);
 await verifyArtifactHashes(calibrationRoot, calibration);
 
+const confirmationRoot = path.join(repositoryRoot, "evidence", "final-confirmation-20260907");
+const confirmation = await readJson(path.join(confirmationRoot, "manifest.json"));
+assert.equal(confirmation.evidence_class, "incomplete_primary_diagnostic");
+assert.equal(confirmation.current_release_efficacy, false);
+assert.equal(confirmation.release_gate_result, "NOT_ELIGIBLE_INCOMPLETE_FINAL_CONFIRMATION");
+await verifyArtifactHashes(confirmationRoot, confirmation);
+const confirmationRuns = (await readFile(path.join(confirmationRoot, "runs.jsonl"), "utf8")).trim().split(/\r?\n/u).map(JSON.parse);
+const confirmationGrades = (await readFile(path.join(confirmationRoot, "blind-grades.jsonl"), "utf8")).trim().split(/\r?\n/u).map(JSON.parse);
+const confirmationAnalysis = await readJson(path.join(confirmationRoot, "analysis.json"));
+const confirmationFailures = await readJson(path.join(confirmationRoot, "failures.json"));
+const confirmationCorpusBytes = await readFile(path.join(repositoryRoot, confirmation.corpus.path));
+assert.equal(sha256(confirmationCorpusBytes), confirmation.corpus.sha256);
+const confirmationCorpus = confirmationCorpusBytes.toString("utf8").trim().split(/\r?\n/u).map(JSON.parse);
+assert.equal(confirmationCorpus.length, 80);
+assert.deepEqual(confirmationRuns.map(r => `${r.arm}:${r.id}`).sort(), confirmationCorpus.flatMap(c => [`baseline:${c.id}`, `plugin:${c.id}`]).sort());
+const confirmationUsable = confirmationRuns.filter(r => completeTurn(r.first) && (!confirmationCorpus.find(c => c.id === r.id).follow_up || completeTurn(r.second)));
+const confirmationPairIds = confirmationCorpus.filter(c => ["baseline", "plugin"].every(arm => confirmationUsable.some(r => r.id === c.id && r.arm === arm))).map(c => c.id).sort();
+assert.equal(confirmationRuns.length, 160);
+assert.equal(confirmationUsable.length, 159);
+assert.equal(confirmationPairIds.length, 79);
+assert.deepEqual(confirmationGrades.map(g => g.id).sort(), confirmationPairIds);
+assert.ok(confirmationRuns.every(r => r.thread_cleanup.exit_code === 0));
+assert.deepEqual(confirmationRuns.filter(r => !confirmationUsable.includes(r)).map(r => `${r.arm}:${r.id}`), ["baseline:fc-co-013"]);
+assert.deepEqual(confirmationAnalysis.full_primary_reliability, confirmationFailures);
+assert.equal(confirmationFailures.native_task_deletions, 160);
+assert.equal(confirmationFailures.attempted_user_turns, 279);
+assert.equal(confirmationAnalysis.release_efficacy_usable, false);
+assert.equal(confirmationAnalysis.available_pair_diagnostic.gates.final_match.status, "FAIL");
+assert.equal(confirmationAnalysis.available_pair_diagnostic.metrics.final_match_gain_percentage_points, 1.58);
+assert.equal(confirmation.grading.batch_attempts.length, 16);
+assert.ok(confirmation.grading.batch_attempts.every(b => b.attempts.length === 1 && b.attempts[0].code === 0 && b.attempts[0].error === null));
+assert.deepEqual(gitTreeFingerprint(repositoryRoot, confirmation.candidate_commit, "plugins/intent-formation"), confirmation.candidate_plugin_tree);
+assert.deepEqual(confirmation.executed_plugin_tree, confirmation.candidate_plugin_tree);
+for (const [file, expected] of Object.entries(confirmation.source_sha256)) {
+  assert.equal(sha256(await readFile(path.join(repositoryRoot, file))), expected.sha256, `final confirmation source drift: ${file}`);
+}
+
 if (!(await exists(finalRoot))) {
   if (requireCandidate) {
     throw new Error("candidate holdout evidence is required for a release");
   }
   process.stdout.write(
-    "verified historical development, failed v6, incomplete v7, and post-v6 artifact hashes; candidate holdout evidence pending\n"
+    "verified historical and final incomplete confirmation evidence; no passing candidate release evidence exists\n"
   );
   process.exit(0);
 }
