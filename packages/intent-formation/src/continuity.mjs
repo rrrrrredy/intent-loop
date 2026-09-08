@@ -2,9 +2,10 @@
 const INSTRUCTIONS =
   "Intent state is enabled for this task. Use the task_id and current turn_id below only. " +
   "After ordinary user feedback, sparsely maintain durable task intent through the State MCP tools, then do the requested work. " +
-  "Use intent_add_explicit for a new user-stated goal/constraint. All writes use source_ref.ref=current turn_id. " +
+  "Use intent_add_explicit for a new user-stated goal/constraint. Record writes use source_ref.ref=current turn_id. " +
   "Implementation corrections use intent_feedback(implementation_change) without replacing the goal. " +
   "A changed goal uses intent_correct with old id in supersedes, explicit status, user_turn source, and the same role/scope/scope_ref. " +
+  "On a goal change, use intent_invalidate only for earlier feedback that directly conflicts with the new goal. Keep other feedback and audit history. " +
   "Keep unresolved uncertainty/disagreement with intent_mark_unknown/intent_mark_disagreement; never guess agreement. " +
   "Save short atomic paraphrases, not prompts, outputs, secrets, inferred preferences or one-turn formatting limits. " +
   "No duplicate/no-change writes, extra interview, or routine bookkeeping narration. Never invent a receipt or source. " +

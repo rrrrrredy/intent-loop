@@ -306,6 +306,53 @@ test("crowded source and packaged hooks retain only the current task outcome", a
   assert.equal(await readFile(service.store.filePath, "utf8"), before);
 });
 
+test("explicitly obsolete feedback leaves current context but retains its history", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  const taskId = "changed-purpose-feedback";
+  const goal = await service.addExplicit({ task_id: taskId, role: "desired_outcome", scope: "task",
+    statement: "Write a note for return volunteers", source_ref: { ref: "turn-1" } });
+  const stale = await service.addFeedback({ task_id: taskId, scope: "task",
+    statement: "Begin with Put returned books", feedback_class: "implementation_change",
+    source_ref: { ref: "turn-2" } });
+  const retained = await service.addFeedback({ task_id: taskId, scope: "task",
+    statement: "Use plain words", feedback_class: "implementation_change",
+    source_ref: { ref: "turn-3" } });
+  const beforeChange = await service.show({ task_id: taskId });
+  assert.ok(beforeChange.active_records.some(({ record_id }) => record_id === stale.record.record_id));
+  assert.match(continuityContext(beforeChange, { turnId: "turn-4" }), /intent_invalidate/);
+  assert.match(continuityContext(beforeChange), /directly conflicts with the new goal/);
+  const replacement = await service.addRecord({ task_id: taskId, role: "desired_outcome", scope: "task",
+    statement: "Write a note for borrowing visitors", epistemic_status: "explicit",
+    source_ref: { kind: "user_turn", ref: "turn-4" }, supersedes: [goal.record.record_id] });
+  // The host makes the semantic decision. The Hook must never guess it or erase history.
+  await service.invalidate({ task_id: taskId, record_id: stale.record.record_id,
+    reason: "The user replaced the returns note with borrowing instructions" });
+  const snapshot = await service.show({ task_id: taskId });
+  assert.equal(snapshot.records.find(({ record_id }) => record_id === stale.record.record_id).status, "invalidated");
+  assert.equal(snapshot.records.find(({ record_id }) => record_id === goal.record.record_id).status, "superseded");
+  assert.deepEqual(snapshot.active_records.map(({ record_id }) => record_id).sort(),
+    [retained.record.record_id, replacement.record.record_id].sort());
+  const ledger = await readFile(service.store.filePath, "utf8");
+  assert.ok(ledger.includes(stale.record.statement));
+  const packaged = path.resolve(repositoryRoot, "../../plugins/intent-formation-state/dist");
+  for (const source of ["ordinary", "resume", "compact"]) {
+    const ordinary = source === "ordinary";
+    for (const executable of [ordinary ? commandHookPath : hookPath,
+      path.join(packaged, ordinary ? "intent-command.mjs" : "intent-resume.mjs")]) {
+      const result = await runHook(JSON.stringify({ session_id: taskId, source, turn_id: "turn-5",
+        hook_event_name: ordinary ? "UserPromptSubmit" : "SessionStart", prompt: "Continue" }), dataDirectory, executable);
+      const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+      assert.match(text, /intent_invalidate/);
+      assert.ok(text.includes(replacement.record.record_id));
+      assert.ok(text.includes(retained.record.record_id));
+      assert.ok(!text.includes(stale.record.record_id));
+      assert.ok(Buffer.byteLength(result.stdout) <= (ordinary ? 3000 : 4096));
+    }
+  }
+  assert.equal(await readFile(service.store.filePath, "utf8"), ledger);
+});
+
 test("recovery budgets the full Hook JSON even for heavily escaped valid records", async (context) => {
   const dataDirectory = await hookFixture(context);
   const service = new IntentService({ dataDirectory });
