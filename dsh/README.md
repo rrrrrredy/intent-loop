@@ -4,15 +4,18 @@
 
 DeepSeek Harness is a moving prerelease surface. This package is pinned to `@deepseek-ai/dsh` `0.1.2-rc.1`; a Harness API change may require a new Intent Formation prerelease.
 
-## Install
+## Source verification
 
-Prerequisites: Node.js `^22.19.0` or `>=24.0.0`, `pnpm`, and DeepSeek Harness.
+There is no v0.3 tag or published installer. Existing v0.2 release assets are the earlier product. Do not remove an installed v0.2 bundle to try a nonexistent v0.3 tag.
+
+Developers can verify the committed source with Node.js `^22.19.0` or `>=24.0.0` and `pnpm`. From the repository root:
 
 ~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1
+npm ci
+npm run test:dsh-host
 ~~~
 
-Use `web` in place of `headless` for the Web profile. The patch contributes one `dsh-intent-formation` plugin row.
+The existing smoke script packs, adds, composes, checks help, and removes the package in a temporary headless Harness home. It requires no model API key, does not change a normal Harness profile, and removes its temporary home. This is developer verification, not a beginner installation guide or a DeepSeek model evaluation.
 
 ## Use
 
@@ -24,7 +27,7 @@ State lives under `${DSH_HOME}/plugin-data/intent-formation/v1`, or `~/.dsh/plug
 
 ## Uninstall
 
-Delete required task data through `intent_forget` before removing the package. Package removal and data deletion are separate operations.
+The source lifecycle check already removes its own temporary installation. No manual uninstall is needed after that check. The following applies only to an adapter you separately installed: select and verify the original `DSH_HOME` and profile first, then delete required task data through `intent_forget` before removing the package. Package removal and data deletion are separate operations. This command is for an original `headless` installation; replace `headless` with the original profile when it differs.
 
 ~~~shell
 dsh plugin --profile headless remove dsh-intent-formation

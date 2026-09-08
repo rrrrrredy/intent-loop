@@ -2,13 +2,13 @@
 
 [![CI](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml/badge.svg)](https://github.com/rrrrrredy/intent-loop/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Prerelease](https://img.shields.io/github/v/release/rrrrrredy/intent-loop?include_prereleases&label=prerelease)](https://github.com/rrrrrredy/intent-loop/releases)
+[Legacy v0.2 downloads](https://github.com/rrrrrredy/intent-loop/releases) · [中文入门](docs/simple-guide.zh-CN.md)
 
 Intent Formation helps Codex follow what you want as you see results and change your mind. Clear tasks continue normally. When a choice genuinely changes the next useful action, Codex asks one focused question, shows two or three concrete directions, or makes a tiny sample you can react to. With local state enabled, short sourced records retain the current goal and distinguish fixing the work from changing the goal.
 
 There is no form to fill in and no separate chat app. Talk to Codex as usual.
 
-**Research snapshot, not a v0.3 release:** the natural-feedback/state connection is implemented and the candidate passed all 18 cross-platform CI jobs. The final confirmation attempted 160 conversations but produced only 79/80 usable pairs; its diagnostic final-match gain was 1.58 percentage points against the unchanged 10-point gate. This development round is closed without another replacement study or a v0.3 prerelease. Public source is available; efficacy is not established. See the [complete results](evidence/final-confirmation-20260907/README.md), [current goals](docs/current-goals.md) and [release decision](docs/release-decision.md).
+**Experimental source, not a v0.3 release:** the natural-feedback/state connection is implemented and the candidate passed all 18 cross-platform CI jobs. The final confirmation attempted 160 conversations but produced only 79/80 usable pairs; its diagnostic final-match gain was 1.58 percentage points against the unchanged 10-point gate. That study is closed and its failure is preserved. Source maintenance and bounded usability checks continue; efficacy is not established. See the [complete results](evidence/final-confirmation-20260907/README.md), [current goals](docs/current-goals.md) and [release decision](docs/release-decision.md).
 
 ## What it feels like
 
@@ -21,24 +21,19 @@ The product stays inside the current task. Codex still owns planning, tools, per
 
 ## Installation status
 
-The commands below are a future `v0.3.0-beta.1` release reference, not a current quick-install path. No v0.3 tag or installer was published after the failed confirmation. The existing v0.2 downloads belong to the earlier product and do not provide this complete capability. Check [Releases](https://github.com/rrrrrredy/intent-loop/releases) before installing anything.
+There is no v0.3 release or installer. The v0.2 downloads belong to the earlier product; do not uninstall a working v0.2 setup to follow a nonexistent v0.3 tag.
 
 Prerequisites: [Codex CLI](https://developers.openai.com/codex/cli) and Node.js 20 or newer on `PATH`.
 
-Copy these two commands into a terminal:
+For developers who already use Codex, the [fixed-commit source trial](docs/source-trial.md) gives an executable, isolated test path. It is experimental, not a recommendation for production use. If you are new to terminals or Codex setup, start with the [plain-language explanation](docs/simple-guide.zh-CN.md); a beginner-ready installation is still unfinished.
 
-~~~shell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.3.0-beta.1
-codex plugin add intent-formation@intent-loop
-~~~
-
-Start a new Codex task. Review the plugin Hook when Codex asks. The core plugin receives no prompt text through its MCP tool and writes no intent records.
+After source installation, start a new Codex task and review the plugin Hook when Codex asks. The core plugin receives no prompt text through its MCP tool and writes no intent records.
 
 This core-only mode supplies interaction guidance without persistent continuity. Give Codex a task in your own words. To retain the evolving goal across processes, enable State below.
 
 ## Optional local memory and controls
 
-Install the State companion only when you want a small task-local record that can survive compaction or a later process:
+After configuring the source trial marketplace, install the State companion only when you want a small task-local record that can survive compaction or a later process:
 
 ~~~shell
 codex plugin add intent-formation-state@intent-loop
@@ -50,7 +45,7 @@ Start a new task, review the two local Hooks, then type:
 /intent start
 ~~~
 
-Once enabled, continue in ordinary language: “Keep the purpose; fix the spacing,” or “I changed my mind; make it for volunteers.” The development Hook supplies existing records and the current turn reference; Codex uses the existing MCP tools to save material changes. You do not need to copy record IDs for normal feedback. Two targeted synthetic cases exercised this path in six real host turns, including a fresh-process resume and a non-activated task. This is implementation evidence, not measured user benefit or a released capability; see the [source-bound observations](evidence/continuous-intent-loop-20260907/README.md).
+Once enabled, continue in ordinary language: “Keep the purpose; fix the spacing,” or “I changed my mind; make it for volunteers.” The development Hook supplies existing records and the current turn reference; Codex uses the existing MCP tools to save material changes. You do not need to copy record IDs for normal feedback. The [latest source-use check](evidence/source-usability-20260908/README.md) includes actual file creation and revisions, a retained stale-feedback defect, and a separate targeted repair regression. Earlier [source-bound observations](evidence/continuous-intent-loop-20260907/README.md) include a fresh-process resume and a non-activated task. These are synthetic implementation checks, not measured user benefit or a released capability.
 
 Use `/intent show` to check what was actually retained and `/intent off` to stop. The remaining controls are optional explicit overrides:
 
@@ -86,10 +81,6 @@ The repository also contains `dsh-intent-formation`, a thin adapter for the offi
 
 The new Codex UserPromptSubmit continuity connection is not a claim of equivalent natural-feedback behavior in DeepSeek. The adapter's current claim remains compatibility and local tool lifecycle.
 
-~~~shell
-dsh plugin --profile headless add github:rrrrrredy/intent-loop#v0.3.0-beta.1
-~~~
-
 DeepSeek Harness currently requires Node.js `^22.19.0` or `>=24.0.0` and `pnpm`. The adapter is pinned to Harness `0.1.2-rc.1`; prerelease API changes may require a new Intent Formation prerelease. See [dsh/README.md](dsh/README.md).
 
 ## Evidence status
@@ -102,7 +93,7 @@ The independently sealed v6 holdout was run to completion and returned `STOP`: c
 
 The [v7 primary run](evidence/failed-holdout-v7/README.md) produced 155 usable conversations out of 160, leaving 75 complete pairs. Four explicit model-capacity failures and one timeout were retained without primary replacement. The available-pair diagnostic is ineligible for release and also retains failed inference-denial and premature-action gates. A separate [case audit](docs/v7-case-audit.md) distinguishes real rule-selection and delivery-scope problems from hindsight grading; original scores remain unchanged.
 
-The prerelease remains blocked while the failure-derived revision is tested and ablated. Publication requires a newly authored, hash-sealed holdout whose every outcome requirement is an exact excerpt from a user-visible turn and whose follow-up does not introduce hidden first-turn delivery obligations, run verbatim in an isolated Codex Home against one clean candidate commit, with explicit model settings, full plugin-tree fingerprints, randomized blind grading, and every predeclared gate passing. DeepSeek support has a separate compatibility and lifecycle gate; a Codex outcome result will not be presented as DeepSeek efficacy.
+The final independent confirmation has finished and did not establish the required benefit. No replacement holdout is queued, and maintenance or source usability checks do not clear the failed efficacy gate. A v0.3 release remains blocked by the [release decision](docs/release-decision.md). DeepSeek support has a separate compatibility and lifecycle boundary; Codex observations are not DeepSeek efficacy results.
 
 ## Platform boundary
 
@@ -110,7 +101,7 @@ Source and packaging checks run on Windows, Ubuntu, and macOS with supported Nod
 
 ## Uninstall
 
-If State is installed and you want its current task data removed, run `/intent forget` first and keep the receipt. Close Codex tasks using these plugins, then run:
+If State is installed and you want its current task data removed, run `/intent forget` first and keep the receipt. Close Codex tasks using these plugins. Before removal, confirm this terminal still uses the same disposable `CODEX_HOME` and that `codex plugin marketplace list --json` reports the trial source, not your daily v0.2 environment. Then run:
 
 ~~~shell
 codex plugin remove intent-formation-state@intent-loop
@@ -118,9 +109,9 @@ codex plugin remove intent-formation@intent-loop
 codex plugin marketplace remove intent-loop
 ~~~
 
-On Windows, if removal reports a file in use or `os error 32`, exit the Codex app and retry from a separate terminal. An active MCP process can hold the installed directory open. Do not delete the source checkout or terminate unrelated Node processes.
+On Windows, if removal reports a file in use or `os error 32`, close the trial processes. If you open a separate terminal, select and verify the same disposable `CODEX_HOME` again before retrying. An active MCP process can hold the installed directory open. Do not delete the source checkout or terminate unrelated Node processes.
 
-For DeepSeek Harness:
+The DeepSeek source lifecycle check removes its own temporary installation; do not run another uninstall afterward. For a separately installed adapter, select and verify the original `DSH_HOME` and profile before using its removal command. This example applies only to an original `headless` installation; replace `headless` with the original profile for any other installation:
 
 ~~~shell
 dsh plugin --profile headless remove dsh-intent-formation

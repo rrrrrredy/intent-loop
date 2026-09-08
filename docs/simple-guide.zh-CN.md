@@ -8,31 +8,17 @@
 
 ## 现在能直接装吗
 
-这里介绍的是未发布的 `v0.3.0-beta.1` 研究版本。普通反馈自动更新目标，已在两个合成任务、六轮实际操作里跑通。最后一次效果确认得到 79/80 对有效对照，一题超时；可用题目的最终匹配提升也未达到原定门槛。本轮开发已经收尾，没有发布 v0.3 安装版。
+这里介绍的是未发布的 `v0.3.0-beta.1` 研究版本。普通反馈自动更新目标，已在两个合成任务、六轮实际操作里跑通。最后一次效果确认得到 79/80 对有效对照，一题超时；可用题目的最终匹配提升也未达到原定门槛。现在继续修复具体使用问题，但还没有适合普通用户的 v0.3 安装版。
 
-先看[下载页](https://github.com/rrrrrredy/intent-loop/releases)。没有这个版本，就先别运行下面的安装命令。已发布的 v0.2 是旧产品，不能当作这里的完整能力。
+已发布的 v0.2 是旧产品，不能当作这里的完整能力，也不用为试新版本先卸载它。已经会用 Codex、愿意测试源码的开发者，可以按[固定提交试用说明](source-trial.md)操作；它用实际存在的提交，不依赖尚未发布的版本标签。
 
-## 理解用法：发布后才执行安装命令
+## 用法只有三步
 
-电脑先装好 [Codex CLI](https://developers.openai.com/codex/cli) 和 [Node.js 20 或更新版本](https://nodejs.org/en/download)。在终端输入 `codex --version`、`node --version`，都能显示版本号再继续。
+1. 安装源码版后，新建一个 Codex 任务，按提示检查插件的三个 Hook，其中两个是本地脚本，一个读取交互规则。没有完成检查，下面的开关就不可靠。
+2. 在聊天框输入 `/intent start`，看到 `IF-...` 回执后开始使用。
+3. 像平时一样说需求、看结果、提意见。改哪里就说哪里，改主意也直接说。
 
-Windows 打开 PowerShell；Mac 或 Linux 打开“终端”。依次粘贴：
-
-~~~shell
-codex plugin marketplace add rrrrrredy/intent-loop --ref v0.3.0-beta.1
-codex plugin add intent-formation@intent-loop
-codex plugin add intent-formation-state@intent-loop
-~~~
-
-新建一个 Codex 任务，检查并启用插件提供的本地脚本。Codex 会让你确认，不能跳过这次安全检查。
-
-然后在 **Codex 的聊天框**输入一次：
-
-~~~text
-/intent start
-~~~
-
-看到 `IF-...` 回执，才表示已开启。之后照平时聊天：
+例如：
 
 > 帮我做一个给孩子选书用的卡片。
 >
@@ -54,7 +40,7 @@ codex plugin add intent-formation-state@intent-loop
 
 ## 不用了怎么卸载
 
-先在聊天框输入 `/intent forget` 并确认回执，再关闭使用这个插件的 Codex 任务。在终端执行：
+先在聊天框输入 `/intent forget` 并确认回执，再关闭使用这个插件的 Codex 任务。卸载前确认终端仍在使用安装时的试用 `CODEX_HOME`，并用 `codex plugin marketplace list --json` 核对来源，别误操作日常环境。然后执行：
 
 ~~~shell
 codex plugin remove intent-formation-state@intent-loop
@@ -62,4 +48,4 @@ codex plugin remove intent-formation@intent-loop
 codex plugin marketplace remove intent-loop
 ~~~
 
-Windows 若提示文件被占用，退出 Codex 后在独立 PowerShell 里重试。别删除项目源码，也别结束全部 Node 进程。你另存的导出副本和 Codex 自己的聊天记录需要单独处理。
+Windows 若提示文件被占用，先关闭试用任务。新开的 PowerShell 需要重新指定并核对同一个试用 `CODEX_HOME`，再重试卸载。别删除项目源码，也别结束全部 Node 进程。你另存的导出副本和 Codex 自己的聊天记录需要单独处理。

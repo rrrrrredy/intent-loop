@@ -1,6 +1,6 @@
 # v0.3.0-beta.1 release decision
 
-As of 2026-09-07: **FINAL CONFIRMATION INCOMPLETE / PUBLIC RESEARCH SNAPSHOT ONLY.** This development round is closed. Reviewed source and all diagnostic evidence are public; no v0.3 tag, prerelease or installer is justified. Do not start another model/corpus round or relax gates to manufacture a release. Existing v0.2 public artifacts are separate.
+As of 2026-09-07: **FINAL CONFIRMATION INCOMPLETE / PUBLIC RESEARCH SNAPSHOT ONLY.** The formal efficacy study is closed. Reviewed source and all diagnostic evidence are public; no v0.3 tag, prerelease or installer is justified. Do not start a replacement confirmation or relax gates to manufacture a release. Existing v0.2 public artifacts are separate. Bounded source maintenance and usability checks resumed on 2026-09-08 at the user's request; the original market-ready product goal is not complete.
 
 The independent goal audit found that manual state tools were implemented but ordinary feedback was not connected to them. The [re-scoped delivery goals](current-goals.md) prioritize that connection, provenance and recovery before more efficacy testing. Progress is not a passing product evaluation.
 
@@ -12,6 +12,16 @@ snapshot. This is component-tested maintenance, not a new efficacy result. The
 Core policy, final corpus, original scores and all frozen archive files are
 unchanged. Earlier real-host State results remain historical and do not establish
 the repaired package's model-mediated behavior. The release decision is unchanged.
+
+A subsequent [source-use check](../evidence/source-usability-20260908/README.md)
+tested `93fb105` in six actual synthetic user turns and retained a stale-feedback
+defect. Repair `73865b6` passed a separate three-turn seeded known-failure check:
+the model retired only conflicting old feedback and retained compatible feedback
+and history. All three actual note versions and the repaired output were correct.
+The fixed commit passed 38 targeted local tests and 18 CI jobs. These narrow new
+observations supersede neither the historical State evidence nor the failed
+efficacy result. The public source trial is now executable from a pinned commit;
+there is still no beginner-ready v0.3 distribution or justified efficacy claim.
 
 ## Final confirmation and decision
 

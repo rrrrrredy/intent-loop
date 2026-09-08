@@ -155,3 +155,25 @@ All six model sessions were deleted with the official CLI, followed by official 
 The adversarial agent separately audited four v7 cases without model calls. Its [case audit](v7-case-audit.md) retains real effect-selection and misplaced-access problems, distinguishes local read-only commands from external operations, and identifies a later-added-number grading error plus an uncertain denominator interpretation. Original grades and gates remain unchanged.
 
 The agent removed its temporary State/core/marketplace installation, authentication copy, state, and empty workspace. Session count was zero. Its original authentication source, repository, four sealed files, and evidence were preserved. No privacy limitation was rejected or silently waived, and no additional product framework was added to address the feedback.
+
+## Source-use and stale-feedback review, 2026-09-08
+
+The user-view agent inspected the actual files, ordinary-feedback MCP calls and State
+snapshots from the [six-turn source trial](../evidence/source-usability-20260908/README.md).
+The three delivered note versions met their narrow requests, but changed purpose left
+old wording feedback active. The agent distinguished this observed stale State from
+the unobserved risk of an incorrect future recovery. It also identified nonexistent
+release instructions and an unsafe uninstall-first migration path; those are removed.
+
+The adversarial agent reviewed the one-instruction repair on `73865b6`: invalidation
+is restricted to directly conflicting feedback, keeps other feedback and audit history,
+and uses the existing task-bound API. No new tool, schema, storage or semantic Hook was
+added. No blocker was found in the narrow source change. Its static review did not
+claim the model would make the right semantic decision.
+
+The separate three-turn seeded host regression then observed that decision. The
+user-view agent confirmed the new file, old-goal supersession, one conflicting-feedback
+invalidation, compatible-feedback retention and consistent show. It retained a `git diff`
+exit 1 in the non-Git trial workspace as an auxiliary failure, not a reason to rerun
+the model. These read-only agent reviews did not add model/API test calls, inspect
+authentication or personal history, or establish independent product efficacy.

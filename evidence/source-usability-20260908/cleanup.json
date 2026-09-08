@@ -1,0 +1,26 @@
+{
+  "completed_at": "2026-09-08T02:42:26.5847588Z",
+  "original_raw_files_preserved": 81,
+  "removed": [
+    "regression/codex-home",
+    "regression/workspace",
+    "package/node_modules",
+    "task/npm-cache"
+  ],
+  "prior_trial_home_absent": true,
+  "absent": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "method": "Exact task-owned directory removal after official task/plugin/marketplace removal; no unrelated process was stopped.",
+  "prior_trial_workspace_absent": true,
+  "daily_plugin_inventory": {
+    "checked_at": "2026-09-08T02:42:24.112Z",
+    "method": "Official read-only plugin list in existing daily Home",
+    "intent_plugins": 0,
+    "unrelated_plugins": 14,
+    "unrelated_plugins_modified": false
+  }
+}

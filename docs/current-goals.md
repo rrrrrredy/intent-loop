@@ -1,5 +1,14 @@
 # Current delivery goals
 
+The original product delivery remains open. The one-time final efficacy study below
+is closed and failed its gate; closing that study did not complete a market-ready
+product. At the user's request on 2026-09-08, work resumed on the actual source-use
+path: one fixed-commit, six-turn synthetic host check, removal of unusable install
+instructions, independent user-path/adversarial review, and public integration.
+This is bounded usability work, not a replacement holdout or a new efficacy claim.
+Any materially new efficacy protocol is a separate decision; the original data
+and thresholds remain unchanged.
+
 Re-scoped on 2026-09-07 after the independent goal audit. The product helps a user
 develop and revise their intent inside an existing task. It must follow ordinary
 feedback and retain the current direction, not require repeated manual bookkeeping.
@@ -51,10 +60,10 @@ The [one-time final confirmation](../evidence/final-confirmation-20260907/README
 is complete as an attempted experiment: 160 attempts, 159 usable conversations,
 79/80 complete pairs, no primary retry and 160 successful native task deletions.
 The subset final-match gain was 1.58 percentage points, below the unchanged 10-point threshold.
-This expansion is closed as a public research snapshot, without a v0.3 release or
-another model/corpus round. All five re-scoped delivery items are closed; the
-original market-effectiveness requirement remains unmet. Task-created installations,
-state, dependencies and caches were removed and their absence checked. Source and
+That 2026-09-07 expansion closed as a public research snapshot, without a v0.3 release
+or another efficacy model/corpus round. The five re-scoped items at that checkpoint
+were closed; the original market-effectiveness requirement remained unmet.
+Task-created installations, state, dependencies and caches were removed and their absence checked. Source and
 raw evidence remain intact. The [local cleanup receipt](../evidence/local-cleanup-20260907.json)
 records the scope and preservation checks; cleanup does not erase the failed result.
 
@@ -87,3 +96,27 @@ Cleanup was verified at 2026-09-08 01:27 UTC: the temporary locked build depende
 and task npm cache were removed, along with four empty test directories. No product
 plugin was installed for this check; the daily inventory still contains zero Intent
 plugins and 14 unrelated plugins. Source and frozen evidence hashes were preserved.
+
+## Source usability and stale feedback, 2026-09-08
+
+The subsequent [six-turn source trial](../evidence/source-usability-20260908/README.md)
+on `93fb105` delivered and revised a real two-sentence file. It also exposed a concrete
+State defect: changing the audience superseded the goal but left directly conflicting
+old wording feedback active. That stale record was visible in show; it did not cause
+an incorrect file in this run.
+
+Repair `73865b6` adds one instruction to use the existing invalidation tool only for
+directly conflicting feedback, preserving other feedback and history. A separate
+three-turn known-failure regression used explicit local synthetic starting records;
+the actual model corrected the goal, invalidated the conflict, kept "Use plain words",
+and produced the correct file. This is not an independent comparison or another
+efficacy round. Thirty-eight local Hook/package checks and all 18 exact-commit CI
+jobs passed. User-view and adversarial agents reviewed the bounded result.
+
+The public README, migration instructions and Chinese guide now distinguish the
+unreleased source from legacy v0.2 downloads. A pinned source trial supplies normal
+Hook review, disposable PowerShell setup and exact-environment removal steps. It
+does not instruct existing v0.2 users to uninstall first. Beginner-ready distribution
+and demonstrated market effectiveness remain unfinished; the failed study is not
+relabelled as a pass. Both trial Homes/workspaces and the new build dependencies and
+cache were removed, with raw evidence retained and no daily Intent installation.

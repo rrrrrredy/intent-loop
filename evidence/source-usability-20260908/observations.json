@@ -1,0 +1,2468 @@
+{
+  "evidence_class": "source_usability_and_seeded_regression",
+  "current_release_efficacy": false,
+  "groups": [
+    {
+      "label": "natural",
+      "candidate_commit": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+      "prompts": [
+        "/intent start",
+        "Create welcome.txt for library volunteers who put returned books on the return trolley. Use exactly two short English sentences. Say to place returns on the trolley and ask a librarian about damaged books. Do not ask questions, create other files or use the network.",
+        "Keep the purpose and audience. The first sentence is too wordy; start it with 'Put returned books'. Update welcome.txt only.",
+        "I changed my mind: this note is now for visitors borrowing books. Replace both sentences. The first should tell them to bring chosen books to the desk; the second should tell them to ask a librarian for a library card. Keep two short English sentences and update welcome.txt only.",
+        "/intent show",
+        "/intent forget"
+      ],
+      "user_turns": 6,
+      "primary_retries": 0,
+      "initial_state": "Empty, then naturally written through model MCP calls.",
+      "normal_hook_review": {
+        "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+        "host": "codex-cli 0.153.4",
+        "method": "Original interactive Hook review after source inspection and 27-file installed Git comparison; no Hook trust bypass.",
+        "observed_before": {
+          "SessionStart": {
+            "installed": 1,
+            "active": 0
+          },
+          "UserPromptSubmit": {
+            "installed": 2,
+            "active": 0
+          }
+        },
+        "observed_after": {
+          "SessionStart": {
+            "installed": 1,
+            "active": 1
+          },
+          "UserPromptSubmit": {
+            "installed": 2,
+            "active": 2
+          }
+        },
+        "onboarding_task_id": "opaque-id-1",
+        "model_prompts_submitted": 0,
+        "friction": "TERM=dumb warning; Windows sandbox setup prompt followed Hook review. Exit keystrokes reached that prompt and started default setup; the interactive process was then stopped. A setup marker later appeared. No bypass or manual sandbox configuration was used."
+      },
+      "installed_git_fingerprints": {
+        "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+        "files": [
+          {
+            "path": "plugins/intent-formation/.codex-plugin/plugin.json",
+            "bytes": 1504,
+            "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+          },
+          {
+            "path": "plugins/intent-formation/.mcp.json",
+            "bytes": 144,
+            "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+          },
+          {
+            "path": "plugins/intent-formation/assets/intent-formation.svg",
+            "bytes": 667,
+            "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+          },
+          {
+            "path": "plugins/intent-formation/hooks/hooks.json",
+            "bytes": 422,
+            "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+          },
+          {
+            "path": "plugins/intent-formation/LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "plugins/intent-formation/NOTICE",
+            "bytes": 192,
+            "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+          },
+          {
+            "path": "plugins/intent-formation/README.md",
+            "bytes": 1416,
+            "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+          },
+          {
+            "path": "plugins/intent-formation/SBOM.cdx.json",
+            "bytes": 640,
+            "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+          },
+          {
+            "path": "plugins/intent-formation/server/policy.mjs",
+            "bytes": 2955,
+            "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+          },
+          {
+            "path": "plugins/intent-formation/skills/intent-formation/agents/openai.yaml",
+            "bytes": 235,
+            "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+          },
+          {
+            "path": "plugins/intent-formation/skills/intent-formation/SKILL.md",
+            "bytes": 13195,
+            "sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621"
+          },
+          {
+            "path": "plugins/intent-formation/src/constants.mjs",
+            "bytes": 1044,
+            "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+          },
+          {
+            "path": "plugins/intent-formation/src/policy.mjs",
+            "bytes": 1416,
+            "sha256": "5a49ebf99919872e51766cf62f48d4448fd251eff53d893abf09a6b291b47d7e"
+          },
+          {
+            "path": "plugins/intent-formation/THIRD_PARTY_NOTICES.md",
+            "bytes": 193,
+            "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+          },
+          {
+            "path": "plugins/intent-formation-state/.codex-plugin/plugin.json",
+            "bytes": 1321,
+            "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+          },
+          {
+            "path": "plugins/intent-formation-state/.mcp.json",
+            "bytes": 152,
+            "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-command.mjs",
+            "bytes": 96957,
+            "sha256": "6df150205cb094bce18ecb577c8dc96c6b13d5c37b0ce81a9ae1d49bb0d62c4f"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+            "bytes": 891289,
+            "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-resume.mjs",
+            "bytes": 91200,
+            "sha256": "a3944c9037982f5cf6b672e78b8a55871dd47db5ca7171dc87d0453cada357cd"
+          },
+          {
+            "path": "plugins/intent-formation-state/hooks/hooks.json",
+            "bytes": 793,
+            "sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0"
+          },
+          {
+            "path": "plugins/intent-formation-state/LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "plugins/intent-formation-state/NOTICE",
+            "bytes": 198,
+            "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+          },
+          {
+            "path": "plugins/intent-formation-state/README.md",
+            "bytes": 2297,
+            "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+          },
+          {
+            "path": "plugins/intent-formation-state/SBOM.cdx.json",
+            "bytes": 4219,
+            "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+          },
+          {
+            "path": "plugins/intent-formation-state/skills/intent-state-control/agents/openai.yaml",
+            "bytes": 194,
+            "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+          },
+          {
+            "path": "plugins/intent-formation-state/skills/intent-state-control/SKILL.md",
+            "bytes": 3940,
+            "sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28"
+          },
+          {
+            "path": "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+            "bytes": 9629,
+            "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+          }
+        ]
+      },
+      "turns": [
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 1,
+          "prompt": "/intent start",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:00:03.207Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:00:14.510Z",
+          "error": null,
+          "elapsed_ms": 11303,
+          "answer": "意图状态已就绪。请继续用你自己的话描述；重要目标与反馈现在可以保存为简短的任务记录。\n\n回执 ID：`IF-40C9E16C`",
+          "welcome_txt": null,
+          "observed_state": null,
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [],
+          "native_usage": {
+            "input_tokens": 15936,
+            "cached_input_tokens": 11392,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 47,
+            "reasoning_output_tokens": 0
+          }
+        },
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 2,
+          "prompt": "Create welcome.txt for library volunteers who put returned books on the return trolley. Use exactly two short English sentences. Say to place returns on the trolley and ask a librarian about damaged books. Do not ask questions, create other files or use the network.",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:03:19.955Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:04:13.768Z",
+          "error": null,
+          "elapsed_ms": 53813,
+          "answer": "Created [welcome.txt]([natural-trial]/workspace/welcome.txt) with exactly two short English sentences.",
+          "welcome_txt": "Place returned books on the return trolley.\nAsk a librarian about damaged books.\n",
+          "observed_state": {
+            "exists": true,
+            "task_id": "opaque-id-2",
+            "mode": "standard",
+            "label": null,
+            "records": [
+              {
+                "record_id": "record-3",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-4",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:03:44.539Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:03:44.539Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "active_records": [
+              {
+                "record_id": "record-3",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-4",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:03:44.539Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:03:44.539Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "recovery": null,
+            "compact": "Outcome [user]: Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+            "context_compact": "Outcome [user]: \"Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [
+            {
+              "type": "mcp_tool_call",
+              "tool": "intent_add_explicit",
+              "arguments": {
+                "task_id": "opaque-id-2",
+                "role": "desired_outcome",
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "source_ref": {
+                  "ref": "opaque-id-4"
+                }
+              },
+              "status": "completed",
+              "error": null,
+              "result": {
+                "ok": true,
+                "source": "intent_formation_mcp",
+                "receipt_id": "IF-53F2CFFE",
+                "data": {
+                  "record": {
+                    "record_id": "record-3",
+                    "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                    "redaction_count": 0,
+                    "role": "desired_outcome",
+                    "epistemic_status": "explicit",
+                    "source_ref": {
+                      "kind": "user_turn",
+                      "ref": "opaque-id-4",
+                      "excerpt": null,
+                      "sha256": null
+                    },
+                    "scope": "task",
+                    "scope_ref": "welcome.txt",
+                    "confidence": null,
+                    "valid_from": "2026-09-08T02:03:44.539Z",
+                    "last_confirmed": null,
+                    "supersedes": [],
+                    "user_confirmed": false,
+                    "confirmation_count": 0,
+                    "feedback_class": null,
+                    "created_at": "2026-09-08T02:03:44.539Z"
+                  },
+                  "snapshot": {
+                    "exists": true,
+                    "task_id": "opaque-id-2",
+                    "mode": "standard",
+                    "label": null,
+                    "records": [
+                      {
+                        "record_id": "record-3",
+                        "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-4",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:03:44.539Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:03:44.539Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "active_records": [
+                      {
+                        "record_id": "record-3",
+                        "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-4",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:03:44.539Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:03:44.539Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "recovery": null,
+                    "compact": "Outcome [user]: Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                    "context_compact": "Outcome [user]: \"Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\""
+                  }
+                }
+              }
+            },
+            {
+              "type": "file_change",
+              "changes": [
+                {
+                  "path": "[natural-trial]/workspace/welcome.txt",
+                  "kind": "add"
+                }
+              ],
+              "status": "completed"
+            },
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -NoProfile -Command \"Get-Content -LiteralPath ./welcome.txt\"",
+              "exit_code": 0,
+              "status": "completed",
+              "output_prefix": "Place returned books on the return trolley.\r\nAsk a librarian about damaged books.\r\n",
+              "output_truncated": false
+            }
+          ],
+          "native_usage": {
+            "input_tokens": 157290,
+            "cached_input_tokens": 143488,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 499,
+            "reasoning_output_tokens": 97
+          }
+        },
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 3,
+          "prompt": "Keep the purpose and audience. The first sentence is too wordy; start it with 'Put returned books'. Update welcome.txt only.",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:05:19.891Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:06:01.006Z",
+          "error": null,
+          "elapsed_ms": 41115,
+          "answer": "Updated [welcome.txt]([natural-trial]/workspace/welcome.txt). The first sentence now reads: “Put returned books on the trolley.”",
+          "welcome_txt": "Put returned books on the trolley.\nAsk a librarian about damaged books.\n",
+          "observed_state": {
+            "exists": true,
+            "task_id": "opaque-id-2",
+            "mode": "standard",
+            "label": null,
+            "records": [
+              {
+                "record_id": "record-3",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-4",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:03:44.539Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:03:44.539Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-5",
+                "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-6",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:05:38.114Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:05:38.114Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "active_records": [
+              {
+                "record_id": "record-3",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-4",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:03:44.539Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:03:44.539Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-5",
+                "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-6",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:05:38.114Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:05:38.114Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "recovery": null,
+            "compact": "Outcome [user]: Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\nFeedback [user]: Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+            "context_compact": "Outcome [user]: \"Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\"\nFeedback [user]: \"Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [
+            {
+              "type": "mcp_tool_call",
+              "tool": "intent_feedback",
+              "arguments": {
+                "task_id": "opaque-id-2",
+                "feedback_class": "implementation_change",
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                "source_ref": {
+                  "ref": "opaque-id-6"
+                }
+              },
+              "status": "completed",
+              "error": null,
+              "result": {
+                "ok": true,
+                "source": "intent_formation_mcp",
+                "receipt_id": "IF-8AE0E271",
+                "data": {
+                  "record": {
+                    "record_id": "record-5",
+                    "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                    "redaction_count": 0,
+                    "role": "result_feedback",
+                    "epistemic_status": "explicit",
+                    "source_ref": {
+                      "kind": "user_turn",
+                      "ref": "opaque-id-6",
+                      "excerpt": null,
+                      "sha256": null
+                    },
+                    "scope": "task",
+                    "scope_ref": "welcome.txt",
+                    "confidence": null,
+                    "valid_from": "2026-09-08T02:05:38.114Z",
+                    "last_confirmed": null,
+                    "supersedes": [],
+                    "user_confirmed": false,
+                    "confirmation_count": 0,
+                    "feedback_class": "implementation_change",
+                    "created_at": "2026-09-08T02:05:38.114Z"
+                  },
+                  "snapshot": {
+                    "exists": true,
+                    "task_id": "opaque-id-2",
+                    "mode": "standard",
+                    "label": null,
+                    "records": [
+                      {
+                        "record_id": "record-3",
+                        "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-4",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:03:44.539Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:03:44.539Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-5",
+                        "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-6",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:05:38.114Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:05:38.114Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "active_records": [
+                      {
+                        "record_id": "record-3",
+                        "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-4",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:03:44.539Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:03:44.539Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-5",
+                        "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-6",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:05:38.114Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:05:38.114Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "recovery": null,
+                    "compact": "Outcome [user]: Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\nFeedback [user]: Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                    "context_compact": "Outcome [user]: \"Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.\"\nFeedback [user]: \"Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\""
+                  }
+                }
+              }
+            },
+            {
+              "type": "file_change",
+              "changes": [
+                {
+                  "path": "[natural-trial]/workspace/welcome.txt",
+                  "kind": "update"
+                }
+              ],
+              "status": "completed"
+            },
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -NoProfile -Command \"Get-Content -LiteralPath ./welcome.txt\"",
+              "exit_code": 0,
+              "status": "completed",
+              "output_prefix": "Put returned books on the trolley.\r\nAsk a librarian about damaged books.\r\n",
+              "output_truncated": false
+            }
+          ],
+          "native_usage": {
+            "input_tokens": 156154,
+            "cached_input_tokens": 151808,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 371,
+            "reasoning_output_tokens": 13
+          }
+        },
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 4,
+          "prompt": "I changed my mind: this note is now for visitors borrowing books. Replace both sentences. The first should tell them to bring chosen books to the desk; the second should tell them to ask a librarian for a library card. Keep two short English sentences and update welcome.txt only.",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:06:59.961Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:07:48.656Z",
+          "error": null,
+          "elapsed_ms": 48695,
+          "answer": "Updated [welcome.txt]([natural-trial]/workspace/welcome.txt) with the two replacement sentences.",
+          "welcome_txt": "Bring chosen books to the desk.\nAsk a librarian for a library card.\n",
+          "observed_state": {
+            "exists": true,
+            "task_id": "opaque-id-2",
+            "mode": "standard",
+            "label": null,
+            "records": [
+              {
+                "record_id": "record-3",
+                "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-4",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:03:44.539Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:03:44.539Z",
+                "status": "superseded",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-5",
+                "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-6",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:05:38.114Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:05:38.114Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-7",
+                "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-8",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:07:20.559Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-3"
+                ],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:07:20.559Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "active_records": [
+              {
+                "record_id": "record-5",
+                "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-6",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:05:38.114Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:05:38.114Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-7",
+                "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-8",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:07:20.559Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-3"
+                ],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:07:20.559Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "recovery": null,
+            "compact": "Feedback [user]: Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\nOutcome [user]: Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+            "context_compact": "Feedback [user]: \"Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\"\nOutcome [user]: \"Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.\""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [
+            {
+              "type": "mcp_tool_call",
+              "tool": "intent_correct",
+              "arguments": {
+                "task_id": "opaque-id-2",
+                "epistemic_status": "explicit",
+                "role": "desired_outcome",
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "source_kind": "user_turn",
+                "source_ref": {
+                  "ref": "opaque-id-8"
+                },
+                "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                "supersedes": [
+                  "record-3"
+                ]
+              },
+              "status": "completed",
+              "error": null,
+              "result": {
+                "ok": true,
+                "source": "intent_formation_mcp",
+                "receipt_id": "IF-C3C3D724",
+                "data": {
+                  "record": {
+                    "record_id": "record-7",
+                    "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                    "redaction_count": 0,
+                    "role": "desired_outcome",
+                    "epistemic_status": "explicit",
+                    "source_ref": {
+                      "kind": "user_turn",
+                      "ref": "opaque-id-8",
+                      "excerpt": null,
+                      "sha256": null
+                    },
+                    "scope": "task",
+                    "scope_ref": "welcome.txt",
+                    "confidence": null,
+                    "valid_from": "2026-09-08T02:07:20.559Z",
+                    "last_confirmed": null,
+                    "supersedes": [
+                      "record-3"
+                    ],
+                    "user_confirmed": false,
+                    "confirmation_count": 0,
+                    "feedback_class": null,
+                    "created_at": "2026-09-08T02:07:20.559Z"
+                  },
+                  "snapshot": {
+                    "exists": true,
+                    "task_id": "opaque-id-2",
+                    "mode": "standard",
+                    "label": null,
+                    "records": [
+                      {
+                        "record_id": "record-3",
+                        "statement": "Create welcome.txt for library volunteers with two short English sentences directing returns to the trolley and damaged books to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-4",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:03:44.539Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:03:44.539Z",
+                        "status": "superseded",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-5",
+                        "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-6",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:05:38.114Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:05:38.114Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-7",
+                        "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-8",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:07:20.559Z",
+                        "last_confirmed": null,
+                        "supersedes": [
+                          "record-3"
+                        ],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:07:20.559Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "active_records": [
+                      {
+                        "record_id": "record-5",
+                        "statement": "Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-6",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:05:38.114Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:05:38.114Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-7",
+                        "statement": "Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-8",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:07:20.559Z",
+                        "last_confirmed": null,
+                        "supersedes": [
+                          "record-3"
+                        ],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:07:20.559Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "recovery": null,
+                    "compact": "Feedback [user]: Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\nOutcome [user]: Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.",
+                    "context_compact": "Feedback [user]: \"Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\"\nOutcome [user]: \"Create welcome.txt for visitors borrowing books with two short English sentences directing chosen books to the desk and library-card questions to a librarian.\""
+                  }
+                }
+              }
+            },
+            {
+              "type": "file_change",
+              "changes": [
+                {
+                  "path": "[natural-trial]/workspace/welcome.txt",
+                  "kind": "update"
+                }
+              ],
+              "status": "completed"
+            },
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -NoProfile -Command \"Get-Content -LiteralPath ./welcome.txt\"",
+              "exit_code": 0,
+              "status": "completed",
+              "output_prefix": "Bring chosen books to the desk.\r\nAsk a librarian for a library card.\r\n",
+              "output_truncated": false
+            }
+          ],
+          "native_usage": {
+            "input_tokens": 175689,
+            "cached_input_tokens": 170752,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 528,
+            "reasoning_output_tokens": 116
+          }
+        },
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 5,
+          "prompt": "/intent show",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:08:23.350Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:08:37.638Z",
+          "error": null,
+          "elapsed_ms": 14288,
+          "answer": "Intent state: `standard` — 2 active records.\n\n- Outcome: Create `welcome.txt` for visitors borrowing books, using two short English sentences about bringing chosen books to the desk and asking a librarian for a library card.\n- Feedback: Shorten the first sentence and begin it with “Put returned books”; keep the purpose and audience.\n\nReceipt ID: `IF-D1CE22BA`",
+          "welcome_txt": "Bring chosen books to the desk.\nAsk a librarian for a library card.\n",
+          "observed_state": null,
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [],
+          "native_usage": {
+            "input_tokens": 37507,
+            "cached_input_tokens": 35968,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 84,
+            "reasoning_output_tokens": 0
+          }
+        },
+        {
+          "candidate": "93fb105300d70e3a90a1ff41c562eba88f352b99",
+          "turn": 6,
+          "prompt": "/intent forget",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:11:09.082Z",
+          "session_id": "opaque-id-2",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:11:23.281Z",
+          "error": null,
+          "elapsed_ms": 14199,
+          "answer": "Task intent state was physically purged. Removed 4 events and 0 exports.\n\nReceipt ID: `IF-51994280`",
+          "welcome_txt": "Bring chosen books to the desk.\nAsk a librarian for a library card.\n",
+          "observed_state": {
+            "exists": false,
+            "task_id": "opaque-id-2",
+            "mode": "standard",
+            "label": null,
+            "records": [],
+            "active_records": [],
+            "recovery": null,
+            "compact": "",
+            "context_compact": ""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [],
+          "native_usage": {
+            "input_tokens": 38715,
+            "cached_input_tokens": 37376,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 31,
+            "reasoning_output_tokens": 0
+          }
+        }
+      ],
+      "official_cleanup": [
+        {
+          "file": "delete-opaque-id-2.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "empty-onboarding-delete.json",
+          "exit_code": 1,
+          "error": null
+        },
+        {
+          "file": "intent-formation-remove.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "intent-formation-state-remove.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "marketplace-remove.json",
+          "exit_code": 0,
+          "error": null
+        }
+      ]
+    },
+    {
+      "label": "regression",
+      "candidate_commit": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+      "prompts": [
+        "/intent start",
+        "I changed my mind: this note is now for visitors borrowing books. Replace both sentences. The first should tell them to bring chosen books to the desk; the second should tell them to ask a librarian for a library card. Keep two short English sentences and update welcome.txt only.",
+        "/intent show"
+      ],
+      "user_turns": 3,
+      "primary_retries": 0,
+      "initial_state": {
+        "provenance": "Explicit local synthetic fixture, not model-written historical user turns",
+        "snapshot": {
+          "exists": true,
+          "task_id": "opaque-id-9",
+          "mode": "standard",
+          "label": null,
+          "records": [
+            {
+              "record_id": "record-10",
+              "statement": "Write a note for return volunteers.",
+              "redaction_count": 0,
+              "role": "desired_outcome",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-goal",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.513Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": null,
+              "created_at": "2026-09-08T02:33:20.513Z",
+              "status": "active",
+              "invalidated_reason": null
+            },
+            {
+              "record_id": "record-11",
+              "statement": "Begin with Put returned books.",
+              "redaction_count": 0,
+              "role": "result_feedback",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-obsolete",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.548Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": "implementation_change",
+              "created_at": "2026-09-08T02:33:20.548Z",
+              "status": "active",
+              "invalidated_reason": null
+            },
+            {
+              "record_id": "record-12",
+              "statement": "Use plain words.",
+              "redaction_count": 0,
+              "role": "result_feedback",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-retained",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.585Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": "implementation_change",
+              "created_at": "2026-09-08T02:33:20.585Z",
+              "status": "active",
+              "invalidated_reason": null
+            }
+          ],
+          "active_records": [
+            {
+              "record_id": "record-10",
+              "statement": "Write a note for return volunteers.",
+              "redaction_count": 0,
+              "role": "desired_outcome",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-goal",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.513Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": null,
+              "created_at": "2026-09-08T02:33:20.513Z",
+              "status": "active",
+              "invalidated_reason": null
+            },
+            {
+              "record_id": "record-11",
+              "statement": "Begin with Put returned books.",
+              "redaction_count": 0,
+              "role": "result_feedback",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-obsolete",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.548Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": "implementation_change",
+              "created_at": "2026-09-08T02:33:20.548Z",
+              "status": "active",
+              "invalidated_reason": null
+            },
+            {
+              "record_id": "record-12",
+              "statement": "Use plain words.",
+              "redaction_count": 0,
+              "role": "result_feedback",
+              "epistemic_status": "explicit",
+              "source_ref": {
+                "kind": "user_turn",
+                "ref": "fixture-retained",
+                "excerpt": null,
+                "sha256": null
+              },
+              "scope": "task",
+              "scope_ref": "welcome.txt",
+              "confidence": null,
+              "valid_from": "2026-09-08T02:33:20.585Z",
+              "last_confirmed": null,
+              "supersedes": [],
+              "user_confirmed": false,
+              "confirmation_count": 0,
+              "feedback_class": "implementation_change",
+              "created_at": "2026-09-08T02:33:20.585Z",
+              "status": "active",
+              "invalidated_reason": null
+            }
+          ],
+          "recovery": null,
+          "compact": "Outcome [user]: Write a note for return volunteers.\nFeedback [user]: Begin with Put returned books.\nFeedback [user]: Use plain words.",
+          "context_compact": "Outcome [user]: \"Write a note for return volunteers.\"\nFeedback [user]: \"Begin with Put returned books.\"\nFeedback [user]: \"Use plain words.\""
+        }
+      },
+      "normal_hook_review": {
+        "candidate": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+        "host": "codex-cli 0.153.4",
+        "method": "Original interactive Hook review after source/delta review and 27-file installed Git comparison; no bypass or copied trust.",
+        "observed_before": {
+          "SessionStart": {
+            "installed": 1,
+            "active": 0
+          },
+          "UserPromptSubmit": {
+            "installed": 2,
+            "active": 0
+          }
+        },
+        "observed_after": {
+          "SessionStart": {
+            "installed": 1,
+            "active": 1
+          },
+          "UserPromptSubmit": {
+            "installed": 2,
+            "active": 2
+          }
+        },
+        "sandbox_ready_observed": true,
+        "onboarding_task_id": "opaque-id-13",
+        "model_prompts_submitted": 0
+      },
+      "installed_git_fingerprints": {
+        "candidate": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+        "files": [
+          {
+            "path": "plugins/intent-formation/.codex-plugin/plugin.json",
+            "bytes": 1504,
+            "sha256": "3067bd5d185c237ebf151f885921486a37d14a4392fbeeb1254f4b1755676776"
+          },
+          {
+            "path": "plugins/intent-formation/.mcp.json",
+            "bytes": 144,
+            "sha256": "51bff621fdbd523b32ca6bb373885462800109464ca8b35f065caef6080d2381"
+          },
+          {
+            "path": "plugins/intent-formation/assets/intent-formation.svg",
+            "bytes": 667,
+            "sha256": "cc73faa7d5083b474dbf698e6de3e9592dbfba03079b3141fd2aa068504cd896"
+          },
+          {
+            "path": "plugins/intent-formation/hooks/hooks.json",
+            "bytes": 422,
+            "sha256": "accdb7973f65b40221630fc8197feedafa7c8d3f9fe54acc924c5d9c507c7446"
+          },
+          {
+            "path": "plugins/intent-formation/LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "plugins/intent-formation/NOTICE",
+            "bytes": 192,
+            "sha256": "57bde953ffeae061805135b0486c5650db508cede540d3bd61cb1063688bf1f9"
+          },
+          {
+            "path": "plugins/intent-formation/README.md",
+            "bytes": 1416,
+            "sha256": "6e8e468c5e504eb4d82e4315442c3721f1d1d722d0dab015257ada5d3a9afcea"
+          },
+          {
+            "path": "plugins/intent-formation/SBOM.cdx.json",
+            "bytes": 640,
+            "sha256": "5dc34dd6724a018cb28cfa0b6ef97aa5c59bb6cc89e40198afd3afc0382aec3c"
+          },
+          {
+            "path": "plugins/intent-formation/server/policy.mjs",
+            "bytes": 2955,
+            "sha256": "9401de36534e64e709663a7f44e99f8e868ed46c4157a14cf9fde20ea189ebee"
+          },
+          {
+            "path": "plugins/intent-formation/skills/intent-formation/agents/openai.yaml",
+            "bytes": 235,
+            "sha256": "4e76929ec7f59b043d638f87047e42ac561e240d21a42f4833a951325b4cb1bf"
+          },
+          {
+            "path": "plugins/intent-formation/skills/intent-formation/SKILL.md",
+            "bytes": 13195,
+            "sha256": "8647020bf0c18bf69428447e94202ed1b3179f79d28a994b3059c0e7d8625621"
+          },
+          {
+            "path": "plugins/intent-formation/src/constants.mjs",
+            "bytes": 1044,
+            "sha256": "b40dd1c86ff348baa2bfa366ebc76897529d7c9df8bfd1457460355dbb8e91b8"
+          },
+          {
+            "path": "plugins/intent-formation/src/policy.mjs",
+            "bytes": 1416,
+            "sha256": "5a49ebf99919872e51766cf62f48d4448fd251eff53d893abf09a6b291b47d7e"
+          },
+          {
+            "path": "plugins/intent-formation/THIRD_PARTY_NOTICES.md",
+            "bytes": 193,
+            "sha256": "f91da6f498c874ec1b112546a8a5a4dbb81d95852284375d5cf0eda86a45a4dc"
+          },
+          {
+            "path": "plugins/intent-formation-state/.codex-plugin/plugin.json",
+            "bytes": 1321,
+            "sha256": "c4b04a5248e86788a6631f28a5af448545fc62dabd9d78ef7cf98c12eeb37b97"
+          },
+          {
+            "path": "plugins/intent-formation-state/.mcp.json",
+            "bytes": 152,
+            "sha256": "5a43b5cef3712634c3ab4f62d39995da7b882aa772a1a5c8420275bfb1b4cf4e"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-command.mjs",
+            "bytes": 97108,
+            "sha256": "000a554edbe7a9795bfae64f56c331f4a33b53fa07430c659d5604677a9d8794"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-formation-server.mjs",
+            "bytes": 891289,
+            "sha256": "c9d26b974d25d09a698846ce3ae75d22f97daa6dbfd054875927fef6ca4614a7"
+          },
+          {
+            "path": "plugins/intent-formation-state/dist/intent-resume.mjs",
+            "bytes": 91351,
+            "sha256": "80ec3d7b9a45f86a7bbfb4e2c5ce37c9e0fce1371ee7e90448caa2b010e1da0c"
+          },
+          {
+            "path": "plugins/intent-formation-state/hooks/hooks.json",
+            "bytes": 793,
+            "sha256": "406a51229e3e732fb3a4bdba4d6ca79503d137eb8702bc36f57fda761e77a6f0"
+          },
+          {
+            "path": "plugins/intent-formation-state/LICENSE",
+            "bytes": 11339,
+            "sha256": "e727a9aa336b91a8a34646cef5b33b890ebe84de9cfc3464e689c943e68def74"
+          },
+          {
+            "path": "plugins/intent-formation-state/NOTICE",
+            "bytes": 198,
+            "sha256": "bc93cdef35eafb4c25f2ccc88c53cd5f09290872f6260c49f67981bc4b3fc8c2"
+          },
+          {
+            "path": "plugins/intent-formation-state/README.md",
+            "bytes": 2297,
+            "sha256": "4afbd5ad2cbc3c00cc7597468fd2c0504a5231b0f9702bdb7238965b5b5d6df1"
+          },
+          {
+            "path": "plugins/intent-formation-state/SBOM.cdx.json",
+            "bytes": 4219,
+            "sha256": "9768569d50f21d13dc1a0cfa3ef0b7ec3b2001b3c6352ae505207a89fc7f12ab"
+          },
+          {
+            "path": "plugins/intent-formation-state/skills/intent-state-control/agents/openai.yaml",
+            "bytes": 194,
+            "sha256": "75a49ecdb227f51ab60d2e3091bad310a65b0ebec312f3ae59313178cd047f6d"
+          },
+          {
+            "path": "plugins/intent-formation-state/skills/intent-state-control/SKILL.md",
+            "bytes": 3940,
+            "sha256": "6d46bed5cacd045864c999b0cb84b086eac9b19cda701125fd91abe19495be28"
+          },
+          {
+            "path": "plugins/intent-formation-state/THIRD_PARTY_NOTICES.md",
+            "bytes": 9629,
+            "sha256": "bc81bd8f9730b3729020659e88c18beec7d910a8a7f101708c772a9158e05850"
+          }
+        ]
+      },
+      "turns": [
+        {
+          "candidate": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+          "turn": 1,
+          "prompt": "/intent start",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:28:42.870Z",
+          "session_id": "opaque-id-9",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:28:54.155Z",
+          "error": null,
+          "elapsed_ms": 11285,
+          "answer": "Intent state is ready. Continue in your own words; material goals and feedback can now be saved as short task records.\n\nReceipt ID: `IF-5B6A555B`",
+          "welcome_txt": null,
+          "observed_state": null,
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [],
+          "native_usage": {
+            "input_tokens": 16150,
+            "cached_input_tokens": 11392,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 41,
+            "reasoning_output_tokens": 0
+          }
+        },
+        {
+          "candidate": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+          "turn": 2,
+          "prompt": "I changed my mind: this note is now for visitors borrowing books. Replace both sentences. The first should tell them to bring chosen books to the desk; the second should tell them to ask a librarian for a library card. Keep two short English sentences and update welcome.txt only.",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:33:20.728Z",
+          "session_id": "opaque-id-9",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:34:28.270Z",
+          "error": null,
+          "elapsed_ms": 67542,
+          "answer": "Updated [welcome.txt]([regression-trial]/workspace/welcome.txt) with exactly two short sentences:\n\n> Bring your chosen books to the desk.  \n> Ask a librarian for a library card.",
+          "welcome_txt": "Bring your chosen books to the desk.\nAsk a librarian for a library card.\n",
+          "observed_state": {
+            "exists": true,
+            "task_id": "opaque-id-9",
+            "mode": "standard",
+            "label": null,
+            "records": [
+              {
+                "record_id": "record-10",
+                "statement": "Write a note for return volunteers.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-goal",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.513Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:20.513Z",
+                "status": "superseded",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-11",
+                "statement": "Begin with Put returned books.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-obsolete",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.548Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.548Z",
+                "status": "invalidated",
+                "invalidated_reason": "Conflicts with the new visitor borrowing note."
+              },
+              {
+                "record_id": "record-12",
+                "statement": "Use plain words.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-retained",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.585Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.585Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-14",
+                "statement": "Write a note for visitors borrowing books.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-15",
+                  "excerpt": "note is now for visitors borrowing books",
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:56.081Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-10"
+                ],
+                "user_confirmed": true,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:56.081Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "active_records": [
+              {
+                "record_id": "record-12",
+                "statement": "Use plain words.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-retained",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.585Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.585Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-14",
+                "statement": "Write a note for visitors borrowing books.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-15",
+                  "excerpt": "note is now for visitors borrowing books",
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:56.081Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-10"
+                ],
+                "user_confirmed": true,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:56.081Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "recovery": null,
+            "compact": "Feedback [user]: Use plain words.\nOutcome [user]: Write a note for visitors borrowing books.",
+            "context_compact": "Feedback [user]: \"Use plain words.\"\nOutcome [user]: \"Write a note for visitors borrowing books.\""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -Command \"Get-Content -Raw '[regression-trial]/codex-home/plugins/cache/intent-loop/intent-formation-state/0.3.0-beta.1/skills/intent-state-control/SKILL.md'\"",
+              "exit_code": 0,
+              "status": "completed",
+              "output_prefix": "---\nname: intent-state-control\ndescription: Use only for exact /intent start, remember, show, correct, feedback, export, private, off, and forget messages when Intent Formation State is installed. Execute the requested local state operation and report its verified receipt. Do not use for ordinary prompts or implicit intent formation.\n---\n\n# Intent Formation State control\n\nHandle one exact `/intent` control without inspecting the workspace, memories, conversation files, or unrelated configuration.\n\n## Prefer a trusted Hook result\n\nIf current trusted local context already contains a result with `source: intent_formation_hook`, `ok: true`, and a non-empty `receipt_id`, do not call another tool. Report its summary and exact receipt in one short answer.\n\nFor a verified export, preserve the opaque export id, record count, complete SHA-256 content digest, and exact receipt. This applies equally to Hook and MCP results; do not omit the digest when shortening a Hook summary. Never paste exported records into the conversation. The file is stored under the documented managed directory `<CODEX_HOME>/plugin-data/intent-formation/exports/<export-id>`; the tool deliberately does not expose an abs",
+              "output_truncated": true
+            },
+            {
+              "type": "mcp_tool_call",
+              "tool": "intent_correct",
+              "arguments": {
+                "task_id": "opaque-id-9",
+                "statement": "Write a note for visitors borrowing books.",
+                "supersedes": [
+                  "record-10"
+                ],
+                "epistemic_status": "explicit",
+                "source_kind": "user_turn",
+                "source_ref": {
+                  "ref": "opaque-id-15",
+                  "excerpt": "note is now for visitors borrowing books"
+                },
+                "role": "desired_outcome",
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "user_confirmed": true
+              },
+              "status": "completed",
+              "error": null,
+              "result": {
+                "ok": true,
+                "source": "intent_formation_mcp",
+                "receipt_id": "IF-9E6A890C",
+                "data": {
+                  "record": {
+                    "record_id": "record-14",
+                    "statement": "Write a note for visitors borrowing books.",
+                    "redaction_count": 0,
+                    "role": "desired_outcome",
+                    "epistemic_status": "explicit",
+                    "source_ref": {
+                      "kind": "user_turn",
+                      "ref": "opaque-id-15",
+                      "excerpt": "note is now for visitors borrowing books",
+                      "sha256": null
+                    },
+                    "scope": "task",
+                    "scope_ref": "welcome.txt",
+                    "confidence": null,
+                    "valid_from": "2026-09-08T02:33:56.081Z",
+                    "last_confirmed": null,
+                    "supersedes": [
+                      "record-10"
+                    ],
+                    "user_confirmed": true,
+                    "confirmation_count": 0,
+                    "feedback_class": null,
+                    "created_at": "2026-09-08T02:33:56.081Z"
+                  },
+                  "snapshot": {
+                    "exists": true,
+                    "task_id": "opaque-id-9",
+                    "mode": "standard",
+                    "label": null,
+                    "records": [
+                      {
+                        "record_id": "record-10",
+                        "statement": "Write a note for return volunteers.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "fixture-goal",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:20.513Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:33:20.513Z",
+                        "status": "superseded",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-11",
+                        "statement": "Begin with Put returned books.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "fixture-obsolete",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:20.548Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:33:20.548Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-12",
+                        "statement": "Use plain words.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "fixture-retained",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:20.585Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:33:20.585Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-14",
+                        "statement": "Write a note for visitors borrowing books.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-15",
+                          "excerpt": "note is now for visitors borrowing books",
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:56.081Z",
+                        "last_confirmed": null,
+                        "supersedes": [
+                          "record-10"
+                        ],
+                        "user_confirmed": true,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:33:56.081Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "active_records": [
+                      {
+                        "record_id": "record-11",
+                        "statement": "Begin with Put returned books.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "fixture-obsolete",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:20.548Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:33:20.548Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-12",
+                        "statement": "Use plain words.",
+                        "redaction_count": 0,
+                        "role": "result_feedback",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "fixture-retained",
+                          "excerpt": null,
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:20.585Z",
+                        "last_confirmed": null,
+                        "supersedes": [],
+                        "user_confirmed": false,
+                        "confirmation_count": 0,
+                        "feedback_class": "implementation_change",
+                        "created_at": "2026-09-08T02:33:20.585Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      },
+                      {
+                        "record_id": "record-14",
+                        "statement": "Write a note for visitors borrowing books.",
+                        "redaction_count": 0,
+                        "role": "desired_outcome",
+                        "epistemic_status": "explicit",
+                        "source_ref": {
+                          "kind": "user_turn",
+                          "ref": "opaque-id-15",
+                          "excerpt": "note is now for visitors borrowing books",
+                          "sha256": null
+                        },
+                        "scope": "task",
+                        "scope_ref": "welcome.txt",
+                        "confidence": null,
+                        "valid_from": "2026-09-08T02:33:56.081Z",
+                        "last_confirmed": null,
+                        "supersedes": [
+                          "record-10"
+                        ],
+                        "user_confirmed": true,
+                        "confirmation_count": 0,
+                        "feedback_class": null,
+                        "created_at": "2026-09-08T02:33:56.081Z",
+                        "status": "active",
+                        "invalidated_reason": null
+                      }
+                    ],
+                    "recovery": null,
+                    "compact": "Feedback [user]: Begin with Put returned books.\nFeedback [user]: Use plain words.\nOutcome [user]: Write a note for visitors borrowing books.",
+                    "context_compact": "Feedback [user]: \"Begin with Put returned books.\"\nFeedback [user]: \"Use plain words.\"\nOutcome [user]: \"Write a note for visitors borrowing books.\""
+                  }
+                }
+              }
+            },
+            {
+              "type": "mcp_tool_call",
+              "tool": "intent_invalidate",
+              "arguments": {
+                "task_id": "opaque-id-9",
+                "record_id": "record-11",
+                "reason": "Conflicts with the new visitor borrowing note."
+              },
+              "status": "completed",
+              "error": null,
+              "result": {
+                "ok": true,
+                "source": "intent_formation_mcp",
+                "receipt_id": "IF-CE83BDB5",
+                "data": {
+                  "exists": true,
+                  "task_id": "opaque-id-9",
+                  "mode": "standard",
+                  "label": null,
+                  "records": [
+                    {
+                      "record_id": "record-10",
+                      "statement": "Write a note for return volunteers.",
+                      "redaction_count": 0,
+                      "role": "desired_outcome",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "fixture-goal",
+                        "excerpt": null,
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:20.513Z",
+                      "last_confirmed": null,
+                      "supersedes": [],
+                      "user_confirmed": false,
+                      "confirmation_count": 0,
+                      "feedback_class": null,
+                      "created_at": "2026-09-08T02:33:20.513Z",
+                      "status": "superseded",
+                      "invalidated_reason": null
+                    },
+                    {
+                      "record_id": "record-11",
+                      "statement": "Begin with Put returned books.",
+                      "redaction_count": 0,
+                      "role": "result_feedback",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "fixture-obsolete",
+                        "excerpt": null,
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:20.548Z",
+                      "last_confirmed": null,
+                      "supersedes": [],
+                      "user_confirmed": false,
+                      "confirmation_count": 0,
+                      "feedback_class": "implementation_change",
+                      "created_at": "2026-09-08T02:33:20.548Z",
+                      "status": "invalidated",
+                      "invalidated_reason": "Conflicts with the new visitor borrowing note."
+                    },
+                    {
+                      "record_id": "record-12",
+                      "statement": "Use plain words.",
+                      "redaction_count": 0,
+                      "role": "result_feedback",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "fixture-retained",
+                        "excerpt": null,
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:20.585Z",
+                      "last_confirmed": null,
+                      "supersedes": [],
+                      "user_confirmed": false,
+                      "confirmation_count": 0,
+                      "feedback_class": "implementation_change",
+                      "created_at": "2026-09-08T02:33:20.585Z",
+                      "status": "active",
+                      "invalidated_reason": null
+                    },
+                    {
+                      "record_id": "record-14",
+                      "statement": "Write a note for visitors borrowing books.",
+                      "redaction_count": 0,
+                      "role": "desired_outcome",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "opaque-id-15",
+                        "excerpt": "note is now for visitors borrowing books",
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:56.081Z",
+                      "last_confirmed": null,
+                      "supersedes": [
+                        "record-10"
+                      ],
+                      "user_confirmed": true,
+                      "confirmation_count": 0,
+                      "feedback_class": null,
+                      "created_at": "2026-09-08T02:33:56.081Z",
+                      "status": "active",
+                      "invalidated_reason": null
+                    }
+                  ],
+                  "active_records": [
+                    {
+                      "record_id": "record-12",
+                      "statement": "Use plain words.",
+                      "redaction_count": 0,
+                      "role": "result_feedback",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "fixture-retained",
+                        "excerpt": null,
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:20.585Z",
+                      "last_confirmed": null,
+                      "supersedes": [],
+                      "user_confirmed": false,
+                      "confirmation_count": 0,
+                      "feedback_class": "implementation_change",
+                      "created_at": "2026-09-08T02:33:20.585Z",
+                      "status": "active",
+                      "invalidated_reason": null
+                    },
+                    {
+                      "record_id": "record-14",
+                      "statement": "Write a note for visitors borrowing books.",
+                      "redaction_count": 0,
+                      "role": "desired_outcome",
+                      "epistemic_status": "explicit",
+                      "source_ref": {
+                        "kind": "user_turn",
+                        "ref": "opaque-id-15",
+                        "excerpt": "note is now for visitors borrowing books",
+                        "sha256": null
+                      },
+                      "scope": "task",
+                      "scope_ref": "welcome.txt",
+                      "confidence": null,
+                      "valid_from": "2026-09-08T02:33:56.081Z",
+                      "last_confirmed": null,
+                      "supersedes": [
+                        "record-10"
+                      ],
+                      "user_confirmed": true,
+                      "confirmation_count": 0,
+                      "feedback_class": null,
+                      "created_at": "2026-09-08T02:33:56.081Z",
+                      "status": "active",
+                      "invalidated_reason": null
+                    }
+                  ],
+                  "recovery": null,
+                  "compact": "Feedback [user]: Use plain words.\nOutcome [user]: Write a note for visitors borrowing books.",
+                  "context_compact": "Feedback [user]: \"Use plain words.\"\nOutcome [user]: \"Write a note for visitors borrowing books.\""
+                }
+              }
+            },
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -Command \"Get-Content -Raw -LiteralPath 'welcome.txt'\"",
+              "exit_code": 0,
+              "status": "completed",
+              "output_prefix": "Put returned books on the trolley.\nAsk a librarian about damaged books.\n\r\n",
+              "output_truncated": false
+            },
+            {
+              "type": "file_change",
+              "changes": [
+                {
+                  "path": "[regression-trial]/workspace/welcome.txt",
+                  "kind": "update"
+                }
+              ],
+              "status": "completed"
+            },
+            {
+              "type": "command_execution",
+              "command": "\"[powershell]\" -Command \"Get-Content -Raw -LiteralPath 'welcome.txt'; git diff -- welcome.txt\"",
+              "exit_code": 1,
+              "status": "failed",
+              "output_prefix": "Bring your chosen books to the desk.\nAsk a librarian for a library card.\n\r\nwarning: Not a git repository. Use --no-index to compare two paths outside a working tree\nusage: git diff --no-index [<options>] <path> <path> [<pathspec>...]\n\nDiff output format options\n    -p, --patch           generate patch\n    -s, --no-patch        suppress diff output\n    -u                    generate patch\n    -U, --unified[=<n>]   generate diffs with <n> lines context\n    -W, --[no-]function-context\n                          generate diffs with <n> lines context\n    --raw                 generate the diff in raw format\n    --patch-with-raw      synonym for '-p --raw'\n    --patch-with-stat     synonym for '-p --stat'\n    --numstat             machine friendly --stat\n    --shortstat           output only the last line of --stat\n    -X, --dirstat[=<param1>,<param2>...]\n                          output the distribution of relative amount of changes for each sub-directory\n    --cumulative          synonym for --dirstat=cumulative\n    --dirstat-by-file[=<param1>,<param2>...]\n                          synonym for --dirstat=files,<param1>,<param2>...\n    --check               warn if changes introduce confl",
+              "output_truncated": true
+            }
+          ],
+          "native_usage": {
+            "input_tokens": 170077,
+            "cached_input_tokens": 152064,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 928,
+            "reasoning_output_tokens": 147
+          }
+        },
+        {
+          "candidate": "73865b698e9a94a90b1a031a2942a7c29f0b063f",
+          "turn": 3,
+          "prompt": "/intent show",
+          "model": "gpt-5.6-sol",
+          "effort": "low",
+          "hook_trust_bypass": false,
+          "started_at": "2026-09-08T02:35:37.973Z",
+          "session_id": "opaque-id-9",
+          "exit_code": 0,
+          "completed_at": "2026-09-08T02:35:49.748Z",
+          "error": null,
+          "elapsed_ms": 11775,
+          "answer": "Active intent — page 1 of 1:\n\n- Outcome: Write a note for visitors borrowing books.\n- Feedback: Use plain words.\n\nReceipt ID: `IF-C8BD7BF5`",
+          "welcome_txt": "Bring your chosen books to the desk.\nAsk a librarian for a library card.\n",
+          "observed_state": {
+            "exists": true,
+            "task_id": "opaque-id-9",
+            "mode": "standard",
+            "label": null,
+            "records": [
+              {
+                "record_id": "record-10",
+                "statement": "Write a note for return volunteers.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-goal",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.513Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:20.513Z",
+                "status": "superseded",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-11",
+                "statement": "Begin with Put returned books.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-obsolete",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.548Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.548Z",
+                "status": "invalidated",
+                "invalidated_reason": "Conflicts with the new visitor borrowing note."
+              },
+              {
+                "record_id": "record-12",
+                "statement": "Use plain words.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-retained",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.585Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.585Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-14",
+                "statement": "Write a note for visitors borrowing books.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-15",
+                  "excerpt": "note is now for visitors borrowing books",
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:56.081Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-10"
+                ],
+                "user_confirmed": true,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:56.081Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "active_records": [
+              {
+                "record_id": "record-12",
+                "statement": "Use plain words.",
+                "redaction_count": 0,
+                "role": "result_feedback",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "fixture-retained",
+                  "excerpt": null,
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:20.585Z",
+                "last_confirmed": null,
+                "supersedes": [],
+                "user_confirmed": false,
+                "confirmation_count": 0,
+                "feedback_class": "implementation_change",
+                "created_at": "2026-09-08T02:33:20.585Z",
+                "status": "active",
+                "invalidated_reason": null
+              },
+              {
+                "record_id": "record-14",
+                "statement": "Write a note for visitors borrowing books.",
+                "redaction_count": 0,
+                "role": "desired_outcome",
+                "epistemic_status": "explicit",
+                "source_ref": {
+                  "kind": "user_turn",
+                  "ref": "opaque-id-15",
+                  "excerpt": "note is now for visitors borrowing books",
+                  "sha256": null
+                },
+                "scope": "task",
+                "scope_ref": "welcome.txt",
+                "confidence": null,
+                "valid_from": "2026-09-08T02:33:56.081Z",
+                "last_confirmed": null,
+                "supersedes": [
+                  "record-10"
+                ],
+                "user_confirmed": true,
+                "confirmation_count": 0,
+                "feedback_class": null,
+                "created_at": "2026-09-08T02:33:56.081Z",
+                "status": "active",
+                "invalidated_reason": null
+              }
+            ],
+            "recovery": null,
+            "compact": "Feedback [user]: Use plain words.\nOutcome [user]: Write a note for visitors borrowing books.",
+            "context_compact": "Feedback [user]: \"Use plain words.\"\nOutcome [user]: \"Write a note for visitors borrowing books.\""
+          },
+          "native_turn_id_available_in_public_exec_stream": false,
+          "visible_tool_events": [],
+          "native_usage": {
+            "input_tokens": 29578,
+            "cached_input_tokens": 28032,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 44,
+            "reasoning_output_tokens": 0
+          }
+        }
+      ],
+      "official_cleanup": [
+        {
+          "file": "delete-opaque-id-9.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "empty-onboarding-delete.json",
+          "exit_code": 1,
+          "error": null
+        },
+        {
+          "file": "intent-formation-remove.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "intent-formation-state-remove.json",
+          "exit_code": 0,
+          "error": null
+        },
+        {
+          "file": "marketplace-remove.json",
+          "exit_code": 0,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

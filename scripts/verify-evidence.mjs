@@ -266,12 +266,48 @@ for (const [file, expected] of Object.entries(confirmation.source_sha256)) {
   assert.equal(sha256(await readFile(path.join(repositoryRoot, file))), expected.sha256, `final confirmation source drift: ${file}`);
 }
 
+const usabilityRoot = path.join(repositoryRoot, "evidence", "source-usability-20260908");
+const usability = await readJson(path.join(usabilityRoot, "manifest.json"));
+assert.equal(usability.evidence_class, "source_usability_and_seeded_regression");
+assert.equal(usability.current_release_efficacy, false);
+assert.equal(usability.release_gate_result, "NOT_APPLICABLE_KNOWN_FAILURE_USABILITY_CHECK");
+assert.equal(usability.user_turns, 9);
+assert.equal(usability.primary_retries, 0);
+await verifyArtifactHashes(usabilityRoot, usability);
+const use = await readJson(path.join(usabilityRoot, "observations.json"));
+assert.equal(use.current_release_efficacy, false);
+assert.deepEqual(use.groups.map(g => g.turns.length), [6, 3]);
+for (const [index, group] of use.groups.entries()) {
+  assert.equal(group.candidate_commit, usability.candidates[index].commit);
+  assert.equal(group.installed_git_fingerprints.candidate, group.candidate_commit);
+  assert.equal(group.installed_git_fingerprints.files.length, 27);
+  for (const file of group.installed_git_fingerprints.files) {
+    assert.match(file.path, /^plugins\/intent-formation(?:-state)?\//u);
+    assert.equal(sha256(execFileSync("git", ["show", `${group.candidate_commit}:${file.path}`], {
+      cwd: repositoryRoot
+    })), file.sha256, `source trial Git mismatch: ${file.path}`);
+  }
+  assert.equal(group.primary_retries, 0);
+  assert.ok(group.turns.every(t => t.exit_code === 0 && t.hook_trust_bypass === false));
+  assert.deepEqual(group.turns.map(t => t.prompt), group.prompts);
+}
+assert.equal(use.groups[0].turns[5].observed_state.exists, false);
+const fixedUse = use.groups[1].turns[1];
+assert.deepEqual(fixedUse.observed_state.records.map(r => r.status), ["superseded", "invalidated", "active", "active"]);
+assert.equal(fixedUse.observed_state.active_records[0].statement, "Use plain words.");
+assert.equal(fixedUse.visible_tool_events.filter(e => e.type === "mcp_tool_call" && e.tool === "intent_invalidate").length, 1);
+assert.equal(fixedUse.visible_tool_events.filter(e => e.type === "command_execution" && e.exit_code !== 0).length, 1);
+const useCleanup = await readJson(path.join(usabilityRoot, "cleanup.json"));
+assert.deepEqual(useCleanup.absent, [true, true, true, true]);
+assert.equal(useCleanup.daily_plugin_inventory.intent_plugins, 0);
+assert.doesNotMatch(JSON.stringify(use), /\b[A-Za-z]:[\\/]|\b01[a-f0-9]{6}-[a-f0-9-]{20,}|\brec_[a-f0-9]{32}/u);
+
 if (!(await exists(finalRoot))) {
   if (requireCandidate) {
     throw new Error("candidate holdout evidence is required for a release");
   }
   process.stdout.write(
-    "verified historical and final incomplete confirmation evidence; no passing candidate release evidence exists\n"
+    "verified historical, final incomplete confirmation and source-usability evidence; no passing candidate release evidence exists\n"
   );
   process.exit(0);
 }
