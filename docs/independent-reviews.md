@@ -2,6 +2,23 @@
 
 Two separate agents reviewed candidate `2b9101f9fc99ab0874f05a5d1e80b03b070de6a0`; actual model-mediated use later ran on the identical runtime at `16c4b199cda677b9cb19898096d1bcc161b7215c`. These are agent reviews, not human-user research. The original privacy review is closed in its fixed scope. Six earlier real-use cases and the separate two-case continuity check below are complete.
 
+## Bounded context-retention review, 2026-09-08
+
+The adversarial reviewer checked the small record-order change in `continuity.mjs`
+without model calls or installation. Four in-memory probes passed on Node 20.19.1:
+scope/source filtering, crowded budgets, oversized outcomes, and off/private/unstarted
+exits. Record provenance and unknown/disputed status stayed intact; superseded
+records were not reintroduced. The input was unchanged and no files were written.
+Its crowded sample retained the task outcome and latest feedback within a
+2,370-byte outer JSON envelope. No blocker remained in that scope.
+
+Reviewed source SHA-256:
+`f0d7ec68b593feec75f30ba17697a9e6e9c7594216d809d09e62d7b072762f70`.
+The root agent separately ran the 28 Hook tests, including the generated package
+paths. This review is neither a repeat of the final 80-case study nor a new
+user-perspective model trial. It cannot attribute a past conversation failure to
+the plugin or establish a real-user efficacy improvement.
+
 ## Final confirmation and goal review
 
 On 2026-09-07, the adversarial agent independently checked the final six-file

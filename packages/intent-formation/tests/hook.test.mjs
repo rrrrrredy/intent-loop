@@ -219,7 +219,7 @@ test("resume retains correction history but supplies only current intent with so
 
 test("continuity context stays byte-bounded with complete quoted records and no invented source", () => {
   const snapshot = { exists: true, mode: "standard", task_id: "bounded-task", active_records: [
-    { record_id: "oversize", role: "desired_outcome", epistemic_status: "explicit",
+    { record_id: "oversize", role: "desired_outcome", scope: "task", epistemic_status: "explicit",
       statement: '中文"\n'.repeat(600), source_ref: { kind: "user_turn", ref: "turn-1" } },
     { record_id: "safe", role: "disagreement", epistemic_status: "disputed",
       statement: "User wants A; the recommendation is B, unresolved", source_ref: { kind: "user_turn", ref: "turn-2" } },
@@ -236,6 +236,74 @@ test("continuity context stays byte-bounded with complete quoted records and no 
   assert.doesNotMatch(text, /EXTERNAL-INSTRUCTION-CANARY/);
   assert.equal(continuityContext({ ...snapshot, mode: "private" }), "");
   assert.equal(continuityContext({ ...snapshot, exists: false }), "");
+});
+
+test("continuity reserves the task outcome before newer feedback fills its budget", () => {
+  const record = (id, role, statement, scope = "task") => ({ record_id: id, role, scope,
+    statement, epistemic_status: "explicit", source_ref: { kind: "user_turn", ref: `source-${id}` } });
+  const outcome = record("outcome", "desired_outcome", "Prepare a volunteer rota for book returns.");
+  const feedback = Array.from({ length: 12 }, (_, index) => record(`feedback-${index}`,
+    "result_feedback", `Keep the purpose; adjust checklist wording ${index}.`));
+  const snapshot = { exists: true, mode: "standard", task_id: "crowded-task", active_records: [
+    outcome, record("project-outcome", "desired_outcome", "Maintain the library website.", "project"),
+    ...feedback
+  ] };
+  const before = JSON.stringify(snapshot);
+  for (const options of [{ turnId: "current-turn" }, {
+    maximumEncodedBytes: 3896 - Buffer.byteLength(JSON.stringify(POLICY + "\n\n"), "utf8")
+  }]) {
+    const text = continuityContext(snapshot, options);
+    const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+    assert.equal(data.records[0].id, "outcome");
+    assert.ok(data.records.some(({ id }) => id === "feedback-11"));
+    assert.equal(data.records[0].source, "source-outcome");
+    assert.equal(data.omitted, true);
+    assert.ok(Buffer.byteLength(text, "utf8") <= 2300);
+    assert.ok(Buffer.byteLength(JSON.stringify(text), "utf8") <= (options.maximumEncodedBytes ?? 2800));
+  }
+  assert.equal(JSON.stringify(snapshot), before);
+  const withoutOutcome = { ...snapshot, active_records: feedback };
+  const text = continuityContext(withoutOutcome);
+  const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+  assert.equal(data.records[0].id, "feedback-11");
+  assert.equal(continuityContext({ ...snapshot, mode: "off" }), "");
+});
+
+test("crowded source and packaged hooks retain only the current task outcome", async (context) => {
+  const dataDirectory = await hookFixture(context);
+  const service = new IntentService({ dataDirectory });
+  const taskId = "crowded-recovery";
+  const old = await service.addExplicit({ task_id: taskId, role: "desired_outcome", scope: "task",
+    statement: "Help children choose books", source_ref: { ref: "turn-old" } });
+  const current = await service.addRecord({ task_id: taskId, role: "desired_outcome", scope: "task",
+    statement: "Prepare a volunteer rota for book returns", epistemic_status: "explicit",
+    source_ref: { kind: "user_turn", ref: "turn-current" }, supersedes: [old.record.record_id] });
+  for (let index = 0; index < 12; index += 1) {
+    await service.addFeedback({ task_id: taskId, scope: "task", feedback_class: "implementation_change",
+      statement: `Keep the purpose; adjust checklist wording ${index}`,
+      source_ref: { ref: `turn-feedback-${index}` } });
+  }
+  const before = await readFile(service.store.filePath, "utf8");
+  const packaged = path.resolve(repositoryRoot, "../../plugins/intent-formation-state/dist");
+  for (const source of ["ordinary", "resume", "compact"]) {
+    const ordinary = source === "ordinary";
+    for (const executable of [ordinary ? commandHookPath : hookPath,
+      path.join(packaged, ordinary ? "intent-command.mjs" : "intent-resume.mjs")]) {
+      const result = await runHook(JSON.stringify({ session_id: taskId, source,
+        turn_id: "turn-now", hook_event_name: ordinary ? "UserPromptSubmit" : "SessionStart",
+        prompt: "Continue" }), dataDirectory, executable);
+      assert.equal(result.code, 0);
+      assert.ok(Buffer.byteLength(result.stdout, "utf8") <= (ordinary ? 3000 : 4096));
+      const text = JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
+      const data = JSON.parse(text.slice(text.lastIndexOf("\n") + 1));
+      assert.equal(data.records[0].id, current.record.record_id);
+      assert.equal(data.records[0].source, "turn-current");
+      assert.ok(!data.records.some(({ id }) => id === old.record.record_id));
+      assert.ok(data.records.some(({ text: statement }) => statement.endsWith("wording 11")));
+      assert.equal(data.omitted, true);
+    }
+  }
+  assert.equal(await readFile(service.store.filePath, "utf8"), before);
 });
 
 test("recovery budgets the full Hook JSON even for heavily escaped valid records", async (context) => {

@@ -31,7 +31,11 @@ export function continuityContext(snapshot, {
     Buffer.byteLength(JSON.stringify(render()), "utf8") <= maximumEncodedBytes;
   // Never slice serialized data or emit half a quoted record.
   if (!fits()) return "";
-  for (const record of [...records].reverse()) {
+  // Recent execution feedback must not crowd out the still-active task outcome.
+  const recent = [...records].reverse();
+  const outcome = recent.find((record) => record.role === "desired_outcome" && record.scope === "task");
+  const ordered = outcome ? [outcome, ...recent.filter((record) => record !== outcome)] : recent;
+  for (const record of ordered) {
     const item = {
       id: record.record_id,
       role: record.role,

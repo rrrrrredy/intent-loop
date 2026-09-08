@@ -2150,7 +2150,10 @@ function continuityContext(snapshot, {
   const render = () => INSTRUCTIONS + JSON.stringify(data);
   const fits = () => Buffer.byteLength(render(), "utf8") <= maximumBytes && Buffer.byteLength(JSON.stringify(render()), "utf8") <= maximumEncodedBytes;
   if (!fits()) return "";
-  for (const record of [...records].reverse()) {
+  const recent = [...records].reverse();
+  const outcome = recent.find((record) => record.role === "desired_outcome" && record.scope === "task");
+  const ordered = outcome ? [outcome, ...recent.filter((record) => record !== outcome)] : recent;
+  for (const record of ordered) {
     const item = {
       id: record.record_id,
       role: record.role,

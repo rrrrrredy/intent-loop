@@ -57,3 +57,33 @@ original market-effectiveness requirement remains unmet. Task-created installati
 state, dependencies and caches were removed and their absence checked. Source and
 raw evidence remain intact. The [local cleanup receipt](../evidence/local-cleanup-20260907.json)
 records the scope and preservation checks; cleanup does not erase the failed result.
+
+## Bounded maintenance: context retention, 2026-09-08
+
+A local diagnosis after the research snapshot reproduced a State-context defect:
+recent execution feedback could fill the bounded snapshot and omit an older,
+still-active task outcome. This does not establish the cause of an earlier real
+conversation failure; that conversation was not an installed-plugin experiment.
+
+The fix first attempts to include the latest active task-scoped outcome, then keeps
+the existing newest-first order for other records. It adds no policy, tool, schema,
+storage, or model request. Oversized records are still omitted whole; the context
+limits, source filtering, uncertainty, supersession and opt-out behavior stay intact.
+This is a selection tradeoff, not a promise to fit every active constraint.
+
+An anonymous 14-record regression retains six records before and after the repair.
+The old formatter omits the task outcome; the repair retains it and the latest
+feedback in both ordinary and recovery contexts. All 28 Hook tests passed locally,
+including source and packaged ordinary/resume/compact paths. The independent
+review added four in-memory boundary probes, with no remaining blocker in scope.
+No private conversation records are included in the published fixture.
+
+The Core policy and final 80-case evidence are unchanged. The earlier real-host
+State observations remain bound to their original package; they do not validate
+this repaired State package's model-mediated behavior. No replacement confirmation,
+new model or v0.3 prerelease was started for this maintenance change.
+
+Cleanup was verified at 2026-09-08 01:27 UTC: the temporary locked build dependencies
+and task npm cache were removed, along with four empty test directories. No product
+plugin was installed for this check; the daily inventory still contains zero Intent
+plugins and 14 unrelated plugins. Source and frozen evidence hashes were preserved.

@@ -4,6 +4,15 @@ As of 2026-09-07: **FINAL CONFIRMATION INCOMPLETE / PUBLIC RESEARCH SNAPSHOT ONL
 
 The independent goal audit found that manual state tools were implemented but ordinary feedback was not connected to them. The [re-scoped delivery goals](current-goals.md) prioritize that connection, provenance and recovery before more efficacy testing. Progress is not a passing product evaluation.
 
+## Subsequent bounded maintenance
+
+On 2026-09-08, a [small State-context repair](current-goals.md#bounded-maintenance-context-retention-2026-09-08)
+gave the current task outcome a place before newer execution feedback fills the
+snapshot. This is component-tested maintenance, not a new efficacy result. The
+Core policy, final corpus, original scores and all frozen archive files are
+unchanged. Earlier real-host State results remain historical and do not establish
+the repaired package's model-mediated behavior. The release decision is unchanged.
+
 ## Final confirmation and decision
 
 The frozen candidate `3dd8ab2283e86ad99ccc70a296b11b575f1ff7ce` passed all 18 jobs
