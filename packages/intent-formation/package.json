@@ -34,7 +34,7 @@
     "human-ai-interaction"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "zod": "4.5.4"
   },
   "devDependencies": {
